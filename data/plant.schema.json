@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://github.com/jochenderwae/GardenBedPlanner/data/plant.schema.json",
   "title": "Plant",
-  "description": "One plant record for the static plant database. Mirrors backend/app/models/plant.py and the create_plant_tables Alembic migration: top-level fields map to the `plant` table, nested arrays/objects map to the satellite tables (plant_data_source, seed_info, plant_period, plant_companion, plant_bedding_need). See docs/schema.md for the full ER model. Every plant is one file: data/plants/<slug>.json.",
+  "description": "One plant record for the static plant database. Mirrors backend/app/models/plant.py and the create_plant_tables/add_taxonomy_climate_succession_fields_and_pest_interactions Alembic migrations: top-level fields map to the `plant` table, nested arrays/objects map to the satellite tables (plant_data_source, seed_info, plant_period, plant_companion, plant_bedding_need, plant_pest_interaction). See docs/schema.md for the full ER model. Every plant is one file: data/plants/<slug>.json.",
   "type": "object",
   "required": ["slug", "common_name", "botanical_name"],
   "additionalProperties": false,
@@ -26,6 +26,29 @@
     "needs_wind_cover": { "type": ["boolean", "null"] },
     "needs_rain_cover": { "type": ["boolean", "null"] },
     "water_needs": { "type": ["string", "null"] },
+
+    "family": { "type": ["string", "null"], "description": "Taxonomic family, e.g. 'Solanaceae'. Used for rotation/succession-family logic." },
+    "genus": { "type": ["string", "null"], "description": "Taxonomic genus, e.g. 'Solanum'. Kept separate from botanical_name so rotation queries don't have to parse it back out." },
+
+    "min_temperature_c": { "type": ["number", "null"], "description": "Natural habitat temperature range, not a US hardiness zone." },
+    "max_temperature_c": { "type": ["number", "null"] },
+
+    "days_to_maturity": { "type": ["integer", "null"], "exclusiveMinimum": 0 },
+    "soil_ph_min": { "type": ["number", "null"], "minimum": 0, "maximum": 14 },
+    "soil_ph_max": { "type": ["number", "null"], "minimum": 0, "maximum": 14 },
+
+    "is_toxic": { "type": ["boolean", "null"] },
+    "toxicity_notes": { "type": ["string", "null"] },
+    "is_edible": { "type": ["boolean", "null"] },
+    "edible_parts": {
+      "type": ["array", "null"],
+      "items": { "type": "string" },
+      "description": "e.g. ['fruit', 'leaves']. Open-ended, not a closed enum."
+    },
+
+    "succession_enabled": { "type": ["boolean", "null"], "description": "Whether this crop can be re-sown at intervals through the season rather than once." },
+    "succession_interval_days": { "type": ["integer", "null"], "exclusiveMinimum": 0 },
+    "succession_max_sowings": { "type": ["integer", "null"], "exclusiveMinimum": 0 },
 
     "seed_info": {
       "description": "Maps to the seed_info table (1:1 with plant). Omit entirely if nothing is known.",
@@ -64,6 +87,22 @@
         "properties": {
           "companion_slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
           "relationship": { "enum": ["good", "bad"] },
+          "mechanism": { "type": ["string", "null"], "description": "Open-ended, e.g. 'pest-deterrent', 'nitrogen-fixing', 'allelopathy' - why the relationship holds." },
+          "notes": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "pest_interactions": {
+      "description": "Maps to plant_pest_interaction rows. Plant-to-insect relationships - distinct from companions, which is plant-to-plant.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["interaction_type", "pest_or_insect"],
+        "additionalProperties": false,
+        "properties": {
+          "interaction_type": { "enum": ["attracts", "repels", "vulnerable_to"] },
+          "pest_or_insect": { "type": "string", "description": "e.g. 'aphids', 'ladybugs', 'tomato hornworm' - free text, not a closed enum." },
           "notes": { "type": ["string", "null"] }
         }
       }

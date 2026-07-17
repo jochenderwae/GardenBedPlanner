@@ -14,6 +14,20 @@
   "needs_wind_cover": false,
   "needs_rain_cover": true,
   "water_needs": "Consistent moisture; avoid wetting foliage",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "min_temperature_c": 10,
+  "max_temperature_c": 35,
+  "days_to_maturity": 70,
+  "soil_ph_min": 6.0,
+  "soil_ph_max": 6.8,
+  "is_toxic": true,
+  "toxicity_notes": "Foliage and unripe fruit contain solanine, toxic if eaten in quantity",
+  "is_edible": true,
+  "edible_parts": ["fruit"],
+  "succession_enabled": false,
+  "succession_interval_days": null,
+  "succession_max_sowings": null,
   "seed_info": {
     "seeds_per_gram": 300,
     "pretreatment": null,
@@ -26,8 +40,12 @@
     { "period_type": "harvesting", "start_month": 7, "end_month": 9 }
   ],
   "companions": [
-    { "companion_slug": "basil", "relationship": "good", "notes": "Reputed to improve flavor and repel pests" },
-    { "companion_slug": "potato", "relationship": "bad", "notes": "Shares blight susceptibility" }
+    { "companion_slug": "basil", "relationship": "good", "mechanism": "pest-deterrent", "notes": "Reputed to improve flavor and repel pests" },
+    { "companion_slug": "potato", "relationship": "bad", "mechanism": null, "notes": "Shares blight susceptibility" }
+  ],
+  "pest_interactions": [
+    { "interaction_type": "vulnerable_to", "pest_or_insect": "tomato hornworm", "notes": null },
+    { "interaction_type": "attracts", "pest_or_insect": "ladybugs", "notes": "When interplanted with flowering companions" }
   ],
   "bedding_needs": [
     { "need_type": "staking", "notes": "Indeterminate varieties need a stake or cage" }
