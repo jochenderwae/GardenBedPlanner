@@ -25,6 +25,7 @@ bed_type_enum = sa.Enum(
     "compost_bin",
     "fruit_tree",
     name="bedtype",
+    create_type=False,
 )
 
 
