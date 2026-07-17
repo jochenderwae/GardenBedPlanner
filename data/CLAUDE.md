@@ -24,12 +24,12 @@ Candidate and confirmed sources to pull plant data from, kept here as they're fo
 | Source | URL | Covers | License / attribution | Status |
 |---|---|---|---|---|
 | openfarm-crops-rescue | https://github.com/thefullnacho/openfarm-crops-rescue | data structure reference (see `docs/domain-model.md`) and basic overall data | CC0 1.0 Universal | candidate |
-| Homesteader Labs' Crop Knowledge Base | https://homesteaderlabs.com/kb | botanical names, sun, spacing, sowing methods | public domain | candidate |
-| Permapeople | https://permapeople.org | broad plant database including companion planting | CC BY-SA 4.0 | candidate |
+| Homesteader Labs' Crop Knowledge Base | https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops | botanical names, sun, spacing, sowing methods | public domain | candidate |
+| Permapeople | https://permapeople.org/api | broad plant database including companion planting | CC BY-SA 4.0 | candidate |
 | USDA PLANTS Database |  | authoritative for taxonomy/family classification, which is exactly what you need for rotation-family logic. Weak on cultivation specifics like spacing or companion planting though | public domain | candidate |
 | Wikipedia's "List of companion plants" | https://en.wikipedia.org/wiki/List_of_companion_plants | genuinely well-structured for companion pairs specifically, useful as a cross-check rather than a bulk scrape | CC BY-SA | candidate |
 | Trefle |  | usefulness to be confirmed | ? | candidate |
 
 ## Notes
 
-- (space for anything source-specific worth remembering — quirks in a source's data, fields that need manual review, sources that turned out to be unusable, etc.)
+- Permapeople api documentation is found here: 'https://permapeople.org/knowledgebase/api-docs/' -
