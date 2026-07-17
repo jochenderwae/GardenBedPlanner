@@ -7,6 +7,26 @@ source "$SCRIPT_DIR/config.sh"
 # (re)installs the systemd service. Safe to re-run for redeploys - this is
 # also what deploy.sh calls.
 
+# Identity preflight. Everything downstream (file ownership, SERVICE_USER in
+# the systemd unit) assumes this script runs as the one account that owns
+# $APP_DIR - catch a root/deploy (or similar) mismatch here, with a clear
+# fix, instead of letting it surface as a cryptic git/permission error deep
+# in the script, or a systemd unit silently running as the wrong user.
+if [ -e "$APP_DIR" ]; then
+  APP_DIR_OWNER="$(stat -c '%U' "$APP_DIR")"
+  if [ "$APP_DIR_OWNER" != "$(whoami)" ]; then
+    echo "ERROR: $APP_DIR is owned by '$APP_DIR_OWNER', not '$(whoami)' (the user running this script)." >&2
+    echo "This usually means an earlier run happened under a different identity (e.g. root via 'sudo -i')." >&2
+    echo "Fix: sudo chown -R $(whoami):$(whoami) $APP_DIR" >&2
+    exit 1
+  fi
+fi
+if [ "$SERVICE_USER" != "$(whoami)" ]; then
+  echo "ERROR: SERVICE_USER is '$SERVICE_USER' (config.sh) but this script is running as '$(whoami)'." >&2
+  echo "The systemd unit would end up configured to run as the wrong user. Run this as '$SERVICE_USER', or fix SERVICE_USER in config.sh." >&2
+  exit 1
+fi
+
 # uv installs to ~/.local/bin (01-install-packages.sh). That's only on PATH
 # in a shell that has sourced .profile/.bashrc since - not guaranteed if this
 # runs in the same session uv was just installed in. Don't rely on it.
@@ -17,14 +37,24 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 UV_PATH="$(command -v uv)"
 
-if [ ! -d "$APP_DIR/.git" ]; then
-  echo "==> Cloning $REPO_URL ($BRANCH) into $APP_DIR"
-  git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
-else
-  echo "==> Updating existing checkout in $APP_DIR"
-  git -C "$APP_DIR" fetch origin "$BRANCH"
-  git -C "$APP_DIR" checkout "$BRANCH"
-  git -C "$APP_DIR" pull --ff-only origin "$BRANCH"
+if [ -z "${GARDEN_DEPLOY_REEXEC:-}" ]; then
+  if [ ! -d "$APP_DIR/.git" ]; then
+    echo "==> Cloning $REPO_URL ($BRANCH) into $APP_DIR"
+    git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
+  else
+    echo "==> Updating existing checkout in $APP_DIR"
+    git -C "$APP_DIR" fetch origin "$BRANCH"
+    git -C "$APP_DIR" checkout "$BRANCH"
+    git -C "$APP_DIR" pull --ff-only origin "$BRANCH"
+  fi
+
+  # This script may have just pulled a newer version of itself. Bash keeps
+  # executing the in-memory copy it originally opened, not the one now on
+  # disk, so anything below this point could otherwise run stale logic
+  # against already-updated files (has bitten this exact pipeline before -
+  # see the "self-updating-script gotcha" note in CLAUDE.md). Re-exec to
+  # force a fresh read from disk; the guard var stops this from looping.
+  exec env GARDEN_DEPLOY_REEXEC=1 "$SCRIPT_DIR/03-deploy-backend.sh" "$@"
 fi
 
 cd "$APP_DIR/backend"
