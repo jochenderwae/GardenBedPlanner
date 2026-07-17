@@ -7,6 +7,15 @@ source "$SCRIPT_DIR/config.sh"
 # (re)installs the systemd service. Safe to re-run for redeploys - this is
 # also what deploy.sh calls.
 
+# uv installs to ~/.local/bin (01-install-packages.sh). That's only on PATH
+# in a shell that has sourced .profile/.bashrc since - not guaranteed if this
+# runs in the same session uv was just installed in. Don't rely on it.
+export PATH="$HOME/.local/bin:$PATH"
+if ! command -v uv >/dev/null 2>&1; then
+  echo "uv not found (checked PATH and ~/.local/bin). Run 01-install-packages.sh as this user first." >&2
+  exit 1
+fi
+
 if [ ! -d "$APP_DIR/.git" ]; then
   echo "==> Cloning $REPO_URL ($BRANCH) into $APP_DIR"
   git clone --branch "$BRANCH" "$REPO_URL" "$APP_DIR"
