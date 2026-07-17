@@ -15,6 +15,7 @@ if ! command -v uv >/dev/null 2>&1; then
   echo "uv not found (checked PATH and ~/.local/bin). Run 01-install-packages.sh as this user first." >&2
   exit 1
 fi
+UV_PATH="$(command -v uv)"
 
 if [ ! -d "$APP_DIR/.git" ]; then
   echo "==> Cloning $REPO_URL ($BRANCH) into $APP_DIR"
@@ -47,6 +48,7 @@ echo "==> Installing systemd unit"
 sed \
   -e "s#__APP_DIR__#$APP_DIR#g" \
   -e "s#__USER__#$SERVICE_USER#g" \
+  -e "s#__UV_PATH__#$UV_PATH#g" \
   -e "s#__BACKEND_BIND_HOST__#$BACKEND_BIND_HOST#g" \
   -e "s#__BACKEND_PORT__#$BACKEND_PORT#g" \
   "$SCRIPT_DIR/garden-backend.service.template" | sudo tee "/etc/systemd/system/$SERVICE_NAME.service" >/dev/null
