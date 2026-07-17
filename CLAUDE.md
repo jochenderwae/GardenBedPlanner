@@ -44,6 +44,7 @@ Bonus/later scope: Home Assistant bridge for irrigation automation, Grocy bridge
 /backend    FastAPI app, SQLModel models, Alembic migrations
 /frontend   React + Vite app (desktop layout + mobile/PWA layout)
 /infra      Compose files, Proxmox CT provisioning notes
+/data       Plant-database ETL: external sources -> project JSON format -> Postgres import
 CLAUDE.md
 ```
  

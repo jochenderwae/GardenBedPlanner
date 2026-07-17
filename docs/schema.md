@@ -42,8 +42,8 @@ erDiagram
         int id PK
         string plant_slug FK
         string period_type "sowing | planting | fertilizing | harvesting"
-        date start_date
-        date end_date
+        int start_month "1-12, recurs yearly - not a calendar date"
+        int end_month "1-12, recurs yearly - not a calendar date"
     }
 
     PLANT_COMPANION {
@@ -218,8 +218,9 @@ type Geometry =
 
 - `PLANT_COMPANION` is a self-referencing join table on `PLANT`, carrying a `relationship` (good/bad) indicator.
 - `SEED_INFO` is split into its own 1:1 entity rather than columns on `PLANT`, since it's a distinct data cluster (seeds/gram, pretreatment, F1 status).
-- `PLANT_PERIOD` generalizes sowing/planting/fertilizing/harvesting windows into one table with a `period_type` rather than four separate date-range columns — easier to extend, but explicit columns are an alternative.
+- `PLANT_PERIOD` generalizes sowing/planting/fertilizing/harvesting windows into one table with a `period_type` rather than four separate date-range columns — easier to extend, but explicit columns are an alternative. Implemented as `start_month`/`end_month` integers (1-12), not `date`s as originally sketched here — these are species-level windows that recur every year, not one-off events tied to a specific year (that's what `BED_PLANTING`/`ACTION` dates are for).
 - `GARDEN_PLAN_ENTRY` is an inferred join between `GARDEN_PLAN` and `PLANT` (optionally a `PLANTING_BED`) — the domain model describes the plan conceptually but doesn't name this table.
 - `ACTION` carries four optional FKs (bed/plant/equipment/plan-entry) rather than a polymorphic target — simplest for SQLModel/Alembic, but gets sparse; a generic `target_type`/`target_id` pair is the alternative if nullable FK sprawl becomes a problem.
 - `GARDEN_SETTINGS` is left unlinked (singleton config), per the domain model's vague "overarching data" description.
 - `PLANTING_BED.width_cm` / `length_cm` were dropped in favor of deriving footprint from `border_geometry` (see [Geometry format](#geometry-format)) — `height_cm` stays since it's a true vertical dimension the 2D geometry can't express.
+- **The `PLANT` cluster is implemented** — `backend/app/models/plant.py` + the `create_plant_tables` migration. All fields except `slug`/`common_name`/`botanical_name` (and each satellite table's own identity/FK columns) are nullable: this table is meant to be bulk-populated from heterogeneous external sources via the ETL in `data/`, which won't have every field for every plant. Don't assume non-null without checking. The JSON import format that feeds the ETL is `data/plant.schema.json` (JSON Schema), designed to map ~1:1 onto this schema - one JSON object per plant, with `seed_info`/`periods`/`companions`/`bedding_needs`/`data_sources` nested as the satellite-table data.

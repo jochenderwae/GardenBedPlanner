@@ -8,6 +8,7 @@ from alembic import context
 
 from app.core.config import settings
 from app.models import bed  # noqa: F401  (registers models on SQLModel.metadata)
+from app.models import plant  # noqa: F401  (registers models on SQLModel.metadata)
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jochenderwae/GardenBedPlanner/data/plant.schema.json",
+  "title": "Plant",
+  "description": "One plant record for the static plant database. Mirrors backend/app/models/plant.py and the create_plant_tables Alembic migration: top-level fields map to the `plant` table, nested arrays/objects map to the satellite tables (plant_data_source, seed_info, plant_period, plant_companion, plant_bedding_need). See docs/schema.md for the full ER model. Every plant is one file: data/plants/<slug>.json.",
+  "type": "object",
+  "required": ["slug", "common_name", "botanical_name"],
+  "additionalProperties": false,
+  "properties": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "Primary key. URL-safe, unique, e.g. 'tomato', 'sweet-basil'. Must match the file's own name (<slug>.json)."
+    },
+    "common_name": { "type": "string" },
+    "botanical_name": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "sowing_method": { "type": ["string", "null"] },
+    "spread_cm": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+    "row_spacing_cm": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+    "height_cm": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+    "sun_level": { "enum": ["full_sun", "half_sun", "shadow", null] },
+    "soil_type": { "type": ["string", "null"] },
+    "composting_needs": { "type": ["string", "null"] },
+    "fertilizer_needs": { "type": ["string", "null"] },
+    "needs_wind_cover": { "type": ["boolean", "null"] },
+    "needs_rain_cover": { "type": ["boolean", "null"] },
+    "water_needs": { "type": ["string", "null"] },
+
+    "seed_info": {
+      "description": "Maps to the seed_info table (1:1 with plant). Omit entirely if nothing is known.",
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "seeds_per_gram": { "type": ["number", "null"], "exclusiveMinimum": 0 },
+        "pretreatment": { "type": ["string", "null"], "description": "e.g. 'cold stratification 4 weeks', or null if none needed." },
+        "produces_viable_seeds": { "type": ["boolean", "null"], "description": "false for F1 hybrids and similar - null if unknown, not false." },
+        "is_f1_hybrid": { "type": ["boolean", "null"] }
+      }
+    },
+
+    "periods": {
+      "description": "Maps to plant_period rows. Recurring annual windows (month only) - omit a period entirely rather than guessing start/end.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["period_type", "start_month", "end_month"],
+        "additionalProperties": false,
+        "properties": {
+          "period_type": { "enum": ["sowing", "planting", "fertilizing", "harvesting"] },
+          "start_month": { "type": "integer", "minimum": 1, "maximum": 12 },
+          "end_month": { "type": "integer", "minimum": 1, "maximum": 12 }
+        }
+      }
+    },
+
+    "companions": {
+      "description": "Maps to plant_companion rows. companion_slug must reference another plant's slug (resolved at import time, not enforceable in JSON Schema alone) and must not equal this plant's own slug.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["companion_slug", "relationship"],
+        "additionalProperties": false,
+        "properties": {
+          "companion_slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+          "relationship": { "enum": ["good", "bad"] },
+          "notes": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "bedding_needs": {
+      "description": "Maps to plant_bedding_need rows.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["need_type"],
+        "additionalProperties": false,
+        "properties": {
+          "need_type": { "type": "string", "description": "Open-ended, e.g. ground_cover | hilling | staking - not a closed enum." },
+          "notes": { "type": ["string", "null"] }
+        }
+      }
+    },
+
+    "data_sources": {
+      "description": "Maps to plant_data_source rows. Every non-trivial field elsewhere in this record should be traceable to at least one entry here - see data/CLAUDE.md's sources table for what's available to cite.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "source_url": { "type": ["string", "null"], "format": "uri" },
+          "attribution": { "type": ["string", "null"] },
+          "notes": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}
