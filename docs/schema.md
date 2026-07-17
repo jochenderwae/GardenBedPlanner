@@ -1,0 +1,225 @@
+# Schema
+
+Entity-relationship diagram derived from [`domain-model.md`](./domain-model.md). This is a planning sketch, not a source of truth for the actual SQLModel/Alembic schema — reconcile the two as models are implemented.
+
+```mermaid
+erDiagram
+    PLANT {
+        string slug PK
+        string common_name
+        string botanical_name
+        string description
+        string sowing_method
+        float spread_cm
+        float row_spacing_cm
+        float height_cm
+        string sun_level "full sun | half sun | shadow"
+        string soil_type
+        string composting_needs
+        string fertilizer_needs
+        boolean needs_wind_cover
+        boolean needs_rain_cover
+        string water_needs
+    }
+
+    PLANT_DATA_SOURCE {
+        int id PK
+        string plant_slug FK
+        string source_url
+        string attribution
+        string notes "for fact-checking"
+    }
+
+    SEED_INFO {
+        string plant_slug PK, FK
+        int seeds_per_gram
+        string pretreatment "e.g. cold stratification"
+        boolean produces_viable_seeds
+        boolean is_f1_hybrid
+    }
+
+    PLANT_PERIOD {
+        int id PK
+        string plant_slug FK
+        string period_type "sowing | planting | fertilizing | harvesting"
+        date start_date
+        date end_date
+    }
+
+    PLANT_COMPANION {
+        string plant_slug FK
+        string companion_plant_slug FK
+        string relationship "good | bad"
+        string notes
+    }
+
+    PLANT_BEDDING_NEED {
+        int id PK
+        string plant_slug FK
+        string need_type "ground_cover | hilling | staking | ..."
+        string notes
+    }
+
+    SEED_INVENTORY_ITEM {
+        int id PK
+        string plant_slug FK
+        float quantity_seeds
+        float weight_grams
+        date acquired_date
+        string notes
+    }
+
+    PLANTING_BED {
+        int id PK
+        string name
+        jsonb border_geometry "rectangle|polygon, garden-space cm - see Geometry format"
+        string orientation "north-facing edge, coarse compass label"
+        float height_cm
+        boolean is_raised
+        string soil_type
+        string sun_level
+        boolean in_greenhouse
+    }
+
+    BED_PLANTING {
+        int id PK
+        int bed_id FK
+        string plant_slug FK
+        string placement_type "individual | row | field"
+        jsonb geometry "point|line|polygon, bed-local cm - see Geometry format"
+        date planted_date
+        date removed_date
+    }
+
+    BED_EQUIPMENT {
+        int id PK
+        int bed_id FK "nullable - null means in inventory"
+        string equipment_type "irrigation | trellis | plant_support | ..."
+        jsonb geometry "line|polygon, bed-local cm, null if in inventory - see Geometry format"
+        float height_cm
+        float water_delivery_lph "irrigation only"
+    }
+
+    COMPOST_FERTILIZATION_LOG {
+        int id PK
+        int bed_id FK
+        date log_date
+        string type "compost | fertilizer"
+        string product
+        string amount
+        string notes
+    }
+
+    GARDEN_PLAN {
+        int id PK
+        string season_name
+        int year
+        string notes
+    }
+
+    GARDEN_PLAN_ENTRY {
+        int id PK
+        int garden_plan_id FK
+        string plant_slug FK
+        int bed_id FK "optional - not yet assigned"
+        int desired_quantity
+        string notes
+    }
+
+    ACTION {
+        int id PK
+        string action_type "fertilize | compost | prepare_bed | sow | plant | install_equipment | remove_equipment | harvest | clear | collect_seeds"
+        date due_date
+        date completed_date
+        string status
+        int garden_plan_entry_id FK "optional"
+        int bed_id FK "optional"
+        string plant_slug FK "optional"
+        int equipment_id FK "optional"
+        string notes
+    }
+
+    GARDEN_SETTINGS {
+        int id PK
+        string climate_zone
+        string location
+        string notes
+    }
+
+    PLANT ||--o{ PLANT_DATA_SOURCE : "documented by"
+    PLANT ||--o| SEED_INFO : "has"
+    PLANT ||--o{ PLANT_PERIOD : "has"
+    PLANT ||--o{ PLANT_BEDDING_NEED : "requires"
+    PLANT ||--o{ PLANT_COMPANION : "is subject of"
+    PLANT ||--o{ PLANT_COMPANION : "is companion in"
+    PLANT ||--o{ SEED_INVENTORY_ITEM : "stocked as"
+    PLANT ||--o{ BED_PLANTING : "planted as"
+    PLANT ||--o{ GARDEN_PLAN_ENTRY : "planned as"
+    PLANT o|--o{ ACTION : "concerns"
+
+    PLANTING_BED ||--o{ BED_PLANTING : "contains"
+    PLANTING_BED o|--o{ BED_EQUIPMENT : "hosts"
+    PLANTING_BED ||--o{ COMPOST_FERTILIZATION_LOG : "logs"
+    PLANTING_BED o|--o{ GARDEN_PLAN_ENTRY : "targeted by"
+    PLANTING_BED o|--o{ ACTION : "site of"
+
+    GARDEN_PLAN ||--o{ GARDEN_PLAN_ENTRY : "contains"
+    GARDEN_PLAN_ENTRY o|--o{ ACTION : "generates"
+    BED_EQUIPMENT o|--o{ ACTION : "concerns"
+```
+
+## Geometry format
+
+All geometry fields (`PLANTING_BED.border_geometry`, `BED_PLANTING.geometry`, `BED_EQUIPMENT.geometry`) are `jsonb`, holding a small GeoJSON-flavored shape rather than a `geometry`/`geography` PostGIS column or an SVG string — see the discussion above the diagram for why (single-user, no real spatial queries, direct fit with `react-konva`). All units are centimeters; there is no CRS, just a flat local coordinate plane.
+
+**Coordinate spaces** — two, matching how Konva nests groups:
+- **Garden space** — `PLANTING_BED.border_geometry` only. Absolute coordinates on the whole-garden canvas, origin `(0, 0)` at a fixed reference point (e.g. the NW corner of the plot). `orientation` stays a separate coarse compass label (N/NE/E/...) for sun/shade reasoning — it's not derived from `rotation`.
+- **Bed-local space** — `BED_PLANTING.geometry` and `BED_EQUIPMENT.geometry`. Origin `(0, 0)` at the top-left corner of the bed's bounding box, unrotated. The frontend positions each bed's Konva `Group` using `border_geometry` and renders plantings/equipment as children in that group's local coordinates, so it doesn't have to re-derive offsets.
+
+**Shape types** (discriminated union on `type`):
+
+```ts
+type Point2D = { x: number; y: number };
+
+type Geometry =
+  | { type: "point"; x: number; y: number }
+  | { type: "line"; points: Point2D[] }
+  | { type: "rectangle"; x: number; y: number; width: number; height: number; rotation?: number }
+  | { type: "polygon"; points: Point2D[] };
+```
+
+`rotation` (degrees, clockwise, default `0`) only applies to `rectangle` — polygon vertices already encode any rotation directly.
+
+**Which type goes where:**
+
+| Field | Allowed types | Notes |
+|---|---|---|
+| `PLANTING_BED.border_geometry` | `rectangle`, `polygon` | Matches the doc's "rectangle or polygon" border. |
+| `BED_PLANTING.geometry` | `point`, `line`, `polygon` | Follows `placement_type`: `individual` → `point`, `row` → `line`, `field` → `polygon`. |
+| `BED_EQUIPMENT.geometry` | `line`, `polygon` | `line` for drip runs/trellis wires, `polygon` for footprint-based equipment (e.g. a cold frame). `null` when `bed_id` is `null` (item is in inventory, not placed). |
+
+**Examples:**
+
+```json
+// PLANTING_BED.border_geometry - a 70x200cm rectangular planter, in garden space
+{ "type": "rectangle", "x": 120, "y": 40, "width": 70, "height": 200, "rotation": 0 }
+
+// BED_PLANTING.geometry - a single tomato plant, individually placed, bed-local
+{ "type": "point", "x": 15, "y": 30 }
+
+// BED_PLANTING.geometry - a row of carrots, bed-local
+{ "type": "line", "points": [{ "x": 5, "y": 10 }, { "x": 65, "y": 10 }] }
+
+// BED_EQUIPMENT.geometry - a drip line following a bed's row spacing, bed-local
+{ "type": "line", "points": [{ "x": 0, "y": 10 }, { "x": 70, "y": 10 }, { "x": 70, "y": 30 }] }
+```
+
+## Modeling decisions worth revisiting
+
+- `PLANT_COMPANION` is a self-referencing join table on `PLANT`, carrying a `relationship` (good/bad) indicator.
+- `SEED_INFO` is split into its own 1:1 entity rather than columns on `PLANT`, since it's a distinct data cluster (seeds/gram, pretreatment, F1 status).
+- `PLANT_PERIOD` generalizes sowing/planting/fertilizing/harvesting windows into one table with a `period_type` rather than four separate date-range columns — easier to extend, but explicit columns are an alternative.
+- `GARDEN_PLAN_ENTRY` is an inferred join between `GARDEN_PLAN` and `PLANT` (optionally a `PLANTING_BED`) — the domain model describes the plan conceptually but doesn't name this table.
+- `ACTION` carries four optional FKs (bed/plant/equipment/plan-entry) rather than a polymorphic target — simplest for SQLModel/Alembic, but gets sparse; a generic `target_type`/`target_id` pair is the alternative if nullable FK sprawl becomes a problem.
+- `GARDEN_SETTINGS` is left unlinked (singleton config), per the domain model's vague "overarching data" description.
+- `PLANTING_BED.width_cm` / `length_cm` were dropped in favor of deriving footprint from `border_geometry` (see [Geometry format](#geometry-format)) — `height_cm` stays since it's a true vertical dimension the 2D geometry can't express.

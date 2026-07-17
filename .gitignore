@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+*.egg-info/
+
+# Node
+node_modules/
+dist/
+dist-ssr/
+
+# Env files
+.env
+.env.local
+
+# Logs
+*.log
+*.out.log
+*.err.log
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
