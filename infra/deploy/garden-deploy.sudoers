@@ -1,0 +1,53 @@
+# GardenBedPlanner deploy automation for the `deploy` user on garden-planner-dev.
+#
+# Scope: exactly the privileged commands run by 02-setup-database.sh,
+# 03-deploy-backend.sh, and 04-deploy-frontend.sh (and deploy.sh, which just
+# calls 03+04) - nothing more. 01-install-packages.sh (apt/apt-get, and the
+# `install -d` that creates $APP_DIR) is deliberately NOT covered here: OS
+# package installation stays human-only, password-gated, via the pre-existing
+# general `deploy ALL=(ALL) ALL` rule.
+#
+# Install:
+#   scp infra/deploy/garden-deploy.sudoers garden-planner-dev:/tmp/
+#   ssh garden-planner-dev
+#   sudo visudo -c -f /tmp/garden-deploy.sudoers        # syntax-check first
+#   sudo install -o root -g root -m 0440 /tmp/garden-deploy.sudoers /etc/sudoers.d/garden-deploy
+#   sudo visudo -c                                      # re-check the whole config parses
+#   rm /tmp/garden-deploy.sudoers
+#
+# This replaces the standalone NOPASSWD line for `systemctl restart
+# garden-backend` mentioned in infra/deploy/CLAUDE.md - remove that one if
+# it lives elsewhere (e.g. directly in /etc/sudoers) to avoid a duplicate.
+#
+# Security note: the psql rules below grant passwordless SQL access to the
+# `postgres` superuser, scoped by command-line pattern (SELECT/CREATE ROLE/
+# CREATE DATABASE prefixes matching what 02-setup-database.sh actually runs)
+# rather than a bare `/usr/bin/psql *`, which would be unrestricted
+# passwordless superuser SQL access to the whole cluster. These patterns are
+# tied to the literal query text in 02-setup-database.sh today - if that
+# script's SQL changes, update these lines to match, or the new query will
+# just fall back to prompting for a password instead of silently misfiring.
+
+# --- 02-setup-database.sh: Postgres role/database bootstrap ---
+deploy ALL=(postgres) NOPASSWD: /usr/bin/psql -tAc SELECT 1 FROM pg_roles WHERE rolname=*
+deploy ALL=(postgres) NOPASSWD: /usr/bin/psql -tAc SELECT 1 FROM pg_database WHERE datname=*
+deploy ALL=(postgres) NOPASSWD: /usr/bin/psql -c CREATE ROLE*
+deploy ALL=(postgres) NOPASSWD: /usr/bin/psql -c CREATE DATABASE*
+
+# --- 03-deploy-backend.sh: install/restart the garden-backend systemd unit ---
+# Path is fixed because SERVICE_NAME is hardcoded to "garden-backend" in
+# config.sh - update this line too if that ever changes.
+deploy ALL=(root) NOPASSWD: /usr/bin/tee /etc/systemd/system/garden-backend.service
+deploy ALL=(root) NOPASSWD: /usr/bin/systemctl daemon-reload
+deploy ALL=(root) NOPASSWD: /usr/bin/systemctl enable garden-backend
+deploy ALL=(root) NOPASSWD: /usr/bin/systemctl restart garden-backend
+
+# --- 04-deploy-frontend.sh: install/reload the nginx site ---
+# nginx's binary path (/usr/sbin/nginx) is Debian's standard location but is
+# unverified on this box as of writing - nginx isn't installed yet. Confirm
+# with `which nginx` after 01-install-packages.sh has been run, and fix this
+# path if it differs.
+deploy ALL=(root) NOPASSWD: /usr/bin/tee /etc/nginx/sites-available/garden
+deploy ALL=(root) NOPASSWD: /usr/bin/ln -sf /etc/nginx/sites-available/garden /etc/nginx/sites-enabled/garden
+deploy ALL=(root) NOPASSWD: /usr/sbin/nginx -t
+deploy ALL=(root) NOPASSWD: /usr/bin/systemctl reload nginx
