@@ -25,13 +25,11 @@ bed_type_enum = sa.Enum(
     "compost_bin",
     "fruit_tree",
     name="bedtype",
-    create_type=False,
 )
 
 
 def upgrade() -> None:
     """Upgrade schema."""
-    bed_type_enum.create(op.get_bind(), checkfirst=True)
     op.create_table(
         "bed",
         sa.Column("id", sa.Integer(), primary_key=True),
@@ -50,4 +48,3 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Downgrade schema."""
     op.drop_table("bed")
-    bed_type_enum.drop(op.get_bind(), checkfirst=True)
