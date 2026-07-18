@@ -3,6 +3,14 @@ Postgres. Idempotent: re-running updates existing Plant rows and replaces
 their satellite rows entirely rather than diffing them - simplest correct
 pattern for a batch import that isn't performance-sensitive.
 
+Two passes, not one: plant_companion.companion_plant_slug is a FK to
+another row in `plant` (self-referential, e.g. acorn-squash -> borage).
+A single pass processing files in filename order would fail whenever a
+companion reference points to a plant that sorts later and hasn't been
+inserted yet - first real end-to-end run hit exactly this. Pass 1 upserts
+every Plant row (so every slug exists); pass 2 then replaces every plant's
+satellite rows, by which point all FK targets are guaranteed present.
+
 Run from backend/: uv run python -m app.scripts.import_plants
 """
 
@@ -27,10 +35,8 @@ PLANTS_DIR = Path(__file__).resolve().parents[3] / "data" / "plants"
 _PLANT_SCALAR_FIELDS = [f for f in Plant.model_fields if f != "slug"]
 
 
-def import_file(session: Session, path: Path) -> None:
-    data = json.loads(path.read_text(encoding="utf-8"))
+def upsert_plant(session: Session, data: dict) -> None:
     slug = data["slug"]
-
     plant = session.get(Plant, slug)
     if plant is None:
         plant = Plant(slug=slug)
@@ -38,6 +44,11 @@ def import_file(session: Session, path: Path) -> None:
     for field in _PLANT_SCALAR_FIELDS:
         if field in data:
             setattr(plant, field, data[field])
+    session.commit()
+
+
+def import_satellites(session: Session, data: dict) -> None:
+    slug = data["slug"]
 
     session.exec(delete(PlantDataSource).where(PlantDataSource.plant_slug == slug))
     for s in data.get("data_sources", []):
@@ -83,16 +94,31 @@ def import_file(session: Session, path: Path) -> None:
 def main() -> None:
     files = sorted(PLANTS_DIR.glob("*.json"))
     print(f"Importing {len(files)} plant files from {PLANTS_DIR}")
+    loaded = [(path, json.loads(path.read_text(encoding="utf-8"))) for path in files]
+
     ok, failed = 0, 0
+    failed_slugs: set[str] = set()
     with Session(engine) as session:
-        for path in files:
+        for path, data in loaded:
             try:
-                import_file(session, path)
-                ok += 1
+                upsert_plant(session, data)
             except Exception as exc:  # noqa: BLE001 - one bad file must not abort the batch
                 session.rollback()
-                print(f"[{path.name}] FAILED: {exc!r}")
+                print(f"[{path.name}] FAILED (plant): {exc!r}")
                 failed += 1
+                failed_slugs.add(data["slug"])
+
+        for path, data in loaded:
+            if data["slug"] in failed_slugs:
+                continue  # plant row itself never landed, satellites would just fail too
+            try:
+                import_satellites(session, data)
+                ok += 1
+            except Exception as exc:  # noqa: BLE001
+                session.rollback()
+                print(f"[{path.name}] FAILED (satellites): {exc!r}")
+                failed += 1
+
     print(f"Done. {ok} imported, {failed} failed.")
 
 
