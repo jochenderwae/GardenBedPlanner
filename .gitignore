@@ -4,6 +4,10 @@ __pycache__/
 .venv/
 *.egg-info/
 
+# ETL working data (data/plants/*.json is the deliverable and stays tracked)
+data/.cache/
+data/.state/
+
 # Node
 node_modules/
 dist/
