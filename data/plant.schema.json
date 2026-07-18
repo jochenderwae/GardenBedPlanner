@@ -50,6 +50,9 @@
     "succession_interval_days": { "type": ["integer", "null"], "exclusiveMinimum": 0 },
     "succession_max_sowings": { "type": ["integer", "null"], "exclusiveMinimum": 0 },
 
+    "life_cycle": { "enum": ["annual", "biennial", "perennial", null] },
+    "life_cycle_years": { "type": ["integer", "null"], "exclusiveMinimum": 0, "description": "A perennial's typical productive lifespan in years, e.g. 7 for raspberries (canes are perennial but a patch is usually renewed after ~7 years). Independent of life_cycle, not a 4th enum value - most perennials leave this null." },
+
     "seed_info": {
       "description": "Maps to the seed_info table (1:1 with plant). Omit entirely if nothing is known.",
       "type": ["object", "null"],

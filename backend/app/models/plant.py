@@ -33,6 +33,12 @@ class GrowingInfoRecordType(str, Enum):
     consolidated = "consolidated"
 
 
+class LifeCycle(str, Enum):
+    annual = "annual"
+    biennial = "biennial"
+    perennial = "perennial"
+
+
 class Plant(SQLModel, table=True):
     slug: str = Field(primary_key=True)
     common_name: str
@@ -79,6 +85,14 @@ class Plant(SQLModel, table=True):
     succession_enabled: bool | None = None
     succession_interval_days: int | None = None
     succession_max_sowings: int | None = None
+
+    # life_cycle classifies annual/biennial/perennial as usual; life_cycle_years
+    # is a separate, independent field for a perennial's typical productive
+    # lifespan (e.g. raspberry canes are perennial but a patch is usually
+    # renewed after ~7 years) - not a 4th life_cycle value, since "perennial
+    # with a known productive span" and "perennial" aren't mutually exclusive.
+    life_cycle: LifeCycle | None = None
+    life_cycle_years: int | None = None
 
 
 class PlantDataSource(SQLModel, table=True):
