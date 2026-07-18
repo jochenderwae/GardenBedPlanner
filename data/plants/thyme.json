@@ -1,0 +1,111 @@
+{
+  "slug": "thyme",
+  "common_name": "Thyme",
+  "botanical_name": "Thymus vulgaris",
+  "description": "Thyme is a perennial evergreen herb in the Lamiaceae (Mint) family. It is related to Oregano. Thyme is cold-hardy to -28.8 °C and a perennial in US Hardiness zones 5-8. Thyme can live for 5-6 years but needs to be divided or replaced after 3-4 years. It can be used fresh or dried to season dishes.",
+  "sowing_method": "Transplant cuttings or seedlings or direct seed indoors",
+  "spread_cm": 15,
+  "row_spacing_cm": 38.1,
+  "height_cm": 25,
+  "sun_level": "full_sun",
+  "water_needs": "~0.25 in/week",
+  "family": "Lamiaceae",
+  "genus": "Thymus",
+  "days_to_maturity": 90,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "lacinato-kale",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "red-pointed-cabbage",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "rose",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good",
+      "mechanism": "pest-deterrent",
+      "notes": "Top performer in Iowa State trials — significantly reduced cabbage looper and armyworm damage when interplanted with brassicas. Aromatic oils disrupt cabbage moth oviposition."
+    },
+    {
+      "companion_slug": "eggplant",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "strawberry",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "broccoli",
+      "relationship": "good",
+      "mechanism": "pest-deterrent",
+      "notes": "Aromatic thyme compounds disrupt cabbage moth egg-laying across the brassica family; interplant at 1 thyme per 3 broccoli plants."
+    },
+    {
+      "companion_slug": "kale",
+      "relationship": "good",
+      "mechanism": "pest-deterrent",
+      "notes": "Same brassica protection mechanism as with cabbage and broccoli; interplant thyme at bed edges to create an aromatic barrier against cabbage worms."
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "hoverflies/syrphidae [ 65 ]"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "cabbage worm"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] [ 28 ] cabbage weevil"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 28 ] cabbage looper"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 28 ] aphids"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 65 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

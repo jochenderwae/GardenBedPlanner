@@ -1,0 +1,35 @@
+{
+  "slug": "morning-glory",
+  "common_name": "Morning Glory",
+  "botanical_name": "Convolvulaceae",
+  "description": "Morning Glory is the common name for over 1,000 species of flowering plants in the family Convolvulaceae. Morning glories have bright, trumpet-shaped flowers, ranging in color from light blue to white to purple to pink, that open into full bloom in the morning. Some varieties bloom at night. The vines of the plant grow quickly and can survive in poorer, dry soils. Seeds have a hard coating and benefit from being nicked with a nail file and soaked overnight before planting.",
+  "sowing_method": "Direct seed (if starting indoors, transplant seedlings outside after hardening off)",
+  "spread_cm": 190,
+  "row_spacing_cm": 25,
+  "height_cm": 200,
+  "sun_level": "full_sun",
+  "family": "Convolvulaceae",
+  "genus": "Ipomoea",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "honeydew-melon",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

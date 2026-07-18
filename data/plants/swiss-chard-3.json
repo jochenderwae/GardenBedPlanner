@@ -1,0 +1,58 @@
+{
+  "slug": "swiss-chard-3",
+  "common_name": "Swiss Chard",
+  "botanical_name": "Beta vulgaris",
+  "description": "Swiss Chard is a leafy green vegetable in the Beet family. The thick stems come in a variety of colors including white, pink, red, yellow, orange, and pale green. It has large, crinkly leaves with distinctive veins. The leaves and stems are edible and high in nutrients. Swiss chard can be eaten raw or sautéed, baked, or steamed.",
+  "sowing_method": "Direct seed indoors or outdoors. Transplant seedlings after hardening off.",
+  "spread_cm": 20,
+  "row_spacing_cm": 25.4,
+  "height_cm": 35,
+  "sun_level": "full_sun",
+  "water_needs": "~1 in/week",
+  "family": "Amaranthaceae",
+  "genus": "Beta",
+  "days_to_maturity": 60,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "succession_enabled": true,
+  "succession_interval_days": 3,
+  "succession_max_sowings": 3,
+  "companions": [
+    {
+      "companion_slug": "bok-choy",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

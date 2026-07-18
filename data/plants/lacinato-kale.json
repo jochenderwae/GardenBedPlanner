@@ -1,0 +1,38 @@
+{
+  "slug": "lacinato-kale",
+  "common_name": "Lacinato Kale",
+  "botanical_name": "Brassica oleracea",
+  "description": "Lacinato, Dinosaur, Tuscan, or Italian Kale has very dark green or blue-green leaves that are heavily crinkled or blistered (savoyed) instead of curled. The leaves have a rich, tender taste and are softer than curly green kales. Can be harvested at baby or adult stage. Delicious raw or cooked. Light frosts increase the sweetness of the leaves.",
+  "sowing_method": "Direct seed outdoors or transplant seedlings",
+  "spread_cm": 75,
+  "row_spacing_cm": 45,
+  "height_cm": 75,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "dill-1",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "thyme",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

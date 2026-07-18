@@ -1,0 +1,22 @@
+{
+  "slug": "curly-dock",
+  "common_name": "You Can Grow Anything",
+  "botanical_name": "Rumex crispus",
+  "description": "Curly dock is a hardy perennial wild green with tangy, lemony young leaves eaten cooked or raw in small amounts. A common forageable across much of the world, it also throws up rust-colored seed stalks used in dried arrangements. Older leaves turn bitter and high in oxalic acid, so tender young growth is preferred.",
+  "sun_level": "full_sun",
+  "family": "Polygonaceae",
+  "genus": "Rumex",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

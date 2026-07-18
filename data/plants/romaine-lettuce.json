@@ -1,0 +1,31 @@
+{
+  "slug": "romaine-lettuce",
+  "common_name": "Romaine Lettuce",
+  "botanical_name": "Lactuca sativa",
+  "description": "Romaine is a variety of lettuce that grows into a dense, tall head. It's leaves are light to bright green and have firm ribs down their centers. It is more tolerant of heat than most lettuces.",
+  "sowing_method": "Direct seed indoors or outside.",
+  "spread_cm": 30,
+  "row_spacing_cm": 40,
+  "height_cm": 30,
+  "sun_level": "half_sun",
+  "family": "Asteraceae",
+  "genus": "Lactuca",
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "carrot-scarlet-nantes",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "slug": "midgen-berry",
+  "common_name": "Midgen Berry",
+  "botanical_name": "Austromyrtus dulcis",
+  "description": "The Midgen, Midyim, or Sand Berry, is a spreading shrub native to Australia's coast. It is closely related to the Lillipilli and a popular traditional bushfood. In full sun, the plant has a more upright growth pattern. In more shaded areas, it has a lower, spreading habit. Midgen has lanceolate to elliptical leaves that are glossy green on top and have silky hairs on the underside. White, star-shaped flowers produce small white berries dotted with blue and black spots that look mauve or gray from a distance. The berries are sweet and aromatic, with a mild ginger taste. They can be eaten fresh, made into preserves, or baked into desserts.",
+  "sowing_method": "Direct seed fresh cleaned seed indoors, cuttings",
+  "spread_cm": 150,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "family": "Myrtaceae",
+  "genus": "Austromyrtus",
+  "is_edible": true,
+  "edible_parts": [
+    "fruits"
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

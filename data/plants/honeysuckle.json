@@ -1,0 +1,35 @@
+{
+  "slug": "honeysuckle",
+  "common_name": "Honeysuckle",
+  "botanical_name": "Lonicera xylosteum",
+  "description": "Honeysuckle is a popular ground cover, ornamental, and companion plant. It has a lovely fragrance, bright blossoms, and sweet nectar. There are dozens of species within with the Lonicera genus and two main types: bush or vine. Beware though - honeysuckle can quickly become an invasive, especially when planting a variety not native to your area. Asian honeysuckles (Amur honeysuckle, Morrow’s honeysuckle, Japanese honeysuckle, Tatarian honeysuckle) are illegal to grow in New York, Texas, Massachusetts, and New Hampshire. Invasive honeysuckle is also a problem in Ohio, Kentucky, Georgia, Connecticut, Vermont, Florida, Tennessee, and South Carolina. If you decide to plant honeysuckle, be sure to chose a species native to your area. Vine species native to America include the Trumpet or Coral Honeysuckle (Lonicera sempervirens), which has scarlet, trumpet-shaped blossoms, and the Yellow Honeysuckle (Lonicera flava), which has bright yellow flowers. Even native species should be regularly pruned and/or grown in containers to prevent them from overtaking a landscape. Honeysuckle benefits from a trellis or arbor.",
+  "sowing_method": "Direct seed or cuttings",
+  "height_cm": 600,
+  "sun_level": "half_sun",
+  "family": "Caprifoliaceae",
+  "genus": "Lonicera",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "plum",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

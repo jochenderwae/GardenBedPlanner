@@ -1,0 +1,26 @@
+{
+  "slug": "hops",
+  "common_name": "Hops",
+  "botanical_name": "Humulus lupulus",
+  "description": "Hops are the flowers (also known as seed cones or strobiles) of the hop plant. They are primarily used as a flavoring and stability agent in beer, giving it a bitter, zesty, or citric flavor, but have additional medicinal and beverage uses. The hop plant is a vigorous climber that can grow to heights of 10m. It is trained to grow up trellises made from strings or wires.",
+  "sowing_method": "Transplant seedlings or rhizomes/rootstock",
+  "spread_cm": 500,
+  "row_spacing_cm": 120,
+  "height_cm": 600,
+  "sun_level": "full_sun",
+  "family": "Cannabaceae",
+  "genus": "Humulus",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

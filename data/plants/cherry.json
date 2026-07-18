@@ -1,0 +1,23 @@
+{
+  "slug": "cherry",
+  "common_name": "Cherry",
+  "botanical_name": "Prunus avium",
+  "description": "A cherry is the fruit of many plants of the genus Prunus, and is a fleshy drupe. Commercial cherries are obtained from cultivars of several species, such as the sweet Prunus avium and the sour Prunus cerasus.",
+  "height_cm": 1500,
+  "sun_level": "full_sun",
+  "family": "Rosaceae",
+  "genus": "Prunus",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

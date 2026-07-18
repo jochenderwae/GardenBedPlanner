@@ -1,0 +1,36 @@
+{
+  "slug": "acorn-squash",
+  "common_name": "Acorn Squash",
+  "botanical_name": "Cucurbita pepo",
+  "description": "Dark green and/or orange to yellow patterned rind with longitudinal ridges. Acorn-shaped, generally 4-7 inches long. Sweet, yellow-orange flesh inside. Belongs to the same species as summer squashes like zucchini and crookneck squash.",
+  "sowing_method": "seeds",
+  "spread_cm": 150,
+  "row_spacing_cm": 60,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "family": "Cucurbitaceae",
+  "genus": "Cucurbita",
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "borage",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "corn",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

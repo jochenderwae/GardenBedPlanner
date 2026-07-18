@@ -1,0 +1,36 @@
+{
+  "slug": "fenugreek",
+  "common_name": "Fenugreek",
+  "botanical_name": "Trigonella foenum-graecum",
+  "description": "Fenugreek is an annual herbaceous plant in the Legume family (Fabaceae) originally cultivated in the Near East. It is grown for culinary and medicinal purposes in semiarid climates. It's clover-shaped leaves can be used dried or fresh and taste similar to spinach. They can be grown as microgreens or sprouts. The seeds are used whole or powdered as a spice or to make tea. The plant has a maple scent and is sometimes used to create imitation maple syrups and flavor baked goods. The yellow or white flowers produce long yellow seedpods. Fenugreek prefers a warm, hot climate with temperatures between 10-32°C. Because it is a legume, it does not transplant well. If starting seeds indoors, use peat pots to reduce the stress of transplanting. Fenugreek can also be grown in containers. It is high in antioxidants and has been used in traditional medicine to improve circulation, promote digestion, treat coughs and sore throat, and reduce blood sugar levels in diabetics. It can be taken internally or used topically.",
+  "sowing_method": "Direct seed outdoors at 5cm, thin to 15cm",
+  "row_spacing_cm": 15,
+  "height_cm": 60,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Trigonella",
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "buckwheat",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

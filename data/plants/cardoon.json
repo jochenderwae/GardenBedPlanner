@@ -1,0 +1,27 @@
+{
+  "slug": "cardoon",
+  "common_name": "Cardoon",
+  "botanical_name": "Cirsium edule",
+  "description": "The Cardoon, or Artichoke Thistle, is a herbaceous, perennial thistle-like plant in the Daisy (Asteraceae) family. It is a naturally occurring species of which the Globe artichoke is a cultivar. The wild Cardoon has hairy, spiny leaves and spiny violet flowers. It is adapted to semi-arid climates and is a weed in California and Australia. It's white flower buds, inner white stalks, and root can be eaten. It can be used as a vegetarian source of enzymes for cheese production. Cardoon is often blanched for 3-4 weeks before harvest to improve the flavor and tenderness of it's stalks. To blanch, tie the leaves together in a bunch and wrap paper or burlap around the stems to 45cm high. Cardoon cultivars such as the Globe artichoke are taller and less spiny.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "row_spacing_cm": 60,
+  "height_cm": 150,
+  "sun_level": "full_sun",
+  "family": "Asteraceae",
+  "genus": "Cynara",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

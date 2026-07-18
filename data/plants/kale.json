@@ -1,0 +1,88 @@
+{
+  "slug": "kale",
+  "common_name": "Kale",
+  "botanical_name": "Brassica oleracea (acephala)",
+  "description": "Kale is a cultivar of the species Brassica oleracea. It has green or purple leaves that branch off from one to multiple upright stems and do not form a head like cabbage. The plant is usually grown as an annual, but if grown as a perennial, it will form seeds in the second year. Current popular varieties include Curly kale, Italian kale, and Red Russian kale (green leaves with pale purple stems). It can be grown as baby salad greens or for bunching adult leaves. Leaves are sweeter after a frost and delicious eaten raw, added to salads, sautéed, or added to stews and casseroles.",
+  "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
+  "spread_cm": 75,
+  "row_spacing_cm": 45,
+  "height_cm": 75,
+  "sun_level": "full_sun",
+  "water_needs": "~1 in/week",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "days_to_maturity": 60,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "celtuce",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "german-chamomile",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "lemon-balm",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "radicchio",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beets",
+      "relationship": "good"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "cabbage-worm"
+    },
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "aphid"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

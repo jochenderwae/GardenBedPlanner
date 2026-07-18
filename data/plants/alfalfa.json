@@ -1,0 +1,54 @@
+{
+  "slug": "alfalfa",
+  "common_name": "Alfalfa",
+  "botanical_name": "Medicago sativa",
+  "description": "Alfalfa is a member of the pea family Fabaceae that can be grown as a summer cover crop, for hay, or as a sprout for fresh eating. As a cover crop, it is a strong nitrogen fixer and it's long taproots break up compacted soil. Like all legumes, it benefits from an inoculant at planting. The plant bears some resemblance to clover and has small purple flowers.",
+  "sowing_method": "Direct seed",
+  "height_cm": 100,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Medicago",
+  "soil_ph_min": 6.0,
+  "soil_ph_max": 8.5,
+  "is_edible": false,
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "assassin bug"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "big-eyed bug"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "ladybug"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "parasitic wasps"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "lygus bugs"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

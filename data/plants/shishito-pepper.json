@@ -1,0 +1,23 @@
+{
+  "slug": "shishito-pepper",
+  "common_name": "Shishito Pepper",
+  "botanical_name": "Capsicum annuum",
+  "description": "Shishito peppers are mild, thin-walled, slightly sweet peppers native to East Asia. They are small, slender peppers, usually 5-10cm long, with slightly wrinkled flesh. They have a Scoville rating of 50-200, but about 1 in 10 peppers can be significantly spicy. Shishitos are usually harvested while still green and unripe, but they can be left on the plant to ripen and turn orange and red. Shishitos are popular in Japan and Korea and are often grilled, roasted, sautéed, or fried into tempura.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "row_spacing_cm": 50,
+  "height_cm": 75,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Capsicum",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "slug": "wax-bean",
+  "common_name": "Wax Bean",
+  "botanical_name": "Phaseolus vulgaris",
+  "description": "Wax beans are a type of snap bean with vibrant yellow, patterned, or dark purple skin and a slightly waxier texture. They can be eaten whole with pod and seeds and have a mild and fresh taste. Wax beans come in pole and bush varieties. Like other legumes, wax beans benefit from an inoculant.",
+  "sowing_method": "Direct seed outdoors, thin to 30cm when seedlings are 4cm tall",
+  "spread_cm": 40,
+  "row_spacing_cm": 7,
+  "height_cm": 40,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Phaseolus",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "edible_parts": [
+    "fruits",
+    "seeds"
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "slug": "lupine",
+  "common_name": "Lupine",
+  "botanical_name": "Lupinus",
+  "description": "Lupine is a genus of flowering plants in the legume family, Fabaceae. The genus includes over 200 species, many of which are native to North and South America. Most species are perennial, some are annual, and a few are shrubs. Lupine have soft green to gray leaves and dense groupings of pea-like flowers on erect spikes. The seeds of some species can be eaten, while others are poisonous. It's flowers are frequently purple to blue, but cultivars can be other colors including orange, yellow, and pink. Soak seeds overnight or scarify to aid germination. Established plants do not transplant well due to their long taproot.",
+  "sowing_method": "Direct seed",
+  "row_spacing_cm": 60,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Lupinus",
+  "soil_ph_min": 5.6,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "slug": "cumin",
+  "common_name": "Cumin",
+  "botanical_name": "Cuminum cyminum",
+  "description": "Cumin is a flowering plant in the Apiaceae family grown for it's seeds, which are dried and used in a wide variety of cuisines, traditional medicine, and Ayurveda. Cumin is native to the Eastern Mediterranean and South Asia and related to parsley, caraway, and dill. A number of varieties exist; black and green are the most commonly grown. The plant has a thin, branched stem, slender green leaves, and pink or white flowers that grow in umbels. The flowers attract parasitic wasps and other beneficial insects, making Cumin a good companion plant. The seeds are oblong, ridged, and yellow-brown. The have a high oil content and a nutty, pungent flavor and aroma. Cumin grows best in a dry, moderately cool climate with temperatures between 25-30°C. It needs a hot summer with temperatures near 29°C for 3-4 months. Seeds can be started indoors and transplanted outside after temperatures are regularly above 16°C. To increase germination, soak seeds for 8 hours before sowing. Cumin takes about 120 days to produce seeds. Harvest the seeds by harvesting the entire plant and hanging it to dry after the pods have ripened and turned brown, but before they have split open. Once the plant is completely dry, place it in a bag and shake to collect the seeds.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "spread_cm": 30,
+  "row_spacing_cm": 30,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "family": "Apiaceae",
+  "genus": "Cuminum",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

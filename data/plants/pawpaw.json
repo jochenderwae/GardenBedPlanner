@@ -1,0 +1,40 @@
+{
+  "slug": "pawpaw",
+  "common_name": "Pawpaw",
+  "botanical_name": "Asimina triloba",
+  "description": "The Pawpaw is a large shrub or small understory tree native to eastern North America that is grown for its edible fruit, which is also called pawpaw. The tree has large, symmetrically clustered leaves, cup-shaped flowers that are red-purple or maroon when mature, and fruit that mature from green to yellow-green or brown. Fruit are 5-16 cm long and 1-3 cm wide, with soft, yellow pulp and several black or brown seeds. They are the largest edible fruit indigenous to the United States and have a flavor similar to banana, mango, and cantaloupe. They are often eaten raw, but the seeds are poisonous and some people are allergic to the skin and leaves. Pawpaw need another genetic variety nearby for cross-pollination. The flowers smell like rotting meat to attract blowflies and carrion beetles to pollinate them, but the scent is often too faint and the trees can require hand pollination. Pawpaw fruit spoil soon after being harvested, but can be preserved by dehydrating, freezing, or making into jams and jellies. The trees spread into thickets or clonal patches because they make copies of themselves through their root systems. Trees planted from seed will bear fruit in their 5th year.",
+  "sowing_method": "Root suckers, grafted sapling, or direct seed outdoors",
+  "spread_cm": 600,
+  "row_spacing_cm": 600,
+  "height_cm": 600,
+  "sun_level": "half_sun",
+  "family": "Annonaceae",
+  "genus": "Asimina",
+  "soil_ph_min": 4.7,
+  "soil_ph_max": 7.2,
+  "is_edible": true,
+  "edible_parts": [
+    "fruits"
+  ],
+  "companions": [
+    {
+      "companion_slug": "black-walnut",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

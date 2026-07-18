@@ -1,0 +1,18 @@
+{
+  "slug": "amelanchier",
+  "common_name": "Amelanchier",
+  "botanical_name": "Amelanchier ovalis",
+  "description": "Amelanchier is native to temperate regions of the Northern Hemisphere, growing primarily in early successional habitats. It is most diverse taxonomically in North America, especially in the northeastern United States and adjacent southeastern Canada, and at least one species is native to every U.S. state except Hawaii and to every Canadian province and territory. Two species also occur in Asia, and one in Europe. The taxonomic classification of shadbushes has long perplexed botanists, horticulturalists, and others, as suggested by the range in number of species recognized in the genus, from 6 to 33, in two recent publications.[4][5] A major source of complexity comes from the occurrence of hybridization, polyploidy, and apomixis (asexual seed production), making species difficult to characterize and identify.[6]",
+  "family": "Rosaceae",
+  "genus": "Amelanchier",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

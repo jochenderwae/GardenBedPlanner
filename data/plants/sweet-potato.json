@@ -1,0 +1,54 @@
+{
+  "slug": "sweet-potato",
+  "common_name": "Sweet Potato",
+  "botanical_name": "Ipomoea batatas",
+  "description": "The sweet potato is a large, starchy, tuberous root. The tuber is long and tapered and has yellow, orange, red, brown, purple, or beige skin. It's flesh can be white, red, pink, violet, yellow, orange, or purple. Sweet potato cultivars with white or pale yellow flesh are not as sweet and moist as those with red, pink or orange flesh. The heart-shaped leaves and vines are sometimes eaten as greens when the plants are young, but eating the leaves interferes with the growth of the tuber underground. The sweet potato is not related to the potato or the yam.",
+  "sowing_method": "Slips",
+  "spread_cm": 100,
+  "row_spacing_cm": 35,
+  "height_cm": 25,
+  "sun_level": "full_sun",
+  "family": "Convolvulaceae",
+  "genus": "Ipomoea",
+  "is_edible": true,
+  "edible_parts": [
+    "roots",
+    "tubers"
+  ],
+  "companions": [
+    {
+      "companion_slug": "beet",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "greek-oregano",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "parsnip",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "okra",
+      "relationship": "good",
+      "notes": "Okra and sweet potato are mutually beneficial when planted simultaneously."
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

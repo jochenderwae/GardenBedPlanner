@@ -1,0 +1,39 @@
+{
+  "slug": "clover",
+  "common_name": "Clover",
+  "botanical_name": "Trifolium repens",
+  "description": "Clover, or Trefoil, is a genus of 300 plants in the legume, or Fabaceae family. Clovers are small annual, biennial, or short-lived perennial herbaceous plants. Leaves are usually trifoliate and rarely quatrefoiled. Flowers are dense spikes of small purple, red, yellow, or white flowers. Plants can be upright or low-growing. Clover is frequently grown as animal feed or a cover crop. It is a popular cover crop because it fixes nitrogen, breaks up hard soil with its deep tap root, provides green manure, and prevents soil erosion. Common cover crop species include Red Clover, Crimson Clover, Sweet Clover, and White Clover. More growing information is available in individual species entries.",
+  "sowing_method": "Direct seed using a broadcast method",
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Trifolium",
+  "soil_ph_min": 6.0,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "quandong",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "squash-1",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

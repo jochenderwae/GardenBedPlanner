@@ -1,0 +1,25 @@
+{
+  "slug": "hibiscus",
+  "common_name": "Hibiscus",
+  "botanical_name": "Hibiscus rosa-sinensis",
+  "description": "Hibiscus is a genus of flowering plants in the mallow family (Malvaceae) that contains several hundred species that are native to warm-temperate, subtropical, and tropical regions. The species are divided into three main groups: Tropical, Hardy Perennial, and Hardy Shrub. Growing conditions vary from group to group. All species have large, 4-18cm wide, trumpet-shaped, showy flowers. The genus includes annual and perennial herbaceous plants, woody shrubs, and small trees. Hibiscus is generally grown as an ornamental. A tea can be made from the flowers that has a distinctive tanginess and color.",
+  "sowing_method": "Cuttings or seeds",
+  "sun_level": "full_sun",
+  "family": "Malvaceae",
+  "genus": "Hibiscus",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

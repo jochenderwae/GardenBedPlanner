@@ -1,0 +1,47 @@
+{
+  "slug": "sunflower",
+  "common_name": "Sunflower",
+  "botanical_name": "Helianthus annuus",
+  "description": "Sunflowers are large flowers with bright to deep yellow ray florets surrounding a large circular grouping of disc florets that mature into seeds. Sunflowers are grown for ornamental purposes, cut flowers, or their edible seeds. They can reach heights of 300cm or more.",
+  "sowing_method": "Direct seed outdoors after last frost in groups of 2-3, thin to 1 plant when true leaves appear",
+  "spread_cm": 60,
+  "row_spacing_cm": 30,
+  "height_cm": 240,
+  "sun_level": "full_sun",
+  "family": "Asteraceae",
+  "genus": "Helianthus",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 7.8,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "bad",
+      "notes": "Was grown as a companion for corn (maize) before modern Europeans arrived in the Americas, supposedly increases their production, ants herd aphids onto sunflowers, keeping them off neighboring plants. Works as a trap plant for thrips keeping them off of bell peppers. [ 70 ] Planting near swan plants help sunflowers grow rapidly."
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "aphids"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "slug": "fiddlehead",
+  "common_name": "Fiddlehead",
+  "botanical_name": "Pteridium aquilinum",
+  "description": "Fiddlehead ferns are the coiled fronds of young ferns that are harvested for use as a vegetable before they open into fronds. They are high in antioxidants, omega-3 and omega-6 fatty acids, iron, and fiber. Fiddleheads must be cooked before consumption, some are toxic when raw. Fiddleheads from a variety of ferns are eaten, the most common include the Western Sword Fern (Polystichum munitum), Bracken Fern (Pteridium aquilinum), Ostrich Fern (Matteuccia struthiopteris), Lady Fern (Athyrium filix-femina), Cinnamon Fern (Osmunda cinnamomea), and the Royal Fern (Osmunda regalis). Some species have carcinogenic properties and should be consumed in moderation. Fiddleheads can be grown by transplanting crowns, but many are foraged in the wild. If foraging, follow sustainable harvesting principles and take only half of the plants per each cluster. Repeated over-picking will kill the plant. Fiddleheads spread by underground roots and can become invasive in the garden if not properly managed.",
+  "sowing_method": "Transplant crowns",
+  "spread_cm": 5,
+  "height_cm": 10,
+  "sun_level": "half_sun",
+  "family": "Dennstaedtiaceae",
+  "genus": "Pteridium",
+  "soil_ph_min": 4.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

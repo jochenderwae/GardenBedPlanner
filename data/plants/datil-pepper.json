@@ -1,0 +1,30 @@
+{
+  "slug": "datil-pepper",
+  "common_name": "Datil Pepper",
+  "botanical_name": "Capsicum chinense",
+  "description": "Datil peppers are a variety of the Capsicum chinense species that have a rating of 100,000-300,000 Scoville heat units and a sweeter, more complex, fruitier flavor than habaneros. Peppers ripen from olive green to lime green with a dark purple stripe to brilliant orange yellow and grow to 8cm in length. Like most hot peppers, they need at least 90 days of dry, warm weather. They can be grown in containers in regions with shorter, cooler growing seasons. Datil peppers prefer direct sun in the morning and filtered sun in the afternoon.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "row_spacing_cm": 90,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Capsicum",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "carrot",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

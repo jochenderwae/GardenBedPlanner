@@ -1,0 +1,26 @@
+{
+  "slug": "white-currant",
+  "common_name": "White Currant",
+  "botanical_name": "Ribes rubrum",
+  "description": "White Currants are a group of Red Currant cultivars that produce hanging clusters of champagne-colored, translucent, edible berries that are sweeter and slightly smaller than Red Currants. All currants are perennial, deciduous, woody shrubs that are related to gooseberries and prefer damp, fertile soils. The berries can be eaten raw but are often cooked into sweet and savory dishes, or made into jams, syrups, juice, and wine.",
+  "sowing_method": "Cuttings",
+  "spread_cm": 120,
+  "row_spacing_cm": 150,
+  "height_cm": 150,
+  "sun_level": "half_sun",
+  "family": "Grossulariaceae",
+  "genus": "Ribes",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

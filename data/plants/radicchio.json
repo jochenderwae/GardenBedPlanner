@@ -1,0 +1,30 @@
+{
+  "slug": "radicchio",
+  "common_name": "Radicchio",
+  "botanical_name": "Cichorium intybus",
+  "description": "Radicchio is a leaf vegetable that grows in compact, dense heads. It's leaves have a bitter, spicy taste that complement fresh salads in small doses. When sautéed, grilled, or roasted, it's flavor deepens and it becomes less bitter. It is a cool weather crop.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "spread_cm": 10,
+  "row_spacing_cm": 20,
+  "height_cm": 15,
+  "sun_level": "full_sun",
+  "family": "Asteraceae",
+  "genus": "Cichorium",
+  "soil_ph_min": 6.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "edible_parts": [
+    "flowers",
+    "leaves"
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

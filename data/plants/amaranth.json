@@ -1,0 +1,27 @@
+{
+  "slug": "amaranth",
+  "common_name": "Amaranth",
+  "botanical_name": "Amaranthus cruentus",
+  "description": "Amaranth is a tall annual herb with clusters of dark burgundy flowers grown for it's seeds and leaves. Young greens have a flavor similar to spinach, and seeds are high in protein like Quinoa. Amaranth seeds are often ground into flour and used as a grain alternative. The plant is heat and drought-resistant but lacks a high frost tolerance. Other members of the Amaranthus genus are used as ornamentals. Amaranthus retroflexus (commonly known as Pigweed) was cultivated by Native Americans for it's grain and is currently a widespread weed in North America.",
+  "sowing_method": "Direct seed, thin seedlings to 15cm",
+  "spread_cm": 90,
+  "row_spacing_cm": 20,
+  "height_cm": 300,
+  "sun_level": "full_sun",
+  "family": "Amaranthaceae",
+  "genus": "Amaranthus",
+  "days_to_maturity": 75,
+  "soil_ph_min": 8.0,
+  "soil_ph_max": 9.0,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

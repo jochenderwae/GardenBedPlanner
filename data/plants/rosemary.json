@@ -1,0 +1,82 @@
+{
+  "slug": "rosemary",
+  "common_name": "Rosemary",
+  "botanical_name": "Rosmarinus officinalis",
+  "description": "Rosmarinus officinalis, commonly known as rosemary, is a woody, perennial herb with fragrant, evergreen, needle-like leaves and white, pink, purple, or blue flowers, native to the Mediterranean region. It is a member of the mint family Lamiaceae, which includes many other herbs. The name \"rosemary\" derives from the Latin for \"dew\" (ros) and \"sea\" (marinus), or \"dew of the sea\". The plant is also sometimes called 'anthos', from the ancient Greek word ἄνθος, meaning \"flower\". Rosemary has a fibrous root system.",
+  "sowing_method": "Purchased starter",
+  "spread_cm": 60,
+  "row_spacing_cm": 60,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "water_needs": "~0.25 in/week",
+  "family": "Lamiaceae",
+  "genus": "Rosmarinus",
+  "days_to_maturity": 100,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "arugula",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "lemon-balm",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "olive",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "sage",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "pumpkin",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "cucumber",
+      "relationship": "bad"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "bean beetle"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

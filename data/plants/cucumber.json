@@ -1,0 +1,63 @@
+{
+  "slug": "cucumber",
+  "common_name": "Cucumbers",
+  "botanical_name": "Ecballium elaterium",
+  "row_spacing_cm": 106.7,
+  "sun_level": "full_sun",
+  "water_needs": "~2 in/week",
+  "family": "Cucurbitaceae",
+  "genus": "Ecballium",
+  "days_to_maturity": 65,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "succession_enabled": true,
+  "succession_interval_days": 3,
+  "succession_max_sowings": 3,
+  "companions": [
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "bad"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "cucumber-beetle"
+    },
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "aphid"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

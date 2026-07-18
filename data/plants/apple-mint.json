@@ -1,0 +1,29 @@
+{
+  "slug": "apple-mint",
+  "common_name": "Apple Mint",
+  "botanical_name": "Mentha suaveolens",
+  "description": "Apple Mint is an herbaceous, perennial member of the Mint family that is often grown as a culinary herb, ornamental, or ground cover. The plant has light green wrinkled leaves, white or pinkish flowers, and a fruity, minty flavor. It's leaves can be used as a garnish, in salads, and to make tea or apple mint jelly. It has a worldwide history of medicinal use. Like other members of the Mint family, it spreads by underground roots called rhizomes and can become invasive in a garden. Plant in a container or deadhead before flowers go to seed to prevent this.",
+  "sowing_method": "Direct seed or rhizomes",
+  "row_spacing_cm": 35,
+  "height_cm": 75,
+  "sun_level": "full_sun",
+  "family": "Lamiaceae",
+  "genus": "Mentha",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "slug": "green-bean",
+  "common_name": "Green Bean",
+  "botanical_name": "Phaseolus vulgaris",
+  "description": "Green beans are the unripe, young fruit and protective pods of various cultivars of the common bean (Phaseolus vulgaris). Immature or young pods of the runner bean (Phaseolus coccineus), yardlong bean (Vigna unguiculata subsp. sesquipedalis), and hyacinth bean (Lablab purpureus) are used in a similar way.",
+  "sowing_method": "direct",
+  "spread_cm": 40,
+  "row_spacing_cm": 80,
+  "height_cm": 250,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Phaseolus",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "edible_parts": [
+    "fruits",
+    "seeds"
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

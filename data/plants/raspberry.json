@@ -1,0 +1,60 @@
+{
+  "slug": "raspberry",
+  "common_name": "Raspberry",
+  "botanical_name": "Rubus idaeus",
+  "row_spacing_cm": 76.2,
+  "sun_level": "full_sun",
+  "water_needs": "~1.0 in/week",
+  "family": "Rosaceae",
+  "genus": "Rubus",
+  "days_to_maturity": 365,
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "garlic",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "chives",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "tansy",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "yarrow",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "eggplant",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "blackberry",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

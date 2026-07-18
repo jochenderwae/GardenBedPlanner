@@ -1,0 +1,27 @@
+{
+  "slug": "sweet-basil",
+  "common_name": "Sweet Basil",
+  "botanical_name": "Ocimum americanum",
+  "description": "Sweet basil has dark green leaves and a spicy aroma with a sweet clove-like taste.",
+  "spread_cm": 20,
+  "row_spacing_cm": 20,
+  "height_cm": 40,
+  "sun_level": "full_sun",
+  "family": "Lamiaceae",
+  "genus": "Ocimum",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

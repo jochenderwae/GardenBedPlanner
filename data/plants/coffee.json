@@ -1,0 +1,35 @@
+{
+  "slug": "coffee",
+  "common_name": "Coffee",
+  "botanical_name": "Coffea arabica",
+  "description": "Coffea is a genus of evergreen flowering plants grown primarily for it's seeds, known as coffee beans. Two species dominate coffee production: Coffea arabica, which accounts for 75–80 percent of the world's coffee, and Coffea canephora, which makes up the remaining 20 percent. The coffee tree is a shrub or small tree native to tropical and southern Africa and tropical Asia. It thrives in wet, humid conditions and a temperature range of 18-23°C. It can survive in temperatures as low as 7°C, but will not bear fruit. Outside of this climate, coffee trees can be grown in containers and indoors and pruned to heights of 120cm. The coffee tree has dark green, glossy leaves. It will start to mature and bear fruit 3-4 years after being started from seed. Coffee is self-pollinating. It's white, fragrant flowers last for one month, and the fruit takes 6 months to fully develop and ripen from green to dark red. The fruit are known as \"cherries\" and have a thick, tough skin and sticky pulp that is sweet and tart. They are edible and high in antioxidants. Inside the berries are 1-2 seeds, the coffee beans. The caffeine in coffee's leaves, fruit, and beans is a defense mechanism to prevent insects and animals from eating the plant.",
+  "sowing_method": "Direct seed or seedling",
+  "height_cm": 350,
+  "sun_level": "half_sun",
+  "family": "Rubiaceae",
+  "genus": "Coffea",
+  "soil_ph_min": 4.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "ice-cream-bean",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

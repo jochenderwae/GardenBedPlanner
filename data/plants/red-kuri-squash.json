@@ -1,0 +1,24 @@
+{
+  "slug": "red-kuri-squash",
+  "common_name": "Red Kuri Squash",
+  "botanical_name": "Cucurbita maxima",
+  "description": "Red Kuri is a teardrop-shaped winter squash with thick, smooth, deep-orange to red skin. It's firm flesh has a delicate chestnut-like flavor and is good baked, roasted, or in pies and purees. Like other members of the squash family, it grows on a vine. Each vine produces around three squash.",
+  "sowing_method": "Direct sow inside or outdoors. Transplant seedlings after hardening off.",
+  "spread_cm": 210,
+  "row_spacing_cm": 90,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "family": "Cucurbitaceae",
+  "genus": "Cucurbita",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

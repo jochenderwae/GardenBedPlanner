@@ -1,0 +1,24 @@
+{
+  "slug": "tomatillo",
+  "common_name": "Tomatillo",
+  "botanical_name": "Physalis philadelphica",
+  "description": "The tomatillo is a member of the Nightshade family. The plant bears a resemblance to tomato plants and benefits from pruning and trellising. The fruit of the tomatillo plant is small, round, and green or purple. It is covered in a paper husk that splits open when the fruit is ready for harvest. Tomatillos are native to Mexico and can be eaten raw or cooked. They have a citrusy, tart, and tangy lemon flavor.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "spread_cm": 90,
+  "row_spacing_cm": 60,
+  "height_cm": 100,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Physalis",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

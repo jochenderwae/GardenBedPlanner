@@ -1,0 +1,33 @@
+{
+  "slug": "fuji-apple",
+  "common_name": "Fuji Apple",
+  "botanical_name": "Malus pumila",
+  "description": "Fuji apples are a hybrid developed in Fujisaki, Japan in the late 1930s by crossing Red Delicious and Virginia Ralls Genet apples. The tree produces round, medium to large, thick-skinned fruits that are red with a yellow blush and faint stripes. The apples have a crisp texture and sweetness, somewhat reminiscent of Asian pears. They can be eaten fresh, baked, roasted, or made into cider. Fuji apples have a remarkably long shelf life of nearly 12 months. The trees have a lower winter-chill requirement than most other apple varieties. Blossoms are white to pinkish. Tree requires pollination by a tree of another variety with the same bloom period within 50 feet (Gala, Golden Delicious, Jonathan, Red Delicious, Lodi, Braeburn). Apples are propagated through grafting because seeds do not breed true. Semi-dwarf and standard rootstocks are available.",
+  "sowing_method": "Transplant bare-root plant",
+  "spread_cm": 360,
+  "row_spacing_cm": 900,
+  "height_cm": 360,
+  "sun_level": "full_sun",
+  "family": "Rosaceae",
+  "genus": "Malus",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "chives",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

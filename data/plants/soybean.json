@@ -1,0 +1,41 @@
+{
+  "slug": "soybean",
+  "common_name": "Soybean",
+  "botanical_name": "Glycine max",
+  "description": "Soybeans are a type of legume that can be grown for many uses. Soybeans are one of the major crops grown in the United States. Like all legumes, they benefit from an inoculant at planting. They can be harvested fresh or dried. Soybeans are used to make oil, feed livestock, grown as cover crops, or processed into foods like tofu and tempeh. When harvested in an immature state and boiled whole in their pods, soybeans are known as Edamame.",
+  "sowing_method": "Direct seed outdoors after last frost, thin to 30cm when seedlings are 4cm high",
+  "spread_cm": 55,
+  "row_spacing_cm": 30,
+  "height_cm": 65,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Glycine",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 7.8,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "corn",
+      "relationship": "good",
+      "notes": "A mixture of corn, mungbean, and sunflower was found to rid soybeans of aphids. [ 48 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

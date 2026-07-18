@@ -1,0 +1,30 @@
+{
+  "slug": "passion-fruit",
+  "common_name": "Passion Fruit",
+  "botanical_name": "Passiflora edulis",
+  "description": "Passionfruit is a perennial vine species of passion flower native to South America. Vines have large, three-lobed, dark green, slightly glossy leaves and a single, large, showy, fragrant flower on each node of new growth. Flowers are self-pollinating or pollinated by carpenter bees, and mature into a single, round to oblong, berry filled with pulpy juice and around 250 black seeds. The pulp is sweet, slightly acidic, and guava-like. There are two primary varieties of Passionfruit: purple and yellow. Yellow varieties are more tropical, produce slightly bigger and more acidic fruit, and are more frost-tender. Purple varieties are sweeter and slightly more cold-hardy. Passionfruit grows in tropical and subtropical regions and likes full sun in the morning and afternoon shade. Some purple cultivars can tolerate light frosts down to -6.6° C. Passionfruit can be grown indoors in containers in cooler regions. All varieties live for 5-7 years, need wind protection, and require trellising. Prune plants two years and older to encourage flower production and make harvest manageable. Passionfruit is propagated by seed, cuttings, or grafting. The seeds of hybrid varieties will not grow true to type. If starting from seed, plant seeds soon after removing them from the fruit for better germination. Seeds can be sown indoors and transplanted outside when seedlings are 25cm tall. When ripe, fruit will turn from green to deep purple or yellow and fall to the ground in a few days. Harvest fruit from the vine when it changes color or gather it from the ground. Fruit are sweetest when slightly shriveled.",
+  "sowing_method": "Direct seed, cuttings, grafting",
+  "row_spacing_cm": 300,
+  "height_cm": 450,
+  "sun_level": "full_sun",
+  "family": "Passifloraceae",
+  "genus": "Passiflora",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "beet",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

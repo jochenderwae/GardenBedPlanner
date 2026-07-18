@@ -1,0 +1,30 @@
+{
+  "slug": "pineberry",
+  "common_name": "Pineberry",
+  "botanical_name": "Aristotelia serrata",
+  "description": "A pineberry is smaller than a common strawberry, measuring between 15 to 23 mm (0.6 to 0.9 in). When ripe, it is almost completely white, but with red \"seeds\" (achenes). The plant is disease resistant, but is highly priced, although not very profitable due to small-scale farming, small berry size and low yield. Pineberries are available in the spring and summer. Pineberries come from breeding strawberry stocks from Chile and Virginia.The first commercial cultivation occurred in 2010 in the Netherlands and Belgium.",
+  "sowing_method": "Transplant bare root plants/plugs or divide runners",
+  "spread_cm": 30,
+  "height_cm": 3,
+  "sun_level": "full_sun",
+  "family": "Elaeocarpaceae",
+  "genus": "Aristotelia",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "strawberry",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "slug": "kohlrabi",
+  "common_name": "Kohlrabi",
+  "botanical_name": "Brassica oleracea var. gongylodes",
+  "description": "Kohlrabi is a low, stout cultivar of cabbage that has a swollen, almost spherical stem with leaves sprouting off the top. The stem can be light green, white, or purple. Both the stem and leaves are edible. The stem's taste and texture is similar to a broccoli stem or cabbage heart, but milder and sweeter. Younger stems can be as crisp and juicy as apples, but much less sweet. Older stems tend to be woody. Like other members of the Brassica family, kohlrabi prefers mild, cool weather.",
+  "sowing_method": "Direct seed, thin to 10cm apart when seedlings are 2-5cm tall",
+  "spread_cm": 30,
+  "row_spacing_cm": 15.2,
+  "height_cm": 20,
+  "sun_level": "full_sun",
+  "water_needs": "~1.0 in/week",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "days_to_maturity": 55,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 2,
+  "succession_max_sowings": 4,
+  "companions": [
+    {
+      "companion_slug": "german-chamomile",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beets",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cucumber",
+      "relationship": "good",
+      "notes": "See Brassicas entry for more info"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "pepper-bell",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

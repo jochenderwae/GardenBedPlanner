@@ -1,0 +1,27 @@
+{
+  "slug": "mandarin",
+  "common_name": "Mandarin",
+  "botanical_name": "Citrus reticulata",
+  "description": "The Mandarin is a small citrus tree with an open, spreading crown, glossy green leaves, thorns, and fruit that look like smaller, slightly flattened oranges. Mandarins are native to China and northeastern India and are one of the five original types of citrus (the other four are pomelo, citron, kumquat, and papeda) that all other citrus are descended from. Mandarins are distinct in being the only sweet fruit in this original group of citrus. They have a sweeter, stronger taste than oranges and a thin skin that peels easily. Tangerines, clementines, and satsumas are all types of Mandarins. Mandarins grow best in tropical and subtropical areas, although they can also be grown in containers and brought inside in the winter in cooler regions. They are one of the more cold hardy citrus varieties, but are damaged by temperatures below -3.8° C. For the first two years after transplanting, pinch off any fruit after the blooms have died to focus the tree's energy on establishing roots and vegetation. Trees will bear harvestable fruit in their third year. Mandarins are self-pollinating. Cross-pollination from nearby citrus trees will produce seedier fruit.",
+  "sowing_method": "Transplant grafted sapling or direct seed indoors",
+  "spread_cm": 350,
+  "height_cm": 350,
+  "sun_level": "full_sun",
+  "companions": [
+    {
+      "companion_slug": "lemon-balm-1",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

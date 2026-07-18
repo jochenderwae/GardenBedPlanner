@@ -1,0 +1,80 @@
+{
+  "slug": "parsley",
+  "common_name": "Parsley",
+  "botanical_name": "Petroselinum crispum",
+  "sowing_method": "flat",
+  "spread_cm": 10,
+  "row_spacing_cm": 22.9,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Apiaceae",
+  "genus": "Petroselinum",
+  "days_to_maturity": 75,
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "asparagus",
+      "relationship": "good",
+      "notes": "Sacrificially attracts insects that feed on tomatoes"
+    },
+    {
+      "companion_slug": "rose",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "bad",
+      "notes": "Sacrificially attracts insects that feed on tomatoes"
+    },
+    {
+      "companion_slug": "apple",
+      "relationship": "good",
+      "notes": "Sacrificially attracts insects that feed on tomatoes"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "swallowtail butterflies"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "wasps"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "flies"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "white-carrot",
+  "common_name": "White Carrot",
+  "botanical_name": "Daucus carota var. sativus",
+  "description": "White carrots are a carrot cultivar that have pale yellow to white skin. They sometimes have a lower yield than orange carrots. They have a mild flavor that is less earthy than other carrot varieties. They are grown and cooked the same way as standard orange carrots.",
+  "sowing_method": "Direct seed outdoors, thin to 3cm apart when seedlings are 7cm high",
+  "spread_cm": 8,
+  "row_spacing_cm": 3,
+  "height_cm": 15,
+  "sun_level": "full_sun",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    }
+  ]
+}

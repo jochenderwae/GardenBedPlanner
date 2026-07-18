@@ -1,0 +1,22 @@
+{
+  "slug": "snow-man-carrot",
+  "common_name": "Snow Man Carrot",
+  "botanical_name": "Carotte Hybride",
+  "spread_cm": 5,
+  "row_spacing_cm": 5,
+  "height_cm": 10,
+  "sun_level": "half_sun",
+  "companions": [
+    {
+      "companion_slug": "carrot",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    }
+  ]
+}

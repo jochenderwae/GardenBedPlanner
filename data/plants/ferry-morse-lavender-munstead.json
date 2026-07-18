@@ -1,0 +1,35 @@
+{
+  "slug": "ferry-morse-lavender-munstead",
+  "common_name": "Ferry Morse Lavender Munstead",
+  "botanical_name": "Lavandula angustifolia",
+  "description": "Lavender has an easily recognizable scent and purple to blue flowers that grow in whorls. Leaf shape varies across the genus. It is a natural repellant of moths, slugs, and deer, and a great companion for any plant that suffers from these pests (such as kale, cabbage, and other members of the Brassicaceae family).",
+  "sowing_method": "Direct seed indoors",
+  "spread_cm": 30,
+  "row_spacing_cm": 30,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "family": "Lamiaceae",
+  "genus": "Lavandula",
+  "companions": [
+    {
+      "companion_slug": "kiwifruit",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "purple-cauliflower",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -80,7 +80,16 @@ def get_stage(slug: str) -> str | None:
 
 
 def set_stage(slug: str, stage: str) -> None:
+    """Monotonic: never regresses a plant to an earlier stage than it's
+    already reached. Without this, calling build_master_list() again
+    (e.g. for standalone debugging/inspection, as happened once for
+    real) silently resets every plant back to "master", discarding
+    already-recorded "enriched"/"exported" progress even though the
+    actual output files on disk are untouched - a resumability footgun
+    worth guarding against unconditionally, not just at call sites."""
     assert stage in STAGES, f"unknown stage {stage!r}"
+    if stage_reached(slug, stage):
+        return
     with _connect() as conn:
         conn.execute(
             "INSERT INTO plant_progress (slug, stage, updated_at) VALUES (?, ?, ?) "

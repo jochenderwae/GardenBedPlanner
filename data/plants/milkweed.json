@@ -1,0 +1,29 @@
+{
+  "slug": "milkweed",
+  "common_name": "Milkweed",
+  "botanical_name": "Asclepias syriaca",
+  "description": "Milkweed is a genus of 140 species of herbaceous perennial plants that are named for their milky sap. Milkweed nectar is an important food source for the endangered Monarch butterfly and it's larvae, native bees, hummingbirds, moths, and wasps. The plant has a single, thick, upright stem with oblong leaves that turn reddish as the plant matures. Flowers can be pink, purple, or orange. If starting from seed indoors, cold stratify the seeds for 1 month before direct seeding indoors in peat pots. Seeds that are not cold stratified can take months to germinate inside. Seedings should be transplanted outside in the peat pots after the last spring frost, but before they are over 7.5cm tall and have developed a taproot. Another option is to direct seed outdoors in late autumn for spring germination. Individual species have varying climactic and soil requirements.",
+  "sowing_method": "Direct seed. If planting indoors, use peat pots and harden off before transplanting seedlings outside.",
+  "row_spacing_cm": 60,
+  "height_cm": 150,
+  "sun_level": "full_sun",
+  "family": "Apocynaceae",
+  "genus": "Asclepias",
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

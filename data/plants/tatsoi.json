@@ -1,0 +1,33 @@
+{
+  "slug": "tatsoi",
+  "common_name": "Tatsoi",
+  "botanical_name": "Brassica rapa var. narinosa",
+  "description": "Tatsoi is an Asian mustard green that grows rosettes of thick, rounded leaves that have a mild mustard flavor. Tatsoi does best in cooler weather, so plant in the spring or fall. Leaves can be harvested individually or the whole plant can be cut. Harvest at the baby or adult stage. Leaves become more bitter once plants flower. Tatsoi is added to salad mixes and stir fry.",
+  "sowing_method": "Direct seed outdoors after last frost, 15 seeds per 30cm",
+  "spread_cm": 30,
+  "row_spacing_cm": 2,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "belgium-endive",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

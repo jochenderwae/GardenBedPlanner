@@ -1,0 +1,29 @@
+{
+  "slug": "mulberry",
+  "common_name": "Mulberry",
+  "botanical_name": "Morus nigra",
+  "description": "Mulberries are a genus of 10-16 deciduous flowering trees in the Moraceae family, which also includes figs, breadfruit, and sassafras. The trees are native to temperate regions around the world and divided into three main types: Black, Red, and White. They produce long clusters of multiple fruit, about 2-3cm long. Fruit are white, green, or pale yellow when immature. With the exception of White Mulberries, fruit mature from pink to red to dark purple or black. Fruit have a deep, sweet flavor and are eaten fresh, made into jams or wine, and baked into desserts. Drape trees with netting to ensure a harvest, since birds love the fruit. Mulberry leaves are the food source of the silkworm, whose cocoon is used to make silk. The White Mulberry has become an invasive exotic in North America. More growing information is available in individual species entries.",
+  "sowing_method": "Cuttings, transplant grafted tree",
+  "row_spacing_cm": 450,
+  "height_cm": 1500,
+  "sun_level": "full_sun",
+  "family": "Moraceae",
+  "genus": "Morus",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

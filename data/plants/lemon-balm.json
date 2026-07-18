@@ -1,0 +1,48 @@
+{
+  "slug": "lemon-balm",
+  "common_name": "Lemon Balm",
+  "botanical_name": "Melissa officinalis",
+  "description": "Lemon Balm is a perennial herb in the mint family that flowers during the summer and gives off a strong lemon scent. In hot climates, a little shade can be beneficial, helping the plant to produce larger and more flavorful leaves. Lemon Balm is used in teas, salads, as an ornamental, and in aromatherapy. Like mint, Lemon Balm can aggressively spread throughout the garden - planting it in a container can keep this in check.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off.",
+  "spread_cm": 40,
+  "row_spacing_cm": 30,
+  "height_cm": 100,
+  "sun_level": "half_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Lamiaceae",
+  "genus": "Melissa",
+  "days_to_maturity": 70,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "squash-summer",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "melon",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

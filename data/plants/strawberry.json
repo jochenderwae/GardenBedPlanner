@@ -1,0 +1,68 @@
+{
+  "slug": "strawberry",
+  "common_name": "Strawberry",
+  "botanical_name": "Fragaria × ananassa",
+  "description": "Strawberries are a hybrid species of the genus Fragaria that produce sweet, bright red fruits. There are three main types of strawberries: 1) summer-fruiting: produce a single, large crop of fruit the year after planting. To grow, transplant plugs or crowns in early spring in rows spaced at least 120cm apart. Pinch off all flowers the first season and train the plant's runners, pressing them into the soil 15-22cm apart from the mother plant. Mulch with straw or pine needles in the fall when the plants have died back. When the plants start to grow back in the spring, move the mulch aside. After harvest the second season, set a lawnmower to about 10cm high and mow, being sure not to damage crowns. The other two types are 2) Ever-bearing and 3) Day Neutral, both of which send out less runners and bear several crops of smaller fruit throughout the season. These two types can be grown using raised beds about 20cm high and 60cm wide. Transplant crowns or plugs in staggered double rows, about 30cm apart. Remove runners and flowers until July of the first year to give the roots time to develop, and then allow plants to produce fruit. All types of strawberries begin to produce fewer and less sweet fruit once they are two years or older. Because strawberries are a hybrid, seeds will not breed true. Strawberries are predominantly propagated using bare root plugs or crowns or dividing runners. Make sure not to bury the crown when transplanting plugs.",
+  "sowing_method": "Transplant bare root plants/plugs or divide runners",
+  "spread_cm": 30,
+  "row_spacing_cm": 38.1,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Rosaceae",
+  "genus": "Fragaria",
+  "days_to_maturity": 60,
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "spinach",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "borage",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "thyme",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "broccoli",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "cauliflower",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

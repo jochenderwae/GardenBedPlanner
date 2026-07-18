@@ -1,0 +1,138 @@
+{
+  "slug": "garlic",
+  "common_name": "Garlic",
+  "botanical_name": "Allium sativum",
+  "description": "The garlic plant has a bulbous root separated into cloves and a tall stalk with branching leaves. The plant has two main subspecies: hard and soft neck. The choice between which subspecies to grow depends on latitude and at what point in the growing season you will be planting the crop: garlic can be day-length sensitive. Hard-neck garlic is usually grown in cooler climates and creates larger cloves. Soft-neck garlic is grown in warmer climates and produces smaller, tightly-packed cloves. Be sure to trim garlic scapes before they flower - this will focus the plant's energy into bulb growth, resulting in larger cloves and bulbs. Scapes have a fresh, light garlic flavor. They are delicious raw or cooked, and make a great pesto.",
+  "sowing_method": "Direct seed large cloves",
+  "spread_cm": 10,
+  "row_spacing_cm": 17.8,
+  "height_cm": 120,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Amaryllidaceae",
+  "genus": "Allium",
+  "days_to_maturity": 240,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "edible_parts": [
+    "stem"
+  ],
+  "companions": [
+    {
+      "companion_slug": "green-danjou-pear",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "peperoncini",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "yellow-cauliflower",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "zucchini",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beets",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "kale",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "spinach",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "tarragon",
+      "relationship": "good",
+      "notes": "See Alliums entry for more info. Peas and garlic when planted closely together suppress each other's growth; however the profit over land area used is higher. [ 44 ] Tarragon makes garlic grow rapidly."
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "aphids"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] japanese beetles"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] mites"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] cabbage looper"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "ants"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "cabbage maggot"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "fruit borers"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "red spider mites"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "slugs [ 89 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

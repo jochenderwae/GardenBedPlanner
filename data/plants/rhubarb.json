@@ -1,0 +1,35 @@
+{
+  "slug": "rhubarb",
+  "common_name": "Rhubarb",
+  "botanical_name": "Rheum rhabarbarum",
+  "description": "Rhubarb is a perennial herbaceous plant in USDA Zones 4-8. It cannot be harvested from in the first year of planting. It has large green leaves that are poisonous and thick, red-green stalks that are edible raw or cooked. It's stalks have a strong, tart taste and are commonly used in strawberry-rhubarb pies.",
+  "sowing_method": "Transplant crowns or direct seed indoors",
+  "spread_cm": 75,
+  "row_spacing_cm": 92,
+  "height_cm": 75,
+  "sun_level": "full_sun",
+  "family": "Polygonaceae",
+  "genus": "Rheum",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "horseradish-2",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

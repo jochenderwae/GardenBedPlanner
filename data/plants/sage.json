@@ -1,0 +1,107 @@
+{
+  "slug": "sage",
+  "common_name": "Sage",
+  "botanical_name": "Salvia officinalis",
+  "description": "Sage is an evergreen shrub with woody stems, soft green-gray leaves, and blue to purplish flowers. It is in the Mint family (Lamiaceae), and is perennial in Zones 4-8. It can be used fresh or dried, and has culinary and medicinal uses.",
+  "sowing_method": "Direct seed indoors, harden seedlings off before transplanting outside.",
+  "spread_cm": 50,
+  "row_spacing_cm": 30,
+  "height_cm": 70,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Lamiaceae",
+  "genus": "Salvia",
+  "days_to_maturity": 75,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "bok-choy",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "rosemary",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "cucumber",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "basil",
+      "relationship": "bad"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "honeybees"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "cabbage butterfly"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "cabbage flies"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "carrot fly"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "black flea beetle"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "cabbage looper"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "cabbage maggot"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "repels many bean parasites"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

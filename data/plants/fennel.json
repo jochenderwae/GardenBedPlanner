@@ -1,0 +1,86 @@
+{
+  "slug": "fennel",
+  "common_name": "Fennel",
+  "botanical_name": "Foeniculum vulgare",
+  "description": "Fennel is a flowering plant species with yellow flowers and feathery leaves. It is grown primarily for its bulbous white base and green leaf stalks, which have a mild, fresh licorice flavor. It's base and stalks are delicious roasted, grilled, or eaten fresh. Do not let fennel go to seed: it can become invasive.",
+  "sowing_method": "Direct seed outdoors, or sow indoors and harden off before transplanting outside",
+  "spread_cm": 60,
+  "row_spacing_cm": 38.1,
+  "height_cm": 60,
+  "sun_level": "full_sun",
+  "water_needs": "~0.75 in/week",
+  "family": "Apiaceae",
+  "genus": "Foeniculum",
+  "days_to_maturity": 90,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "dill",
+      "relationship": "bad",
+      "mechanism": "cross-pollination",
+      "notes": "Fennel and dill will readily cross-pollinate, resulting in strangely flavored, unpredictable seeds for both plants."
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad",
+      "mechanism": "allelopathy",
+      "notes": "Fennel releases chemical compounds from its roots that stunt the growth of many garden vegetables, particularly tomatoes."
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "kohlrabi",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "cilantro",
+      "relationship": "bad"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "ladybugs"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "syrphid fly"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "[ 65 ] tachinid fly"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "aphids [ 65 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "slug": "broccoli",
+  "common_name": "Broccoli",
+  "botanical_name": "Brassica oleracea",
+  "description": "Broccoli has large flower heads known as \"crowns\" that are green to blue-green in color, grouped tightly together atop a thick stem, and surrounded by leaves. Broccoli resembles cauliflower, a different cultivar in its species. It thrives in cool weather.",
+  "sowing_method": "Sow seeds indoors and transplant outside",
+  "spread_cm": 60,
+  "row_spacing_cm": 40,
+  "height_cm": 75,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "days_to_maturity": 70,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 2,
+  "succession_max_sowings": 3,
+  "companions": [
+    {
+      "companion_slug": "carrot-scarlet-nantes",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beets",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "dill",
+      "relationship": "good",
+      "notes": "Broccoli as a main crop intercropped with lettuce was shown to be more profitable than either crop alone. Turnip acts as a trap crop . [ 32 ] See brassicas entry for more info"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "cabbage-worm"
+    },
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "aphid"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

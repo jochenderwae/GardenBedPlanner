@@ -1,0 +1,35 @@
+{
+  "slug": "yam",
+  "common_name": "Yam",
+  "botanical_name": "Dioscorea preussii",
+  "description": "Yams are a genus of over 870 species of perennial, herbaceous vines that form edible starchy tubers. Yams are native to Asia and Africa. They are often confused with sweet potatoes (Ipomoea batata), which are in a separate, unrelated family. Yams are a monocot related to lilies and grasses; sweet potatoes are a dicot related to Morning glories. Yams are starchier and drier than sweet potatoes and often have rougher, hairier skin. Yams can be the size of a regular potato or up 150 cm long. Their flesh can be white, purple, or reddish. They are native to subtropical and tropical regions and prefer warm, humid climates.",
+  "sowing_method": "Direct seed tuber pieces",
+  "spread_cm": 1500,
+  "row_spacing_cm": 75,
+  "height_cm": 15,
+  "sun_level": "full_sun",
+  "family": "Dioscoreaceae",
+  "genus": "Dioscorea",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "banana",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

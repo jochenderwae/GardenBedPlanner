@@ -1,0 +1,23 @@
+{
+  "slug": "lambs-lettuce",
+  "common_name": "Lamb's Lettuce",
+  "botanical_name": "Valerianella locusta",
+  "description": "Lamb's Lettuce, or Mâche, is a small, cool-season, annual plant that is eaten as a salad green. Its oval, dark green glossy leaves grow in tight rosettes and have a nutty flavor and soft texture. They can be eaten alone or added to salad mixes. Lamb's lettuce seeds go dormant and cannot germinate at temperatures above 21°C. It will bolt in warm weather. The plant is frost-tolerant and is a common weed throughout Europe, northern Africa, North America, and western Asia. Once the plant is 5cm tall, it can be harvested by cutting the base of the rosette. Leaves have the best flavor if harvested before flowers appear. Like other wild greens, it is high in nutrients, containing three times as much Vitamin C as lettuce, as well as beta-carotene, B6, iron, and potassium.",
+  "sowing_method": "Direct seed outdoors, thin plants to 5cm",
+  "spread_cm": 15,
+  "row_spacing_cm": 20,
+  "height_cm": 15,
+  "sun_level": "full_sun",
+  "family": "Caprifoliaceae",
+  "genus": "Valeriana",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

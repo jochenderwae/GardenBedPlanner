@@ -1,0 +1,108 @@
+{
+  "slug": "basil",
+  "common_name": "Basil",
+  "botanical_name": "Ocimum basilicum",
+  "spread_cm": 45,
+  "row_spacing_cm": 45,
+  "height_cm": 60,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Lamiaceae",
+  "genus": "Ocimum",
+  "days_to_maturity": 60,
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "succession_enabled": true,
+  "succession_interval_days": 3,
+  "succession_max_sowings": 3,
+  "companions": [
+    {
+      "companion_slug": "tomato",
+      "relationship": "good",
+      "mechanism": "flavor-enhancement",
+      "notes": "Thrives in the same soil and light conditions, creating a mutually beneficial microclimate at the base of the tomato plant."
+    },
+    {
+      "companion_slug": "pepper-bell",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "pepper-hot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "sage",
+      "relationship": "bad",
+      "mechanism": "environmental-conflict",
+      "notes": "Basil requires rich, consistently moist soil, whereas sage prefers poorer, drier, well-draining conditions."
+    },
+    {
+      "companion_slug": "chamomile",
+      "relationship": "good",
+      "notes": "Is said to make tomatoes taste better, chamomile and anise are supposed to increase the essential oils in many herbs like basil"
+    },
+    {
+      "companion_slug": "anise",
+      "relationship": "good",
+      "notes": "Is said to make tomatoes taste better, chamomile and anise are supposed to increase the essential oils in many herbs like basil"
+    },
+    {
+      "companion_slug": "thyme",
+      "relationship": "bad",
+      "notes": "Is said to make tomatoes taste better, chamomile and anise are supposed to increase the essential oils in many herbs like basil"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "slugs"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "snails. [ 39 ] butterflies"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "asparagus beetle"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "hornworms"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] mosquitoes"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] thrips"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "flies [ 6 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

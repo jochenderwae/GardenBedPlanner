@@ -1,0 +1,35 @@
+{
+  "slug": "tiny-tim-tomato",
+  "common_name": "Tiny Tim Tomato",
+  "botanical_name": "Solanum lycopersicum",
+  "description": "The tomato is the fruit of the tomato plant, a member of the Nightshade family (Solanaceae). The fruit grows on a small compact bush.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "spread_cm": 45,
+  "row_spacing_cm": 45,
+  "height_cm": 45,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "min_temperature_c": 15,
+  "max_temperature_c": 35,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "carrot",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

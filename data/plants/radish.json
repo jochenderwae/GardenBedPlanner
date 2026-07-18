@@ -1,0 +1,53 @@
+{
+  "slug": "radish",
+  "common_name": "Radish",
+  "botanical_name": "Raphanus sativus",
+  "description": "Radishes are fast-growing cool season root vegetables in the Brassica family. Their taproots come in variety of shapes, sizes, and colors and have a sharp, spicy taste. They are usually eaten raw and added to salads. Radishes need cool weather and moist soil - they do not do well in hot, dry environments. More growing information is available in individual species entries.",
+  "sowing_method": "Direct seed outdoors",
+  "spread_cm": 8,
+  "row_spacing_cm": 10,
+  "height_cm": 15,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Raphanus",
+  "companions": [
+    {
+      "companion_slug": "chervil",
+      "relationship": "good",
+      "notes": "Radishes can be used as a trap crop against flea beetles. Radishes grown with lettuce taste better."
+    },
+    {
+      "companion_slug": "grapes",
+      "relationship": "bad",
+      "notes": "Radishes can be used as a trap crop against flea beetles. Radishes grown with lettuce taste better."
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "flea beetles"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "cucumber beetles [ 6 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

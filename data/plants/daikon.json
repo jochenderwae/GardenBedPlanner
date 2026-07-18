@@ -1,0 +1,49 @@
+{
+  "slug": "daikon",
+  "common_name": "Daikon",
+  "botanical_name": "Raphanus sativus var. longipinnatus",
+  "description": "Daikon (Raphanus sativus var. longipinnatus) is a mild-flavored, large, long, white radish native to Southeast and continental East Asia, thriving in cool weather. It can grow up to 50cm long and 10cm in diameter, with smaller varieties preferred for soups and stews, while larger ones are versatile for raw consumption, salads, and pickling. Daikon sprouts add a bitter crunch to dishes. As a valuable tillage radish and winter cover crop, its roots aerate the soil, break up hardpan, and absorb nutrients, benefiting subsequent crops.",
+  "sowing_method": "Direct seed outdoors",
+  "spread_cm": 20,
+  "row_spacing_cm": 10,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "days_to_maturity": 25,
+  "succession_enabled": true,
+  "succession_interval_days": 1,
+  "succession_max_sowings": 8,
+  "companions": [
+    {
+      "companion_slug": "burpee-nasturtiums-empress-of-india",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "spinach",
+      "relationship": "good"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    }
+  ]
+}

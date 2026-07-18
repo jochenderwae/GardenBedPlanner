@@ -1,0 +1,24 @@
+{
+  "slug": "bay-laurel",
+  "common_name": "Bay Laurel",
+  "botanical_name": "Laurus nobilis",
+  "description": "Bay Laurel is an aromatic evergreen tree or large shrub native to the Mediterranean. It can be grown in soil or in containers. It has glossy dark green leaves, yellow flowers, and dark purplish-black fruits. The plant's leaves are used as seasoning in cooking and are best harvested in the morning when the fragrance oils are strongest. Bay Laurel can also be grown as an ornamental or topiary. Plant trees in an area where they are protected from wind to prevent cold winter winds from damaging foliage.",
+  "sowing_method": "Young tree or cutting",
+  "height_cm": 7000,
+  "sun_level": "half_sun",
+  "family": "Lauraceae",
+  "genus": "Laurus",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

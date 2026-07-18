@@ -1,0 +1,30 @@
+{
+  "slug": "red-currant",
+  "common_name": "Red Currant",
+  "botanical_name": "Ribes rubrum",
+  "description": "Red Currants are perennial, deciduous woody shrubs that produce hanging clusters of bright red, translucent edible berries that are 8-12 mm in diameter. Red Currants are more tangy than Black Currants. All currants are related to gooseberries and prefer damp, fertile soils. The berries can be eaten raw, but are often cooked into sweet and savory dishes, or made into jams, syrups, juice, and wine.",
+  "sowing_method": "Cuttings",
+  "spread_cm": 120,
+  "row_spacing_cm": 150,
+  "height_cm": 150,
+  "sun_level": "half_sun",
+  "family": "Grossulariaceae",
+  "genus": "Ribes",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

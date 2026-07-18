@@ -1,0 +1,26 @@
+{
+  "slug": "collard-greens",
+  "common_name": "Collard Greens",
+  "botanical_name": "Brassica oleracea",
+  "description": "Collards are a loose-leafed cultivar of Brassica oleracea. They are members of the Acephala Group of the species, which includes kale and spring greens. Collards have big, thick, slightly bitter leaves that are high in vitamins and minerals. They are a staple of Southern Cuisine and can be eaten boiled, sautéed, baked, or raw.",
+  "sowing_method": "Direct seed indoors or out. Transplant seedlings outside after hardening off.",
+  "spread_cm": 30,
+  "row_spacing_cm": 15,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

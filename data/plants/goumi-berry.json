@@ -1,0 +1,35 @@
+{
+  "slug": "goumi-berry",
+  "common_name": "Goumi Berry",
+  "botanical_name": "Elaeagnus multiflora",
+  "description": "The Goumi, or Gumi, Berry is the fruit of a small to medium multi-stemmed shrub native to eastern Asia. Fruit are 1cm long, round to oval in shape, and have bright red skin flecked with gold or silvery dots. Each fruit has a single seed which is edible but fibrous and not particularly tasty. The flesh is juicy, sweet, and mildly astringent. Berries are high in Vitamin A and E, flavonoids, lycopene, and minerals, and have a history of medicinal use in Asia. They are eaten fresh, baked, or preserved into jams. Depending on the species and variety, Goumi trees require 50-450 chilling hours in the winter. Plants are hardy to -20° C and roots are hardy to -30° C. Goumi are an actinorhizal nitrogen fixing plant and benefit from being inoculated with actinobacteria from the Frankia genus. Their nitrogen fixing properties allow them to thrive in poorer soils than other plants. They can also be used as companion plants in orchards to add nitrogen to the soil. Goumi are usually self-sterile and require 2 other species nearby for cross-pollination. Trees are propagated through cuttings or from seed and will bear fruit in 3-10 years (3-4 years for those started from cuttings). If starting from seed, warm stratify for 4 weeks and cold stratify for 12 weeks to improve germination rates. Even with stratification, seeds can take months to germinate.",
+  "sowing_method": "Cuttings, direct seed indoors, or transplant young shrub.",
+  "spread_cm": 250,
+  "height_cm": 250,
+  "sun_level": "full_sun",
+  "family": "Elaeagnaceae",
+  "genus": "Elaeagnus",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "peach",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "pear",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

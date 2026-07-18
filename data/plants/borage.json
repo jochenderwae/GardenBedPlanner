@@ -1,0 +1,87 @@
+{
+  "slug": "borage",
+  "common_name": "Borage",
+  "botanical_name": "Borago officinalis",
+  "description": "Borage, or Starflower, is an annual flowering herb with blue, pink, or white flowers and bristly stems and leaves. It is a popular companion plant, particularly for tomatoes, as it is thought to confuse mother moths of tomato hornworms looking for a place to lay their eggs. It also attracts many pollinators. It's edible leaves can be used as a fresh vegetable or dried herb. When fresh, it has a cucumber-like taste and is used in salads, lemonade, or as a garnish. It's flowers have a sweet honey-like taste and can be used to decorate desserts or cocktails or candied. It is also cultivated for the borage seed oil extracted from it's seeds.",
+  "sowing_method": "Direct seed outdoors, thin to 45cm apart when seedlings are 4cm tall",
+  "spread_cm": 50,
+  "row_spacing_cm": 45.7,
+  "height_cm": 100,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Boraginaceae",
+  "genus": "Borago",
+  "days_to_maturity": 55,
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 4,
+  "succession_max_sowings": 2,
+  "edible_parts": [
+    "leaves"
+  ],
+  "companions": [
+    {
+      "companion_slug": "uf-micro-tom-tomato",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "good",
+      "mechanism": "pest-deterrent",
+      "notes": "Helps repel tomato hornworms and attracts beneficial predatory wasps that manage garden pests."
+    },
+    {
+      "companion_slug": "strawberry",
+      "relationship": "good",
+      "mechanism": "pollinator-attractor",
+      "notes": "Borage is a powerhouse for attracting bees, which greatly increases strawberry pollination rates and overall yield."
+    },
+    {
+      "companion_slug": "squash-summer",
+      "relationship": "good"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "predatory insects"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "honeybees"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "many pests"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "tomato worm [ 6 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

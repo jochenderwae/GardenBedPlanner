@@ -1,0 +1,23 @@
+{
+  "slug": "black-beauty-eggplant",
+  "common_name": "Black Beauty Eggplant",
+  "botanical_name": "Solanum melongena",
+  "description": "Rich, deep purplish black fruits can grow to enormous size. Tender & tasty at all stages. http://burpee.com/more/60324",
+  "sowing_method": "Start indoors in a warm, well-lighted area 8-10 weeks before last frost. Sow seeds in a seed starting formula in individual containers. Sow 1cm deep, firm lightly and keep evenly moist. Seedlings emerge 10-21 days.",
+  "spread_cm": 61,
+  "row_spacing_cm": 61,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

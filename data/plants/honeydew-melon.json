@@ -1,0 +1,30 @@
+{
+  "slug": "honeydew-melon",
+  "common_name": "Honeydew melon",
+  "botanical_name": "Cucumis melo",
+  "description": "Honeydew melons have a round to slightly oval shape. Like other melons, they grow on vines. Their sweet, tender flesh is pale green or orange in color, and the smooth peel ranges from greenish to yellow.",
+  "sowing_method": "Direct seed",
+  "spread_cm": 150,
+  "row_spacing_cm": 90,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "family": "Cucurbitaceae",
+  "genus": "Cucumis",
+  "companions": [
+    {
+      "companion_slug": "morning-glory",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "slug": "straggly-gooseberry",
+  "common_name": "straggly gooseberry",
+  "botanical_name": "Ribes divaricatum",
+  "family": "Grossulariaceae",
+  "genus": "Ribes",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "black-currant",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

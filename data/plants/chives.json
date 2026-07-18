@@ -1,0 +1,92 @@
+{
+  "slug": "chives",
+  "common_name": "Chives",
+  "botanical_name": "Allium schoenoprasum",
+  "description": "Chives are a perennial herb in the Allium genus related to garlic, shallots, leeks, scallions, and Chinese onions. They are grown for culinary and ornamental purposes. The scapes or stems are hollow and tubular and have a mild onion taste. They are one of the fines herbes of French cuisine and commonly used fresh. The plant forms dense clusters of slender 2-3cm bulbs, which can be cooked. Chive flowers are edible, star-shaped, and pale purple. Chives are a good companion plant because their sulfur compounds repel negative insects, and their flowers attract bees.",
+  "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
+  "spread_cm": 10,
+  "row_spacing_cm": 25.4,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Amaryllidaceae",
+  "genus": "Allium",
+  "days_to_maturity": 60,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "cayenne-pepper",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "rose",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "bad",
+      "notes": "Same companion traits as all alliums (onions, garlic, shallots, leeks, etc.)said to prevent apple scab after 3 years planting at base of apple trees"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "cabbage worms"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "carrot fly"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "aphids"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] mites"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] nematodes [ 6 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

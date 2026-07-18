@@ -1,0 +1,36 @@
+{
+  "slug": "star-fruit",
+  "common_name": "Star Fruit",
+  "botanical_name": "Averrhoa carambola",
+  "description": "Star Fruit, or Carambola, is a slow-growing subtropical to tropical tree native to Indonesia or Sri Lanka that produces fruit of the same name. Fruit ripen from green to yellow and are 5-15cm long and oval with 4-8 ridges. When sliced, the fruit resembles a star. Skin is thin, smooth, and waxy but edible. Flesh is light yellow, translucent, and extremely juicy, with a texture similar to that of grapes. Star Fruit are best consumed within a few days of ripening. If picked unripe, fruit will ripen slowly at room temperature. There are two main types of Star Fruit: the smaller, more tart kind and the larger, sweeter type. Star Fruit contains oxalic acid and individuals with kidney issues should not consume it. Fruit has a laxative effect and leaves are used in traditional medicine to treat rheumatism. Fruit can be eaten raw, made into jam, pickled, or added to curries, soups, and desserts. Trees have short trunks, lavender to pink flowers, and broad, rounded crowns. They need humid environments with an average rainfall of at least 180cm, annual temperatures between 20-35° C, and wind protection. Mature trees can survive only short spells of -2.78º C. Trees are not self-fertile and require another tree nearby for cross-pollination. Star Fruit are best propagated through grafting. Trees planted from seed take up to 8 years to produce fruit of unpredictable quality due to cross-pollination. Grafted trees produce sweet, consistent fruit within 1-5 years. Seeds lose viability within a few days of being removed from fruit.",
+  "sowing_method": "Transplant grafted sapling",
+  "spread_cm": 800,
+  "row_spacing_cm": 900,
+  "height_cm": 800,
+  "sun_level": "full_sun",
+  "family": "Oxalidaceae",
+  "genus": "Averrhoa",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "breadfruit",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "durian",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

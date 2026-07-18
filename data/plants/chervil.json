@@ -1,0 +1,50 @@
+{
+  "slug": "chervil",
+  "common_name": "Chervil",
+  "botanical_name": "Anthriscus cerefolium",
+  "description": "Chervil, Garden Chervil, or French Parsley is a delicate annual herb grown for the mild anise flavor of its leaves. It is one of the four traditional French fines herbes, along with tarragon, chives, and parsley. Unlike stronger flavor herbs, chervil's leaves are added at the last minute to dishes. Chervil is in the Apiaceae family and it's leaves resemble those of it's cousin parsley. For peak flavor, the leaves should be harvested just before the plant begins to flower. Chervil produces small umbels of small white flowers and 1cm long fruit that resemble pea pods or string beans. It has a long taproot and bolts easily when it is not in a cool, moist location. Chervil can be used as a companion plant to attract slugs away from other crops, and to improve the flavor of lettuce, broccoli and radish.",
+  "sowing_method": "Direct seed outdoors",
+  "spread_cm": 25,
+  "row_spacing_cm": 15,
+  "height_cm": 60,
+  "sun_level": "half_sun",
+  "family": "Apiaceae",
+  "genus": "Anthriscus",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "edible_parts": [
+    "flowers"
+  ],
+  "companions": [
+    {
+      "companion_slug": "radish",
+      "relationship": "bad",
+      "notes": "Loves shade, fortunately it grows well with shade-tolerant food plants; will make radishes grown near it taste spicier"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "aphids"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

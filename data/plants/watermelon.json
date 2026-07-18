@@ -1,0 +1,55 @@
+{
+  "slug": "watermelon",
+  "common_name": "Watermelon",
+  "botanical_name": "Dischidia ovata",
+  "row_spacing_cm": 106.7,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Apocynaceae",
+  "genus": "Dischidia",
+  "days_to_maturity": 85,
+  "is_edible": false,
+  "succession_enabled": true,
+  "succession_interval_days": 3,
+  "succession_max_sowings": 2,
+  "companions": [
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "radish",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "nasturtium",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "sunflower",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "squash-summer",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

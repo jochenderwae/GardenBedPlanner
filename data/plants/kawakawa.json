@@ -1,0 +1,18 @@
+{
+  "slug": "kawakawa",
+  "common_name": "kawakawa",
+  "botanical_name": "Piper excelsum",
+  "description": "Kawakawa is a small tree. Kawakawa can be found throughout the island of Te Ika a Maui, and the west coast and Bank's peninsula of Te Wai Pounamu. The leaves are deep green in colour if growing in the forest, but may be yellowish-green in more open situations. The flowers appear on greenish, erect spikes 2.5–7.5 cm long. Kawakawa flowers are small and very closely placed around the spike. After pollination, the flowers gradually swell and become fleshy to form small, berry-like fruits that are yellow to bright orange. Each berry cluster is the size of a small finger. Ripening period is January and February. These fruits are favoured by kereru and tui birds. Kawakawa is a traditional medicinal plant of the Māori people. An infusion is made from the leaves or roots and used for bladder problems, boils, bruises, to relieve pain or toothache, or as a general tonic. The sweet edible yellow berries (most often found in summer on female trees) of the plant were eaten as a diuretic. It also is important in cultural contexts: host people of a marae wave leaves of kawakawa to welcome guests. At a tangi, both hosts and guests may wear wreaths of kawakawa on the head as a sign of mourning",
+  "family": "Piperaceae",
+  "genus": "Piper",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "slug": "romanesco",
+  "common_name": "Romanesco",
+  "botanical_name": "Brassica oleracea convar. botrytis var. botrytis",
+  "sowing_method": "rows, 5mm deep",
+  "spread_cm": 50,
+  "row_spacing_cm": 50,
+  "height_cm": 45,
+  "sun_level": "full_sun",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    }
+  ]
+}

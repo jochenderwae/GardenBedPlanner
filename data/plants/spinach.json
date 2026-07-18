@@ -1,0 +1,69 @@
+{
+  "slug": "spinach",
+  "common_name": "Spinach",
+  "botanical_name": "Spinacia oleracea",
+  "description": "Spinach is an annual plant whose deep green leaves are eaten as a vegetable. It grows best in cooler weather. It can be eaten raw or cooked.",
+  "sowing_method": "Direct seed outdoors, thin to 15cm when seedlings are 3cm high",
+  "spread_cm": 20,
+  "row_spacing_cm": 12.7,
+  "height_cm": 15,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Amaranthaceae",
+  "genus": "Spinacia",
+  "days_to_maturity": 45,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 2,
+  "succession_max_sowings": 4,
+  "edible_parts": [
+    "leaves"
+  ],
+  "companions": [
+    {
+      "companion_slug": "peas",
+      "relationship": "good",
+      "notes": "The peas and beans provide natural shade for the spinach. See cauliflower notes regarding mutualism with spinach."
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "radish",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "good"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "slug": "snow-pea",
+  "common_name": "Snow Pea",
+  "botanical_name": "Pisum sativum var. saccharatum",
+  "description": "Snow Peas are a variety of pea that can be eaten whole in the pod while still unripe. The flat, sweet, crisp pods are eaten fresh and added to salads and stir-fries. Like other peas, Snow Peas do best in cooler weather and benefit from inoculation just before planting. Some varieties require trellising. If trellising, increase row spacing to 1.2 m.",
+  "sowing_method": "Direct seed outdoors, thin to 10cm",
+  "spread_cm": 20,
+  "row_spacing_cm": 30,
+  "height_cm": 70,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Lathyrus",
+  "companions": [
+    {
+      "companion_slug": "amberique-bean",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "kale-1",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

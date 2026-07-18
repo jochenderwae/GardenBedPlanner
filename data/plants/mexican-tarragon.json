@@ -1,0 +1,24 @@
+{
+  "slug": "mexican-tarragon",
+  "common_name": "Mexican Tarragon",
+  "botanical_name": "Tagetes lucida",
+  "description": "Mexican Tarragon (Tagetes lucida), also known as Mexican Marigold or Winter Tarragon, is a perennial plant native to Mexico and Central America that is grown for its culinary, medicinal, and ornamental uses. It is hardier than French Tarragon (Artemisia dracunculus var. sativa) and it's leaves have a stronger, deeper anise flavor. It does better in warmer climates than French Tarragon. The plant bears clusters of small yellow flowers that resemble marigolds and are edible. Leaves can be used to flavor dishes in place of French Tarragon, steeped into a tea, or added to chocolate dishes (the Aztecs used the leaves in their cocoa drink, chocolatl). Medicinal uses include treating an upset stomach, stimulating the appetite, as a diuretic, and a mild stimulant. Mexican Tarragon makes a great companion plant because it attracts pollinators and repels pests.",
+  "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
+  "spread_cm": 40,
+  "row_spacing_cm": 60,
+  "height_cm": 75,
+  "sun_level": "full_sun",
+  "family": "Asteraceae",
+  "genus": "Tagetes",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

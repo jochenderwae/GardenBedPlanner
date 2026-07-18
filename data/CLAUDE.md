@@ -29,7 +29,8 @@ Candidate and confirmed sources to pull plant data from, kept here as they're fo
 | USDA PLANTS Database | https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt | authoritative for taxonomy/family classification, which is exactly what you need for rotation-family logic. Weak on cultivation specifics like spacing or companion planting though | public domain | candidate |
 | Wikipedia's "List of companion plants" | https://en.wikipedia.org/wiki/List_of_companion_plants | genuinely well-structured for companion pairs specifically, useful as a cross-check rather than a bulk scrape | CC BY-SA | candidate |
 | Trefle | https://trefle.io/api/v1 | usefulness to be confirmed | ? | candidate |
-| Project Gutenberg (old gardening books, one section per plant - e.g. https://www.gutenberg.org/cache/epub/43531/pg43531-images.html) | https://www.gutenberg.org | long-form growing advice text - candidate for filling `composting_needs`/`fertilizer_needs`/`needs_wind_cover`/`needs_rain_cover`/`seed_info.pretreatment`/`bedding_needs` (see below), none of which any structured source covers | public domain (verify per-book) | candidate - more books to be added; no fetcher built yet, see `growing_information` note below |
+| Project Gutenberg - book #43531 (old gardening book, one section per plant) | https://www.gutenberg.org/cache/epub/43531/pg43531-images.html | long-form growing advice text - candidate for filling `composting_needs`/`fertilizer_needs`/`needs_wind_cover`/`needs_rain_cover`/`seed_info.pretreatment`/`bedding_needs` (see below), none of which any structured source covers | public domain (verify per-book) | candidate - no fetcher built yet, see `growing_information` note below |
+| Project Gutenberg - book #76930 | https://www.gutenberg.org/cache/epub/76930/pg76930-images.html | same as #43531 - long-form growing advice text | public domain (verify per-book) | candidate - no fetcher built yet |
 
 ## Source → schema coverage analysis
 
@@ -72,6 +73,21 @@ Added a new field/table for exactly this problem: `growing_information` (JSON) /
 **Cultivar vs. species text**: some of this prose describes a species/genus generically (e.g. "pumpkins") rather than a specific cultivar (e.g. "Baby Bear Pumpkin"). Per the cultivar-merge bug fix (see `data/etl/CLAUDE.md`), cultivars must stay separate plant records - so generic text gets *copied* into every matching cultivar's own `growing_information` array, with `generic_for_species: true` marking it as not cultivar-specific advice. No separate "species" entity was introduced for this - simpler to keep as a flag on each cultivar's own copy.
 
 **Status: schema only, not wired up yet.** `Plant`-cluster migration (`add_plant_growing_information`) and the JSON Schema field exist and are verified against real Postgres. Not yet built: a Project Gutenberg fetcher (only one example book known so far - more to be added to the sources table above) and the actual structured-data extraction pass that would read this text and fill in the fields listed above. Deliberately *not* wired into `data/etl/`'s active merge/export code yet, to avoid touching a pipeline that was mid-run when this was added.
+
+Online books containing more growing information. These can be loaded, sections per plant / cultivar cut out and stored. A follow-up process can then process each of the growing information entries using the local ollama installation and:
+ 1) consolidate all the different sources into one growing information entry
+ 2) check if the missing data fields can be extracted from this data
+ 3) do an analysis on the growing information to see if we can extract more interesting structured data
+
+ | Bool url | Notes |
+ |---|---|
+ | https://www.gutenberg.org/cache/epub/43531/pg43531-images.html |  |
+ | https://www.gutenberg.org/cache/epub/76930/pg76930-images.html |  |
+ | https://www.gutenberg.org/cache/epub/7123/pg7123-images.html |  |
+ | https://www.gutenberg.org/cache/epub/36064/pg36064-images.html |  |
+ | https://www.gutenberg.org/cache/epub/77032/pg77032-images.html |  |
+ | https://www.gutenberg.org/cache/epub/63013/pg63013-images.html |  |
+ | https://www.gutenberg.org/cache/epub/46052/pg46052-images.html |  |
 
 ## Notes
 

@@ -1,0 +1,36 @@
+{
+  "slug": "buckwheat",
+  "common_name": "Buckwheat",
+  "botanical_name": "Fagopyrum esculentum",
+  "description": "Buckwheat is a versatile short-season crop related to sorrel, knotweed and rhubarb. It does not like hot, dry weather and should be sown 3 months before the first expected killing frost. It grows well in low-fertility soils as long as they are well-drained. Buckwheat is grown for it's grain-like seeds, edible leaves, as a sprout, or as a summer cover crop/green manure. As a cover crop, it builds organic matter and suppresses weeds with its rapid and dense growth, brings up phosphorus and calcium from deep in the soil, prevents erosion, and attracts pollinators. The nectar from buckwheat flowers makes a dark-colored honey. Buckwheat's leaves can be eaten raw or cooked like spinach. Seed should be harvested just before the first killing frost. It's triangular seeds are rich in complex carbohydrates and can be ground into a gluten-free flour, made into noodles, or cooked whole.",
+  "sowing_method": "Direct seed (broadcast or drill), thin seedlings to 10cm apart",
+  "row_spacing_cm": 5,
+  "height_cm": 125,
+  "sun_level": "full_sun",
+  "family": "Polygonaceae",
+  "genus": "Fagopyrum",
+  "soil_ph_min": 6.0,
+  "soil_ph_max": 8.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "fenugreek",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "slug": "rainbow-chard",
+  "common_name": "Rainbow Chard",
+  "botanical_name": "Beta vulgaris",
+  "description": "Rainbow Chard is grown from a seed mix that contains chard cultivars that have pink, yellow, orange, red, and white stems. Both the leaves and stems are edible and are delicious in salads, sautéed, and baked. Chard is related to beets.",
+  "sowing_method": "Direct seed indoors or outdoors. Transplant seedlings outside after hardening off.",
+  "spread_cm": 20,
+  "row_spacing_cm": 30,
+  "height_cm": 35,
+  "sun_level": "full_sun",
+  "family": "Amaranthaceae",
+  "genus": "Beta",
+  "days_to_maturity": 80,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

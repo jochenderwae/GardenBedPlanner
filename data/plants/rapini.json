@@ -1,0 +1,38 @@
+{
+  "slug": "rapini",
+  "common_name": "Rapini",
+  "botanical_name": "Brassica rapa subsp.rapa",
+  "description": "Rapini, or Broccoli Rabe, is a cool-weather leafy green vegetable in the Brassica family. The leaves, buds, and stems are edible and the plant is harvested before the buds, which resemble small, loose broccoli heads, open into yellow flowers. Rapini has a bitter, sharp, slightly nutty taste and is usually cooked.",
+  "sowing_method": "Direct seed outdoors, thin seedlings to 15cm",
+  "spread_cm": 30,
+  "row_spacing_cm": 5,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "cucumber-heirloom-straight-eight",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "slug": "strawberry-guava",
+  "common_name": "Strawberry Guava",
+  "botanical_name": "Psidium cattleianum",
+  "description": "Strawberry, or Cattley, Guava, is a slow growing subtropical evergreen shrub or tree in the Myrtaceae family that produces small pear-shaped fruits. It is native to Brazil and closely related to the Apple, or Common, Guava, but produces red to purple pear-shaped fruits with a protruding calyx rather than green ones. Fruit has a sweet but tangy strawberry and guava flavor and translucent, juicy flesh. Strawberry Guava is also more cold hardy than the common guava - it can survive temperatures as low as -5.56º C. It can grow in limestone and poor soils that cannot support other fruit trees, and is fairly drought tolerant once established. Like other guavas, Strawberry Guavas have obovate, glossy, leathery, deep green leaves and white flowers. The tree's thin bark makes grafting difficult, so it is propagated by seed, even though seeds are variable and not always true to the parent. Germination takes 4-12 weeks at a temperature of 21-29°C; seeds will not germinate below 15°C. Strawberry Guavas will produce fruit when grown in containers in colder regions, but should be moved outside during the summer. Trees are self-fruitful but do benefit from cross-pollination with a second tree. The plant is frequently used as an ornamental hedge, but has become invasive in southern Florida, Hawaii, and the Caribbean. Fresh fruit lasts 3-4 days at room temperature when ripe and is eaten fresh, juiced, made into jams, or baked into pies and desserts.",
+  "sowing_method": "Direct seed indoors",
+  "spread_cm": 350,
+  "row_spacing_cm": 300,
+  "height_cm": 400,
+  "sun_level": "full_sun",
+  "family": "Myrtaceae",
+  "genus": "Psidium",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "guava",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "slug": "lettuce",
+  "common_name": "Lettuce",
+  "botanical_name": "Lactuca sativa",
+  "description": "Lettuce is a cool weather crop and high temperatures will impede germination and/or cause the plant to bolt (go to seed quickly). Some hybrid cultivars have been bred to be more heat-resistant.",
+  "sowing_method": "Direct seed outdoors, thin to 20cm when seedlings are 3cm tall",
+  "spread_cm": 30,
+  "row_spacing_cm": 25.4,
+  "height_cm": 20,
+  "sun_level": "half_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Asteraceae",
+  "genus": "Lactuca",
+  "days_to_maturity": 50,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 2,
+  "succession_max_sowings": 6,
+  "companions": [
+    {
+      "companion_slug": "romanesco",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "radish",
+      "relationship": "good",
+      "notes": "Broccoli when intercropped with lettuce was shown to be more profitable than either crop alone."
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "chard",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "broccoli",
+      "relationship": "good",
+      "notes": "Broccoli when intercropped with lettuce was shown to be more profitable than either crop alone."
+    },
+    {
+      "companion_slug": "thyme",
+      "relationship": "good",
+      "notes": "Broccoli when intercropped with lettuce was shown to be more profitable than either crop alone."
+    },
+    {
+      "companion_slug": "celery",
+      "relationship": "bad",
+      "notes": "Broccoli when intercropped with lettuce was shown to be more profitable than either crop alone."
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "bad",
+      "notes": "Broccoli when intercropped with lettuce was shown to be more profitable than either crop alone."
+    },
+    {
+      "companion_slug": "parsley",
+      "relationship": "bad",
+      "notes": "Broccoli when intercropped with lettuce was shown to be more profitable than either crop alone."
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "slugs"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "snails. [ 39 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

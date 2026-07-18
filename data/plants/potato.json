@@ -1,0 +1,118 @@
+{
+  "slug": "potato",
+  "common_name": "Potato",
+  "botanical_name": "Solanum tuberosum",
+  "description": "Potatoes are starchy root vegetables in the Solanaceae, or Nightshade, family, which also includes tomatoes, eggplants, and peppers. They originated in South America, and spread to become a worldwide staple. The leaves and fruit are usually poisonous and the stem tuber is the only edible part once it is cooked. The potato can be cooked in many ways, brewed into alcohol, and also used as the basis for creating bioplastics. More growing information is available in individual species entries.",
+  "sowing_method": "Direct seed outdoors after last frost. Each piece must have one eye.",
+  "spread_cm": 30,
+  "row_spacing_cm": 90,
+  "height_cm": 60,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "days_to_maturity": 90,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "marjoram",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "good",
+      "notes": "Horseradish increases the disease resistance of potatoes. It repels the potato bug. [ 6 ] Garlic is more effective than fungicides on late potato blight. [ 73 ] Peas were shown to reduce the density of Colorado potato beetles. [ 13 ]"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad",
+      "notes": "Horseradish increases the disease resistance of potatoes. It repels the potato bug. [ 6 ] Garlic is more effective than fungicides on late potato blight. [ 73 ] Peas were shown to reduce the density of Colorado potato beetles. [ 13 ]"
+    },
+    {
+      "companion_slug": "cucumber",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "squash-summer",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "squash-winter",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "horseradish",
+      "relationship": "good",
+      "notes": "Horseradish increases the disease resistance of potatoes. It repels the potato bug. [ 6 ] Garlic is more effective than fungicides on late potato blight. [ 73 ] Peas were shown to reduce the density of Colorado potato beetles. [ 13 ]"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "bad",
+      "notes": "Horseradish increases the disease resistance of potatoes. It repels the potato bug. [ 6 ] Garlic is more effective than fungicides on late potato blight. [ 73 ] Peas were shown to reduce the density of Colorado potato beetles. [ 13 ]"
+    },
+    {
+      "companion_slug": "pumpkin",
+      "relationship": "bad",
+      "notes": "Horseradish increases the disease resistance of potatoes. It repels the potato bug. [ 6 ] Garlic is more effective than fungicides on late potato blight. [ 73 ] Peas were shown to reduce the density of Colorado potato beetles. [ 13 ]"
+    },
+    {
+      "companion_slug": "squash",
+      "relationship": "bad",
+      "notes": "Horseradish increases the disease resistance of potatoes. It repels the potato bug. [ 6 ] Garlic is more effective than fungicides on late potato blight. [ 73 ] Peas were shown to reduce the density of Colorado potato beetles. [ 13 ]"
+    },
+    {
+      "companion_slug": "sunflower",
+      "relationship": "bad",
+      "notes": "Horseradish increases the disease resistance of potatoes. It repels the potato bug. [ 6 ] Garlic is more effective than fungicides on late potato blight. [ 73 ] Peas were shown to reduce the density of Colorado potato beetles. [ 13 ]"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "nematode"
+    },
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "colorado-beetle"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "mexican bean beetle [ 62 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

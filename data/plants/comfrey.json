@@ -1,0 +1,44 @@
+{
+  "slug": "comfrey",
+  "common_name": "Comfrey",
+  "botanical_name": "Symphytum orientale",
+  "row_spacing_cm": 91.4,
+  "sun_level": "full_sun",
+  "water_needs": "~0.75 in/week",
+  "family": "Boraginaceae",
+  "genus": "Symphytum",
+  "days_to_maturity": 60,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "apple",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "plum",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

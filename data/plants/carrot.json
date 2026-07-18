@@ -1,0 +1,71 @@
+{
+  "slug": "carrot",
+  "common_name": "Carrot",
+  "botanical_name": "Daucus carota",
+  "description": "The carrot is a root vegetable. It is usually orange in color, but some cultivars are purple, black, red, white, and yellow. The most commonly eaten part of the plant is the taproot, but the greens are sometimes eaten as well. The leaves appear first, and the taproot grows more slowly beneath the soil. Fast-growing cultivars mature within three months of sowing the seed. Slower-maturing cultivars are harvested four months after sowing.",
+  "sowing_method": "Direct Seed, thin to 3cm apart when seedlings are 8cm high",
+  "spread_cm": 5,
+  "row_spacing_cm": 20,
+  "height_cm": 25,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Apiaceae",
+  "genus": "Daucus",
+  "days_to_maturity": 70,
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 3,
+  "succession_max_sowings": 4,
+  "companions": [
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good",
+      "mechanism": "pest-deterrent",
+      "notes": "A classic pairing: onions repel the carrot rust fly, while carrots repel the onion fly."
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "rosemary",
+      "relationship": "good",
+      "mechanism": "pest-deterrent",
+      "notes": "The strong scent of rosemary helps mask the smell of the carrots from rust flies."
+    },
+    {
+      "companion_slug": "dill",
+      "relationship": "bad",
+      "mechanism": "growth-inhibition",
+      "notes": "Mature dill can stunt the growth of carrots and, because they are closely related, they can cross-pollinate if allowed to go to seed."
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

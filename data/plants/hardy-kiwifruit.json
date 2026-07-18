@@ -1,0 +1,23 @@
+{
+  "slug": "hardy-kiwifruit",
+  "common_name": "Hardy Kiwifruit",
+  "botanical_name": "Actinidia arguta",
+  "description": "The Hardy Kiwi is the wild cousin of the Kiwi fruit. It is a perennial vine native to the humid mountain forests of Japan, Korea, Northern China, and Russian Siberia. The Hardy Kiwi produces clusters of small, hairless fruits the size of grapes. Skin is smooth and green, brown, or purple. The skin does not need to be peeled and the fruit is often sweeter than the Kiwi. Vines can grow up to 6 meters in a season and can be trained to a strong trellis for ease of harvest. Hardy Kiwis can survive gradual temperature drops down to -34°C, but young shoots are vulnerable to spring frosts. Hardy Kiwi need 150 frost-free days to produce fruit. Like it's cousin, the Hardy Kiwi is dioecious, meaning a plant will only produce male or female flowers. A male plant, which will not bear fruit, must be within 1 meter of a female plant for pollination. The cultivar 'Issai' is self-fertile. Hardy Kiwi are most effectively propagated through cuttings, and will bear fruit within 2 years. Fruit is ready to harvest when the seeds inside are black, even if the fruit is still hard. If left at room temperature for a week after harvest, fruit will soften. Hardy Kiwi have become invasive in certain parts of Massachusetts and New York.",
+  "sowing_method": "Cuttings, grafted plant, or direct seed indoors",
+  "spread_cm": 600,
+  "row_spacing_cm": 600,
+  "height_cm": 900,
+  "sun_level": "full_sun",
+  "family": "Actinidiaceae",
+  "genus": "Actinidia",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "slug": "asparagus",
+  "common_name": "Asparagus",
+  "botanical_name": "Asparagus officinalis",
+  "description": "Perennial spring vegetable often sown from crowns. The vegetable has a mild flavor with earthy undertones. When mature and reproducing, the plant creates tall, stout stems with feathery foliage and small red berries.",
+  "sowing_method": "Transplant crowns outside, or start seeds indoors",
+  "spread_cm": 42,
+  "row_spacing_cm": 45.7,
+  "height_cm": 140,
+  "sun_level": "full_sun",
+  "water_needs": "~1.0 in/week",
+  "family": "Asparagaceae",
+  "genus": "Asparagus",
+  "days_to_maturity": 730,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "parsley",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "basil",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "dill",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "coriander",
+      "relationship": "good"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

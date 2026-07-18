@@ -1,0 +1,22 @@
+{
+  "slug": "mapacho",
+  "common_name": "You Can Grow Anything",
+  "botanical_name": "Nicotiana rustica",
+  "description": "Ceremonial Tabacco",
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Nicotiana",
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

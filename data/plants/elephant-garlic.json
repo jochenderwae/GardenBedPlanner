@@ -1,0 +1,30 @@
+{
+  "slug": "elephant-garlic",
+  "common_name": "Elephant Garlic",
+  "botanical_name": "Allium ampeloprasum var. ampeloprasum",
+  "description": "Elephant Garlic is a perennial plant in the Allium genus. It is actually a variety of leek, not garlic. Elephant Garlic has broad, flat leaves like a leek, but forms a bulb of very large, garlic-like cloves that can be up to 10cm in diameter. The cloves have a milder flavor than garlic and are often used raw in salads or roasted. Elephant Garlic can be planted in the spring or autumn. The immature plant tops, or scapes, should be cut off to direct the plant's energy towards the bulb. Scapes can be pickled, stir-fried, made into pesto, or frozen. Unlike garlic, Elephant Garlic can be grown as a perennial and left in the ground, where it will spread into a clump with many flowering heads and cloves. It can also be grown as an annual and harvested each year for it's bulbs. Elephant Garlic is also an ornamental (for it's blooms) and a companion plant (like other Alliums, it repels pests).",
+  "sowing_method": "Direct seed cloves outdoors in spring or autumn",
+  "spread_cm": 10,
+  "row_spacing_cm": 15,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "family": "Amaryllidaceae",
+  "genus": "Allium",
+  "companions": [
+    {
+      "companion_slug": "celery",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

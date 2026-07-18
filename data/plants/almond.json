@@ -1,0 +1,25 @@
+{
+  "slug": "almond",
+  "common_name": "Almond",
+  "botanical_name": "Prunus dulcis",
+  "description": "The almond is a deciduous tree that grows well in Mediterranean climates. It has white to pale flowers that appear before the leaves in early spring. Trees begin producing fruit within 2 to 4 years of being transplanted.",
+  "sowing_method": "Bare root tree",
+  "row_spacing_cm": 460,
+  "height_cm": 400,
+  "sun_level": "full_sun",
+  "family": "Rosaceae",
+  "genus": "Prunus",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

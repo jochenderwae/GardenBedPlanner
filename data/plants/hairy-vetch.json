@@ -1,0 +1,22 @@
+{
+  "slug": "hairy-vetch",
+  "common_name": "hairy vetch",
+  "botanical_name": "Vicia hirsuta",
+  "description": "Vicia villosa, known as the hairy vetch, fodder vetch or winter vetch, is a plant native to some of Europe and western Asia. It is a legume, grown as a forage crop, fodder crop, cover crop, and green manure. Although non-native, it occurs in all US states and is considered invasive by some states, such as Alaska, Florida, Georgia, Michigan, Minnesota, Oregon, and Washington state — as well as in Japan and some parts of Europe where it is not native.[1][2][3][4][5][6][7][8][9] It is also found in most Canadian provinces. Hairy vetch is very similar to tufted vetch (Vicia cracca), the most noticeable difference being that tufted vetch has a smooth stem.",
+  "sun_level": "half_sun",
+  "family": "Fabaceae",
+  "genus": "Vicia",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 5.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

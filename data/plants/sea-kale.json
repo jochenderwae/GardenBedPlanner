@@ -1,0 +1,29 @@
+{
+  "slug": "sea-kale",
+  "common_name": "Sea Kale",
+  "botanical_name": "Crambe maritima",
+  "description": "Crambe maritima (common name sea kale, sea cole, seakale, sea colewort or crambe) is a species of halophytic flowering plant in the genus Crambe of the family Brassicaceae (Cruciferae), that grows wild along the coasts of Europe, from the North Atlantic to the Black Sea.",
+  "spread_cm": 76,
+  "row_spacing_cm": 20,
+  "height_cm": 91,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Crambe",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

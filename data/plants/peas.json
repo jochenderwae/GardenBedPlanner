@@ -1,0 +1,122 @@
+{
+  "slug": "peas",
+  "common_name": "Peas",
+  "botanical_name": "Pisum sativum",
+  "sowing_method": "direct",
+  "spread_cm": 3,
+  "row_spacing_cm": 30,
+  "height_cm": 60,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Fabaceae",
+  "genus": "Pisum",
+  "days_to_maturity": 65,
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 2,
+  "succession_max_sowings": 3,
+  "companions": [
+    {
+      "companion_slug": "borage",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "coriander",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "french-breakfast-radish",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "oat",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "orange",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "red-danjou-pear",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "tangerine",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cucumber",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "radish",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "spinach",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "chives",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "turnip",
+      "relationship": "good",
+      "notes": "Peas when intercropped with turnips, cauliflower, or garlic showed mutual suppression of growth however their profit per land area used was increased. [ 44 ]"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "colorado potato beetle [ 13 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "slug": "turmeric",
+  "common_name": "turmeric",
+  "botanical_name": "Curcuma longa",
+  "description": "Turmeric is a rhizomatous perennial in the ginger family, grown for its bright orange underground stems. The rhizomes are boiled, dried, and ground into the warm, earthy yellow spice central to South Asian cooking, and are prized for the anti-inflammatory compound curcumin. It needs a long, frost-free season and rich, consistently moist soil.",
+  "family": "Zingiberaceae",
+  "genus": "Curcuma",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

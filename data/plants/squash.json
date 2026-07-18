@@ -1,0 +1,47 @@
+{
+  "slug": "squash",
+  "common_name": "Squash",
+  "botanical_name": "Cucurbita pepo",
+  "description": "Squash is a genus of herbaceous vines that have large edible orange flowers that mature into gourds or cucurbits. Squash are commonly divided into two main groups: summer and winter. Summer squash have shorter growing times, a bushy growth habit, tender skin, and are quite prolific. Common types include cucumbers, zucchini, and pattypan squash. Winter squash take longer to mature, have a more sprawling growth habit, and produce gourds with thicker skins that can be stored for a few months. Common winter squash are pumpkins, butternut squash, acorn, and delicata. Most squash transplant poorly. If starting from seed indoors, use peat pots that can be directly transplanted into the soil to reduce root disturbance. More growing information is available in individual species entries.",
+  "sowing_method": "Direct seed indoors or outdoors",
+  "sun_level": "full_sun",
+  "family": "Cucurbitaceae",
+  "genus": "Cucurbita",
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "ferry-morse-contender-bush-bean",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "borage",
+      "relationship": "good",
+      "notes": "Radishes can be used as a trap crop against flea beetles, cucurbita can be used in the three sisters technique. Marigolds [ 28 ] and nasturtiums repel squash bugs. [ 62 ] Marigolds repel cucumber beetles. [ 28 ]"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "spiders"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "ground beetles"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

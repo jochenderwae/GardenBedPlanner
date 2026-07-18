@@ -1,0 +1,30 @@
+{
+  "slug": "arugula",
+  "common_name": "Arugula",
+  "botanical_name": "Eruca sativa",
+  "description": "Mildly bitter, sometimes peppery, salad green. Fast-growing with deeply lobed leaves. Prefers cooler weather, bolts in the heat.",
+  "sowing_method": "Direct seed or transplant in wide rows or raised beds",
+  "spread_cm": 15,
+  "row_spacing_cm": 10,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Eruca",
+  "days_to_maturity": 40,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "edible_parts": [
+    "leaves"
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

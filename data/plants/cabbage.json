@@ -1,0 +1,133 @@
+{
+  "slug": "cabbage",
+  "common_name": "Cabbage",
+  "botanical_name": "Brassica oleracea",
+  "description": "Cabbage is a member of the Brassica family and related to kale, broccoli, brussels sprouts, and cauliflower. It's dense, layered heads grow on stalks and are surrounded by looser outer leaves. It's leaves can be green, white, or purple in color, and smooth or crinkly in texture. Depending on the variety, the head can be round, oblong, or flat. Cabbage prefers cooler temperatures and is best planted in the spring or fall.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off.",
+  "spread_cm": 40,
+  "row_spacing_cm": 49.05,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "days_to_maturity": 75,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 4,
+  "succession_max_sowings": 2,
+  "companions": [
+    {
+      "companion_slug": "blue-lake-bean",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "cumin",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "dill",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "celery",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beets",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "thyme",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "chamomile",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "mint",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "rosemary",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "sage",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "strawberry",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "fennel",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "bad"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "cabbage-worm"
+    },
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "aphid"
+    },
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "looper"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "snails"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "slugs [ 39 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

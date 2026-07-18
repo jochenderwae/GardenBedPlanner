@@ -1,0 +1,34 @@
+{
+  "slug": "tangerine",
+  "common_name": "Tangerine",
+  "botanical_name": "Citrus tangerina",
+  "description": "The Tangerine is a small evergreen citrus tree that produces fruit that look like smaller, slightly flattened oranges. Tangerines are a type of Mandarin (Citrus reticulata) and are very similar to them, with the primary difference being that Tangerines sometimes have a more reddish tint to their skin. Tangerines have a sweet, strong taste and pebbly-skin that peels easily. Trees have dark green, glossy leaves, some thorns, and star-shaped white flowers. Tangerines grow best in tropical and subtropical areas, although they can also be grown in containers and brought inside in the winter in cooler regions. They are one of the more cold hardy citrus varieties, but are damaged by temperatures below -3.8° C.",
+  "sowing_method": "Transplant grafted sapling",
+  "spread_cm": 800,
+  "height_cm": 800,
+  "sun_level": "full_sun",
+  "family": "Rutaceae",
+  "genus": "Citrus",
+  "companions": [
+    {
+      "companion_slug": "pea",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "tansy",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

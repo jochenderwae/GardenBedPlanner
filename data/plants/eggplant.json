@@ -1,0 +1,62 @@
+{
+  "slug": "eggplant",
+  "common_name": "Eggplant",
+  "botanical_name": "Solanum melongena",
+  "description": "Eggplants commonly are egg-shaped with glossy black skin, but can come in a variety of other shapes and colors. They can be white, yellow, and pale to deep purple. Some are as small as goose eggs. The 'Rosa Bianca' cultivar is squat and round, while Asian cultivars can be long and thin. Eggplant stems are often spiny and their flowers range from white to purple. Their flesh is generally white with a meaty texture and small seeds in the center. They are delicious grilled, roasted, in soups and stews, and breaded and fried.",
+  "sowing_method": "Sow seeds indoors and transplant out, or plant nursery seedlings",
+  "spread_cm": 30,
+  "row_spacing_cm": 53.3,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "water_needs": "~1.0 in/week",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "days_to_maturity": 80,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "bell-pepper",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "pepper-bell",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "spinach",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "fennel",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

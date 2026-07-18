@@ -1,0 +1,25 @@
+{
+  "slug": "allspice",
+  "common_name": "Allspice",
+  "botanical_name": "Pimenta dioica",
+  "description": "Allspice is the dried unripe fruit of the Pimenta dioica tree, native to southern Mexico and Central America. The tree is classified as an evergreen shrub and can be grown in containers or reach heights of 10m outdoors in the subtropics. The berries are picked when green and unripe and dried in the sun until they are brown and look like large peppercorns. The glossy, fragrant, fresh leaves of the tree can be used in cooking like bay leaves, but they lose most of their flavor when dried and stored.",
+  "sowing_method": "Direct seed fresh berries indoors",
+  "height_cm": 1000,
+  "family": "Myrtaceae",
+  "genus": "Pimenta",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

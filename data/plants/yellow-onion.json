@@ -1,0 +1,31 @@
+{
+  "slug": "yellow-onion",
+  "common_name": "Yellow Onion",
+  "botanical_name": "Allium cepa",
+  "description": "Yellow onions have with yellow skin and white to yellow flesh. They are members of the Allium family along with garlic and leeks. They have a good balance of sweet and astringency in their flavor, and become sweeter when cooked. Spanish onions are a type of yellow onion that is slightly sweeter and more delicate in flavor. Make sure to choose a variety suited to your day length.",
+  "sowing_method": "Direct seed indoors or plant sets (small bulbs) outside.",
+  "spread_cm": 13,
+  "row_spacing_cm": 10,
+  "height_cm": 60,
+  "sun_level": "full_sun",
+  "family": "Amaryllidaceae",
+  "genus": "Allium",
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "bell-pepper",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

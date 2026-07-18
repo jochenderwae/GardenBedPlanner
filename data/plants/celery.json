@@ -1,0 +1,83 @@
+{
+  "slug": "celery",
+  "common_name": "Celery",
+  "botanical_name": "Apium graveolens",
+  "description": "The celery plant has long fibrous stalks that taper into leaves. The stalks and leaves can both be eaten. Celery seed is also used as a spice. Celery seed extracts are used in medicines.",
+  "sowing_method": "Sow seeds indoors 10-12 weeks before transplanting outdoors",
+  "spread_cm": 15,
+  "row_spacing_cm": 25.4,
+  "height_cm": 40,
+  "sun_level": "full_sun",
+  "water_needs": "~2.0 in/week",
+  "family": "Apiaceae",
+  "genus": "Apium",
+  "days_to_maturity": 100,
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "red-cabbage",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good",
+      "notes": "Aster flowers, can transmit the aster yellows disease"
+    },
+    {
+      "companion_slug": "parsnip",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "cauliflower",
+      "relationship": "good",
+      "notes": "Aster flowers, can transmit the aster yellows disease"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good",
+      "notes": "Aster flowers, can transmit the aster yellows disease"
+    },
+    {
+      "companion_slug": "corn",
+      "relationship": "bad",
+      "notes": "Aster flowers, can transmit the aster yellows disease"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "whiteflies [ 47 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

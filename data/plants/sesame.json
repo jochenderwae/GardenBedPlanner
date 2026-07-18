@@ -1,0 +1,27 @@
+{
+  "slug": "sesame",
+  "common_name": "Sesame",
+  "botanical_name": "Sesamum indicum",
+  "description": "Sesame is an upright, annual flowering plant grown for it's seeds, which are known as sesame seeds and have one of the highest oil contents among seeds. The plant has alternate leaves and white, blue, or purple tubular flowers. It's fruits are deeply grooved capsules 2-8cm long, with 50-100 seeds. Pods naturally split open when ripe to release the seeds. This shattering can result in seed loss, and some non-shattering cultivars exist. Sesame seeds are small, usually 3-4 mm long, ovate, and slightly flattened. Depending on the cultivar, they can be tan, gold, reddish, brown, gray, or black. Seeds have a rich, nutty flavor and are used in a wide variety of cuisines. Sesame grows best in warmer conditions, around 23° C. It is drought-tolerant once established, but requires water for germination and has better yields with sufficient water.",
+  "sowing_method": "Direct seed outdoors after soil temperatures are above 21.1° C",
+  "row_spacing_cm": 45,
+  "height_cm": 100,
+  "sun_level": "full_sun",
+  "family": "Pedaliaceae",
+  "genus": "Sesamum",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

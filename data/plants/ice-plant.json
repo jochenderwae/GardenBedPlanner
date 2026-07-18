@@ -1,0 +1,25 @@
+{
+  "slug": "ice-plant",
+  "common_name": "Ice Plant",
+  "botanical_name": "Carpobrotus acinaciformis",
+  "description": "Carpobrotus (also known as Hottentot Fig, Ice Plant, Pigface, and Sour Fig) is a genus of evergreen, succulent, ground-creeping plants with large daisy-like flowers. Flowers are pale yellow to deep fuchsia. The genus includes 12-20 species, most of which are native to South Africa. Carpobrotus is a perennial where temperatures are between 4-14° C, and an annual in cooler regions. The plant spreads readily through seed and segmentation (any part of the plant can produce shoots) and has become invasive in Australia, the Mediterranean, and California. It's invasive tendencies can be managed by growing the plant in containers, deadheading the flowers, and cutting it back in the fall. The leaves and fruit of Carpobrotus are edible. Tart fruit can be eaten fresh or made into jam.",
+  "sowing_method": "Stem cuttings, seeds",
+  "spread_cm": 5000,
+  "height_cm": 15,
+  "sun_level": "full_sun",
+  "family": "Aizoaceae",
+  "genus": "Carpobrotus",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

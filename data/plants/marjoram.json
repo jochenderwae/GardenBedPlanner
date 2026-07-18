@@ -1,0 +1,33 @@
+{
+  "slug": "marjoram",
+  "common_name": "Marjoram",
+  "botanical_name": "Origanum majorana",
+  "description": "Marjoram is a somewhat cold-sensitive annual or perennial herb that is a sub-species of oregano and a member of the Mint family (Lamiaceae). Marjoram is often confused with oregano, but it has slightly more pointed leaves that tend to fold inwards a bit. Marjoram has a mild, floral, woodsy flavor, while oregano is more pungent and spicy. The two herbs should not be substituted for one another in recipes. Marjoram can be grown in containers and brought indoors to protect it from frosts.",
+  "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
+  "spread_cm": 25,
+  "row_spacing_cm": 20,
+  "height_cm": 40,
+  "sun_level": "full_sun",
+  "family": "Lamiaceae",
+  "genus": "Origanum",
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "potato",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

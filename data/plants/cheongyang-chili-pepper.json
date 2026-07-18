@@ -1,0 +1,21 @@
+{
+  "slug": "cheongyang-chili-pepper",
+  "common_name": "Cheongyang Chili Pepper",
+  "botanical_name": "Capsicum annuum",
+  "description": "The Cheongyang chili pepper is a Capsicum annuum cultivar from the Cheongyang region of Korea. The pepper was created by crossing the local Jejudo chilli with Bird's eye chilli. It is a bit sweeter and tangier than the Bird's Eye and has a Scoville rating of 10,000 units. The fruit turns red as it ripens and is 4-5cm long and 1cm in diameter.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Capsicum",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "slug": "van-zerden-garlic",
+  "common_name": "Van Zerden Garlic",
+  "botanical_name": "Allium sativum",
+  "description": "The garlic plant has a bulbous root separated into cloves and a tall stalk with branching leaves. The plant has two main subspecies: hard and soft neck. The choice between which subspecies to grow depends on latitude and at what point in the growing season you will be planting the crop: garlic can be day-length sensitive. Hard-neck garlic is usually grown in cooler climates and creates larger cloves. Soft-neck garlic is grown in warmer climates and produces smaller, tightly-packed cloves. Be sure to trim garlic scapes before they flower - this will focus the plant's energy into bulb growth, resulting in larger cloves and bulbs. Scapes have a fresh, light garlic flavor. They are delicious raw or cooked, and make a great pesto.",
+  "sowing_method": "Direct seed large cloves",
+  "spread_cm": 10,
+  "row_spacing_cm": 10,
+  "height_cm": 13,
+  "sun_level": "full_sun",
+  "family": "Amaryllidaceae",
+  "genus": "Allium",
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "edible_parts": [
+    "stem"
+  ],
+  "companions": [
+    {
+      "companion_slug": "green-danjou-pear",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

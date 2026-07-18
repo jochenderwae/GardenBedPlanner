@@ -1,0 +1,33 @@
+{
+  "slug": "bok-choy",
+  "common_name": "Bok Choy",
+  "botanical_name": "Brassica rapa subsp. Chinensis",
+  "description": "A type of Chinese cabbage that does not form a head. It has smooth, dark or light green leaf blades and crisp white stalks that form a cluster similar to mustard greens or celery. It is often harvested while still small and tender, when it is around 10cm high. Winter hardy. Row spacing depends on desired harvest size.",
+  "sowing_method": "Direct seed outdoors, or sow indoors and harden off before transplanting",
+  "spread_cm": 25,
+  "row_spacing_cm": 15,
+  "height_cm": 20,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "swiss-chard-3",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

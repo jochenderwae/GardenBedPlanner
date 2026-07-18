@@ -1,0 +1,30 @@
+{
+  "slug": "purslane",
+  "common_name": "Purslane",
+  "botanical_name": "Portulaca oleracea",
+  "description": "Purslane is a fast-growing succulent herb that is native to Asia but has since naturalized throughout the world. The plant has red to purple stems that radiate from a central taproot, fleshy green leaves, and yellow flowers. The stems are somewhat upright, but spread to create a mat of foliage. Leaves and stems have a sweet, acid-like flavor similar to spinach and are high in omega-3 fatty acids, Vitamins A, C, and B, iron, magnesium, calcium, and potassium. Harvest plants before they flower and add to salads, sandwiches, sauté, or make into pesto. Purslane can become VERY invasive because it spreads through stem pieces and a single plant can produce 240,000 seeds that are viable for 5-40 years. Container growing is strongly recommended to limit the spread of stem cuttings. Be sure to harvest plants before they flower and set seed.",
+  "sowing_method": "Direct seed cuttings or seeds outdoors on surface of soil after last frost",
+  "spread_cm": 60,
+  "row_spacing_cm": 5,
+  "height_cm": 10,
+  "sun_level": "full_sun",
+  "family": "Portulacaceae",
+  "genus": "Portulaca",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

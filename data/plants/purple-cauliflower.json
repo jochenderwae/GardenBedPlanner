@@ -1,0 +1,24 @@
+{
+  "slug": "purple-cauliflower",
+  "common_name": "Purple Cauliflower",
+  "botanical_name": "Brassica oleracea var. botrytis",
+  "description": "Purple cauliflower is a cultivar of cauliflower that grows purple. Like regular cauliflower, it does not do well in hot weather. It's purple color comes from anthocyanins (the same antioxidants found in red wine). To retain the color, sprinkle with vinegar or lemon juice before cooking.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "spread_cm": 65,
+  "row_spacing_cm": 45,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "companions": [
+    {
+      "companion_slug": "ferry-morse-lavender-munstead",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    }
+  ]
+}

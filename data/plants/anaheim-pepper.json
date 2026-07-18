@@ -1,0 +1,60 @@
+{
+  "slug": "anaheim-pepper",
+  "common_name": "Anaheim Pepper",
+  "botanical_name": "Capsicum annuum",
+  "description": "Anaheim peppers are a mild variety of the New Mexico chile pepper cultivar No. 9.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off.",
+  "spread_cm": 40,
+  "row_spacing_cm": 40,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "water_needs": "~1 in/week",
+  "family": "Solanaceae",
+  "genus": "Capsicum",
+  "days_to_maturity": 72,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "rhubarb",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

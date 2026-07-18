@@ -1,0 +1,35 @@
+{
+  "slug": "green-zebra-tomato",
+  "common_name": "Green Zebra Tomato",
+  "botanical_name": "Solanum lycopersicum",
+  "description": "Green Zebra tomatoes are a tomato cultivar created by cross-breeding 4 different heirloom tomato varieties. The fruits are 4-6cm in diameter and have emerald skin with dark green vertical stripes. When ripe, the skin develops a yellow blush. Their flesh is bright green, tangy, and sweet. Green Zebras are great eaten raw or in salads. For larger yield and improved plant health, prune and stake tomatoes.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "spread_cm": 45,
+  "row_spacing_cm": 120,
+  "height_cm": 100,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "min_temperature_c": 15,
+  "max_temperature_c": 35,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "mint",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

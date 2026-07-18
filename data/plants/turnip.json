@@ -1,0 +1,33 @@
+{
+  "slug": "turnip",
+  "common_name": "Turnip",
+  "botanical_name": "Brassica rapa",
+  "description": "Turnips are smooth, round root vegetables 5-20 cm in diameter. They are often white below the soil line and bright purple or green above. Turnips usually have white flesh and a slightly sweet and bitter taste, similar to cabbage. The edible foliage tastes similar to mustard greens. Turnips are a cool-weather crop and do best as spring or fall plantings.",
+  "sowing_method": "Direct seed outdoors, thin to 10cm when seedlings are 3cm tall",
+  "spread_cm": 30,
+  "row_spacing_cm": 10,
+  "height_cm": 30,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "bonnie-fernleaf-dill-sfg",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

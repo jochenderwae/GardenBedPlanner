@@ -1,0 +1,26 @@
+{
+  "slug": "red-russian-kale",
+  "common_name": "Red Russian Kale",
+  "botanical_name": "Brassica napus pabularia",
+  "description": "Red Russian Kale is a type of kale with flat, toothed green leaves and purple stems. It can be harvested at the baby or adult stage. When harvested as a baby, it is often added to salad mixes. It is usually eaten raw or lightly cooked.",
+  "sowing_method": "Direct seed indoors (and transplant after hardening off seedlings) or outdoors",
+  "spread_cm": 30,
+  "row_spacing_cm": 45,
+  "height_cm": 65,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 6.0,
+  "soil_ph_max": 7.2,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

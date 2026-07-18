@@ -1,0 +1,23 @@
+{
+  "slug": "rose-geranium",
+  "common_name": "Rose Geranium",
+  "botanical_name": "Pelargonium graveolens",
+  "description": "Rose Geranium is a perennial, evergreen, flowering shrub native to South Africa, Zimbabwe, and Mozambique. It is sometimes called Stork's Bills because of the shape of its fruit. Rose Geranium is grown for its foliage, from which geranium essential oil is distilled. The oil is used in perfume and aromatherapy. Leaves are velvety and soft to the touch and the hermaphrodite flowers are pale pink to white. Leaves and flowers can have a strong rose scent or very little scent. Rose Geranium leaves can be added to salads, steeped into a tea, or used to flavor desserts, jams, vinegars, and pipe tobacco. The plant is frost-tender and cannot survive temperatures below -1.1°C. It can be grown in containers and brought indoors in cooler regions.",
+  "sowing_method": "Direct seed indoors or transplant cuttings in early summer",
+  "spread_cm": 100,
+  "height_cm": 150,
+  "sun_level": "full_sun",
+  "family": "Geraniaceae",
+  "genus": "Pelargonium",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

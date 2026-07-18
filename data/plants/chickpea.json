@@ -1,0 +1,23 @@
+{
+  "slug": "chickpea",
+  "common_name": "Chickpea",
+  "botanical_name": "Cicer arietinum",
+  "description": "Chickpeas are a cool-season annual legume in the Fabaceae family. They are native to the Middle East and Mediterranean. They can be sprouted indoors in 2-3 days for salads and fresh eating, or grown outside for their seeds. The upright plants do not require staking and grow to a height of about 50cm. They have small, feathery leaves. Flowers are white with blue, violet, or pink veins and form 2.5cm long oblong pods with 1-2 large, cream-colored seeds. Chickpeas can be picked while green and eaten fresh like snap peas, but they are most commonly harvested as a dried bean crop. Chickpeas are high in protein and drought-tolerant. They benefit from an inoculant at planting.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "row_spacing_cm": 30,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Cicer",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

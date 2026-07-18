@@ -1,0 +1,31 @@
+{
+  "slug": "okra",
+  "common_name": "Okra",
+  "botanical_name": "Abelmoschus esculentus",
+  "description": "Okra is a frost-tender annual grown for it's edible seed pods and, less commonly, it's leaves and stems. Plants can be green or red.",
+  "sowing_method": "Direct seed indoors or outside",
+  "spread_cm": 25,
+  "row_spacing_cm": 25,
+  "height_cm": 250,
+  "sun_level": "full_sun",
+  "family": "Malvaceae",
+  "genus": "Abelmoschus",
+  "is_edible": true,
+  "edible_parts": [
+    "seeds"
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

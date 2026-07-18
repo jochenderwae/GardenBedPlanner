@@ -1,0 +1,36 @@
+{
+  "slug": "echinacea",
+  "common_name": "Echinacea",
+  "botanical_name": "Echinacea angustifolia",
+  "row_spacing_cm": 53.3,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Asteraceae",
+  "genus": "Echinacea",
+  "days_to_maturity": 120,
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.2,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "yarrow",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "bee-balm",
+      "relationship": "good"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

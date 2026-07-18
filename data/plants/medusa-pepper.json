@@ -1,0 +1,23 @@
+{
+  "slug": "medusa-pepper",
+  "common_name": "Medusa Pepper",
+  "botanical_name": "Capsicum annuum",
+  "description": "Medusa peppers are an ornamental Capsicum annuum cultivar that produces 40-50 upright, twisted fruit that look like Medusa's twisted hair of snakes. Fruit are 5.1cm long, slightly curved, and ripen from green to ivory, yellow, orange, and red. Unlike many other ornamental peppers, Medusa peppers are very mild and sweet, with a Scoville rating of 1-1000 units. Plants are compact and grow well in containers.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "row_spacing_cm": 90,
+  "height_cm": 40,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Capsicum",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

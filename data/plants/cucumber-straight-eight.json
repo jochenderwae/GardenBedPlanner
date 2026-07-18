@@ -1,0 +1,23 @@
+{
+  "slug": "cucumber-straight-eight",
+  "common_name": "Cucumber, Straight Eight",
+  "botanical_name": "Cucumis sativus",
+  "description": "An award winning favorite, best picked when 20cm long for top flavor.",
+  "sowing_method": "Sow in average, well-drained soil in full sun in spring after danger of frost. Sow 4-6 seeds about 8cm apart in hills 90cm apart. Cover with 3cm of fine soil; firm lightly and keep evenly moist. Seedlings emerge in 7-14 days.",
+  "spread_cm": 8,
+  "row_spacing_cm": 90,
+  "sun_level": "full_sun",
+  "family": "Cucurbitaceae",
+  "genus": "Cucumis",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

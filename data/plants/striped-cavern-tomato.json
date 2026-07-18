@@ -1,0 +1,26 @@
+{
+  "slug": "striped-cavern-tomato",
+  "common_name": "Striped Cavern Tomato",
+  "botanical_name": "Solanum lycopersicum",
+  "description": "Striped Cavern is an heirloom tomato variety that produces medium-sized, thick-walled, hollow tomatoes similar to bell peppers. The tomatoes are often stuffed or added to fresh salsas. They have red skin with yellow and orange stripes and a sweet, mild taste. For larger yield and improved plant health, prune and stake plants.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "height_cm": 120,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "min_temperature_c": 15,
+  "max_temperature_c": 35,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

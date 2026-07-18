@@ -1,0 +1,25 @@
+{
+  "slug": "chinese-cabbage",
+  "common_name": "Chinese cabbage",
+  "botanical_name": "Brassica rapa",
+  "description": "Chinese Cabbage is a species in the Brassicaceae family with two distinct subgroups: 1) the Pekinensis group, or Napa Cabbage and 2) the Chinensis group, or Bok choy. Both groups are cultivars or subspecies of the turnip and are related to cabbage, broccoli, and cauliflower. Both groups are cool weather crops - more information for each is available in their individual entries.",
+  "sowing_method": "Direct seed indoors or outside",
+  "spread_cm": 30,
+  "row_spacing_cm": 2,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

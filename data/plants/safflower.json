@@ -1,0 +1,41 @@
+{
+  "slug": "safflower",
+  "common_name": "Safflower",
+  "botanical_name": "Carthamus tinctorius",
+  "description": "Safflower is a herbaceous, thistle-like, annual plant in the Asteraceae (Daisy) family that is grown for the vegetable oil extracted from its seeds. The plant is upright, with a central stem and spiny, coarse leaves. Each branch has 1-5 yellow, orange, or red flowers that contain 15-20 seeds per head. Safflower is native to arid climates with seasonal rain and has a deep taproot that enables it to thrive during droughts. It's ideal temperature range is 6.3 to 27.5°C. The oil extracted from it's seeds is flavorless and colorless and similar to sunflower seed oil. The flowers are sometimes used in cooking as a cheaper substitute for saffron. Harvest once seeds are thoroughly dry.",
+  "sowing_method": "Direct seed outdoors once soil temperature is above 10°C",
+  "spread_cm": 40,
+  "height_cm": 150,
+  "sun_level": "full_sun",
+  "family": "Asteraceae",
+  "genus": "Carthamus",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "barley-1",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "flax",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

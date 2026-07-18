@@ -1,0 +1,33 @@
+{
+  "slug": "feverfew",
+  "common_name": "feverfew",
+  "botanical_name": "Tanacetum parthenium",
+  "description": "Feverfew is a bushy short-lived perennial herb with small daisy-like flowers, used traditionally to prevent migraines and reduce fever. It self-seeds freely and grows easily in full sun to part shade. The bitter, aromatic leaves are the medicinal part, taken fresh or dried.",
+  "sun_level": "full_sun",
+  "family": "Asteraceae",
+  "genus": "Tanacetum",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "rose",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

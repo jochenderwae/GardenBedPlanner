@@ -1,0 +1,33 @@
+{
+  "slug": "black-cherry",
+  "common_name": "Black Cherry",
+  "botanical_name": "Prunus serotina",
+  "description": "The black cherry is a large native North American tree bearing small, dark, astringent fruit used for preserves, wine, and flavoring. Foragers and wildlife prize the fruit, and the wood is a premium furniture timber. Note that its leaves and pits contain cyanide compounds and are toxic to livestock.",
+  "sun_level": "half_sun",
+  "family": "Rosaceae",
+  "genus": "Prunus",
+  "soil_ph_min": 4.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "st-johns-wort",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

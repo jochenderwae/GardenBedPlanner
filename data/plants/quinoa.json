@@ -1,0 +1,29 @@
+{
+  "slug": "quinoa",
+  "common_name": "Quinoa",
+  "botanical_name": "Chenopodium quinoa subsp. quinoa",
+  "description": "Quinoa is a flowering plant in the Amaranth family. It is a herbaceous annual plant grown as a grain crop for its edible seeds. It is a pseudocereal rather than a true cereal because it is not a grass. Quinoa prefers cool weather, but can only tolerate light frosts. It is somewhat drought tolerant. Quinoa is ready for harvest when the plants are dry and the leaves have fallen off.",
+  "sowing_method": "Direct seed outdoors, thin to 10cm",
+  "row_spacing_cm": 10,
+  "sun_level": "full_sun",
+  "family": "Amaranthaceae",
+  "genus": "Chenopodium",
+  "is_edible": true,
+  "edible_parts": [
+    "leaves"
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

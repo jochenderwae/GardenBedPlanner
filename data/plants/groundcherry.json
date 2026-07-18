@@ -1,0 +1,50 @@
+{
+  "slug": "groundcherry",
+  "common_name": "Groundcherry",
+  "botanical_name": "Physalis longifolia",
+  "row_spacing_cm": 76.2,
+  "sun_level": "full_sun",
+  "water_needs": "~1.0 in/week",
+  "family": "Solanaceae",
+  "genus": "Physalis",
+  "days_to_maturity": 70,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "basil",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "corn",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "fennel",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

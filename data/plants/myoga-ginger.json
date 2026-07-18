@@ -1,0 +1,24 @@
+{
+  "slug": "myoga-ginger",
+  "common_name": "Myoga Ginger",
+  "botanical_name": "Zingiber mioga",
+  "description": "Myoga, or Japanese ginger, is a deciduous herbaceous perennial native to Japan, China, and southern Korea grown for it's edible flower buds (which are soft yellow or pink and grow at the base of the plant, just under the soil) and young spring shoots. Older shoots are poisonous. The plant is related to ginger, but more cold hardy, with a frost tolerance down to -16° C. Myoga Ginger spreads through rhizomes and can become invasive.",
+  "sowing_method": "Direct seed rhizomes outdoors",
+  "spread_cm": 60,
+  "row_spacing_cm": 60,
+  "height_cm": 120,
+  "sun_level": "half_sun",
+  "family": "Zingiberaceae",
+  "genus": "Zingiber",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

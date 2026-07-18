@@ -1,0 +1,23 @@
+{
+  "slug": "saffron",
+  "common_name": "Saffron",
+  "botanical_name": "Crocus sativus",
+  "description": "Saffron, or Saffron Crocus, is a perennial flowering plant grown for the red stigmas of its flowers, which are the spice Saffron. Saffron flowers are unique in that they bloom in autumn. Each flower has only 3 stigmas. It takes 50-60 saffron flowers to produce 1 tablespoon of saffron spice, making saffron the most expensive spice in the world. Stigmas are harvested as soon as the flower opens and then laid out to dry. Flowers are pale lilac to deep mauve and have a sweet, honey-like scent. Saffron is not self-fertile and is propagated through it's roots, which are called corms or bulbs. The first year a corm is planted, it will produce a single flower. By the third year, the corm will produce eight or more blooms. Corms can tolerate frosts as low as -10° C and short periods of snow cover. In colder regions, corms can be dug up after the first two or three frosts, stored in a crate with peat moss over the winter, and replanted in spring. Saffron is used in a wide variety of cuisines. It has a sweet taste with grassy or hay-like notes and gives dishes a brilliant yellow-orange color. \"Fake\" or \"American\" Saffron refers to Safflower (Carthamus tinctorius), whose flower heads can be added to dishes to mimic Saffron's color. Do not confuse Saffron with Autumn or Meadow Crocus (Colchicum autumnale), which is an unrelated, poisonous plant with 6 stigmas instead of 3.",
+  "sowing_method": "Direct seed corms/bulbs in spring or autumn",
+  "spread_cm": 10,
+  "row_spacing_cm": 15,
+  "height_cm": 25,
+  "sun_level": "full_sun",
+  "family": "Iridaceae",
+  "genus": "Crocus",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

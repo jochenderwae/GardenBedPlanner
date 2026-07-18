@@ -1,0 +1,19 @@
+{
+  "slug": "galangal",
+  "common_name": "Galangal",
+  "botanical_name": "Alpinia galanga",
+  "description": "Galangal is a tropical rhizome in the ginger family, sharper and more citrusy than common ginger. It is a foundational aromatic in Thai, Indonesian, and Malaysian cooking, used fresh in curry pastes and soups. Like ginger, it grows from rhizome pieces and needs warmth, humidity, and a long growing season.",
+  "family": "Zingiberaceae",
+  "genus": "Alpinia",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

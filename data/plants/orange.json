@@ -1,0 +1,23 @@
+{
+  "slug": "orange",
+  "common_name": "Orange",
+  "botanical_name": "Citrus × sinensis",
+  "description": "The Orange is a tropical evergreen tree that produces round orange fruits, also known as \"Oranges.\" Many species are self-pollinating, but having multiple trees for cross pollination can improve fruit size. Trees need temperatures between 21-32° C to grow properly and produce fruit. Oranges can usually withstand winter temperatures down to -6.1° C without experiencing damage to their leaves or trunk. Trees will bear fruit 2-3 years after transplanting.8",
+  "sowing_method": "Transplant grafted sapling",
+  "spread_cm": 300,
+  "row_spacing_cm": 350,
+  "height_cm": 365,
+  "sun_level": "full_sun",
+  "family": "Rutaceae",
+  "genus": "Citrus",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "slug": "baby-bear-pumpkin",
+  "common_name": "baby bear pumpkin",
+  "botanical_name": "Cucurbita pepo",
+  "description": "Baby bear pumpkins have deep orange fruits, weighting 600g to 1 kg fruits with slender, sturdy, easy to grip handles. In addition to its decorative use, the flesh is good for pies, and the semi hull-less seeds are suitable for toasted snacks. The yield potential is high, and the fruits have outstanding storage qualities.",
+  "family": "Cucurbitaceae",
+  "genus": "Cucurbita",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

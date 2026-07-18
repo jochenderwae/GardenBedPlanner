@@ -1,0 +1,25 @@
+{
+  "slug": "carrots",
+  "common_name": "You Can Grow Anything",
+  "botanical_name": "Daucus carota",
+  "description": "Add this information",
+  "sowing_method": "Direct Seed",
+  "row_spacing_cm": 1,
+  "height_cm": 1,
+  "sun_level": "full_sun",
+  "family": "Apiaceae",
+  "genus": "Daucus",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

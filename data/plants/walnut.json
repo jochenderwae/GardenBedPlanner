@@ -1,0 +1,41 @@
+{
+  "slug": "walnut",
+  "common_name": "Walnut",
+  "botanical_name": "Juglans regia",
+  "description": "Walnuts are the fruit of any tree in the Juglans genus. Trees are large and deciduous, with broad crowns and short trunks. All walnuts need full sunlight to grow well. Walnuts are dioecious, meaning they have both male and female flowers on the same tree and are therefore self-pollinating. However, the flowers do not always bloom at the same time. This problem can be solved by planting another walnut cultivar upwind whose catkins shed pollen at the same time the female flowers of the primary tree are open. Walnuts, like Hickories, contain a chemical called juglone, which inhibits the growth of many other plants. They are also difficult to grow other plants with because mature trees use a lot of water and shade large areas around them. The plants listed as companion plants can tolerate juglone. Grafted trees will begin to produce fruit one year after transplanting. Trees grown from seed will take 8-10 years to begin bearing fruit and may not bear true to the parent if trees have been cross-pollinated. Direct seeding is most effective when seeds are sown outdoors in autumn. Winter temperatures will break the seed's dormancy. If starting from seed indoors, pre-soak, scarify, and cold-stratify before planting to break dormancy.",
+  "sowing_method": "Transplant grafted sapling or direct seed outdoors",
+  "spread_cm": 1800,
+  "height_cm": 1500,
+  "sun_level": "full_sun",
+  "family": "Juglandaceae",
+  "genus": "Juglans",
+  "soil_ph_min": 6.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "elderberry",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "pear",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

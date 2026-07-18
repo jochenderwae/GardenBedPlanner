@@ -1,0 +1,32 @@
+{
+  "slug": "sugar-maple",
+  "common_name": "sugar maple",
+  "botanical_name": "Acer saccharum",
+  "description": "The sugar maple is a large, long-lived hardwood famous as the primary source of maple syrup, tapped in late winter for its sweet rising sap. It also yields prized timber and brilliant fall color. Trees take decades to reach tapping size but then produce for generations, making them a classic long-horizon homestead planting.",
+  "family": "Sapindaceae",
+  "genus": "Acer",
+  "soil_ph_min": 3.7,
+  "soil_ph_max": 7.9,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "st-johns-wort",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

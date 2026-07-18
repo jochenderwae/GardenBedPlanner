@@ -1,0 +1,38 @@
+{
+  "slug": "melon-2",
+  "common_name": "Melon (Honeydew/Specialty)",
+  "botanical_name": "Cucumis melo",
+  "description": "Melons are a group of species in the Cucurbitaceae family. They produce sweet fruits that grow on sprawling vines. Types of melons include: watermelons, cantaloupe, honeydew, casaba, and crenshaw. More growing information is available in individual species entries.",
+  "row_spacing_cm": 106.7,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Cucurbitaceae",
+  "genus": "Cucumis",
+  "days_to_maturity": 105,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "radish",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

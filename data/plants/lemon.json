@@ -1,0 +1,19 @@
+{
+  "slug": "lemon",
+  "common_name": "You Can Grow Anything",
+  "botanical_name": "Citrus × limon",
+  "description": "The lemon is a small evergreen citrus tree bearing tart, aromatic yellow fruit used for juice, zest, and preserving. In mild climates trees flower and fruit nearly year-round; in colder zones they grow well in containers brought indoors for winter. They want full sun, well-drained soil, and protection from frost.",
+  "family": "Rutaceae",
+  "genus": "Citrus",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

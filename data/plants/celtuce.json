@@ -1,0 +1,23 @@
+{
+  "slug": "celtuce",
+  "common_name": "Celtuce",
+  "botanical_name": "Lactuca sativa var asparagina",
+  "description": "Celtuce, or stem lettuce, is a lettuce cultivar bred in China for its long, thick, flavorful stalk. The stem is topped with broad, oval-shaped green leaves. The leaves have a bitter taste and can be added to soups, salads, or stews. The stem's rough skin should be peeled. It's crisp, delicate, white interior tastes like a cross between celery and lettuce. It can be eaten raw or cooked. Grilling and roasting reveal a mild nutty flavor. Like most lettuce, Celtuce is a cool weather crop, but it bolts less quickly. Harvest stems when they are 2-7cm in diameter and 20-45cm tall. Larger stems will be woodier and require longer cooking time.",
+  "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
+  "row_spacing_cm": 30,
+  "height_cm": 25,
+  "sun_level": "half_sun",
+  "family": "Asteraceae",
+  "genus": "Lactuca",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

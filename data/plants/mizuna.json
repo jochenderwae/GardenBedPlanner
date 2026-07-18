@@ -1,0 +1,26 @@
+{
+  "slug": "mizuna",
+  "common_name": "Mizuna",
+  "botanical_name": "Brassica rapa 'nipposinica'",
+  "description": "Mizuna is a cool weather salad green in the Brassica family. It has a mild, slightly peppery taste and heavily serrated, feathery leaves. Leaves can be harvested at their baby or adult sizes, between 7 and 15cm. Be sure to harvest before the plant flowers. Leaves can be eaten raw in salads and on sandwiches, sautéed, or stir-fried.",
+  "sowing_method": "Direct seed outdoors",
+  "spread_cm": 30,
+  "row_spacing_cm": 2,
+  "height_cm": 40,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

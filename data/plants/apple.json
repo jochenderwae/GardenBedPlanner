@@ -1,0 +1,79 @@
+{
+  "slug": "apple",
+  "common_name": "Apple",
+  "botanical_name": "Malus pumila",
+  "description": "The apple is a deciduous tree in the Rose family grown for it's sweet fruit. The apple originated in Central Asia and has spread across the world. There are now over 7,500 cultivars bred for a variety of climates and characteristics. Apples are propagated through grafting because seeds do not breed true.",
+  "sowing_method": "Bare root tree",
+  "spread_cm": 500,
+  "height_cm": 300,
+  "sun_level": "full_sun",
+  "water_needs": "~2.0 in/week",
+  "family": "Rosaceae",
+  "genus": "Malus",
+  "days_to_maturity": 1000,
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "comfrey",
+      "relationship": "good",
+      "notes": "French marigold inhibits codling moth but also its insect enemies, and fails to reduce damage to apples. [ 82 ]"
+    },
+    {
+      "companion_slug": "chives",
+      "relationship": "good",
+      "notes": "French marigold inhibits codling moth but also its insect enemies, and fails to reduce damage to apples. [ 82 ]"
+    },
+    {
+      "companion_slug": "nasturtium",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "daffodil",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cedar",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "walnut",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "clover",
+      "relationship": "good",
+      "notes": "French marigold inhibits codling moth but also its insect enemies, and fails to reduce damage to apples. [ 82 ]"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "good",
+      "notes": "French marigold inhibits codling moth but also its insect enemies, and fails to reduce damage to apples. [ 82 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

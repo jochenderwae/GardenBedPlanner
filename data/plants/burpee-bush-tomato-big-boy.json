@@ -1,0 +1,28 @@
+{
+  "slug": "burpee-bush-tomato-big-boy",
+  "common_name": "Burpee Bush Tomato Big Boy",
+  "botanical_name": "Solanum lycopersicum",
+  "description": "Heirloom tomatoes are open-pollinated, non-hybrid cultivars that have usually been passed down through several generations because of valued characteristics like flavor and appearance. Heirlooms are sweeter and more richly flavored than conventional tomatoes. They come in a wide variety of shapes, sizes, and colors, each with it's own unique flavor. They are often more disease-resistant, but have a shorter shelf life than conventional tomatoes. Some cultivars can be prone to cracking. Heirlooms often have a higher water content than conventional tomatoes and are often eaten raw with freshly ground salt and pepper, fresh basil, olive oil, and mozzarella.",
+  "sowing_method": "Direct seed indoors and transplant seedlings outside after hardening off",
+  "spread_cm": 45,
+  "row_spacing_cm": 45,
+  "height_cm": 45,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "min_temperature_c": 15,
+  "max_temperature_c": 35,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

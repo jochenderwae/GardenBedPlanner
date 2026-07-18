@@ -1,0 +1,23 @@
+{
+  "slug": "yardlong-bean",
+  "common_name": "Yardlong Bean",
+  "botanical_name": "Vigna unguiculata subsp. sesquipedalis",
+  "description": "The Yardlong, or Asparagus, Bean is a pole bean that produces slender, 45cm long bean pods. Beans have a nutty flavor and can be steamed, sautéed, or stir-fried. The pods can also be left on the plant to mature and then shelled and used as dried beans. Plants need to be trellised and inoculation before planting may increase yields.",
+  "sowing_method": "Direct seed outdoors, 8cm apart. Thin seedlings to 30cm.",
+  "spread_cm": 45,
+  "row_spacing_cm": 60,
+  "height_cm": 270,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Vigna",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

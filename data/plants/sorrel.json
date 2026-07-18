@@ -1,0 +1,30 @@
+{
+  "slug": "sorrel",
+  "common_name": "Sorrel",
+  "botanical_name": "Rumex acetosa",
+  "description": "Sorrel is a hardy perennial herb that produces some of the earliest spring and latest fall greens. The plant has deep roots and long, wide, tapering leaves with juicy stems. Leaves have a sour, tangy, lemony taste and are delicious in salads, soups, and sandwiches. In the summer, Sorrel will bolt, producing reddish-green flowers and setting seed. This bolting can be reduced by harvesting consistently. Even if Sorrel sets seed in the summer, it will produce another set of edible leaves in the fall.",
+  "sowing_method": "Direct seed outdoors or root division",
+  "spread_cm": 45,
+  "row_spacing_cm": 30,
+  "height_cm": 60,
+  "sun_level": "full_sun",
+  "family": "Polygonaceae",
+  "genus": "Rumex",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

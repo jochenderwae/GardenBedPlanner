@@ -1,0 +1,37 @@
+{
+  "slug": "olive",
+  "common_name": "Olive",
+  "botanical_name": "Olea europaea",
+  "description": "The Olive is an evergreen shrub or tree native to the Mediterranean, Asia, and Africa that is grown for its fruits, which are also known as olives. The plant is short and squat, with a gnarled trunk, rounded crown, oblong silvery green leaves, and shallow roots. Olive trees produce fruit in their third or fourth year from small, white, feathery flowers that bloom on the previous year's wood. There are hundreds of cultivars of olives, most of which are self-sterile and require a secondary cultivar nearby for cross-pollination. Some cultivars are bred for oil production, others for fresh eating. Trees are drought-tolerant and require about 200 hours of temperatures below 10° C to produce flowers. Temperatures below -5.5° C can kill young trees, mature trees cannot survive temperatures below to -9.4° C. Olive fruits are small, oblong drupes 1-2.5 cm long. They are harvested when green to purple and are usually pickled or cured for fresh eating to reduce their bitterness. Olives can be grown in containers and indoors in cooler regions.",
+  "sowing_method": "Transplant grafted sapling",
+  "spread_cm": 600,
+  "row_spacing_cm": 500,
+  "height_cm": 760,
+  "sun_level": "full_sun",
+  "family": "Oleaceae",
+  "genus": "Olea",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "rosemary",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

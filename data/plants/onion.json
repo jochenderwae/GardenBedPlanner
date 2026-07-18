@@ -1,0 +1,98 @@
+{
+  "slug": "onion",
+  "common_name": "Onion",
+  "botanical_name": "Allium cepa",
+  "description": ".",
+  "sowing_method": "Start indoors",
+  "spread_cm": 15,
+  "row_spacing_cm": 15,
+  "height_cm": 1,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Amaryllidaceae",
+  "genus": "Allium",
+  "days_to_maturity": 100,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "good",
+      "notes": "See Alliums entry for more info"
+    },
+    {
+      "companion_slug": "beets",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "chard",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "bad",
+      "notes": "See Alliums entry for more info"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good",
+      "mechanism": "pest-deterrent",
+      "notes": "The strong sulfur compounds in onions deter cabbage loopers, cabbage worms, and cabbage maggots."
+    },
+    {
+      "companion_slug": "chamomile",
+      "relationship": "good",
+      "mechanism": "flavor-enhancement",
+      "notes": "Chamomile is thought to improve the flavor and growth of onions when planted nearby. | See Alliums entry for more info"
+    },
+    {
+      "companion_slug": "dill",
+      "relationship": "good",
+      "notes": "See Alliums entry for more info"
+    },
+    {
+      "companion_slug": "summer-savory",
+      "relationship": "good",
+      "notes": "See Alliums entry for more info"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

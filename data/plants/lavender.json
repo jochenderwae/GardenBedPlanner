@@ -1,0 +1,58 @@
+{
+  "slug": "lavender",
+  "common_name": "Lavender",
+  "botanical_name": "Lavandula stoechas",
+  "row_spacing_cm": 76.2,
+  "sun_level": "full_sun",
+  "water_needs": "~0.25 in/week",
+  "family": "Lamiaceae",
+  "genus": "Lavandula",
+  "days_to_maturity": 100,
+  "soil_ph_min": 4.5,
+  "soil_ph_max": 5.0,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "rose",
+      "relationship": "good"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "butterflies"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "hummingbirds"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "bees"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

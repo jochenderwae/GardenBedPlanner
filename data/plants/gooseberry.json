@@ -1,0 +1,26 @@
+{
+  "slug": "gooseberry",
+  "common_name": "Gooseberry",
+  "botanical_name": "Ribes uva-crispa",
+  "description": "Gooseberries are a perennial shrub in the Ribes genus. They are closely related to the currant and native to Europe, Asia, and northwestern Africa. Gooseberries have a central trunk surrounded by branches covered in sharp spines and lobed leaves. The bell-shaped flowers produce sour-sweet, semi-translucent berries that can be green, red, yellow, or white. The plants can be grown as shrubs or trained to grow upright against a wall or support as \"Cordons\". Dimensions given below are for the shrub. Gooseberries should be pruned in late winter before new growth appears to increase yields, reduce susceptibility to disease, and make harvesting easier. Gooseberries are propagated through cuttings or young plants. They are self-fertile and will produce fruit in their third year and live for 12-15 years. Some varieties ripen to red, while others remain green. Berries will be slightly soft when ripe. Netting the bushes will prevent birds from eating all the ripe fruit. Harvesting is a bit of an adventure due to the spines on the branches. Under-ripe, green fruit can be baked into pies. Ripe gooseberries can be eaten raw or made into wine or jam.",
+  "sowing_method": "Cuttings",
+  "spread_cm": 150,
+  "row_spacing_cm": 150,
+  "height_cm": 150,
+  "sun_level": "half_sun",
+  "family": "Grossulariaceae",
+  "genus": "Ribes",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

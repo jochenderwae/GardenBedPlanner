@@ -1,0 +1,79 @@
+{
+  "slug": "corn",
+  "common_name": "Corn",
+  "botanical_name": "Zea mays",
+  "description": "Corn is a large grain plant, or tall grass, first domesticated about 10,000 years ago by indigenous peoples in Southern Mexico. The leafy stalk produces ears after pollination. Depending on the variety, the corn can be eaten fresh, or dried and ground into cornmeal.",
+  "sowing_method": "Direct seed outdoors",
+  "spread_cm": 60,
+  "row_spacing_cm": 76,
+  "height_cm": 290,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Poaceae",
+  "genus": "Zea",
+  "days_to_maturity": 80,
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "succession_enabled": true,
+  "succession_interval_days": 2,
+  "succession_max_sowings": 3,
+  "companions": [
+    {
+      "companion_slug": "geranium",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "wine-cap-mushroom",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "squash-summer",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "squash-winter",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cucumber",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

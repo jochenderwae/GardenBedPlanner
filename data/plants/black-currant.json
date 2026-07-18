@@ -1,0 +1,33 @@
+{
+  "slug": "black-currant",
+  "common_name": "Black Currant",
+  "botanical_name": "Ribes nigrum",
+  "description": "Black currants are perennial woody shrubs that produce clusters of glossy black, sweet-tart, piquant berries that are smaller than blueberries and very high in Vitamin C. They prefer damp, fertile soils, and are winter hardy. The berries can be eaten raw, but are often cooked into sweet and savory dishes, or made into jams, syrups, juice, and wine.",
+  "sowing_method": "Cuttings",
+  "spread_cm": 120,
+  "row_spacing_cm": 150,
+  "height_cm": 150,
+  "sun_level": "half_sun",
+  "family": "Grossulariaceae",
+  "genus": "Ribes",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "straggly-gooseberry",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "slug": "pineapple-sage",
+  "common_name": "Pineapple Sage",
+  "botanical_name": "Salvia elegans",
+  "description": "Pineapple, or Tangerine, Sage is a tender perennial shrub in the Lamiaceae (Mint) family that is native to South America. It has veined, pale yellow-green leaves that resemble mint and smell like pineapple when bruised. When the days begin to shorten, groups of 6-12 tubular, brilliant red flowers bloom and attract hummingbirds and butterflies. Pineapple Sage is grown for culinary and medicinal use, as an ornamental, and to attract and feed hummingbirds. Flowers are edible, and leaves can be added to beverages, salsas, and salads. It is used in Mexican traditional medicine to treat anxiety and high blood pressure. It's an excellent companion plant because it attracts pollinators and deters many pests. When planted with strawberries, it will enhance their flavor. Pineapple Sage is cold hardy to -6.6° C and can be grown in containers in cooler regions.",
+  "sowing_method": "Cuttings",
+  "spread_cm": 120,
+  "row_spacing_cm": 120,
+  "height_cm": 120,
+  "sun_level": "full_sun",
+  "family": "Lamiaceae",
+  "genus": "Salvia",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "broccoli",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "brussels-sprouts",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "kale-1",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "kohlrabi",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "strawberry",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "tiny-tim-tomato",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

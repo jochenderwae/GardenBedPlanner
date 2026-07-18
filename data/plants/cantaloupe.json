@@ -1,0 +1,54 @@
+{
+  "slug": "cantaloupe",
+  "common_name": "Cantaloupe",
+  "botanical_name": "Cucumis melo var. cantalupo",
+  "description": "Cantaloupes are round melons that grow on vines and have sweet, firm, juicy, orange flesh. The rind is light-grey and reticulated (or covered in a \"net-like\" pattern).",
+  "sowing_method": "Sow 2-3 seeds per peat pot indoors and transplant peat pots directly into soil when soil is warm. Thin to 1 seedling.",
+  "spread_cm": 150,
+  "row_spacing_cm": 91.4,
+  "height_cm": 40,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Cucurbitaceae",
+  "genus": "Cucumis",
+  "days_to_maturity": 80,
+  "succession_enabled": true,
+  "succession_interval_days": 3,
+  "succession_max_sowings": 2,
+  "companions": [
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "radish",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "slug": "salad-burnet",
+  "common_name": "Salad Burnet",
+  "botanical_name": "Sanguisorba minor",
+  "description": "Salad Burnet is an herbaceous plant in the Rosaceae (Rose) family that is used in salads, dressings, beverages, and added to sandwiches. The plant has an upright stem, deeply toothed leaves, and thimble-shaped crimson flowers. Leaves have a light, nutty cucumber flavor. The youngest leaves are used, since older leaves can be more bitter. Remove flowers and cut plants back regularly to keep a steady supply of fresh young leaves. Salad Burnet is a perennial in USDA Hardiness zones 4-8, and can be grown as a cool-season annual outside of those zones. It is drought-tolerant and can be grown in containers.",
+  "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
+  "spread_cm": 30,
+  "row_spacing_cm": 45,
+  "height_cm": 40,
+  "sun_level": "full_sun",
+  "family": "Rosaceae",
+  "genus": "Sanguisorba",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

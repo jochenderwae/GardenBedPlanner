@@ -1,0 +1,26 @@
+{
+  "slug": "common-hop",
+  "common_name": "common hop",
+  "botanical_name": "Humulus lupulus",
+  "description": "The common hop is a vigorous perennial climbing vine grown for its cone-shaped flowers, which give beer its bitterness and aroma. Bines can climb twenty feet or more in a season and die back to the crown each winter. Hops prefer full sun, deep soil, and sturdy vertical support.",
+  "sun_level": "half_sun",
+  "family": "Cannabaceae",
+  "genus": "Humulus",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

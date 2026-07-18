@@ -1,0 +1,33 @@
+{
+  "slug": "red-pointed-cabbage",
+  "common_name": "Red Pointed Cabbage",
+  "botanical_name": "Brassica oleracea var. capitata",
+  "description": "Pointed red cabbage is a type of red cabbage with a pointed head. It's leaves have a softer texture and sweeter taste and are more open than typical cabbage. It can be added to stir-fries and casseroles, boiled, sautéed, or fermented into sauerkraut.",
+  "sowing_method": "Direct seed indoors (and transplant seedlings after hardening off) or outdoors",
+  "spread_cm": 30,
+  "row_spacing_cm": 30,
+  "height_cm": 50,
+  "sun_level": "full_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "thyme",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

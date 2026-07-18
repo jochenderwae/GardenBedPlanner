@@ -1,0 +1,54 @@
+{
+  "slug": "anise",
+  "common_name": "Anise",
+  "botanical_name": "Pimpinella anisum",
+  "description": "Anise is an annual flowering plant in the family Apiaceae whose seeds have a licorice-like flavor and are used to season teas, baked goods, and liquor. Anise was used in traditional European herbalism to treat flatulence. The plant has groupings of small white flowers and can also be grown as an ornamental. Although their names and flavors are similar, Anise is separate from Anise Hyssop (Agastache foeniculum), which is a member of the Mint family and Star Anise (Illicium verum), a mid-sized evergreen tree that produces star-shaped, licorice-flavored pericaps on its fruits.",
+  "sowing_method": "Direct seed outdoors and thin seedlings to 15cm. Does not transplant well due to taproot.",
+  "row_spacing_cm": 15,
+  "height_cm": 65,
+  "sun_level": "full_sun",
+  "family": "Apiaceae",
+  "genus": "Pimpinella",
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "coriander",
+      "relationship": "good",
+      "notes": "Not to be confused with star anise which is an entirely different species."
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "bees"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "butterflies"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "hummingbirds [ 85 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

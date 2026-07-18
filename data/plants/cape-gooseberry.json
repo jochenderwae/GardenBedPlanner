@@ -1,0 +1,24 @@
+{
+  "slug": "cape-gooseberry",
+  "common_name": "Cape Gooseberry",
+  "botanical_name": "Physalis peruviana",
+  "description": "Cape Gooseberries, or Physalis, are a plant species in the genus Physalis and family Solanaceae. They have slightly velvety heart-shaped leaves and produce smooth bright yellow or orange berries wrapped in a papery husk or calyx. They are originally from Peru and are related to tomatillos and husk/ground cherries. Cape Gooseberries grow well without fertilizer and in sandy to poor soils, but they need to be protected from wind. The fruit is sweet with a mildly tart flavor, tastes a bit like pineapple, and can be eaten raw, made into jams, or baked into pies. Unripe fruits are poisonous, harvest when the husk has lost color and dried out.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off.",
+  "spread_cm": 100,
+  "row_spacing_cm": 50,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Physalis",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

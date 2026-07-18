@@ -1,0 +1,61 @@
+{
+  "slug": "oregano",
+  "common_name": "Oregano",
+  "botanical_name": "Origanum onites",
+  "row_spacing_cm": 53.3,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Lamiaceae",
+  "genus": "Origanum",
+  "days_to_maturity": 80,
+  "is_edible": false,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "tomato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "pepper-bell",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "pumpkin",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "basil",
+      "relationship": "good",
+      "notes": "Provides ground cover and much-needed humidity for pepper plants if allowed to spread among them. Because it attracts syrphidae, it reduces aphids through predation. [ 65 ]"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "hoverflies/syrphidae [ 65 ]"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "aphids [ 65 ]"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

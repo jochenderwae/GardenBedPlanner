@@ -1,0 +1,33 @@
+{
+  "slug": "choy-sum",
+  "common_name": "Choy Sum",
+  "botanical_name": "Brassica rapa var. parachinensis",
+  "description": "Choy Sum, or Yau Choy, is a cool season vegetable in the Brassicaceae family. It has large flat leaves, slender stems, and tiny yellow flower buds. All parts of the plant can be eaten - leaves are added raw to salads, and the whole plant can be steamed or stir-fried. It's flavor is a cross between spinach and cabbage, and it is sometimes described as a milder, less bitter version of Broccoli Raab. Green varieties are not frost-tolerant, but purple ones can withstand temperatures below 0°C. It is sometimes called Yu Choi when harvested without flowers, and Yu Choi Sum when harvested with flowers.",
+  "sowing_method": "Direct seed outdoors",
+  "spread_cm": 30,
+  "row_spacing_cm": 15,
+  "height_cm": 35,
+  "sun_level": "half_sun",
+  "family": "Brassicaceae",
+  "genus": "Brassica",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 8.0,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "german-chamomile",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

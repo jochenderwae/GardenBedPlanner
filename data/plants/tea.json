@@ -1,0 +1,34 @@
+{
+  "slug": "tea",
+  "common_name": "Tea",
+  "botanical_name": "Camellia sinensis",
+  "description": "Tea is an evergreen shrub or small tree cultivated for its leaves and leaf buds, which are made into tea. There are hundreds to thousands of tea cultivars. Tea is native to the cool, humid, tropical highlands of East Asia, India, and Southeast Asia. Plants have 4-5cm long leaves, yellow-white flowers, and strong taproots. Tea plants can grow to 10m, but are pruned to 2m or shorter in cultivation for ease of harvest. Young, light green leaves are preferred for tea. Buds and the first two to three leaves are harvested every one to two weeks. White Tea, the least processed and oxidized tea, is highest in antioxidants and lowest in caffeine. Green tea is made by steaming or frying and then drying leaves. Oolong is partially fermented and then bruised. Black tea is fully fermented, giving it the highest amounts of caffeine. Pu-erh tea is fermented a second time after it is dried. Tea plants are not self-fertile. They do best in tropical to subtropical regions where temperatures are between 13-30° C and the annual rainfall is at least 127cm. Tea plants produce better without shade, but need shade to keep air cool in hot periods.",
+  "sowing_method": "Cuttings or direct seed indoors",
+  "spread_cm": 800,
+  "height_cm": 1000,
+  "sun_level": "half_sun",
+  "family": "Theaceae",
+  "genus": "Camellia",
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "ice-cream-bean",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

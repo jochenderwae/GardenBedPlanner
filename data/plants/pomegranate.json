@@ -1,0 +1,42 @@
+{
+  "slug": "pomegranate",
+  "common_name": "Pomegranate",
+  "botanical_name": "Punica granatum",
+  "description": "Pomegranates are deciduous shrubs or small trees in the Lythraceae family that bear fruit of the same name. They are native to the region between contemporary Iran and India, prefer semi-arid climates, and are drought-tolerant once established. Trees have multiple spiny branches, glossy oblong leaves, and can live for up to 200 years. Flowers are trumpet-shaped, bright red, and 3cm wide. Fruit is 5-12 cm in diameter, between the size of a lemon and a grapefruit. Pomegranates have a rounded shape, thick reddish skin, and a persistent calyx. Inside the fruit, 200-1400 seeds are embedded in a white, spongy membrane. Each seed is surrounded in a juicy edible sac that can be deep red, purple, or white. The juice is rich and sweet, but the seeds are bitter. There are over 500 cultivars, some of which are grown solely for ornamental purposes. Pomegranates need long, hot, dry summers with temperatures between 32-37° C for fruit to ripen. They like cool winters, but cannot survive temperatures at or below -11.11º C. Fruit ripens 6-7 months after flowering and, once ripe, makes a metallic sound when tapped. Pomegranates cannot be ripened off the tree. Overripe fruit will crack. Trees begin to bear fruit when they are 5 years old.",
+  "sowing_method": "Hardwood cuttings or air layering",
+  "spread_cm": 450,
+  "row_spacing_cm": 550,
+  "height_cm": 800,
+  "sun_level": "full_sun",
+  "family": "Lythraceae",
+  "genus": "Punica",
+  "soil_ph_min": 6.0,
+  "soil_ph_max": 6.9,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "burpee-cosmos-bright-light",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "mint",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

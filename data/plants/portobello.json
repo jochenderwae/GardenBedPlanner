@@ -1,0 +1,14 @@
+{
+  "slug": "portobello",
+  "common_name": "Portobello",
+  "botanical_name": "Agaricus bisporus",
+  "description": "Portobello mushrooms are the mature version of white button mushrooms. They have a meaty flavor and are delicious grilled, sautéed, stuffed, and in soups and stir frys. To grow Portobellos, you will need portobello spores and partially decomposed compost and peat moss. They can be grown outside or indoors. Portobellos can be grown indoors year-round because temperature, moisture, and light can be controlled.",
+  "sowing_method": "Sprinkle spores on surface of compost and peat moss, gently mix in, and press down",
+  "sun_level": "shadow",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    }
+  ]
+}

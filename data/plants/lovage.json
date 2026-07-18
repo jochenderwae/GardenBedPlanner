@@ -1,0 +1,47 @@
+{
+  "slug": "lovage",
+  "common_name": "Lovage",
+  "botanical_name": "Levisticum officinale",
+  "description": "Lovage is a perennial herb that tastes like an intensified cross between celery and parsley with a hint of anise. A member of Apiaceae family, it is related to carrots and celery. The leaves, roots, and young stems are edible. Leaves and hollow, thick stems can be added to salads, soups, and poultry dishes. The seeds can be used as a spice similar to fennel seeds. Lovage is also used as a companion crop because it's flowers attract beneficial insects like bees, hoverflies, lacewing larva, lady beetles, and parasitic wasps. Leaves can be harvested the first year, whole stems the second year.",
+  "sowing_method": "Direct seed (indoors in early spring, outdoors in late spring or fall)",
+  "spread_cm": 80,
+  "row_spacing_cm": 60,
+  "height_cm": 180,
+  "sun_level": "full_sun",
+  "family": "Apiaceae",
+  "genus": "Levisticum",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "rhubarb",
+      "relationship": "bad",
+      "notes": "Is thought to improve the health of almost all plants, like borage and geraniums, is considered a \"magic bullet\" of companion planting"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "ichneumonid wasps"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "ground beetles (good)"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

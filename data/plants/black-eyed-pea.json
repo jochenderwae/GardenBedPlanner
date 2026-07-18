@@ -1,0 +1,24 @@
+{
+  "slug": "black-eyed-pea",
+  "common_name": "Black-Eyed Pea",
+  "botanical_name": "Vigna unguiculata subsp. unguiculata",
+  "description": "Black-eyed peas are a subspecies of the cowpea. They are grown for their medium-sized, edible bean. The beans are often pale-colored with an \"eye\" or black spot. Depending on the variety, the eye can also be brown, red, pink, or green. The peas are green when freshly shelled and turn brown or buff as they dry. Black-eyed peas are drought-tolerant, love warm weather, and benefit from an inoculant at planting. They add nitrogen to the soil and their nectar-rich blooms attract many pollinators. Black-eyed peas have a high nutritional value and are widely used in Southern U.S. cuisine.",
+  "sowing_method": "Direct seed outdoors in warm soil, thin to 25cm apart when seedlings are 4cm high",
+  "spread_cm": 25,
+  "row_spacing_cm": 6,
+  "height_cm": 45,
+  "sun_level": "full_sun",
+  "companions": [
+    {
+      "companion_slug": "okra",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    }
+  ]
+}

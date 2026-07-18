@@ -1,0 +1,84 @@
+{
+  "slug": "pumpkin",
+  "common_name": "Pumpkin",
+  "botanical_name": "Cucurbita pepo",
+  "description": "Pumpkins are squash cultivars that are round to oval in shape with thick, slightly ribbed skin that varies from deep yellow to orange in color. Their flesh ranges from yellow to gold and has large seeds. Like other members of the Cucurbitaceae family, they grow on sprawling vines. Different varieties of pumpkins are grown for food or decoration.",
+  "sowing_method": "Direct seed indoors (and transplant outside after seedlings are hardened off) or outdoors",
+  "row_spacing_cm": 152.4,
+  "sun_level": "full_sun",
+  "water_needs": "~1.5 in/week",
+  "family": "Cucurbitaceae",
+  "genus": "Cucurbita",
+  "days_to_maturity": 105,
+  "is_edible": true,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "companions": [
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-bush",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "marigold",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "nasturtium",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "buckwheat",
+      "relationship": "good",
+      "notes": "Radishes can be used as a trap crop against flea beetles, cucurbita can be used in the Three Sisters technique. Nasturtiums repel squash bugs."
+    },
+    {
+      "companion_slug": "oregano",
+      "relationship": "good",
+      "notes": "Radishes can be used as a trap crop against flea beetles, cucurbita can be used in the Three Sisters technique. Nasturtiums repel squash bugs."
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "spiders"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "ground beetles"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

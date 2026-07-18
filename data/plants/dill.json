@@ -1,0 +1,134 @@
+{
+  "slug": "dill",
+  "common_name": "Dill",
+  "botanical_name": "Anethum graveolens",
+  "description": "Dill is an herb wth slender green stems and feathery, delicate leaves. It's flowers are white to yellow. Fresh and dried dill leaves are used to season fish, borscht, and to make pickles. Dill is best when used fresh. It loses its flavor rapidly if dried. Dill seed is also used as a spice.",
+  "sowing_method": "Direct seed outdoors",
+  "spread_cm": 50,
+  "row_spacing_cm": 27.9,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Apiaceae",
+  "genus": "Anethum",
+  "days_to_maturity": 55,
+  "is_edible": true,
+  "succession_enabled": true,
+  "succession_interval_days": 3,
+  "succession_max_sowings": 4,
+  "companions": [
+    {
+      "companion_slug": "cannabis",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "collard-greens",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "kumquat",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "red-russian-kale",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "turnip",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "tomato",
+      "relationship": "bad"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "tiger swallowtail butterflies/caterpillars"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "hoverflies"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "wasps"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "ladybugs"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "tomato hornworm"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "honeybees"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "ichneumonid wasps"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "aphids"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] spider mites"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "[ 6 ] squash bugs"
+    },
+    {
+      "interaction_type": "repels",
+      "pest_or_insect": "cabbage looper"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

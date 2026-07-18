@@ -1,0 +1,22 @@
+{
+  "slug": "culantro",
+  "common_name": "Culantro",
+  "botanical_name": "Eryngium foetidum",
+  "description": "Eryngium foetidum is a tropical perennial and annual herb in the family Apiaceae. Its scientific Latin name literally translates as \"foul-smelling thistle\". Common names include culantro, Mexican coriander, long coriander and chadon beni. It is native to Mexico and South America, but is cultivated worldwide. In the United States, where it is not well known outside Latino and Caribbean communities, the name culantro sometimes causes confusion with Coriandrum sativum (also in Apiaceae), the leaves of which are known as cilantro, and of which culantro is said to taste like a stronger version.",
+  "sowing_method": "Sprinkle seed on soil surface",
+  "height_cm": 15,
+  "sun_level": "half_sun",
+  "family": "Apiaceae",
+  "genus": "Eryngium",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

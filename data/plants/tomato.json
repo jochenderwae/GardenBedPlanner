@@ -1,0 +1,58 @@
+{
+  "slug": "tomato",
+  "common_name": "Tomato",
+  "botanical_name": "Solanum lycopersicum",
+  "description": "The tomato is the fruit of the tomato plant, a member of the Nightshade family (Solanaceae). The fruit grows on a small compact bush.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "spread_cm": 45,
+  "row_spacing_cm": 45,
+  "height_cm": 45,
+  "sun_level": "full_sun",
+  "family": "Solanaceae",
+  "genus": "Solanum",
+  "min_temperature_c": 15,
+  "max_temperature_c": 35,
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": true,
+  "companions": [
+    {
+      "companion_slug": "basil",
+      "relationship": "good",
+      "mechanism": "pest-deterrent",
+      "notes": "Basil masks the smell of tomatoes, deterring thrips and tomato hornworms, and is widely believed to improve tomato flavor."
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good",
+      "mechanism": "space-efficiency",
+      "notes": "Carrots naturally aerate the soil around tomato roots, while the taller tomatoes provide welcome afternoon shade for the carrots."
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "bad",
+      "mechanism": "disease-sharing",
+      "notes": "Both belong to the nightshade family and are highly susceptible to early and late blight; planting them together creates a disease bridge."
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "bad",
+      "mechanism": "resource-competition",
+      "notes": "Both are heavy feeders that will aggressively compete for soil nutrients, stunting the growth of both."
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

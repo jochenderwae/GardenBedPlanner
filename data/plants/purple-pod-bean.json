@@ -1,0 +1,51 @@
+{
+  "slug": "purple-pod-bean",
+  "common_name": "Purple Pod Bean",
+  "botanical_name": "Phaseolus vulgaris",
+  "description": "Purple pod beans come in bush and pole varieties. They can be eaten raw or cooked, but often turn green when cooked. Like other legumes, they benefit from being treated with an inoculant.",
+  "sowing_method": "Direct seed outdoors, thin to 30cm when plants are 4cm tall",
+  "spread_cm": 35,
+  "row_spacing_cm": 30,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Phaseolus",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "edible_parts": [
+    "fruits",
+    "seeds"
+  ],
+  "companions": [
+    {
+      "companion_slug": "brownes-savory",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "corn",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "eggplant",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "pea",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

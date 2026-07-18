@@ -1,0 +1,69 @@
+{
+  "slug": "beans-bush",
+  "common_name": "Bush Beans",
+  "botanical_name": "Macroptilium gibbosifolium",
+  "row_spacing_cm": 12.7,
+  "sun_level": "full_sun",
+  "water_needs": "~1 in/week",
+  "family": "Fabaceae",
+  "genus": "Macroptilium",
+  "days_to_maturity": 55,
+  "is_edible": false,
+  "succession_enabled": true,
+  "succession_interval_days": 2,
+  "succession_max_sowings": 4,
+  "companions": [
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cucumber",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "pepper-bell",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "pepper-hot",
+      "relationship": "bad"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "aphid"
+    },
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "bean-beetle"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "slug": "golden-delicious-apple",
+  "common_name": "Golden Delicious Apple",
+  "botanical_name": "Malus pumila",
+  "description": "Golden Delicious apples are a milder flavored apple cultivar with thin yellow skin and crispy, sweet, pale white flesh. They can be eaten fresh or baked. Blossoms are white or pink. Trees have a chilling requirement of 600-700 hours. Golden Delicious apples are self-pollinating, but can benefit from nearby trees with the same bloom period, and are great pollinators for apple trees that don't self-pollinate. Apples are propagated through grafting because seeds do not breed true. Semi-dwarf and dwarf sizes are available. Depending on the size chosen, the tree will bear fruit within 2-5 years of planting.",
+  "sowing_method": "Transplant bare-root plant",
+  "spread_cm": 450,
+  "row_spacing_cm": 450,
+  "height_cm": 450,
+  "sun_level": "full_sun",
+  "family": "Rosaceae",
+  "genus": "Malus",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

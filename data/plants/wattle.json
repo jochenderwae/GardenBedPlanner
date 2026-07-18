@@ -1,0 +1,21 @@
+{
+  "slug": "wattle",
+  "common_name": "Wattle",
+  "botanical_name": "Acacia paradoxa",
+  "description": "Wattle is a large genus of shrubs and trees in the Fabaceae (Bean) family. Wattle is native to Australia and has a variety of uses: the high protein seeds are ground into flour and the timber is used to make weapons, musical instruments, tools, other wood products, and fire. Trees have multiple trunks and an umbrella shape. In very arid conditions, wattles take the shape of small wiry shrubs. In all forms, the plant has thorns. Wattles are fast-growing and can tolerate drought, wet soils, and saline soils. They grow well in disturbed soils, but are not cold-tolerant. They need temperatures between 12-34° C. If starting from seed, treat seeds with concentrated sulphuric acid for 30 minutes. More growing information is available in individual species entries.",
+  "sowing_method": "Transplant sapling, direct seed",
+  "height_cm": 3000,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Acacia",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

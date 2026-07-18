@@ -1,0 +1,40 @@
+{
+  "slug": "cassava",
+  "common_name": "Cassava",
+  "botanical_name": "Manihot esculenta",
+  "description": "Cassava, or Yuca (not to be confused with Yucca, the spiky desert plant), is a woody shrub native to South America. Cassava is cultivated in tropical and subtropical areas for it's edible starchy roots. The tapered roots are 15-30cm long and their white or yellowish flesh is covered in rough brown rinds. They are a major staple food in the developing world and the third-largest source of food carbohydrates in the tropics. Cassava is classified as sweet or bitter. The roots, leaves, and stems of both varieties contain cyanogenetic glucoside, a toxin that produces cyanide. They must be carefully prepared (usually boiled or fermented) to remove the toxin. Cassava can be made into a flour, dried to a powdery extract (tapioca), made into a fermented flaky version (garri), or ground and cooked into a crunchy meal (farofa). Cassava requires tropical climates, at least eight months of warm weather, and at least 50cm of water a year.",
+  "sowing_method": "Cuttings, start indoors and transplant outside after temps are above 21º C",
+  "row_spacing_cm": 2,
+  "height_cm": 365,
+  "sun_level": "full_sun",
+  "family": "Euphorbiaceae",
+  "genus": "Manihot",
+  "soil_ph_min": 5.0,
+  "soil_ph_max": 5.5,
+  "is_edible": true,
+  "edible_parts": [
+    "roots",
+    "tubers"
+  ],
+  "companions": [
+    {
+      "companion_slug": "cowpea",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

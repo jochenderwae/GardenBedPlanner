@@ -1,0 +1,37 @@
+{
+  "slug": "blue-lake-bean",
+  "common_name": "Blue Lake Bean",
+  "botanical_name": "Phaseolus vulgaris var. nanus",
+  "description": "Blue Lake is an upright bush bean with medium-thick green pods that are plump, tasty, and best when harvested at 15cm long. The plant has a high yield, long season, and benefits from inoculant.",
+  "sowing_method": "Direct seed indoors or out. Transplant seedlings after hardening off.",
+  "spread_cm": 25,
+  "row_spacing_cm": 25,
+  "height_cm": 55,
+  "sun_level": "full_sun",
+  "family": "Fabaceae",
+  "genus": "Phaseolus",
+  "soil_ph_min": 6.5,
+  "soil_ph_max": 7.0,
+  "is_edible": true,
+  "edible_parts": [
+    "fruits",
+    "seeds"
+  ],
+  "companions": [
+    {
+      "companion_slug": "cabbage",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

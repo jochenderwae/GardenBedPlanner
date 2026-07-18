@@ -1,0 +1,57 @@
+{
+  "slug": "grapes",
+  "common_name": "Grapes",
+  "botanical_name": "Vitis vinifera",
+  "description": "Grapes are the clustered fruit of deciduous, perennial woody vines in the Vitis genus. The majority of both table and wine grapes are cultivars of the European grapevine, Vitis vinifera, which is native to the Mediterranean and Central Asia. Other species include Vitis labrusca, the North American table and grape juice species, which is more cold-hardy, and Vitis amurensis, the most important Asian species. There are over 10,000 varieties of wine grapes. Table grape cultivars have large, seedless fruit with thin skin. Wine grapes have smaller fruit with seeds, thicker skin (most of the aroma in wine comes from the skin), and a higher sugar content. Grapes are propagated through cuttings because seeds do not reliably yield the same type of plant as their parent. Most varieties are self-fertile, but some may need another plant for pollination. All grapes need to be trained to a support so they grow upward - this reduces disease risk and facilitates cultivation and harvest. Plants should not be allowed to produce fruit in the first few years - the plant's energy needs to be focused on establishing roots and vines. Grapes only produce fruit on new growth, or canes, and need to be pruned each year in late winter when the vines are still dormant. Heavy pruning results in higher fruit yields. Most grapes need about 150 chilling hours at temperatures below 10°C. Grapes need to be ripened on the vine.",
+  "sowing_method": "Plant dormant, bare-root cuttings or vines in early spring",
+  "spread_cm": 300,
+  "row_spacing_cm": 300,
+  "height_cm": 180,
+  "sun_level": "full_sun",
+  "family": "Vitaceae",
+  "genus": "Vitis",
+  "soil_ph_min": 7.0,
+  "soil_ph_max": 7.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "basil",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "chives",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "oregano",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "clover",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "peas",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cabbage",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

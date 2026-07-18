@@ -1,0 +1,79 @@
+{
+  "slug": "beet",
+  "common_name": "Beet",
+  "botanical_name": "Beta vulgaris",
+  "description": "Typically grown for its round or cylindrical taproot, the leaves of the beet are also edible. Leaves resemble Swiss chard on a smaller scale and are good sautéed. The taproot, or beet, ranges in color from deep red to gold, orange, or white and red striped. The beet has a delicious, earthy flavor with a touch of sweetness to it when roasted.",
+  "sowing_method": "Direct seed into soil. Thin to 7cm apart when seedlings are 5cm tall.",
+  "spread_cm": 20,
+  "row_spacing_cm": 10,
+  "height_cm": 25,
+  "sun_level": "full_sun",
+  "water_needs": "~0.5 in/week",
+  "family": "Amaranthaceae",
+  "genus": "Beta",
+  "days_to_maturity": 58,
+  "soil_ph_min": 7.5,
+  "soil_ph_max": 8.0,
+  "is_edible": false,
+  "succession_enabled": true,
+  "succession_interval_days": 3,
+  "succession_max_sowings": 4,
+  "companions": [
+    {
+      "companion_slug": "passion-fruit",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "watermelon-radish",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "lettuce",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "broccoli",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "kale",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "kohlrabi",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "beans-pole",
+      "relationship": "bad"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

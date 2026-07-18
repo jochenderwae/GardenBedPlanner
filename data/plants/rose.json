@@ -1,0 +1,52 @@
+{
+  "slug": "rose",
+  "common_name": "Rose",
+  "botanical_name": "Rosa",
+  "description": "Roses are flowering woody perennials in the Rosa genus and Rosaceae family. There are over 100 species, most of which are native to Asia, and 1000s of cultivars, which can take the shape of shrubs or climbing plants with sickle-shaped prickles or thorns. Their flowers, which are also known as roses, are large, showy, and fragrant. Roses produce berry-like fruit which are known as rose hips. Domestic cultivars often do not produce fruit because their flowers are so tightly petalled that they cannot be pollinated. The rose hips of the Dog Rose and Rugosa Rose are very high in Vitamin C. Roses are generally propagated through cuttings. If starting from seed, stratify seeds to improve germination. More growing information is available in individual Rose species entries.",
+  "sowing_method": "Cuttings",
+  "sun_level": "full_sun",
+  "family": "Rosaceae",
+  "genus": "Rosa",
+  "soil_ph_min": 5.5,
+  "soil_ph_max": 6.5,
+  "is_edible": false,
+  "companions": [
+    {
+      "companion_slug": "feverfew",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "geranium",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "rue",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "chives",
+      "relationship": "good"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
+      "attribution": "wikipedia-companion-plants"
+    }
+  ]
+}

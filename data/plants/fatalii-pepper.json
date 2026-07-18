@@ -1,0 +1,16 @@
+{
+  "slug": "fatalii-pepper",
+  "common_name": "Fatalii Pepper",
+  "botanical_name": "Capsicum chinense 'Fatalii'",
+  "description": "The Fatalii pepper is a Capsicum chinense cultivar created in southern or central Africa. The plant produces peppers with a fruity, citrus flavor and a Scoville rating of 125,000–325,000 units. They are as spicy as a Habanero, but the pepper's heat is felt immediately, whereas the Habanero's spiciness takes a little while to register. The peppers are 7-8cm long, tapered, and wrinkled. Different varieties are white, yellow, red, and brown. Brown Fatalli are the spiciest and sweetest. Like other hot peppers, Fatalli require a long, warm growing season. They can be grown indoors in containers in colder climates with shorter seasons.",
+  "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
+  "row_spacing_cm": 90,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    }
+  ]
+}
