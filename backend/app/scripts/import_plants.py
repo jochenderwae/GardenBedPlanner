@@ -53,7 +53,21 @@ def import_file(session: Session, path: Path) -> None:
 
     session.exec(delete(PlantCompanion).where(PlantCompanion.plant_slug == slug))
     for c in data.get("companions", []):
-        session.add(PlantCompanion(plant_slug=slug, **c))
+        # Field name differs deliberately: the JSON schema calls this
+        # companion_slug (unambiguous within one plant's own file), but the
+        # DB column is companion_plant_slug (needs to be distinct from this
+        # table's own plant_slug column) - every other satellite table's
+        # JSON keys match their model field names exactly and can use **kwargs
+        # unpacking, this one can't.
+        session.add(
+            PlantCompanion(
+                plant_slug=slug,
+                companion_plant_slug=c["companion_slug"],
+                relationship=c["relationship"],
+                mechanism=c.get("mechanism"),
+                notes=c.get("notes"),
+            )
+        )
 
     session.exec(delete(PlantBeddingNeed).where(PlantBeddingNeed.plant_slug == slug))
     for b in data.get("bedding_needs", []):
