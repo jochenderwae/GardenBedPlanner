@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import beds, health
+from app.api.routes import beds, health, period_types, plants
 from app.core.config import settings
 from app.core.scheduler import scheduler
 
@@ -28,6 +28,8 @@ def create_app() -> FastAPI:
 
     app.include_router(health.router, prefix="/api")
     app.include_router(beds.router, prefix="/api")
+    app.include_router(plants.router, prefix="/api")
+    app.include_router(period_types.router, prefix="/api")
 
     return app
 

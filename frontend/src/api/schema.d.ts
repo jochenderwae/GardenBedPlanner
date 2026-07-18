@@ -39,6 +39,328 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/beds/{bed_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Bed */
+        get: operations["get_bed_api_beds__bed_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Bed */
+        delete: operations["delete_bed_api_beds__bed_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Bed */
+        patch: operations["update_bed_api_beds__bed_id__patch"];
+        trace?: never;
+    };
+    "/api/plants": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Plants */
+        get: operations["list_plants_api_plants_get"];
+        put?: never;
+        /** Create Plant */
+        post: operations["create_plant_api_plants_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Plant */
+        get: operations["get_plant_api_plants__slug__get"];
+        put?: never;
+        post?: never;
+        /** Delete Plant */
+        delete: operations["delete_plant_api_plants__slug__delete"];
+        options?: never;
+        head?: never;
+        /** Update Plant */
+        patch: operations["update_plant_api_plants__slug__patch"];
+        trace?: never;
+    };
+    "/api/plants/{slug}/data-sources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Data Source */
+        get: operations["list_data_source_api_plants__slug__data_sources_get"];
+        put?: never;
+        /** Create Data Source */
+        post: operations["create_data_source_api_plants__slug__data_sources_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/data-sources/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Data Source */
+        delete: operations["delete_data_source_api_plants__slug__data_sources__item_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/periods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Period */
+        get: operations["list_period_api_plants__slug__periods_get"];
+        put?: never;
+        /** Create Period */
+        post: operations["create_period_api_plants__slug__periods_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/periods/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Period */
+        delete: operations["delete_period_api_plants__slug__periods__item_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/bedding-needs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Bedding Need */
+        get: operations["list_bedding_need_api_plants__slug__bedding_needs_get"];
+        put?: never;
+        /** Create Bedding Need */
+        post: operations["create_bedding_need_api_plants__slug__bedding_needs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/bedding-needs/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Bedding Need */
+        delete: operations["delete_bedding_need_api_plants__slug__bedding_needs__item_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/pest-interactions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Pest Interaction */
+        get: operations["list_pest_interaction_api_plants__slug__pest_interactions_get"];
+        put?: never;
+        /** Create Pest Interaction */
+        post: operations["create_pest_interaction_api_plants__slug__pest_interactions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/pest-interactions/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Pest Interaction */
+        delete: operations["delete_pest_interaction_api_plants__slug__pest_interactions__item_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/growing-information": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Growing Information */
+        get: operations["list_growing_information_api_plants__slug__growing_information_get"];
+        put?: never;
+        /** Create Growing Information */
+        post: operations["create_growing_information_api_plants__slug__growing_information_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/growing-information/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Growing Information */
+        delete: operations["delete_growing_information_api_plants__slug__growing_information__item_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/companions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Companions */
+        get: operations["list_companions_api_plants__slug__companions_get"];
+        put?: never;
+        /** Create Companion */
+        post: operations["create_companion_api_plants__slug__companions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/companions/{companion_slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Companion */
+        delete: operations["delete_companion_api_plants__slug__companions__companion_slug__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plants/{slug}/seed-info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Seed Info */
+        get: operations["get_seed_info_api_plants__slug__seed_info_get"];
+        /** Upsert Seed Info */
+        put: operations["upsert_seed_info_api_plants__slug__seed_info_put"];
+        post?: never;
+        /** Delete Seed Info */
+        delete: operations["delete_seed_info_api_plants__slug__seed_info_delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/period-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Period Types */
+        get: operations["list_period_types_api_period_types_get"];
+        put?: never;
+        /** Create Period Type */
+        post: operations["create_period_type_api_period_types_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/period-types/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Period Type */
+        get: operations["get_period_type_api_period_types__code__get"];
+        put?: never;
+        post?: never;
+        /** Delete Period Type */
+        delete: operations["delete_period_type_api_period_types__code__delete"];
+        options?: never;
+        head?: never;
+        /** Update Period Type */
+        patch: operations["update_period_type_api_period_types__code__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -85,11 +407,409 @@ export interface components {
          * @enum {string}
          */
         BedType: "large_planter" | "small_planter" | "berry_row" | "compost_bin" | "fruit_tree";
+        /** BedUpdate */
+        BedUpdate: {
+            /** Name */
+            name?: string | null;
+            bed_type?: components["schemas"]["BedType"] | null;
+            /** Width Cm */
+            width_cm?: number | null;
+            /** Length Cm */
+            length_cm?: number | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            /** Has Greenhouse */
+            has_greenhouse?: boolean | null;
+            /** Pos X */
+            pos_x?: number | null;
+            /** Pos Y */
+            pos_y?: number | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /**
+         * CompanionRelationship
+         * @enum {string}
+         */
+        CompanionRelationship: "good" | "bad";
+        /**
+         * GrowingInfoRecordType
+         * @enum {string}
+         */
+        GrowingInfoRecordType: "raw" | "consolidated";
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /**
+         * LifeCycle
+         * @enum {string}
+         */
+        LifeCycle: "annual" | "biennial" | "perennial";
+        /**
+         * PeriodType
+         * @description Lookup table, not a fixed enum: sowing/planting/fertilizing/harvesting
+         *     cover today's needs, but plant care can call for more period types than
+         *     can be predicted up front (e.g. pruning, thinning, mulching windows) -
+         *     a new row here is enough to support one, no migration required.
+         */
+        PeriodType: {
+            /** Code */
+            code: string;
+            /** Description */
+            description?: string | null;
+        };
+        /** PeriodTypeUpdate */
+        PeriodTypeUpdate: {
+            /** Description */
+            description?: string | null;
+        };
+        /**
+         * PestInteractionType
+         * @enum {string}
+         */
+        PestInteractionType: "attracts" | "repels" | "vulnerable_to";
+        /** Plant */
+        Plant: {
+            /** Slug */
+            slug: string;
+            /** Common Name */
+            common_name: string;
+            /** Botanical Name */
+            botanical_name: string;
+            /** Description */
+            description?: string | null;
+            /** Sowing Method */
+            sowing_method?: string | null;
+            /** Spread Cm */
+            spread_cm?: number | null;
+            /** Row Spacing Cm */
+            row_spacing_cm?: number | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            sun_level?: components["schemas"]["SunLevel"] | null;
+            /** Soil Type */
+            soil_type?: string | null;
+            /** Composting Needs */
+            composting_needs?: string | null;
+            /** Fertilizer Needs */
+            fertilizer_needs?: string | null;
+            /** Needs Wind Cover */
+            needs_wind_cover?: boolean | null;
+            /** Needs Rain Cover */
+            needs_rain_cover?: boolean | null;
+            /** Water Needs */
+            water_needs?: string | null;
+            /** Family */
+            family?: string | null;
+            /** Genus */
+            genus?: string | null;
+            /** Min Temperature C */
+            min_temperature_c?: number | null;
+            /** Max Temperature C */
+            max_temperature_c?: number | null;
+            /** Days To Maturity */
+            days_to_maturity?: number | null;
+            /** Soil Ph Min */
+            soil_ph_min?: number | null;
+            /** Soil Ph Max */
+            soil_ph_max?: number | null;
+            /** Is Toxic */
+            is_toxic?: boolean | null;
+            /** Toxicity Notes */
+            toxicity_notes?: string | null;
+            /** Is Edible */
+            is_edible?: boolean | null;
+            /** Edible Parts */
+            edible_parts?: string[] | null;
+            /** Succession Enabled */
+            succession_enabled?: boolean | null;
+            /** Succession Interval Days */
+            succession_interval_days?: number | null;
+            /** Succession Max Sowings */
+            succession_max_sowings?: number | null;
+            life_cycle?: components["schemas"]["LifeCycle"] | null;
+            /** Life Cycle Years */
+            life_cycle_years?: number | null;
+        };
+        /** PlantBeddingNeed */
+        PlantBeddingNeed: {
+            /** Id */
+            id?: number | null;
+            /** Plant Slug */
+            plant_slug: string;
+            /** Need Type */
+            need_type: string;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** PlantCompanion */
+        PlantCompanion: {
+            /** Plant Slug */
+            plant_slug: string;
+            /** Companion Plant Slug */
+            companion_plant_slug: string;
+            relationship: components["schemas"]["CompanionRelationship"];
+            /** Mechanism */
+            mechanism?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** PlantDataSource */
+        PlantDataSource: {
+            /** Id */
+            id?: number | null;
+            /** Plant Slug */
+            plant_slug: string;
+            /** Source Url */
+            source_url?: string | null;
+            /** Attribution */
+            attribution?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /**
+         * PlantDetail
+         * @description GET /plants/{slug} response: the plant plus every satellite row,
+         *     mirroring the shape of a data/plants/<slug>.json export. list_plants
+         *     stays flat (just Plant) since assembling this for 359 rows on every
+         *     list call would be wasted work most callers don't need.
+         *
+         *     Not `class PlantDetail(Plant)`: SQLModel's metaclass tries to turn every
+         *     added field into a table column even on a subclass without its own
+         *     table=True, and list[SomeOtherTable] has no matching column type - the
+         *     fields are duplicated here as a plain BaseModel instead.
+         */
+        PlantDetail: {
+            /** Slug */
+            slug: string;
+            /** Common Name */
+            common_name: string;
+            /** Botanical Name */
+            botanical_name: string;
+            /** Description */
+            description?: string | null;
+            /** Sowing Method */
+            sowing_method?: string | null;
+            /** Spread Cm */
+            spread_cm?: number | null;
+            /** Row Spacing Cm */
+            row_spacing_cm?: number | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            sun_level?: components["schemas"]["SunLevel"] | null;
+            /** Soil Type */
+            soil_type?: string | null;
+            /** Composting Needs */
+            composting_needs?: string | null;
+            /** Fertilizer Needs */
+            fertilizer_needs?: string | null;
+            /** Needs Wind Cover */
+            needs_wind_cover?: boolean | null;
+            /** Needs Rain Cover */
+            needs_rain_cover?: boolean | null;
+            /** Water Needs */
+            water_needs?: string | null;
+            /** Family */
+            family?: string | null;
+            /** Genus */
+            genus?: string | null;
+            /** Min Temperature C */
+            min_temperature_c?: number | null;
+            /** Max Temperature C */
+            max_temperature_c?: number | null;
+            /** Days To Maturity */
+            days_to_maturity?: number | null;
+            /** Soil Ph Min */
+            soil_ph_min?: number | null;
+            /** Soil Ph Max */
+            soil_ph_max?: number | null;
+            /** Is Toxic */
+            is_toxic?: boolean | null;
+            /** Toxicity Notes */
+            toxicity_notes?: string | null;
+            /** Is Edible */
+            is_edible?: boolean | null;
+            /** Edible Parts */
+            edible_parts?: string[] | null;
+            /** Succession Enabled */
+            succession_enabled?: boolean | null;
+            /** Succession Interval Days */
+            succession_interval_days?: number | null;
+            /** Succession Max Sowings */
+            succession_max_sowings?: number | null;
+            life_cycle?: components["schemas"]["LifeCycle"] | null;
+            /** Life Cycle Years */
+            life_cycle_years?: number | null;
+            /**
+             * Data Sources
+             * @default []
+             */
+            data_sources: components["schemas"]["PlantDataSource"][];
+            seed_info?: components["schemas"]["SeedInfo"] | null;
+            /**
+             * Periods
+             * @default []
+             */
+            periods: components["schemas"]["PlantPeriod"][];
+            /**
+             * Companions
+             * @default []
+             */
+            companions: components["schemas"]["PlantCompanion"][];
+            /**
+             * Bedding Needs
+             * @default []
+             */
+            bedding_needs: components["schemas"]["PlantBeddingNeed"][];
+            /**
+             * Pest Interactions
+             * @default []
+             */
+            pest_interactions: components["schemas"]["PlantPestInteraction"][];
+            /**
+             * Growing Information
+             * @default []
+             */
+            growing_information: components["schemas"]["PlantGrowingInformation"][];
+        };
+        /**
+         * PlantGrowingInformation
+         * @description Long-form growing-advice text (e.g. Project Gutenberg books with a
+         *     section per plant) - deliberately unstructured, unlike every other
+         *     field on Plant. The intent is to later extract structured values
+         *     (composting_needs, fertilizer_needs, needs_wind_cover/rain_cover,
+         *     seed_info.pretreatment, bedding_needs - the fields no structured source
+         *     covers, see data/CLAUDE.md) out of this text; that extraction pass
+         *     isn't built yet, this table just holds the raw material for it.
+         */
+        PlantGrowingInformation: {
+            /** Id */
+            id?: number | null;
+            /** Plant Slug */
+            plant_slug: string;
+            /** Text */
+            text: string;
+            /** Source Url */
+            source_url?: string | null;
+            /** Attribution */
+            attribution?: string | null;
+            /** Copyright Status */
+            copyright_status?: string | null;
+            /** @default raw */
+            record_type: components["schemas"]["GrowingInfoRecordType"];
+            /** Generic For Species */
+            generic_for_species?: boolean | null;
+        };
+        /** PlantPeriod */
+        PlantPeriod: {
+            /** Id */
+            id?: number | null;
+            /** Plant Slug */
+            plant_slug: string;
+            /** Period Type */
+            period_type: string;
+            /** Start Month */
+            start_month: number;
+            /** End Month */
+            end_month: number;
+        };
+        /**
+         * PlantPestInteraction
+         * @description Plant-to-insect relationships (attracts/repels/vulnerable_to) -
+         *     distinct from PlantCompanion, which is plant-to-plant.
+         */
+        PlantPestInteraction: {
+            /** Id */
+            id?: number | null;
+            /** Plant Slug */
+            plant_slug: string;
+            interaction_type: components["schemas"]["PestInteractionType"];
+            /** Pest Or Insect */
+            pest_or_insect: string;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** PlantUpdate */
+        PlantUpdate: {
+            /** Common Name */
+            common_name?: string | null;
+            /** Botanical Name */
+            botanical_name?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Sowing Method */
+            sowing_method?: string | null;
+            /** Spread Cm */
+            spread_cm?: number | null;
+            /** Row Spacing Cm */
+            row_spacing_cm?: number | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            sun_level?: components["schemas"]["SunLevel"] | null;
+            /** Soil Type */
+            soil_type?: string | null;
+            /** Composting Needs */
+            composting_needs?: string | null;
+            /** Fertilizer Needs */
+            fertilizer_needs?: string | null;
+            /** Needs Wind Cover */
+            needs_wind_cover?: boolean | null;
+            /** Needs Rain Cover */
+            needs_rain_cover?: boolean | null;
+            /** Water Needs */
+            water_needs?: string | null;
+            /** Family */
+            family?: string | null;
+            /** Genus */
+            genus?: string | null;
+            /** Min Temperature C */
+            min_temperature_c?: number | null;
+            /** Max Temperature C */
+            max_temperature_c?: number | null;
+            /** Days To Maturity */
+            days_to_maturity?: number | null;
+            /** Soil Ph Min */
+            soil_ph_min?: number | null;
+            /** Soil Ph Max */
+            soil_ph_max?: number | null;
+            /** Is Toxic */
+            is_toxic?: boolean | null;
+            /** Toxicity Notes */
+            toxicity_notes?: string | null;
+            /** Is Edible */
+            is_edible?: boolean | null;
+            /** Edible Parts */
+            edible_parts?: string[] | null;
+            /** Succession Enabled */
+            succession_enabled?: boolean | null;
+            /** Succession Interval Days */
+            succession_interval_days?: number | null;
+            /** Succession Max Sowings */
+            succession_max_sowings?: number | null;
+            life_cycle?: components["schemas"]["LifeCycle"] | null;
+            /** Life Cycle Years */
+            life_cycle_years?: number | null;
+        };
+        /** SeedInfo */
+        SeedInfo: {
+            /** Plant Slug */
+            plant_slug: string;
+            /** Seeds Per Gram */
+            seeds_per_gram?: number | null;
+            /** Pretreatment */
+            pretreatment?: string | null;
+            /** Produces Viable Seeds */
+            produces_viable_seeds?: boolean | null;
+            /** Is F1 Hybrid */
+            is_f1_hybrid?: boolean | null;
+        };
+        /**
+         * SunLevel
+         * @enum {string}
+         */
+        SunLevel: "full_sun" | "half_sun" | "shadow";
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -168,12 +888,1086 @@ export interface operations {
         };
         responses: {
             /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Bed"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_bed_api_beds__bed_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bed_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": components["schemas"]["Bed"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_bed_api_beds__bed_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bed_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_bed_api_beds__bed_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bed_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BedUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Bed"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_plants_api_plants_get: {
+        parameters: {
+            query?: {
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Plant"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_plant_api_plants_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Plant"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Plant"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_plant_api_plants__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_plant_api_plants__slug__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_plant_api_plants__slug__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Plant"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_data_source_api_plants__slug__data_sources_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantDataSource"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_data_source_api_plants__slug__data_sources_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantDataSource"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantDataSource"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_data_source_api_plants__slug__data_sources__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_period_api_plants__slug__periods_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantPeriod"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_period_api_plants__slug__periods_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantPeriod"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantPeriod"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_period_api_plants__slug__periods__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_bedding_need_api_plants__slug__bedding_needs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantBeddingNeed"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_bedding_need_api_plants__slug__bedding_needs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantBeddingNeed"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantBeddingNeed"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_bedding_need_api_plants__slug__bedding_needs__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_pest_interaction_api_plants__slug__pest_interactions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantPestInteraction"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_pest_interaction_api_plants__slug__pest_interactions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantPestInteraction"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantPestInteraction"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_pest_interaction_api_plants__slug__pest_interactions__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_growing_information_api_plants__slug__growing_information_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantGrowingInformation"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_growing_information_api_plants__slug__growing_information_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantGrowingInformation"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantGrowingInformation"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_growing_information_api_plants__slug__growing_information__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_companions_api_plants__slug__companions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantCompanion"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_companion_api_plants__slug__companions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantCompanion"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlantCompanion"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_companion_api_plants__slug__companions__companion_slug__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+                companion_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_seed_info_api_plants__slug__seed_info_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeedInfo"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upsert_seed_info_api_plants__slug__seed_info_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeedInfo"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeedInfo"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_seed_info_api_plants__slug__seed_info_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_period_types_api_period_types_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeriodType"][];
+                };
+            };
+        };
+    };
+    create_period_type_api_period_types_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PeriodType"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeriodType"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_period_type_api_period_types__code__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeriodType"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_period_type_api_period_types__code__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_period_type_api_period_types__code__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PeriodTypeUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PeriodType"];
                 };
             };
             /** @description Validation Error */
