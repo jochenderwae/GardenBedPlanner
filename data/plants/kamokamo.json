@@ -1,0 +1,16 @@
+{
+  "slug": "kamokamo",
+  "common_name": "Kamokamo",
+  "description": "Kamokamo is a greenish-yellow summer squash, a bit like a large, swollen courgette or melon in shape but with ridges running down its length. They can grow to pumpkin size.",
+  "botanical_name": "Cucurbita pepo",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "manual-verification",
+      "notes": "botanical_name inferred value declined by Ollama (not confident) - manually verified against public sources instead; see _MANUAL_BOTANICAL_NAME_OVERRIDES in export.py"
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "slug": "arran-banner-potato",
+  "common_name": "arran banner potato",
+  "description": "Early potato. Large egg-shaped potato with pale yellow/white skin, with a pink blush on the narrow end.. Excellent for boiling and roasting",
+  "botanical_name": "Solanum tuberosum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

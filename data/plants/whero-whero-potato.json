@@ -1,0 +1,16 @@
+{
+  "slug": "whero-whero-potato",
+  "common_name": "Whero Whero potato",
+  "description": "Originally from Maori grower in Rotorua. Large bright red skin, yellow flesh, many deep-set eyes, good disease resistance, size and production. Excellent buttery flavour.",
+  "botanical_name": "Solanum tuberosum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

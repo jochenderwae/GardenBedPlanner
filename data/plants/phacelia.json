@@ -1,0 +1,23 @@
+{
+  "slug": "phacelia",
+  "common_name": "You Can Grow Anything",
+  "botanical_name": "Phacelia tanacetifolia",
+  "description": "Plant for soil cultivation, in spring time it also have flowers loved by bees and important to pollen and nectar.",
+  "sowing_method": "Just throw them on the soil and rake it a little down to the surface",
+  "sun_level": "full_sun",
+  "family": "Boraginaceae",
+  "genus": "Phacelia",
+  "soil_ph_min": 6.4,
+  "soil_ph_max": 8.6,
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    }
+  ]
+}

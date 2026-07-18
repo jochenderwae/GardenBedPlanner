@@ -1,0 +1,16 @@
+{
+  "slug": "scots-potato",
+  "common_name": "Scots potato",
+  "description": "An old cultivar sent to Koanga Institute by a Scotsman who says it came Aotearoa New Zealand with his family from the homeland. It is pink-skinned and white-fleshed. An old cultivar sent to us by a Scotsman who says it came to this land with is family from the homeland. They are round with shallow eyes, pink-skinned, white-fleshed and has a delicious flavour and texture, tasty and mealy when boiled....... also This potato comes from Henry Harrington’s early life around Akaroa, as a descendant of the de Malmanche French settlers. It is a large rock-like potato with few but deep eyes and a light purple/ pink blush under the skin. It is a fluffy potato, so it is best boiled, or mashed, and has a good flavour.",
+  "botanical_name": "Solanum tuberosum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

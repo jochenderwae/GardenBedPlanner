@@ -1,0 +1,16 @@
+{
+  "slug": "waiporoporo-taewa-potato",
+  "common_name": "Waiporoporo Taewa Potato",
+  "description": "Waiporoporo Maori seed potatoes have a light purple mottled skin and a smooth creamy flesh. They grow a medium sized very firm potato that is excellent for boiling, salads, chips and roasting.",
+  "botanical_name": "Solanum tuberosum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

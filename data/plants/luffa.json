@@ -1,0 +1,27 @@
+{
+  "slug": "luffa",
+  "common_name": "Luffa",
+  "botanical_name": "Luffa operculata",
+  "description": "Luffah, or Loofah, is a genus of tropical and subtropical vines in the Cucurbit family, which also includes cucumbers and squash. There are three main species. Fruit must be harvested when young and under 12cm long to be edible. Two are grown specifically for the use of their mature, fibrous fruit as a scrubbing sponge: L. aegyptiaca and L. acutangula. Luffah plants need at least 4 frost-free months to mature, and additional frost-free time to dry on the vine until the skin is dark brown. Germination improves if seeds are scarified and soaked for 24 hours before planting. Plants benefit from trellising.",
+  "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
+  "row_spacing_cm": 25,
+  "height_cm": 900,
+  "sun_level": "full_sun",
+  "family": "Cucurbitaceae",
+  "genus": "Luffa",
+  "is_edible": false,
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

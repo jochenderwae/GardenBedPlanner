@@ -1,0 +1,16 @@
+{
+  "slug": "purple-daikon",
+  "common_name": "purple daikon",
+  "description": "Purple daikon radishes are very versatile. Slightly milder than most daikon, but still with a spicy kick. They are great sliced into a salad, chopped and roasted in the oven, or added to soups or stews.",
+  "botanical_name": "Raphanus sativus",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

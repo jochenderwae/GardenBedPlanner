@@ -8,7 +8,11 @@ import jsonschema
 
 from etl.config import PLANT_SCHEMA_PATH, PLANTS_OUT_DIR
 from etl.merge import WorkingRecord
-from etl.ollama_resolve import resolve_companion_conflict, resolve_scalar_field
+from etl.ollama_resolve import (
+    infer_botanical_name,
+    resolve_companion_conflict,
+    resolve_scalar_field,
+)
 
 _SOURCE_URLS = {
     "openfarm-crops-rescue": "https://github.com/thefullnacho/openfarm-crops-rescue",
@@ -17,6 +21,20 @@ _SOURCE_URLS = {
     "usda-plants": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
     "wikipedia-companion-plants": "https://en.wikipedia.org/wiki/List_of_companion_plants",
     "trefle": "https://trefle.io",
+}
+
+# infer_botanical_name is deliberately conservative and declines (returns
+# null) rather than guess - correct behavior in general, but it means a
+# handful of real plants with obscure/regional common names never export.
+# For those, a human (not Ollama) looked it up and verified it; recorded
+# here rather than looser-matched against a source, with its own
+# data_sources attribution so it's still clearly distinguished from an
+# actual external database record.
+_MANUAL_BOTANICAL_NAME_OVERRIDES = {
+    # Māori heirloom summer squash (NZ), also called kumi kumi - not
+    # confidently known to the inference model, confirmed via Wikipedia
+    # and multiple seed-catalog sources (Baker Creek, The Seed Collection).
+    "kamokamo": "Cucurbita pepo",
 }
 
 with open(PLANT_SCHEMA_PATH, encoding="utf-8") as f:
@@ -38,6 +56,23 @@ def build_plant_json(wr: WorkingRecord) -> dict:
                 wr.slug, common_name, botanical_name, field_name, candidates.values
             )
             out[field_name] = resolved
+
+    botanical_name_inferred = False
+    botanical_name_manual = False
+    if not out.get("botanical_name") and wr.slug in _MANUAL_BOTANICAL_NAME_OVERRIDES:
+        out["botanical_name"] = _MANUAL_BOTANICAL_NAME_OVERRIDES[wr.slug]
+        botanical_name_manual = True
+    if not out.get("botanical_name"):
+        # Required field (matches the non-nullable Postgres column), but
+        # some cultivars have no source with a botanical name at all - see
+        # infer_botanical_name's docstring.
+        common_name = out.get("common_name") or wr.slug
+        inferred, _reasoning = infer_botanical_name(
+            wr.slug, common_name, out.get("description")
+        )
+        if inferred:
+            out["botanical_name"] = inferred
+            botanical_name_inferred = True
 
     if wr.edible_parts.values:
         merged: set[str] = set()
@@ -113,6 +148,20 @@ def build_plant_json(wr: WorkingRecord) -> dict:
         {"source_url": _SOURCE_URLS.get(src, src), "attribution": src}
         for src in sorted(wr.sources_used)
     ]
+    if botanical_name_inferred:
+        out["data_sources"].append(
+            {
+                "attribution": "ollama-inference",
+                "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting",
+            }
+        )
+    if botanical_name_manual:
+        out["data_sources"].append(
+            {
+                "attribution": "manual-verification",
+                "notes": "botanical_name inferred value declined by Ollama (not confident) - manually verified against public sources instead; see _MANUAL_BOTANICAL_NAME_OVERRIDES in export.py",
+            }
+        )
 
     return out
 

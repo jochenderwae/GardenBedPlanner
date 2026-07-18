@@ -1,0 +1,18 @@
+{
+  "slug": "lettuce-drunken-woman",
+  "common_name": "Lettuce Drunken Woman",
+  "description": "Italian Heirloom. Attractive bright green leaves with ruffled almost frizzy edges in deep bronze. Leaf lettuce type with dense centre.",
+  "sowing_method": "Direct Sow",
+  "row_spacing_cm": 20,
+  "botanical_name": "Lactuca sativa",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

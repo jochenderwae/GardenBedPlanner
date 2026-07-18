@@ -1,0 +1,16 @@
+{
+  "slug": "chocolate-mint",
+  "common_name": "Chocolate Mint",
+  "description": "Chocolate mint is a cultivar of peppermint. It is derived from a cross between Mentha aquatica (watermint) and Mentha spicata (spearmint), from which citrata (orange mint) was selected for development. The 'Chocolate' cultivar has the aroma of chocolate, but the taste in foods more closely resembles the orange citrus flavor of the citrata form of mint. The plant grows to about 2 feet tall and easily spreads by rhizomes into an attractive ground cover. The rounded, lance-shaped leaves are a darker green than other forms of mint. Lavender flowers appear in summer. This plant is a vigorous grower that is sometimes planted as an annual in colder climates. The plant will spread easily. so planting in containers is recommended.",
+  "botanical_name": "Mentha × piperita",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

@@ -29,8 +29,7 @@ Candidate and confirmed sources to pull plant data from, kept here as they're fo
 | USDA PLANTS Database | https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt | authoritative for taxonomy/family classification, which is exactly what you need for rotation-family logic. Weak on cultivation specifics like spacing or companion planting though | public domain | candidate |
 | Wikipedia's "List of companion plants" | https://en.wikipedia.org/wiki/List_of_companion_plants | genuinely well-structured for companion pairs specifically, useful as a cross-check rather than a bulk scrape | CC BY-SA | candidate |
 | Trefle | https://trefle.io/api/v1 | usefulness to be confirmed | ? | candidate |
-| Project Gutenberg - book #43531 (old gardening book, one section per plant) | https://www.gutenberg.org/cache/epub/43531/pg43531-images.html | long-form growing advice text - candidate for filling `composting_needs`/`fertilizer_needs`/`needs_wind_cover`/`needs_rain_cover`/`seed_info.pretreatment`/`bedding_needs` (see below), none of which any structured source covers | public domain (verify per-book) | candidate - no fetcher built yet, see `growing_information` note below |
-| Project Gutenberg - book #76930 | https://www.gutenberg.org/cache/epub/76930/pg76930-images.html | same as #43531 - long-form growing advice text | public domain (verify per-book) | candidate - no fetcher built yet |
+| Project Gutenberg (7 old gardening books, one section per plant) | see the book-by-book table in the `growing_information` section below | long-form growing advice text - candidate for filling `composting_needs`/`fertilizer_needs`/`needs_wind_cover`/`needs_rain_cover`/`seed_info.pretreatment`/`bedding_needs` (see below), none of which any structured source covers | public domain in the US per Project Gutenberg's own license (see note below - don't trust a book's own original publisher copyright notice) | candidate - no fetcher built yet |
 
 ## Source → schema coverage analysis
 
@@ -72,22 +71,32 @@ Added a new field/table for exactly this problem: `growing_information` (JSON) /
 
 **Cultivar vs. species text**: some of this prose describes a species/genus generically (e.g. "pumpkins") rather than a specific cultivar (e.g. "Baby Bear Pumpkin"). Per the cultivar-merge bug fix (see `data/etl/CLAUDE.md`), cultivars must stay separate plant records - so generic text gets *copied* into every matching cultivar's own `growing_information` array, with `generic_for_species: true` marking it as not cultivar-specific advice. No separate "species" entity was introduced for this - simpler to keep as a flag on each cultivar's own copy.
 
-**Status: schema only, not wired up yet.** `Plant`-cluster migration (`add_plant_growing_information`) and the JSON Schema field exist and are verified against real Postgres. Not yet built: a Project Gutenberg fetcher (only one example book known so far - more to be added to the sources table above) and the actual structured-data extraction pass that would read this text and fill in the fields listed above. Deliberately *not* wired into `data/etl/`'s active merge/export code yet, to avoid touching a pipeline that was mid-run when this was added.
+**Status: schema only, not wired up yet.** `Plant`-cluster migration (`add_plant_growing_information`) and the JSON Schema field exist and are verified against real Postgres. Not yet built: a Project Gutenberg fetcher (7 books listed below) and the actual structured-data extraction pass that would read this text and fill in the fields listed above. Deliberately *not* wired into `data/etl/`'s active merge/export code yet, to avoid touching a pipeline that was mid-run when this was added.
 
-Online books containing more growing information. These can be loaded, sections per plant / cultivar cut out and stored. A follow-up process can then process each of the growing information entries using the local ollama installation and:
- 1) consolidate all the different sources into one growing information entry
- 2) check if the missing data fields can be extracted from this data
- 3) do an analysis on the growing information to see if we can extract more interesting structured data
+**Fetching**: 7 books, full page content in one shot per book (7 total requests) - no rate limiting needed, unlike the per-plant-queried sources (Permapeople/Trefle). All 7 are the same `gutenberg.org` URL pattern; confirmed readable (fetched #43531 directly to check).
 
- | Bool url | Notes |
- |---|---|
- | https://www.gutenberg.org/cache/epub/43531/pg43531-images.html |  |
- | https://www.gutenberg.org/cache/epub/76930/pg76930-images.html |  |
- | https://www.gutenberg.org/cache/epub/7123/pg7123-images.html |  |
- | https://www.gutenberg.org/cache/epub/36064/pg36064-images.html |  |
- | https://www.gutenberg.org/cache/epub/77032/pg77032-images.html |  |
- | https://www.gutenberg.org/cache/epub/63013/pg63013-images.html |  |
- | https://www.gutenberg.org/cache/epub/46052/pg46052-images.html |  |
+**Splitting into sections**: book formatting isn't uniform across 7 different books/publishers, so don't hand-code section-boundary heuristics - use Ollama to classify each section/subsection of a book against what our data model actually needs. This also handles filtering out front/back matter (title page, table of contents, illustrations list, indices, "Authorities Consulted," ads, etc. - confirmed these exist in #43531 and are not plant content) without a book-specific exclusion list.
+
+**Matching a section to an existing plant**: no single strategy is prescribed - try a few and see what actually works against real book headings, which are messier than structured source data (e.g. "CETEWAYO OR ZULU POTATOES", "KALE OR BORECOLE" in #43531). Candidates: exact/fuzzy string match on common name, LLM-assisted matching, and/or embedding similarity - `all-minilm:latest` (the one embedding-capable model in the local Ollama install) is a reasonable option for that last one.
+- Sections that don't match anything in the master list: keep a list of them rather than discarding - we don't have much other structured data on these plants anyway, so there's no reason to invent a new plant record from book text alone right now. If a book turns out to have enough real data to justify adding one, that's a deliberate follow-up decision once the list exists, not automatic.
+
+**Storage**: each matched section becomes a `raw` `growing_information` entry, linked back to its source book (`source_url`/`attribution`). Raw entries are permanent - they stay even after consolidation (below), and this whole mechanism is general-purpose, not Gutenberg-specific: any future long-form-text source can be added the same way.
+
+**Once all books are processed, four Ollama passes per plant** (not necessarily the same model for all four - different passes may suit different local models):
+1. **Consolidate** - synthesize a plant's raw `growing_information` entries (across however many books mention it) into one `consolidated` entry. Raw entries stay untouched alongside it.
+2. **Extract** - infer which of the fields nothing structured covers (`composting_needs`, `fertilizer_needs`, `needs_wind_cover`, `needs_rain_cover`, `seed_info.pretreatment`, `bedding_needs`) a plant's growing information actually answers, and extract them. Feed the result into the same merge/conflict pipeline as every other source (`data/etl/merge.py`) rather than writing it directly - it's just another candidate value, source-tagged like any other.
+3. **Cross-check** - compare the growing information against data already populated for that plant from other sources, and flag any inconsistencies found (e.g. a book saying "full shade" when a structured source already says `full_sun`).
+4. **Surface interesting data** - note anything in the text that doesn't map to an existing field but looks worth capturing. Log it for review rather than silently extending the schema - exact log format (a new file, or appended to something like `data/conflicts_log.jsonl`) still to be decided when this gets built.
+
+| Book URL | Notes |
+|---|---|
+| https://www.gutenberg.org/cache/epub/43531/pg43531-images.html | Checked directly: sections delimited by heading + anchor ID (e.g. `#BEANS`). `copyright_status` should come from Project Gutenberg's own license boilerplate near the top of the page (next to "\*\*\* START OF THE PROJECT GUTENBERG EBOOK ... \*\*\*") - not the original 1912 publisher's notice further down the page, which prints "All rights reserved" and would be misleading if copied verbatim (it reflects 1912 law, not current public-domain status; Gutenberg only hosts confirmed-public-domain-in-the-US works). |
+| https://www.gutenberg.org/cache/epub/76930/pg76930-images.html | Not yet checked individually - verify copyright_status the same way as #43531 rather than assuming identical formatting. |
+| https://www.gutenberg.org/cache/epub/7123/pg7123-images.html | Not yet checked individually. |
+| https://www.gutenberg.org/cache/epub/36064/pg36064-images.html | Not yet checked individually. |
+| https://www.gutenberg.org/cache/epub/77032/pg77032-images.html | Not yet checked individually. |
+| https://www.gutenberg.org/cache/epub/63013/pg63013-images.html | Not yet checked individually. |
+| https://www.gutenberg.org/cache/epub/46052/pg46052-images.html | Not yet checked individually. |
 
 ## Notes
 

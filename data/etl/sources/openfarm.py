@@ -10,6 +10,13 @@ CROPS_JSON_URL = "https://raw.githubusercontent.com/thefullnacho/openfarm-crops-
 
 _limiter = RateLimiter(min_interval_seconds=1.0)
 
+# openfarm-crops-rescue preserved a joke entry from the original OpenFarm.cc
+# community wiki verbatim (slug "human-being", sowingMethod: "Love",
+# binomialName: "Homosapien") - not a real plant, doesn't belong in a garden
+# database, and no amount of data-cleaning makes it valid. Excluded here
+# rather than left to fail validation downstream.
+_EXCLUDED_SLUGS = {"human-being"}
+
 
 def fetch_all() -> list[dict]:
     """Returns raw crop dicts as openfarm provides them (not yet mapped to
@@ -18,7 +25,7 @@ def fetch_all() -> list[dict]:
         CROPS_JSON_URL, source=SOURCE_NAME, cache_key="crops", limiter=_limiter
     )
     assert isinstance(data, list)
-    return data
+    return [rec for rec in data if rec.get("slug") not in _EXCLUDED_SLUGS]
 
 
 def map_record(raw: dict) -> dict:
@@ -34,11 +41,15 @@ def map_record(raw: dict) -> dict:
         out["description"] = raw["description"]
     if raw.get("sowingMethod"):
         out["sowing_method"] = raw["sowingMethod"]
-    if raw.get("spreadCm") is not None:
+    # 0 shows up in a handful of records (e.g. joke/junk entries) but isn't
+    # a physically meaningful measurement for a living plant - our schema's
+    # exclusiveMinimum: 0 correctly rejects it, so treat it as "no data"
+    # here rather than let it flow through to a validation failure later.
+    if raw.get("spreadCm"):
         out["spread_cm"] = raw["spreadCm"]
-    if raw.get("rowSpacingCm") is not None:
+    if raw.get("rowSpacingCm"):
         out["row_spacing_cm"] = raw["rowSpacingCm"]
-    if raw.get("heightCm") is not None:
+    if raw.get("heightCm"):
         out["height_cm"] = raw["heightCm"]
     sun = map_sun_level(raw.get("sun"))
     if sun:

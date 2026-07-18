@@ -1,0 +1,28 @@
+{
+  "slug": "brandywine-tomato",
+  "common_name": "brandywine tomato",
+  "description": "The Brandywine tomato plant is an heirloom cultivar of the species, with large potato-leaved foliage and which bears large pink beefsteak-shaped fruit, popularly considered among the best tasting available. Brandywine tomatoes can bear fruit up to 1.5 lbs (0.7 kg), requiring 80 to 100 days to reach maturity, making it among the slowest maturing varieties of common tomato cultivars. Brandywine has been described as having a \"great tomatoey flavor\"",
+  "botanical_name": "Solanum lycopersicum",
+  "companions": [
+    {
+      "companion_slug": "basil",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good",
+      "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

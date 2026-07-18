@@ -1,0 +1,16 @@
+{
+  "slug": "waikato-potato",
+  "common_name": "Waikato Potato",
+  "description": "Early cropper, short season. A very round and large potato, with no inset eyes. It has white flesh, and bright purple skin is an early potato and is an excellent one for baking in the jacket (it comes out nice and fluffy). Or, if you have to have a potato for mashing and you only grow old potatoes, then this one can be peeled or cooked with the skin on when new, and it mashes well. It is not good for boiling, chips, sautéing, etc., because it falls apart. It was all around New Zealand, with various names and it’s clear it used to be very common. An early, small, sweet, prolific producer that does not need new ground. Good boiled. [Info from Koanga Institute, used with permission]",
+  "botanical_name": "Solanum tuberosum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

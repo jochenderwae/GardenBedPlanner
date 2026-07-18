@@ -1,0 +1,16 @@
+{
+  "slug": "dekopon",
+  "common_name": "Dekopon",
+  "description": "Originally a brand name, \"Dekopon\" has become a genericized trademark and it is used to refer to all brands of the fruit; the generic name is shiranuhi or shiranui (不知火). Dekopon is distinctive due to its sweet taste, large size and the large protruding bump on the top of the fruit.",
+  "botanical_name": "Citrus maxima",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

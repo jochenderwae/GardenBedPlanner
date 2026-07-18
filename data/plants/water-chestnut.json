@@ -1,0 +1,30 @@
+{
+  "slug": "water-chestnut",
+  "common_name": "Water Chestnut",
+  "botanical_name": "Eleocharis dulcis",
+  "description": "The Water Chestnut, or Chinese Water Chestnut, is a perennial grass-like sedge native to Asia, Australia, and islands in the Pacific and Indian oceans. The plant grows in marshy land and shallow water. Clumps of erect green stems grow above the water and the roots, or corms, dangle beneath them in the water. Corms are edible raw or cooked and are sweet with a crisp crunch. Water Chestnuts are not cold-hardy and need 7 frost-free months to produce ripe corms. Their ideal temperature range is 25-35° C.",
+  "sowing_method": "Divide tubers",
+  "spread_cm": 90,
+  "height_cm": 90,
+  "sun_level": "full_sun",
+  "family": "Cyperaceae",
+  "genus": "Eleocharis",
+  "is_edible": true,
+  "edible_parts": [
+    "tubers"
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle"
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants"
+    }
+  ]
+}

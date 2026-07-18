@@ -1,0 +1,16 @@
+{
+  "slug": "chatham-island-potato",
+  "common_name": "Chatham Island potato",
+  "description": "This potato has was once grown commercially on the Chatham Islands and exported all around the Pacific. It is an outstanding variety, probably the same as the potato we call Whataroa, and has heavy crops. [Info from Koanga Institute, used with permission]",
+  "botanical_name": "Solanum tuberosum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

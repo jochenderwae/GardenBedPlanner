@@ -1,0 +1,65 @@
+{
+  "slug": "beans-pole",
+  "common_name": "Pole Beans",
+  "row_spacing_cm": 17.8,
+  "sun_level": "full_sun",
+  "water_needs": "~1 in/week",
+  "days_to_maturity": 65,
+  "succession_enabled": false,
+  "succession_max_sowings": 1,
+  "botanical_name": "Phaseolus vulgaris",
+  "companions": [
+    {
+      "companion_slug": "corn",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "cucumber",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "potato",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "carrot",
+      "relationship": "good"
+    },
+    {
+      "companion_slug": "onion",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "garlic",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "pepper-bell",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "pepper-hot",
+      "relationship": "bad"
+    },
+    {
+      "companion_slug": "beets",
+      "relationship": "bad"
+    }
+  ],
+  "pest_interactions": [
+    {
+      "interaction_type": "vulnerable_to",
+      "pest_or_insect": "aphid"
+    }
+  ],
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/homesteader-labs-next/tree/master/content/crops",
+      "attribution": "homesteader-labs"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

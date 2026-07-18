@@ -186,6 +186,41 @@ def resolve_companion_conflict(
     return resolved, reasoning
 
 
+def infer_botanical_name(slug: str, common_name: str, description: str | None) -> tuple[str | None, str]:
+    """Fallback for when NO source has a botanical_name at all (happened for
+    ~30 openfarm cultivars - mostly heirloom/regional varieties like
+    "Huakaroro Taewa Potato" that Permapeople/Trefle don't have entries for
+    either). botanical_name is required by our schema (matches the
+    non-nullable Postgres column), so these would otherwise never export.
+
+    Deliberately conservative: asks for null rather than a guess when not
+    confident, since a wrong scientific name is worse than a missing one.
+    Every inferred value is logged to conflicts_log.jsonl and the resulting
+    plant's data_sources gets an "ollama-inference" entry making clear this
+    wasn't sourced from an external database - not silently presented as
+    equally reliable as a real source."""
+    prompt = (
+        f"What is the scientific (binomial) botanical name for the garden plant "
+        f"commonly called '{common_name}'?"
+        + (f" Additional context: {description}" if description else "")
+        + "\nThis is likely a specific cultivar/variety name (e.g. a named potato or "
+        "tomato variety) - give the binomial name for the species it belongs to "
+        "(e.g. 'Solanum tuberosum' for any potato variety, regardless of cultivar). "
+        "If you are not reasonably confident, respond with null rather than "
+        'guessing. Respond with JSON only: {"resolved_value": "<Genus species>" '
+        'or null, "reasoning": "<one sentence>"}.'
+    )
+    try:
+        resolved, reasoning = _call_ollama(
+            prompt, _response_schema({"type": ["string", "null"]})
+        )
+    except Exception as exc:  # noqa: BLE001
+        resolved, reasoning = None, f"Ollama call failed ({exc!r})"
+
+    _log_conflict(slug, "botanical_name (inferred, no source had one)", [], resolved, reasoning)
+    return resolved, reasoning
+
+
 def _call_ollama(prompt: str, response_schema: dict) -> tuple:
     resp = httpx.post(
         f"{settings.ollama_host}/api/generate",

@@ -1,0 +1,16 @@
+{
+  "slug": "matariki-taewa-potato",
+  "common_name": "Matariki Taewa Potato",
+  "description": "Pre-European potato from Aotearoa New Zealand. (Taewa) Matariki is the same as Karoro in every respect except its shape. It grows bigger and more blocky,so that the larger ones from each plant are almost square around the edges. They are quite curvy,bumpy potatoes. They are cream skinned and fleshed,the flesh is very dense and waxy,and they are wonderful potatoes cooked anyway except mashing. They make excellent potato salad and roast potatoes and oven baked chips.",
+  "botanical_name": "Solanum tuberosum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

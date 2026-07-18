@@ -1,0 +1,17 @@
+{
+  "slug": "whataroa-taewa-potato",
+  "common_name": "Whataroa Taewa Potato",
+  "description": "Pre-european potato from Aotearoa New Zealand. (Taewa) Produces large, irregular, round to oblong shaped potatoes with a light purple and cream blotchy skin and yellow waxy, firm flesh with purple streaks throughout. Great for making oven-baked chips or steamed or in a hangi. Holds shape in slow cookers, or in a curry. A heavy cropper and a good keeper.",
+  "sowing_method": "chit tubers then sow into garden after frosts have passed.",
+  "botanical_name": "Solanum tuberosum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "slug": "black-olive-chilli",
+  "common_name": "black olive chilli",
+  "description": "An ornamental chilli pepper which prefers warm conditions. The plants have an upright habit and mature from dark purple to black to red. The red fruit are a beautiful contrast against the dark purple foliage and bright purple flowers. Black olive is great for containers and grows to 50cm.",
+  "height_cm": 50,
+  "botanical_name": "Capsicum annuum",
+  "data_sources": [
+    {
+      "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
+      "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-inference",
+      "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    }
+  ]
+}
