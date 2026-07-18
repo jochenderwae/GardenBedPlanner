@@ -13,7 +13,8 @@ A self-hosted, open source home garden management application. Single user (no a
 - Seed buying guide with an agenda/reminders view.
 - Harvest logs (yield, quality, notes) to inform next year's planning.
 - Weather/climate data import to adjust planting decisions for a changing climate in Belgium.
-Bonus/later scope: Home Assistant bridge for irrigation automation, Grocy bridge for harvest → food inventory, AI-assisted planting advice, other homesteading activity tracking (pickling, preserving).
+
+Bonus/later scope: see [`docs/wishlist.md`](docs/wishlist.md) — pick from it once core functionality above is done.
  
 ## Tech stack
  
