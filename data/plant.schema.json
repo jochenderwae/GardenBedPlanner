@@ -122,6 +122,24 @@
       }
     },
 
+    "growing_information": {
+      "description": "Maps to plant_growing_information rows. Long-form growing-advice text (e.g. Project Gutenberg books with a section per plant) - deliberately unstructured, unlike every other field here. Intended to later be mined for the fields no structured source covers (composting_needs, fertilizer_needs, needs_wind_cover/needs_rain_cover, seed_info.pretreatment, bedding_needs - see data/CLAUDE.md's 'Fields still needing a source'), but that extraction isn't built yet - this just holds the raw material.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text"],
+        "additionalProperties": false,
+        "properties": {
+          "text": { "type": "string" },
+          "source_url": { "type": ["string", "null"], "format": "uri" },
+          "attribution": { "type": ["string", "null"], "description": "e.g. book title/author." },
+          "copyright_status": { "type": ["string", "null"], "description": "e.g. 'public domain', 'CC BY-SA 4.0', 'unknown' - free text, varies too much for a closed enum." },
+          "record_type": { "enum": ["raw", "consolidated", null], "description": "'raw' = one source's excerpt as-is. 'consolidated' = synthesized from multiple raw entries for this plant. Defaults to 'raw' if omitted." },
+          "generic_for_species": { "type": ["boolean", "null"], "description": "true if this text was written about the species/genus generically (e.g. 'pumpkins') rather than this specific cultivar, and copied into every matching cultivar's record - not cultivar-specific advice." }
+        }
+      }
+    },
+
     "data_sources": {
       "description": "Maps to plant_data_source rows. Every non-trivial field elsewhere in this record should be traceable to at least one entry here - see data/CLAUDE.md's sources table for what's available to cite.",
       "type": "array",

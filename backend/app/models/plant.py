@@ -28,6 +28,11 @@ class PestInteractionType(str, Enum):
     vulnerable_to = "vulnerable_to"
 
 
+class GrowingInfoRecordType(str, Enum):
+    raw = "raw"
+    consolidated = "consolidated"
+
+
 class Plant(SQLModel, table=True):
     slug: str = Field(primary_key=True)
     common_name: str
@@ -145,3 +150,33 @@ class PlantPestInteraction(SQLModel, table=True):
     # names aren't a fixed enum.
     pest_or_insect: str
     notes: str | None = None
+
+
+class PlantGrowingInformation(SQLModel, table=True):
+    """Long-form growing-advice text (e.g. Project Gutenberg books with a
+    section per plant) - deliberately unstructured, unlike every other
+    field on Plant. The intent is to later extract structured values
+    (composting_needs, fertilizer_needs, needs_wind_cover/rain_cover,
+    seed_info.pretreatment, bedding_needs - the fields no structured source
+    covers, see data/CLAUDE.md) out of this text; that extraction pass
+    isn't built yet, this table just holds the raw material for it."""
+
+    __tablename__ = "plant_growing_information"
+
+    id: int | None = Field(default=None, primary_key=True)
+    plant_slug: str = Field(foreign_key="plant.slug")
+    text: str
+    source_url: str | None = None
+    attribution: str | None = None
+    # Free text, not a closed enum - old book scans are usually public
+    # domain, but sources vary a lot ("public domain", "CC BY-SA 4.0",
+    # "unknown").
+    copyright_status: str | None = None
+    record_type: GrowingInfoRecordType = GrowingInfoRecordType.raw
+    # Some sources describe a species/genus generically (e.g. "pumpkins")
+    # rather than this specific cultivar. The text still gets copied into
+    # every matching cultivar's own record (per-cultivar records are the
+    # whole point after the Cucurbita pepo merge bug - see
+    # data/etl/CLAUDE.md) but flagged here so it's not mistaken for
+    # cultivar-specific advice.
+    generic_for_species: bool | None = None

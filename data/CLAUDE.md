@@ -29,6 +29,7 @@ Candidate and confirmed sources to pull plant data from, kept here as they're fo
 | USDA PLANTS Database | https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt | authoritative for taxonomy/family classification, which is exactly what you need for rotation-family logic. Weak on cultivation specifics like spacing or companion planting though | public domain | candidate |
 | Wikipedia's "List of companion plants" | https://en.wikipedia.org/wiki/List_of_companion_plants | genuinely well-structured for companion pairs specifically, useful as a cross-check rather than a bulk scrape | CC BY-SA | candidate |
 | Trefle | https://trefle.io/api/v1 | usefulness to be confirmed | ? | candidate |
+| Project Gutenberg (old gardening books, one section per plant - e.g. https://www.gutenberg.org/cache/epub/43531/pg43531-images.html) | https://www.gutenberg.org | long-form growing advice text - candidate for filling `composting_needs`/`fertilizer_needs`/`needs_wind_cover`/`needs_rain_cover`/`seed_info.pretreatment`/`bedding_needs` (see below), none of which any structured source covers | public domain (verify per-book) | candidate - more books to be added; no fetcher built yet, see `growing_information` note below |
 
 ## Source → schema coverage analysis
 
@@ -57,12 +58,20 @@ Cross-referenced the sources above (their actual API docs / repo contents, not j
 
 ## Fields still needing a source
 
-Nothing reviewed so far covers these - they'll need either a source not yet on the list above, manual curation, or a best-effort inference pass during the Ollama cleanup step (step 4) rather than being sourced directly:
+Nothing reviewed so far covers these as a *structured* field - they'll need either a source not yet on the list above, manual curation, or extraction from unstructured text (see `growing_information` below) rather than being sourced directly:
 
-- **`composting_needs`, `fertilizer_needs`** - this reads more like "how-to-grow" advisory content than a database fact, so structured plant APIs are unlikely to have it as a discrete field. Worth checking whether it's buried in prose inside `description` fields (openfarm, Permapeople, Trefle all have one) that Ollama could extract, or looking at gardening-extension-service publications (university/government ag-extension "growing guides", not just plant databases) rather than another API.
-- **`needs_wind_cover`, `needs_rain_cover`** - very specific, unlikely to exist as a discrete field anywhere. Better candidate for *inference* than sourcing: e.g. tall/top-heavy plants (`height_cm`, `growth_habit`-type fields) are more wind-sensitive, thin-skinned fruit that splits (tomatoes, cherries) needs rain cover. Worth having the Ollama pass estimate these from correlated fields rather than holding out for a source that has them explicitly.
+- **`composting_needs`, `fertilizer_needs`** - this reads more like "how-to-grow" advisory content than a database fact, so structured plant APIs are unlikely to have it as a discrete field. Worth checking whether it's buried in prose inside `description` fields (openfarm, Permapeople, Trefle all have one) that Ollama could extract, or looking at gardening-extension-service publications (university/government ag-extension "growing guides", not just plant databases) rather than another API. Project Gutenberg's old gardening books are exactly this kind of prose source - see below.
+- **`needs_wind_cover`, `needs_rain_cover`** - very specific, unlikely to exist as a discrete field anywhere. Candidate for *inference* (from correlated fields like `height_cm`, or from `growing_information` text) rather than a dedicated source.
 - **`seed_info.seeds_per_gram`, `seed_info.pretreatment`** - classic seed-catalog data (germination rates, stratification/scarification requirements), not general plant-database data. None of the sources above are seed catalogs. Look for seed company technical data sheets, seed-starting guides, or native-plant/seed-bank germination protocols instead of another crop database.
 - **`bedding_needs`** (hilling, ground cover, staking, ...) - also how-to-grow content rather than a database field. General gardening how-to sites/extension publications are the likely source; alternatively, structured growth-habit fields (Trefle has `growth_form`/`growth_habit`/`shape_and_orientation`) might let Ollama *infer* staking needs for vining/climbing plants even without an explicit field.
+
+### `growing_information` - the holding area for the fields above
+
+Added a new field/table for exactly this problem: `growing_information` (JSON) / `PlantGrowingInformation` (Postgres, `plant_growing_information` table) holds long-form, unstructured text - e.g. a Project Gutenberg book's section for a given plant - rather than trying to force it into a structured field immediately. Each entry carries its own `source_url`, `attribution`, and `copyright_status` (old book scans are usually public domain, but that varies per book, so it's tracked per entry, not assumed). `record_type` distinguishes a single source's raw excerpt (`raw`) from a synthesized combination of several sources for the same plant (`consolidated`).
+
+**Cultivar vs. species text**: some of this prose describes a species/genus generically (e.g. "pumpkins") rather than a specific cultivar (e.g. "Baby Bear Pumpkin"). Per the cultivar-merge bug fix (see `data/etl/CLAUDE.md`), cultivars must stay separate plant records - so generic text gets *copied* into every matching cultivar's own `growing_information` array, with `generic_for_species: true` marking it as not cultivar-specific advice. No separate "species" entity was introduced for this - simpler to keep as a flag on each cultivar's own copy.
+
+**Status: schema only, not wired up yet.** `Plant`-cluster migration (`add_plant_growing_information`) and the JSON Schema field exist and are verified against real Postgres. Not yet built: a Project Gutenberg fetcher (only one example book known so far - more to be added to the sources table above) and the actual structured-data extraction pass that would read this text and fill in the fields listed above. Deliberately *not* wired into `data/etl/`'s active merge/export code yet, to avoid touching a pipeline that was mid-run when this was added.
 
 ## Notes
 
