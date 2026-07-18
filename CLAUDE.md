@@ -58,18 +58,27 @@ CLAUDE.md
 - Regenerate the typed frontend API client after backend schema/route changes.
 ## Commands
 
+**Claude: use the wrapper scripts in `claudeTools/` (PowerShell) instead of typing the raw `cd <dir>; <command>` yourself.** A `cd`-prefixed compound command has a different signature every time depending on which directory you're chaining from, so it can't be pre-approved once - the wrapper scripts have a fixed path and *can* be, which is the whole point. See `claudeTools/README.md` for the full list; the commands below are documented for humans/reference, not for Claude to type directly.
+
 Backend (`cd backend`, uv-managed, Python 3.12, package installs live in `.venv`):
-- `uv run uvicorn app.main:app --reload` — run the dev API server (http://localhost:8000, docs at `/docs`)
-- `uv run alembic upgrade head` — apply migrations (needs `DATABASE_URL` reachable — see `.env.example`; no Postgres in this local Windows checkout, but verified working against real Postgres on `garden-planner-dev`, see note below)
-- `uv run alembic revision --autogenerate -m "..."` — generate a migration from model changes
-- `uv run pytest` — run tests
-- `uv run ruff check .` — lint
+- `uv run uvicorn app.main:app --reload` — run the dev API server (http://localhost:8000, docs at `/docs`) — `claudeTools/backend_dev_start.ps1` (detached) / `backend_dev_stop.ps1`
+- `uv run alembic upgrade head` — apply migrations (needs `DATABASE_URL` reachable — see `.env.example`; no Postgres in this local Windows checkout, but verified working against real Postgres on `garden-planner-dev`, see note below) — `claudeTools/backend_migrate.ps1`
+- `uv run alembic revision --autogenerate -m "..."` — generate a migration from model changes (no wrapper - message varies every time)
+- `uv run pytest` — run tests — `claudeTools/backend_test.ps1`
+- `uv run ruff check .` — lint — `claudeTools/backend_lint.ps1`
 
 Frontend (`cd frontend`, npm-managed):
 - `npm run dev` — dev server (http://localhost:5173), proxies `/api` to `http://localhost:8000`
-- `npm run build` — typecheck (`tsc -b`) + production build
-- `npm run lint` — oxlint
-- `npm run generate:api` — regenerate `src/api/schema.d.ts` from the running backend's OpenAPI schema; run this after any backend route/model change, backend must be running
+- `npm run build` — typecheck (`tsc -b`) + production build — `claudeTools/frontend_build.ps1`
+- `npm run lint` — oxlint — `claudeTools/frontend_lint.ps1`
+- `npm run generate:api` — regenerate `src/api/schema.d.ts` from the running backend's OpenAPI schema; run this after any backend route/model change, backend must be running — `claudeTools/frontend_generate_api.ps1`
+
+Data/ETL (`cd data`, uv-managed, its own `pyproject.toml` — see `data/etl/CLAUDE.md`):
+- `uv run ruff check etl/` — lint — `claudeTools/data_lint.ps1`
+- `uv run python -m <module>` (e.g. `etl.run`, `etl.growing_info.run`, `etl.backfill_taxonomy`, `etl.state_report`) — `claudeTools/data_run_module.ps1 <module> [args...]`
+- an arbitrary/scratch script that needs `data/` on `PYTHONPATH` — `claudeTools/data_run_script.ps1 <path> [args...]`
+
+`garden-planner-dev` (see `infra/deploy/CLAUDE.md`): `claudeTools/dev_ssh_deploy_backend.ps1`, `dev_ssh_deploy_all.ps1`, `dev_ssh_health.ps1`, `dev_psql.ps1 -File <path>` (run a local `.sql` file against its real Postgres).
 
 Both `npm run dev` and `uv run uvicorn ...` must be running simultaneously for the frontend health check and future API calls to work.
 

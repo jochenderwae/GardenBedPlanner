@@ -28,3 +28,9 @@ dist-ssr/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Personal
+TODO.md
+
+# Claude Code local config (personal permission overrides, not team-shared)
+.claude/settings.local.json
