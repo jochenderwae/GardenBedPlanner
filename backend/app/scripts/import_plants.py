@@ -47,7 +47,7 @@ def upsert_plant(session: Session, data: dict) -> None:
     session.commit()
 
 
-def import_satellites(session: Session, data: dict) -> None:
+def import_satellites(session: Session, data: dict, known_slugs: set[str]) -> None:
     slug = data["slug"]
 
     session.exec(delete(PlantDataSource).where(PlantDataSource.plant_slug == slug))
@@ -64,6 +64,18 @@ def import_satellites(session: Session, data: dict) -> None:
 
     session.exec(delete(PlantCompanion).where(PlantCompanion.plant_slug == slug))
     for c in data.get("companions", []):
+        # Some companion_slug values from the source ETL data (openfarm/
+        # homesteader) don't correspond to any of our 359 exported plants -
+        # e.g. plural/singular or numbered-variant slugs ("beets", "dill-1")
+        # that never survived into the final master list. Skipping (loudly)
+        # rather than letting one dangling reference fail this whole plant's
+        # satellite import via the FK constraint and roll back everything
+        # else (periods, seed_info, other valid companions) along with it.
+        # The real fix belongs in the ETL export step (data/etl/export.py) -
+        # this is a defensive backstop, not where the data should get clean.
+        if c["companion_slug"] not in known_slugs:
+            print(f"[{slug}] skipping dangling companion_slug {c['companion_slug']!r} (no such plant)")
+            continue
         # Field name differs deliberately: the JSON schema calls this
         # companion_slug (unambiguous within one plant's own file), but the
         # DB column is companion_plant_slug (needs to be distinct from this
@@ -96,6 +108,8 @@ def main() -> None:
     print(f"Importing {len(files)} plant files from {PLANTS_DIR}")
     loaded = [(path, json.loads(path.read_text(encoding="utf-8"))) for path in files]
 
+    known_slugs = {data["slug"] for _, data in loaded}
+
     ok, failed = 0, 0
     failed_slugs: set[str] = set()
     with Session(engine) as session:
@@ -112,7 +126,7 @@ def main() -> None:
             if data["slug"] in failed_slugs:
                 continue  # plant row itself never landed, satellites would just fail too
             try:
-                import_satellites(session, data)
+                import_satellites(session, data, known_slugs)
                 ok += 1
             except Exception as exc:  # noqa: BLE001
                 session.rollback()
