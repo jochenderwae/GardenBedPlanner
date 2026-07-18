@@ -432,6 +432,22 @@ export interface components {
          * @enum {string}
          */
         CompanionRelationship: "good" | "bad";
+        /** FamilyRead */
+        FamilyRead: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+        };
+        /** GenusRead */
+        GenusRead: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Family Id */
+            family_id?: number | null;
+        };
         /**
          * GrowingInfoRecordType
          * @enum {string}
@@ -501,10 +517,6 @@ export interface components {
             needs_rain_cover?: boolean | null;
             /** Water Needs */
             water_needs?: string | null;
-            /** Family */
-            family?: string | null;
-            /** Genus */
-            genus?: string | null;
             /** Min Temperature C */
             min_temperature_c?: number | null;
             /** Max Temperature C */
@@ -532,6 +544,8 @@ export interface components {
             life_cycle?: components["schemas"]["LifeCycle"] | null;
             /** Life Cycle Years */
             life_cycle_years?: number | null;
+            family?: components["schemas"]["FamilyRead"] | null;
+            genus?: components["schemas"]["GenusRead"] | null;
         };
         /** PlantBeddingNeed */
         PlantBeddingNeed: {
@@ -555,6 +569,69 @@ export interface components {
             mechanism?: string | null;
             /** Notes */
             notes?: string | null;
+        };
+        /** PlantCreate */
+        PlantCreate: {
+            /** Slug */
+            slug: string;
+            /** Common Name */
+            common_name: string;
+            /** Botanical Name */
+            botanical_name: string;
+            /** Description */
+            description?: string | null;
+            /** Sowing Method */
+            sowing_method?: string | null;
+            /** Spread Cm */
+            spread_cm?: number | null;
+            /** Row Spacing Cm */
+            row_spacing_cm?: number | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            sun_level?: components["schemas"]["SunLevel"] | null;
+            /** Soil Type */
+            soil_type?: string | null;
+            /** Composting Needs */
+            composting_needs?: string | null;
+            /** Fertilizer Needs */
+            fertilizer_needs?: string | null;
+            /** Needs Wind Cover */
+            needs_wind_cover?: boolean | null;
+            /** Needs Rain Cover */
+            needs_rain_cover?: boolean | null;
+            /** Water Needs */
+            water_needs?: string | null;
+            /** Min Temperature C */
+            min_temperature_c?: number | null;
+            /** Max Temperature C */
+            max_temperature_c?: number | null;
+            /** Days To Maturity */
+            days_to_maturity?: number | null;
+            /** Soil Ph Min */
+            soil_ph_min?: number | null;
+            /** Soil Ph Max */
+            soil_ph_max?: number | null;
+            /** Is Toxic */
+            is_toxic?: boolean | null;
+            /** Toxicity Notes */
+            toxicity_notes?: string | null;
+            /** Is Edible */
+            is_edible?: boolean | null;
+            /** Edible Parts */
+            edible_parts?: string[] | null;
+            /** Succession Enabled */
+            succession_enabled?: boolean | null;
+            /** Succession Interval Days */
+            succession_interval_days?: number | null;
+            /** Succession Max Sowings */
+            succession_max_sowings?: number | null;
+            life_cycle?: components["schemas"]["LifeCycle"] | null;
+            /** Life Cycle Years */
+            life_cycle_years?: number | null;
+            /** Family */
+            family?: string | null;
+            /** Genus */
+            genus?: string | null;
         };
         /** PlantDataSource */
         PlantDataSource: {
@@ -611,10 +688,8 @@ export interface components {
             needs_rain_cover?: boolean | null;
             /** Water Needs */
             water_needs?: string | null;
-            /** Family */
-            family?: string | null;
-            /** Genus */
-            genus?: string | null;
+            family?: components["schemas"]["FamilyRead"] | null;
+            genus?: components["schemas"]["GenusRead"] | null;
             /** Min Temperature C */
             min_temperature_c?: number | null;
             /** Max Temperature C */
@@ -760,10 +835,6 @@ export interface components {
             needs_rain_cover?: boolean | null;
             /** Water Needs */
             water_needs?: string | null;
-            /** Family */
-            family?: string | null;
-            /** Genus */
-            genus?: string | null;
             /** Min Temperature C */
             min_temperature_c?: number | null;
             /** Max Temperature C */
@@ -791,6 +862,10 @@ export interface components {
             life_cycle?: components["schemas"]["LifeCycle"] | null;
             /** Life Cycle Years */
             life_cycle_years?: number | null;
+            /** Family */
+            family?: string | null;
+            /** Genus */
+            genus?: string | null;
         };
         /** SeedInfo */
         SeedInfo: {
@@ -1043,7 +1118,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Plant"];
+                "application/json": components["schemas"]["PlantCreate"];
             };
         };
         responses: {

@@ -65,6 +65,16 @@ export const SCALAR_FIELDS: FieldConfig[] = [
 
 export type FieldValue = string | number | boolean | string[] | null;
 
+// family/genus read as nested {id, name} objects (real Family/Genus rows -
+// see backend/app/models/plant.py) but are edited/committed as plain name
+// strings (PlantUpdate.family/genus resolve the name via find-or-create) -
+// unwrap to the name for display here, same as every other text field.
+const RELATION_FIELDS = new Set(["family", "genus"]);
+
 export function fieldValue(plant: PlantDetail, key: keyof PlantUpdate): FieldValue {
+  if (RELATION_FIELDS.has(key as string)) {
+    const rel = (plant as unknown as Record<string, { name: string } | null>)[key as string];
+    return rel?.name ?? null;
+  }
   return (plant as unknown as Record<string, FieldValue>)[key] ?? null;
 }

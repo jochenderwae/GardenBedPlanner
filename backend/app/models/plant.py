@@ -32,6 +32,29 @@ class LifeCycle(str, Enum):
     perennial = "perennial"
 
 
+class Family(SQLModel, table=True):
+    """Normalized taxonomy lookup (was a free-text string on Plant) - gives
+    referential integrity for family names and somewhere to hang per-family
+    data later (e.g. rotation cooldown periods), per the domain notes on
+    family-based rotation logic below."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(unique=True, index=True)
+
+
+class Genus(SQLModel, table=True):
+    """Normalized taxonomy lookup, same rationale as Family. family_id is
+    nullable rather than required: a source can give us a genus without a
+    family (or with one that disagrees with what's already on file for that
+    genus) - find_or_create_genus (app/services/taxonomy.py) deliberately
+    doesn't overwrite an existing genus's family_id, so this stays whatever
+    it was first set to until a deliberate data-cleanup pass reconciles it."""
+
+    id: int | None = Field(default=None, primary_key=True)
+    name: str = Field(unique=True, index=True)
+    family_id: int | None = Field(default=None, foreign_key="family.id")
+
+
 class Plant(SQLModel, table=True):
     slug: str = Field(primary_key=True)
     common_name: str
@@ -52,9 +75,11 @@ class Plant(SQLModel, table=True):
     # Taxonomy - needed for family-based rotation/succession logic (see root
     # CLAUDE.md's domain notes). botanical_name usually encodes genus in its
     # first word, but these are kept as separate structured fields so
-    # rotation queries don't have to parse it back out.
-    family: str | None = None
-    genus: str | None = None
+    # rotation queries don't have to parse it back out. FKs into Family/Genus
+    # (above), not free-text - see app/services/taxonomy.py for the
+    # find-or-create resolution the API layer does from plain name strings.
+    family_id: int | None = Field(default=None, foreign_key="family.id")
+    genus_id: int | None = Field(default=None, foreign_key="genus.id")
 
     # Natural habitat temperature range, not a US hardiness zone - more
     # directly useful for adjusting to Belgium's climate (see root

@@ -29,10 +29,17 @@ from app.models.plant import (
     PlantPestInteraction,
     SeedInfo,
 )
+from app.services.taxonomy import find_or_create_family, find_or_create_genus
 
 PLANTS_DIR = Path(__file__).resolve().parents[3] / "data" / "plants"
 
-_PLANT_SCALAR_FIELDS = [f for f in Plant.model_fields if f != "slug"]
+# family_id/genus_id excluded: the JSON export has plain "family"/"genus"
+# name strings (see data/plant.schema.json), not ids - resolved separately
+# below via find_or_create_family/genus, same as the API's create/update
+# handlers (app/api/routes/plants.py) do for a plant edited by hand.
+_PLANT_SCALAR_FIELDS = [
+    f for f in Plant.model_fields if f not in ("slug", "family_id", "genus_id")
+]
 
 
 def upsert_plant(session: Session, data: dict) -> None:
@@ -44,6 +51,8 @@ def upsert_plant(session: Session, data: dict) -> None:
     for field in _PLANT_SCALAR_FIELDS:
         if field in data:
             setattr(plant, field, data[field])
+    plant.family_id = find_or_create_family(session, data.get("family"))
+    plant.genus_id = find_or_create_genus(session, data.get("genus"), plant.family_id)
     session.commit()
 
 

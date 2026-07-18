@@ -13,6 +13,7 @@ export async function getHealth(): Promise<HealthResponse> {
 
 export type Plant = components["schemas"]["Plant"];
 export type PlantDetail = components["schemas"]["PlantDetail"];
+export type PlantCreate = components["schemas"]["PlantCreate"];
 export type PlantUpdate = components["schemas"]["PlantUpdate"];
 export type PlantDataSource = components["schemas"]["PlantDataSource"];
 export type PlantPeriod = components["schemas"]["PlantPeriod"];
@@ -41,6 +42,13 @@ export function listPlants(limit = 500): Promise<Plant[]> {
 
 export function getPlant(slug: string): Promise<PlantDetail> {
   return apiFetch(`/api/plants/${encodeURIComponent(slug)}`);
+}
+
+export function createPlant(plant: PlantCreate): Promise<Plant> {
+  return apiFetch(`/api/plants`, {
+    method: "POST",
+    body: JSON.stringify(plant),
+  });
 }
 
 export function updatePlant(slug: string, patch: PlantUpdate): Promise<Plant> {

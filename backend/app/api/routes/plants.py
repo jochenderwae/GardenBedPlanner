@@ -7,8 +7,10 @@ from sqlmodel import Session, delete, select
 from app.api.deps import commit_or_409
 from app.core.db import get_session
 from app.models.plant import (
+    Family,
+    Genus,
     LifeCycle,
-    Plant,
+    Plant as PlantTable,
     PlantBeddingNeed,
     PlantCompanion,
     PlantDataSource,
@@ -18,21 +20,89 @@ from app.models.plant import (
     SeedInfo,
     SunLevel,
 )
+from app.services.taxonomy import find_or_create_family, find_or_create_genus
 
 router = APIRouter(prefix="/plants", tags=["plants"])
 
-# Built from Plant's own fields (everything but the slug identity) rather
-# than retyped by hand, so a future field added to Plant is automatically
-# patchable here too instead of silently staying stuck at its create-time
-# value until someone remembers to update this list.
+
+class FamilyRead(BaseModel):
+    id: int
+    name: str
+
+
+class GenusRead(BaseModel):
+    id: int
+    name: str
+    family_id: int | None = None
+
+
+# Every PlantTable scalar field except the identity/taxonomy-FK columns -
+# reused below to build the Plant/PlantDetail read schemas (which surface
+# family/genus as nested read objects, not raw ids) and the create/update
+# input schemas (which accept plain family/genus name strings instead,
+# resolved via find_or_create_family/genus - see the handlers below) without
+# retyping the field list by hand in four places.
+_PLANT_TABLE_SCALAR_FIELDS = {
+    name: field
+    for name, field in PlantTable.model_fields.items()
+    if name not in ("family_id", "genus_id")
+}
+
+
+# slug/common_name/botanical_name are the only non-nullable columns on
+# PlantTable; everything else defaults to None there too, so this same set
+# drives requiredness for both the Plant read schema and _PlantCreate below.
+_REQUIRED_PLANT_FIELDS = {"slug", "common_name", "botanical_name"}
+
+
+def _plant_field_tuple(name: str, field: Any) -> tuple[Any, Any]:
+    if name in _REQUIRED_PLANT_FIELDS:
+        return (field.annotation, ...)
+    return (field.annotation | None, None)
+
+
+# API read shape for a plant (list + create/update responses). Deliberately
+# not `class Plant(PlantTable)`: SQLModel's metaclass turns every added
+# field into a table column even on a subclass without its own table=True -
+# built with create_model instead, same reasoning PlantDetail below
+# documents for why its fields are hand-duplicated rather than subclassed.
+Plant = create_model(
+    "Plant",
+    __base__=BaseModel,
+    **{name: _plant_field_tuple(name, field) for name, field in _PLANT_TABLE_SCALAR_FIELDS.items()},
+    family=(FamilyRead | None, None),
+    genus=(GenusRead | None, None),
+)
+
+
+# Input schema for POST /plants: same fields/requiredness as the Plant read
+# schema above, but family/genus are plain name strings rather than nested
+# read objects - the API accepts taxonomy names, not database ids,
+# resolving them server-side (see create_plant).
+_PlantCreate = create_model(
+    "PlantCreate",
+    __base__=BaseModel,
+    **{name: _plant_field_tuple(name, field) for name, field in _PLANT_TABLE_SCALAR_FIELDS.items()},
+    family=(str | None, None),
+    genus=(str | None, None),
+)
+
+# Built from Plant's own fields (everything but the slug identity and the
+# taxonomy FKs) rather than retyped by hand, so a future field added to
+# Plant is automatically patchable here too instead of silently staying
+# stuck at its create-time value until someone remembers to update this
+# list. family/genus are added back as plain name strings, same as
+# _PlantCreate above.
 _PlantUpdate = create_model(
     "PlantUpdate",
     __base__=BaseModel,
     **{
         name: (field.annotation | None, None)
-        for name, field in Plant.model_fields.items()
+        for name, field in _PLANT_TABLE_SCALAR_FIELDS.items()
         if name != "slug"
     },
+    family=(str | None, None),
+    genus=(str | None, None),
 )
 
 
@@ -62,8 +132,8 @@ class PlantDetail(BaseModel):
     needs_wind_cover: bool | None = None
     needs_rain_cover: bool | None = None
     water_needs: str | None = None
-    family: str | None = None
-    genus: str | None = None
+    family: FamilyRead | None = None
+    genus: GenusRead | None = None
     min_temperature_c: float | None = None
     max_temperature_c: float | None = None
     days_to_maturity: int | None = None
@@ -88,11 +158,48 @@ class PlantDetail(BaseModel):
     growing_information: list[PlantGrowingInformation] = []
 
 
-def _get_plant_or_404(session: Session, slug: str) -> Plant:
-    plant = session.get(Plant, slug)
+def _get_plant_or_404(session: Session, slug: str) -> PlantTable:
+    plant = session.get(PlantTable, slug)
     if plant is None:
         raise HTTPException(status_code=404, detail=f"No plant with slug {slug!r}")
     return plant
+
+
+def _load_family_genus_maps(
+    session: Session, rows: list[PlantTable]
+) -> tuple[dict[int, Family], dict[int, Genus]]:
+    """Bulk-loads every Family/Genus a batch of plant rows references, so
+    list_plants does two extra queries total instead of two per plant."""
+    family_ids = {r.family_id for r in rows if r.family_id is not None}
+    genus_ids = {r.genus_id for r in rows if r.genus_id is not None}
+    families = (
+        {f.id: f for f in session.exec(select(Family).where(Family.id.in_(family_ids))).all()}
+        if family_ids
+        else {}
+    )
+    genera = (
+        {g.id: g for g in session.exec(select(Genus).where(Genus.id.in_(genus_ids))).all()}
+        if genus_ids
+        else {}
+    )
+    return families, genera
+
+
+def _family_read(family: Family | None) -> FamilyRead | None:
+    return FamilyRead(id=family.id, name=family.name) if family else None
+
+
+def _genus_read(genus: Genus | None) -> GenusRead | None:
+    return GenusRead(id=genus.id, name=genus.name, family_id=genus.family_id) if genus else None
+
+
+def _to_api_plant(row: PlantTable, families: dict[int, Family], genera: dict[int, Genus]) -> Plant:
+    data = row.model_dump(exclude={"family_id", "genus_id"})
+    return Plant(
+        **data,
+        family=_family_read(families.get(row.family_id)) if row.family_id else None,
+        genus=_genus_read(genera.get(row.genus_id)) if row.genus_id else None,
+    )
 
 
 @router.get("", response_model=list[Plant])
@@ -101,14 +208,21 @@ def list_plants(
     offset: int = Query(default=0, ge=0),
     session: Session = Depends(get_session),
 ) -> list[Plant]:
-    return list(session.exec(select(Plant).offset(offset).limit(limit)).all())
+    rows = list(session.exec(select(PlantTable).offset(offset).limit(limit)).all())
+    families, genera = _load_family_genus_maps(session, rows)
+    return [_to_api_plant(row, families, genera) for row in rows]
 
 
 @router.get("/{slug}", response_model=PlantDetail)
 def get_plant(slug: str, session: Session = Depends(get_session)) -> PlantDetail:
     plant = _get_plant_or_404(session, slug)
+    data = plant.model_dump(exclude={"family_id", "genus_id"})
+    family = session.get(Family, plant.family_id) if plant.family_id else None
+    genus = session.get(Genus, plant.genus_id) if plant.genus_id else None
     return PlantDetail(
-        **plant.model_dump(),
+        **data,
+        family=_family_read(family),
+        genus=_genus_read(genus),
         data_sources=list(
             session.exec(select(PlantDataSource).where(PlantDataSource.plant_slug == slug)).all()
         ),
@@ -134,13 +248,18 @@ def get_plant(slug: str, session: Session = Depends(get_session)) -> PlantDetail
 
 
 @router.post("", response_model=Plant, status_code=201)
-def create_plant(plant: Plant, session: Session = Depends(get_session)) -> Plant:
-    if session.get(Plant, plant.slug) is not None:
-        raise HTTPException(status_code=409, detail=f"Plant {plant.slug!r} already exists")
+def create_plant(payload: _PlantCreate, session: Session = Depends(get_session)) -> Plant:  # type: ignore[valid-type]
+    if session.get(PlantTable, payload.slug) is not None:
+        raise HTTPException(status_code=409, detail=f"Plant {payload.slug!r} already exists")
+    data = payload.model_dump()
+    family_id = find_or_create_family(session, data.pop("family"))
+    genus_id = find_or_create_genus(session, data.pop("genus"), family_id)
+    plant = PlantTable(**data, family_id=family_id, genus_id=genus_id)
     session.add(plant)
     commit_or_409(session)
     session.refresh(plant)
-    return plant
+    families, genera = _load_family_genus_maps(session, [plant])
+    return _to_api_plant(plant, families, genera)
 
 
 @router.patch("/{slug}", response_model=Plant)
@@ -148,12 +267,18 @@ def update_plant(
     slug: str, update: _PlantUpdate, session: Session = Depends(get_session)  # type: ignore[valid-type]
 ) -> Plant:
     plant = _get_plant_or_404(session, slug)
-    for field, value in update.model_dump(exclude_unset=True).items():
+    data = update.model_dump(exclude_unset=True)
+    if "family" in data:
+        plant.family_id = find_or_create_family(session, data.pop("family"))
+    if "genus" in data:
+        plant.genus_id = find_or_create_genus(session, data.pop("genus"), plant.family_id)
+    for field, value in data.items():
         setattr(plant, field, value)
     session.add(plant)
     commit_or_409(session)
     session.refresh(plant)
-    return plant
+    families, genera = _load_family_genus_maps(session, [plant])
+    return _to_api_plant(plant, families, genera)
 
 
 @router.delete("/{slug}", status_code=204)
@@ -175,7 +300,7 @@ def delete_plant(slug: str, session: Session = Depends(get_session)) -> None:
         session.exec(delete(model).where(model.plant_slug == slug))
     session.exec(delete(PlantCompanion).where(PlantCompanion.plant_slug == slug))
     session.exec(delete(PlantCompanion).where(PlantCompanion.companion_plant_slug == slug))
-    session.exec(delete(Plant).where(Plant.slug == slug))
+    session.exec(delete(PlantTable).where(PlantTable.slug == slug))
     commit_or_409(session)
 
 
