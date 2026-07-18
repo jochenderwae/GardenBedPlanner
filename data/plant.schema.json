@@ -73,7 +73,7 @@
         "required": ["period_type", "start_month", "end_month"],
         "additionalProperties": false,
         "properties": {
-          "period_type": { "enum": ["sowing", "planting", "fertilizing", "harvesting"] },
+          "period_type": { "type": "string", "description": "References a period_type.code row (e.g. 'sowing', 'planting', 'fertilizing', 'harvesting', or a later addition) - a lookup table, not a closed enum, so new period types don't need a schema change. Resolved/validated against that table at import time, not enforceable in JSON Schema alone." },
           "start_month": { "type": "integer", "minimum": 1, "maximum": 12 },
           "end_month": { "type": "integer", "minimum": 1, "maximum": 12 }
         }

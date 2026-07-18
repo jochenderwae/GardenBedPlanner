@@ -57,9 +57,14 @@ erDiagram
     PLANT_PERIOD {
         int id PK
         string plant_slug FK
-        string period_type "sowing | planting | fertilizing | harvesting"
+        string period_type FK "references period_type.code - lookup table, not a fixed enum"
         int start_month "1-12, recurs yearly - not a calendar date"
         int end_month "1-12, recurs yearly - not a calendar date"
+    }
+
+    PERIOD_TYPE {
+        string code PK "e.g. sowing, planting, fertilizing, harvesting"
+        string description "e.g. Seed sowing window"
     }
 
     PLANT_COMPANION {
@@ -185,6 +190,7 @@ erDiagram
     PLANT ||--o{ PLANT_DATA_SOURCE : "documented by"
     PLANT ||--o| SEED_INFO : "has"
     PLANT ||--o{ PLANT_PERIOD : "has"
+    PERIOD_TYPE ||--o{ PLANT_PERIOD : "classifies"
     PLANT ||--o{ PLANT_BEDDING_NEED : "requires"
     PLANT ||--o{ PLANT_COMPANION : "is subject of"
     PLANT ||--o{ PLANT_COMPANION : "is companion in"
@@ -264,4 +270,5 @@ type Geometry =
 - **The `PLANT` cluster is implemented** — `backend/app/models/plant.py` + the `create_plant_tables` migration. All fields except `slug`/`common_name`/`botanical_name` (and each satellite table's own identity/FK columns) are nullable: this table is meant to be bulk-populated from heterogeneous external sources via the ETL in `data/`, which won't have every field for every plant. Don't assume non-null without checking. The JSON import format that feeds the ETL is `data/plant.schema.json` (JSON Schema), designed to map ~1:1 onto this schema - one JSON object per plant, with `seed_info`/`periods`/`companions`/`pest_interactions`/`bedding_needs`/`data_sources` nested as the satellite-table data.
 - **`PLANT` gained a second wave of fields** (`add_taxonomy_climate_succession_fields_and_pest_interactions` migration) after cross-referencing candidate data sources against the original field list: `family`/`genus` (taxonomy - the rotation/succession-family domain note had no field to actually key off before this), `min_temperature_c`/`max_temperature_c` (natural habitat range, chosen over a US hardiness zone since it's directly usable for the Belgium climate-adjustment goal), `days_to_maturity`, `soil_ph_min`/`soil_ph_max` (checked 0-14), `is_toxic`/`toxicity_notes`, `is_edible`/`edible_parts`, and `succession_enabled`/`succession_interval_days`/`succession_max_sowings`. `PLANT_COMPANION` gained `mechanism` (open-ended, e.g. "pest-deterrent"). `PLANT_PEST_INTERACTION` is a new table for plant-to-insect relationships (attracts/repels/vulnerable_to) - deliberately separate from `PLANT_COMPANION`, which is plant-to-plant. Explicitly skipped: a "lunar planting affinity" field seen in one candidate source - folk-practice data, low value for this project.
 - **`PLANT_GROWING_INFORMATION`** (`add_plant_growing_information` migration) holds long-form, deliberately *unstructured* text - book excerpts (Project Gutenberg has old gardening books with a section per plant) rather than a discrete field. It's raw material for a not-yet-built extraction pass meant to fill the fields nothing structured covers (`composting_needs`, `fertilizer_needs`, `needs_wind_cover`/`needs_rain_cover`, `seed_info.pretreatment`, `bedding_needs` - see `data/CLAUDE.md`'s "Fields still needing a source"). `record_type` (`raw`/`consolidated`) distinguishes a single source's excerpt from a synthesized combination of several. `generic_for_species` flags text written about the species/genus generally (e.g. old books describing "pumpkins" rather than a specific cultivar) rather than this specific cultivar - the text still gets copied into every matching cultivar's own record (see the `PLANT_COMPANION`/matching note in `data/etl/CLAUDE.md` about why cultivars stay separate records), just marked so it isn't mistaken for cultivar-specific advice. No separate "species" entity was introduced for this - keeping it as a flag on the per-cultivar copy was the simpler option and what was asked for.
+- **`PLANT_PERIOD.period_type`** (`convert_period_type_to_lookup_table` migration) - was a fixed 4-value Postgres enum (`sowing`/`planting`/`fertilizing`/`harvesting`), now a FK into a new `PERIOD_TYPE` lookup table (`code` PK + `description`), seeded with those same 4 rows. Plant care needs more period types than can be enumerated up front (e.g. pruning, thinning, mulching), and a fixed enum requires a schema migration for every addition - a lookup table lets a new period type be added as a data insert instead. `data/plant.schema.json`'s `period_type` field is correspondingly a plain string now, not a closed JSON Schema enum (same "resolved at import time" caveat as `companions[].companion_slug`).
 - **`PLANT.life_cycle`/`life_cycle_years`** (`add_plant_life_cycle` migration) - `life_cycle` classifies annual/biennial/perennial as usual. `life_cycle_years` is a separate, independent nullable field for a perennial's typical *productive* lifespan (e.g. raspberry canes are perennial but a patch is usually renewed after ~7 years) - deliberately not a 4th `life_cycle` value, since "perennial" and "perennial with a known productive span" aren't mutually exclusive categories. Not yet populated by the ETL for any of the 359 already-exported plants - see `data/CLAUDE.md`'s "Fields still needing a source"; `sources/trefle.py`'s `map_record` doesn't currently pull anything duration/life-cycle-related from `main_species`, worth checking against a real cached response before assuming Trefle has (or lacks) this.

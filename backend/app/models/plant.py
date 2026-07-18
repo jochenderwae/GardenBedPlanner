@@ -10,13 +10,6 @@ class SunLevel(str, Enum):
     shadow = "shadow"
 
 
-class PeriodType(str, Enum):
-    sowing = "sowing"
-    planting = "planting"
-    fertilizing = "fertilizing"
-    harvesting = "harvesting"
-
-
 class CompanionRelationship(str, Enum):
     good = "good"
     bad = "bad"
@@ -115,12 +108,24 @@ class SeedInfo(SQLModel, table=True):
     is_f1_hybrid: bool | None = None
 
 
+class PeriodType(SQLModel, table=True):
+    """Lookup table, not a fixed enum: sowing/planting/fertilizing/harvesting
+    cover today's needs, but plant care can call for more period types than
+    can be predicted up front (e.g. pruning, thinning, mulching windows) -
+    a new row here is enough to support one, no migration required."""
+
+    __tablename__ = "period_type"
+
+    code: str = Field(primary_key=True)
+    description: str | None = None
+
+
 class PlantPeriod(SQLModel, table=True):
     __tablename__ = "plant_period"
 
     id: int | None = Field(default=None, primary_key=True)
     plant_slug: str = Field(foreign_key="plant.slug")
-    period_type: PeriodType
+    period_type: str = Field(foreign_key="period_type.code")
     # Month-only (1-12), not a calendar date: these are species-level windows
     # that recur every year (e.g. "sow Feb-Mar"), not a one-off event tied to
     # a specific year - that's what BedPlanting/Action dates are for.
