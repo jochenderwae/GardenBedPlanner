@@ -1,24 +1,30 @@
-from enum import Enum
-
+from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
-
-class BedType(str, Enum):
-    large_planter = "large_planter"
-    small_planter = "small_planter"
-    berry_row = "berry_row"
-    compost_bin = "compost_bin"
-    fruit_tree = "fruit_tree"
+from app.models.plant import SunLevel
 
 
 class Bed(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
-    bed_type: BedType
-    width_cm: float
-    length_cm: float
+    # Free-text, not a closed enum - was bed_type (large_planter|small_planter|
+    # berry_row|compost_bin|fruit_tree) until real usage showed those were
+    # only ever meant as examples of what a planter could be, not an
+    # exhaustive category list. Users need to model arbitrary planters.
+    category: str | None = None
+    # jsonb rectangle|polygon, garden-space cm - see app/models/geometry.py
+    # and docs/schema.md's "Geometry format". Raw dict at the table level;
+    # validated into Geometry at the API boundary (routes/beds.py), same
+    # split every other jsonb geometry column in this app uses.
+    border_geometry: dict = Field(sa_column=Column(JSONB, nullable=False))
     height_cm: float = 0
     has_greenhouse: bool = False
-    pos_x: float = 0
-    pos_y: float = 0
+    # North-facing-edge compass label (e.g. "N", "SE") - coarse, not derived
+    # from border_geometry's rotation; used for shade-casting reasoning per
+    # root CLAUDE.md's domain notes, not for anything geometric.
+    orientation: str | None = None
+    is_raised: bool | None = None
+    soil_type: str | None = None
+    sun_level: SunLevel | None = None
     notes: str = ""

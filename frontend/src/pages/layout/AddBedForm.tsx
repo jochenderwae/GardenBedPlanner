@@ -3,23 +3,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { createBed, type Bed, type BedType } from "@/api/client";
-import { BED_TYPE_LABELS } from "./geometry";
+import { createBed, type Bed, type Geometry } from "@/api/client";
+import { ShapeTypeToggle } from "./ShapeTypeToggle";
 
 const inputClass =
   "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
-const BED_TYPE_OPTIONS = Object.entries(BED_TYPE_LABELS) as [BedType, string][];
-
-// Sensible starting dimensions per type, matching root CLAUDE.md's real
-// garden description - editable immediately after creation either way.
-const DEFAULT_DIMENSIONS: Record<BedType, { width_cm: number; length_cm: number }> = {
-  large_planter: { width_cm: 70, length_cm: 200 },
-  small_planter: { width_cm: 30, length_cm: 70 },
-  berry_row: { width_cm: 60, length_cm: 300 },
-  compost_bin: { width_cm: 100, length_cm: 100 },
-  fruit_tree: { width_cm: 150, length_cm: 150 },
-};
+// A reasonable default planter size (matches root CLAUDE.md's large
+// planters) - there's no more fixed type -> default-size table since
+// category is free text now; editable immediately after creation either
+// way via drag/resize or the panel.
+const DEFAULT_WIDTH_CM = 70;
+const DEFAULT_HEIGHT_CM = 200;
 
 interface AddBedFormProps {
   onClose: () => void;
@@ -30,19 +25,26 @@ interface AddBedFormProps {
 export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps) {
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
-  const [bedType, setBedType] = useState<BedType>("large_planter");
+  const [category, setCategory] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const defaultRect: Geometry = {
+    type: "rectangle",
+    x: nextPosition.pos_x,
+    y: nextPosition.pos_y,
+    width: DEFAULT_WIDTH_CM,
+    height: DEFAULT_HEIGHT_CM,
+    rotation: 0,
+  };
+  const [geometry, setGeometry] = useState<Geometry>(defaultRect);
 
   const mutation = useMutation({
     mutationFn: () =>
       createBed({
         name: name.trim(),
-        bed_type: bedType,
-        ...DEFAULT_DIMENSIONS[bedType],
+        category: category.trim() || null,
+        border_geometry: geometry,
         height_cm: 0,
         has_greenhouse: false,
-        pos_x: nextPosition.pos_x,
-        pos_y: nextPosition.pos_y,
         notes: "",
       }),
     onSuccess: (bed) => {
@@ -79,23 +81,23 @@ export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps
           </label>
 
           <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">Type</span>
-            <select
+            <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
+            <input
               className={inputClass}
-              value={bedType}
-              onChange={(e) => setBedType(e.target.value as BedType)}
-            >
-              {BED_TYPE_OPTIONS.map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
+              placeholder="e.g. raised planter, ground bed, compost..."
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            />
+          </label>
+
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-muted-foreground">Shape</span>
+            <ShapeTypeToggle geometry={geometry} onChange={setGeometry} />
           </label>
 
           <p className="text-xs text-muted-foreground">
-            Starts at {DEFAULT_DIMENSIONS[bedType].width_cm}×{DEFAULT_DIMENSIONS[bedType].length_cm}cm -
-            drag/resize after creating.
+            Starts at {DEFAULT_WIDTH_CM}×{DEFAULT_HEIGHT_CM}cm - drag/resize/rotate (or edit vertices, for a polygon)
+            after creating.
           </p>
 
           {error && <p className="text-sm text-destructive">{error}</p>}

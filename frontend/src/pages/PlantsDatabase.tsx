@@ -258,27 +258,18 @@ export function PlantsDatabase() {
                 </tr>
               </thead>
               <tbody>
-                {families.map((family) =>
-                  family.plantCount === 1 ? (
-                    <PlantRow
-                      key={family.singletonPlants[0].slug}
-                      plant={family.singletonPlants[0]}
-                      depth={0}
-                      onOpen={openPlant}
-                    />
-                  ) : (
-                    <FamilyRows
-                      key={family.key}
-                      family={family}
-                      expanded={searchActive || expandedFamilies.has(family.key)}
-                      onToggleFamily={() => toggleFamily(family.key)}
-                      expandedGenera={expandedGenera}
-                      searchActive={searchActive}
-                      onToggleGenus={toggleGenus}
-                      onOpen={openPlant}
-                    />
-                  ),
-                )}
+                {families.map((family) => (
+                  <FamilyRows
+                    key={family.key}
+                    family={family}
+                    expanded={searchActive || expandedFamilies.has(family.key)}
+                    onToggleFamily={() => toggleFamily(family.key)}
+                    expandedGenera={expandedGenera}
+                    searchActive={searchActive}
+                    onToggleGenus={toggleGenus}
+                    onOpen={openPlant}
+                  />
+                ))}
               </tbody>
             </table>
           )}

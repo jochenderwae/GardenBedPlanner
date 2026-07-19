@@ -3,13 +3,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { deleteBed, updateBed, type Bed, type BedType, type BedUpdate } from "@/api/client";
-import { BED_TYPE_LABELS } from "./geometry";
+import { deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
+import { ShapeTypeToggle } from "./ShapeTypeToggle";
 
 const inputClass =
   "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
-
-const BED_TYPE_OPTIONS = Object.entries(BED_TYPE_LABELS) as [BedType, string][];
 
 interface BedPanelProps {
   bed: Bed;
@@ -41,9 +39,23 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
   });
 
   function commit(patch: BedUpdate) {
-    setDraft((prev) => ({ ...prev, ...patch }));
+    setDraft((prev) => ({ ...prev, ...patch }) as Bed);
     mutation.mutate(patch);
   }
+
+  function setRectField(key: keyof RectangleGeometry, value: number) {
+    setDraft((prev) =>
+      prev.border_geometry.type === "rectangle"
+        ? { ...prev, border_geometry: { ...prev.border_geometry, [key]: value } }
+        : prev,
+    );
+  }
+
+  // originalRect/draftRect are only used inside the `geometry.type ===
+  // "rectangle"` branch below, where TypeScript narrows draft.border_geometry
+  // for us - keeping the discriminant check inline (not via a separate
+  // boolean) is what makes that narrowing apply.
+  const originalRect = bed.border_geometry.type === "rectangle" ? bed.border_geometry : null;
 
   return (
     <Card className="w-72 p-4">
@@ -66,61 +78,138 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
         </label>
 
         <label className="flex flex-col gap-1">
-          <span className="text-xs font-medium text-muted-foreground">Type</span>
-          <select
+          <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
+          <input
             className={inputClass}
-            value={draft.bed_type}
-            onChange={(e) => commit({ bed_type: e.target.value as BedType })}
-          >
-            {BED_TYPE_OPTIONS.map(([value, label]) => (
-              <option key={value} value={value}>
-                {label}
-              </option>
-            ))}
-          </select>
+            placeholder="e.g. raised planter, ground bed, compost..."
+            value={draft.category ?? ""}
+            onChange={(e) => setDraft((prev) => ({ ...prev, category: e.target.value || null }))}
+            onBlur={() => draft.category !== bed.category && commit({ category: draft.category })}
+          />
         </label>
 
-        <div className="grid grid-cols-3 gap-2">
+        <ShapeTypeToggle
+          geometry={draft.border_geometry}
+          onChange={(border_geometry) => commit({ border_geometry })}
+        />
+
+        {draft.border_geometry.type === "rectangle" ? (
+          <div className="grid grid-cols-3 gap-2">
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Width (cm)</span>
+              <input
+                type="number"
+                className={inputClass}
+                value={draft.border_geometry.width}
+                onChange={(e) => setRectField("width", Number(e.target.value))}
+                onBlur={() => {
+                  if (draft.border_geometry.type === "rectangle" && draft.border_geometry.width !== originalRect?.width) {
+                    commit({ border_geometry: draft.border_geometry });
+                  }
+                }}
+              />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Length (cm)</span>
+              <input
+                type="number"
+                className={inputClass}
+                value={draft.border_geometry.height}
+                onChange={(e) => setRectField("height", Number(e.target.value))}
+                onBlur={() => {
+                  if (draft.border_geometry.type === "rectangle" && draft.border_geometry.height !== originalRect?.height) {
+                    commit({ border_geometry: draft.border_geometry });
+                  }
+                }}
+              />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Rotation (°)</span>
+              <input
+                type="number"
+                className={inputClass}
+                value={draft.border_geometry.rotation}
+                onChange={(e) => setRectField("rotation", Number(e.target.value))}
+                onBlur={() => {
+                  if (
+                    draft.border_geometry.type === "rectangle" &&
+                    draft.border_geometry.rotation !== originalRect?.rotation
+                  ) {
+                    commit({ border_geometry: draft.border_geometry });
+                  }
+                }}
+              />
+            </label>
+          </div>
+        ) : (
+          <p className="text-xs text-muted-foreground">Polygon shape - edit vertices directly on the canvas.</p>
+        )}
+
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
+          <input
+            type="number"
+            className={inputClass}
+            value={draft.height_cm}
+            onChange={(e) => setDraft((prev) => ({ ...prev, height_cm: Number(e.target.value) }))}
+            onBlur={() => draft.height_cm !== bed.height_cm && commit({ height_cm: draft.height_cm })}
+          />
+        </label>
+
+        <div className="grid grid-cols-2 gap-2">
           <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">Width (cm)</span>
+            <span className="text-xs font-medium text-muted-foreground">Orientation</span>
             <input
-              type="number"
               className={inputClass}
-              value={draft.width_cm}
-              onChange={(e) => setDraft((prev) => ({ ...prev, width_cm: Number(e.target.value) }))}
-              onBlur={() => draft.width_cm !== bed.width_cm && commit({ width_cm: draft.width_cm })}
+              placeholder="e.g. N, SE"
+              value={draft.orientation ?? ""}
+              onChange={(e) => setDraft((prev) => ({ ...prev, orientation: e.target.value || null }))}
+              onBlur={() => draft.orientation !== bed.orientation && commit({ orientation: draft.orientation })}
             />
           </label>
           <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">Length (cm)</span>
-            <input
-              type="number"
+            <span className="text-xs font-medium text-muted-foreground">Sun level</span>
+            <select
               className={inputClass}
-              value={draft.length_cm}
-              onChange={(e) => setDraft((prev) => ({ ...prev, length_cm: Number(e.target.value) }))}
-              onBlur={() => draft.length_cm !== bed.length_cm && commit({ length_cm: draft.length_cm })}
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
-            <input
-              type="number"
-              className={inputClass}
-              value={draft.height_cm}
-              onChange={(e) => setDraft((prev) => ({ ...prev, height_cm: Number(e.target.value) }))}
-              onBlur={() => draft.height_cm !== bed.height_cm && commit({ height_cm: draft.height_cm })}
-            />
+              value={draft.sun_level ?? ""}
+              onChange={(e) => commit({ sun_level: (e.target.value || null) as Bed["sun_level"] })}
+            >
+              <option value="">—</option>
+              <option value="full_sun">Full sun</option>
+              <option value="half_sun">Half sun</option>
+              <option value="shadow">Shadow</option>
+            </select>
           </label>
         </div>
 
-        <label className="flex items-center gap-2">
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-medium text-muted-foreground">Soil type</span>
           <input
-            type="checkbox"
-            checked={draft.has_greenhouse}
-            onChange={(e) => commit({ has_greenhouse: e.target.checked })}
+            className={inputClass}
+            value={draft.soil_type ?? ""}
+            onChange={(e) => setDraft((prev) => ({ ...prev, soil_type: e.target.value || null }))}
+            onBlur={() => draft.soil_type !== bed.soil_type && commit({ soil_type: draft.soil_type })}
           />
-          <span className="text-sm">Has greenhouse</span>
         </label>
+
+        <div className="flex items-center gap-4">
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={draft.has_greenhouse}
+              onChange={(e) => commit({ has_greenhouse: e.target.checked })}
+            />
+            <span className="text-sm">Greenhouse</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={draft.is_raised ?? false}
+              onChange={(e) => commit({ is_raised: e.target.checked })}
+            />
+            <span className="text-sm">Raised</span>
+          </label>
+        </div>
 
         <label className="flex flex-col gap-1">
           <span className="text-xs font-medium text-muted-foreground">Notes</span>

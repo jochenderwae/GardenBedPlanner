@@ -2,7 +2,39 @@
   "permissions": {
     "allow": [
       "PowerShell",
-      "WebSearch"
+      "WebSearch",
+      "PowerShell(uv run *)",
+      "PowerShell(npm run *)",
+      "PowerShell(ssh *)",
+      "PowerShell(git *)",
+      "PowerShell(scp *)",
+      "PowerShell(python *)",
+      "PowerShell(Out-Null *)",
+      "PowerShell(Get-CimInstance *)",
+      "PowerShell(Get-Process *)",
+      "PowerShell(New-Item *)",
+      "PowerShell(Stop-Process *)",
+      "PowerShell(ssh garden-planner-dev \"*\")",
+      "PowerShell(C:\\\\projects\\\\GardenBedPlanner\\\\claudeTools\\\\*)",
+      "PowerShell(Test-NetConnection -ComputerName 192.168.0.26 *)",
+      "Bash(where *)",
+      "Bash(dir *)",
+      "WebSearch",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:permapeople.org)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:trefle.io)",
+      "WebFetch(domain:docs.trefle.io)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:plants.sc.egov.usda.gov)",
+      "WebFetch(domain:www.gutenberg.org)",
+      "PowerShell(ollama *)",
+      "PowerShell(Invoke-WebRequest -Uri http://192.168.0.26:8000/*)",
+      "PowerShell(Invoke-WebRequest -Uri http://localhost:5173 *)",
+      "Skill(run)",
+      "Skill(run:*)",
+      "Skill(update-config:*)"
     ]
   }
 }

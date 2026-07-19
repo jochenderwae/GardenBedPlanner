@@ -361,6 +361,128 @@ export interface paths {
         patch: operations["update_period_type_api_period_types__code__patch"];
         trace?: never;
     };
+    "/api/example-garden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Example Garden
+         * @description Serves data/example_garden.json as-is - a dev/demo fixture (see
+         *     data/etl/generate_example_garden.py), not backed by any table. Read-only:
+         *     there's no POST/PATCH/DELETE here, and nothing here writes to Postgres -
+         *     this just lets the frontend preview the fixture without a copy of the
+         *     file living in frontend/ that could drift out of sync.
+         */
+        get: operations["get_example_garden_api_example_garden_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/garden": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Garden */
+        get: operations["get_garden_api_garden_get"];
+        /**
+         * Put Garden
+         * @description Get-or-create: creates the garden on first call, updates it on every
+         *     call after. Only the *first* creation also auto-creates a matching
+         *     ground-level Bed (see the docstring on that block below) - subsequent
+         *     PUTs never touch Bed rows.
+         */
+        put: operations["put_garden_api_garden_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plantings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Plantings */
+        get: operations["list_plantings_api_plantings_get"];
+        put?: never;
+        /** Create Planting */
+        post: operations["create_planting_api_plantings_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plantings/{planting_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Planting */
+        get: operations["get_planting_api_plantings__planting_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Planting */
+        delete: operations["delete_planting_api_plantings__planting_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Planting */
+        patch: operations["update_planting_api_plantings__planting_id__patch"];
+        trace?: never;
+    };
+    "/api/bed-equipment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Bed Equipment */
+        get: operations["list_bed_equipment_api_bed_equipment_get"];
+        put?: never;
+        /** Create Bed Equipment */
+        post: operations["create_bed_equipment_api_bed_equipment_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/bed-equipment/{equipment_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Bed Equipment */
+        get: operations["get_bed_equipment_api_bed_equipment__equipment_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Bed Equipment */
+        delete: operations["delete_bed_equipment_api_bed_equipment__equipment_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Bed Equipment */
+        patch: operations["update_bed_equipment_api_bed_equipment__equipment_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -371,11 +493,8 @@ export interface components {
             id?: number | null;
             /** Name */
             name: string;
-            bed_type: components["schemas"]["BedType"];
-            /** Width Cm */
-            width_cm: number;
-            /** Length Cm */
-            length_cm: number;
+            /** Category */
+            category?: string | null;
             /**
              * Height Cm
              * @default 0
@@ -386,58 +505,226 @@ export interface components {
              * @default false
              */
             has_greenhouse: boolean;
-            /**
-             * Pos X
-             * @default 0
-             */
-            pos_x: number;
-            /**
-             * Pos Y
-             * @default 0
-             */
-            pos_y: number;
+            /** Orientation */
+            orientation?: string | null;
+            /** Is Raised */
+            is_raised?: boolean | null;
+            /** Soil Type */
+            soil_type?: string | null;
+            sun_level?: components["schemas"]["SunLevel"] | null;
             /**
              * Notes
              * @default
              */
             notes: string;
+            /** Border Geometry */
+            border_geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
         };
-        /**
-         * BedType
-         * @enum {string}
-         */
-        BedType: "large_planter" | "small_planter" | "berry_row" | "compost_bin" | "fruit_tree";
+        /** BedCreate */
+        BedCreate: {
+            /** Name */
+            name: string;
+            /** Category */
+            category?: string | null;
+            /**
+             * Height Cm
+             * @default 0
+             */
+            height_cm: number;
+            /**
+             * Has Greenhouse
+             * @default false
+             */
+            has_greenhouse: boolean;
+            /** Orientation */
+            orientation?: string | null;
+            /** Is Raised */
+            is_raised?: boolean | null;
+            /** Soil Type */
+            soil_type?: string | null;
+            sun_level?: components["schemas"]["SunLevel"] | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Border Geometry */
+            border_geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+        };
+        /** BedEquipment */
+        BedEquipment: {
+            /** Id */
+            id?: number | null;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Equipment Type */
+            equipment_type: string;
+            /** Height Cm */
+            height_cm?: number | null;
+            /** Water Delivery Lph */
+            water_delivery_lph?: number | null;
+            /** Geometry */
+            geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
+        };
+        /** BedEquipmentCreate */
+        BedEquipmentCreate: {
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Equipment Type */
+            equipment_type: string;
+            /** Height Cm */
+            height_cm?: number | null;
+            /** Water Delivery Lph */
+            water_delivery_lph?: number | null;
+            /** Geometry */
+            geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
+        };
+        /** BedEquipmentUpdate */
+        BedEquipmentUpdate: {
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Equipment Type */
+            equipment_type?: string | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            /** Water Delivery Lph */
+            water_delivery_lph?: number | null;
+            /** Geometry */
+            geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
+        };
         /** BedUpdate */
         BedUpdate: {
             /** Name */
             name?: string | null;
-            bed_type?: components["schemas"]["BedType"] | null;
-            /** Width Cm */
-            width_cm?: number | null;
-            /** Length Cm */
-            length_cm?: number | null;
+            /** Category */
+            category?: string | null;
             /** Height Cm */
             height_cm?: number | null;
             /** Has Greenhouse */
             has_greenhouse?: boolean | null;
-            /** Pos X */
-            pos_x?: number | null;
-            /** Pos Y */
-            pos_y?: number | null;
+            /** Orientation */
+            orientation?: string | null;
+            /** Is Raised */
+            is_raised?: boolean | null;
+            /** Soil Type */
+            soil_type?: string | null;
+            sun_level?: components["schemas"]["SunLevel"] | null;
             /** Notes */
             notes?: string | null;
+            /** Border Geometry */
+            border_geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
         /**
          * CompanionRelationship
          * @enum {string}
          */
         CompanionRelationship: "good" | "bad";
+        /**
+         * ExampleBed
+         * @description Mirrors the real Bed API shape (app/api/routes/beds.py) - kept as its
+         *     own schema rather than reused directly since this fixture also carries
+         *     `plantings`, which isn't a Bed field. NOTE: data/example_garden.json
+         *     itself still needs regenerating (data-engineer's job, see
+         *     data/etl/generate_example_garden.py) to match this shape - until then
+         *     this endpoint will fail validation against the old bed_type/flat-field
+         *     fixture on disk, a known, temporary gap while that regeneration is
+         *     pending.
+         */
+        ExampleBed: {
+            /** Name */
+            name: string;
+            /** Category */
+            category?: string | null;
+            /** Border Geometry */
+            border_geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+            /**
+             * Height Cm
+             * @default 0
+             */
+            height_cm: number;
+            /**
+             * Has Greenhouse
+             * @default false
+             */
+            has_greenhouse: boolean;
+            /** Orientation */
+            orientation?: string | null;
+            /** Is Raised */
+            is_raised?: boolean | null;
+            /** Soil Type */
+            soil_type?: string | null;
+            sun_level?: components["schemas"]["SunLevel"] | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /**
+             * Plantings
+             * @default []
+             */
+            plantings: components["schemas"]["ExamplePlanting"][];
+        };
+        /** ExampleGarden */
+        ExampleGarden: {
+            /** Beds */
+            beds: components["schemas"]["ExampleBed"][];
+        };
+        /** ExamplePlanting */
+        ExamplePlanting: {
+            /** Plant Slug */
+            plant_slug: string;
+            /** X Cm */
+            x_cm: number;
+            /** Y Cm */
+            y_cm: number;
+        };
         /** FamilyRead */
         FamilyRead: {
             /** Id */
             id: number;
             /** Name */
             name: string;
+        };
+        /** Garden */
+        Garden: {
+            /** Id */
+            id?: number | null;
+            /**
+             * Name
+             * @default My Garden
+             */
+            name: string;
+            /** Climate Zone */
+            climate_zone?: string | null;
+            /** Location */
+            location?: string | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Border Geometry */
+            border_geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+        };
+        /** GardenPut */
+        GardenPut: {
+            /**
+             * Name
+             * @default My Garden
+             */
+            name: string;
+            /** Climate Zone */
+            climate_zone?: string | null;
+            /** Location */
+            location?: string | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Border Geometry */
+            border_geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
         };
         /** GenusRead */
         GenusRead: {
@@ -486,6 +773,11 @@ export interface components {
          * @enum {string}
          */
         PestInteractionType: "attracts" | "repels" | "vulnerable_to";
+        /**
+         * PlacementType
+         * @enum {string}
+         */
+        PlacementType: "individual" | "row" | "field";
         /** Plant */
         Plant: {
             /** Slug */
@@ -867,6 +1159,90 @@ export interface components {
             /** Genus */
             genus?: string | null;
         };
+        /** Planting */
+        Planting: {
+            /** Id */
+            id?: number | null;
+            /** Bed Id */
+            bed_id: number;
+            /** Plant Slug */
+            plant_slug: string;
+            /** @default individual */
+            placement_type: components["schemas"]["PlacementType"];
+            /** Planted Date */
+            planted_date?: string | null;
+            /** Removed Date */
+            removed_date?: string | null;
+            /** Geometry */
+            geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+        };
+        /** PlantingCreate */
+        PlantingCreate: {
+            /** Bed Id */
+            bed_id: number;
+            /** Plant Slug */
+            plant_slug: string;
+            /** @default individual */
+            placement_type: components["schemas"]["PlacementType"];
+            /** Planted Date */
+            planted_date?: string | null;
+            /** Removed Date */
+            removed_date?: string | null;
+            /** Geometry */
+            geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+        };
+        /** PlantingUpdate */
+        PlantingUpdate: {
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Plant Slug */
+            plant_slug?: string | null;
+            placement_type?: components["schemas"]["PlacementType"] | null;
+            /** Planted Date */
+            planted_date?: string | null;
+            /** Removed Date */
+            removed_date?: string | null;
+            /** Geometry */
+            geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
+        };
+        /** Point2D */
+        Point2D: {
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        };
+        /** PolygonGeometry */
+        PolygonGeometry: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "polygon";
+            /** Points */
+            points: components["schemas"]["Point2D"][];
+        };
+        /** RectangleGeometry */
+        RectangleGeometry: {
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "rectangle";
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+            /** Width */
+            width: number;
+            /** Height */
+            height: number;
+            /**
+             * Rotation
+             * @default 0
+             */
+            rotation: number;
+        };
         /** SeedInfo */
         SeedInfo: {
             /** Plant Slug */
@@ -958,7 +1334,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Bed"];
+                "application/json": components["schemas"]["BedCreate"];
             };
         };
         responses: {
@@ -2043,6 +2419,375 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PeriodType"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_example_garden_api_example_garden_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExampleGarden"];
+                };
+            };
+        };
+    };
+    get_garden_api_garden_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Garden"];
+                };
+            };
+        };
+    };
+    put_garden_api_garden_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenPut"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Garden"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_plantings_api_plantings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Planting"][];
+                };
+            };
+        };
+    };
+    create_planting_api_plantings_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantingCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Planting"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_planting_api_plantings__planting_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                planting_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Planting"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_planting_api_plantings__planting_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                planting_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_planting_api_plantings__planting_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                planting_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlantingUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Planting"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_bed_equipment_api_bed_equipment_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BedEquipment"][];
+                };
+            };
+        };
+    };
+    create_bed_equipment_api_bed_equipment_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BedEquipmentCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BedEquipment"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_bed_equipment_api_bed_equipment__equipment_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                equipment_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BedEquipment"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_bed_equipment_api_bed_equipment__equipment_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                equipment_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_bed_equipment_api_bed_equipment__equipment_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                equipment_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["BedEquipmentUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BedEquipment"];
                 };
             };
             /** @description Validation Error */

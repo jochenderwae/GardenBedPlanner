@@ -12,8 +12,23 @@ export async function getHealth(): Promise<HealthResponse> {
 }
 
 export type Bed = components["schemas"]["Bed"];
+export type BedCreate = components["schemas"]["BedCreate"];
 export type BedUpdate = components["schemas"]["BedUpdate"];
-export type BedType = components["schemas"]["BedType"];
+export type RectangleGeometry = components["schemas"]["RectangleGeometry"];
+export type PolygonGeometry = components["schemas"]["PolygonGeometry"];
+export type Geometry = RectangleGeometry | PolygonGeometry;
+export type Garden = components["schemas"]["Garden"];
+export type GardenPut = components["schemas"]["GardenPut"];
+export type ExampleGarden = components["schemas"]["ExampleGarden"];
+export type ExampleBed = components["schemas"]["ExampleBed"];
+export type ExamplePlanting = components["schemas"]["ExamplePlanting"];
+
+export type Planting = components["schemas"]["Planting"];
+export type PlantingCreate = components["schemas"]["PlantingCreate"];
+export type PlantingUpdate = components["schemas"]["PlantingUpdate"];
+export type BedEquipment = components["schemas"]["BedEquipment"];
+export type BedEquipmentCreate = components["schemas"]["BedEquipmentCreate"];
+export type BedEquipmentUpdate = components["schemas"]["BedEquipmentUpdate"];
 
 export type Plant = components["schemas"]["Plant"];
 export type PlantDetail = components["schemas"]["PlantDetail"];
@@ -44,7 +59,7 @@ export function listBeds(): Promise<Bed[]> {
   return apiFetch(`/api/beds`);
 }
 
-export function createBed(bed: Omit<Bed, "id">): Promise<Bed> {
+export function createBed(bed: BedCreate): Promise<Bed> {
   return apiFetch(`/api/beds`, {
     method: "POST",
     body: JSON.stringify(bed),
@@ -60,6 +75,70 @@ export function updateBed(id: number, patch: BedUpdate): Promise<Bed> {
 
 export function deleteBed(id: number): Promise<void> {
   return apiFetch(`/api/beds/${id}`, { method: "DELETE" });
+}
+
+/** null means "not created yet" (backend 404s until the first PUT) - not an
+ * error, callers should treat it as the garden-setup empty state. */
+export async function getGarden(): Promise<Garden | null> {
+  const res = await fetch(`/api/garden`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error(`GET /api/garden failed: ${res.status}`);
+  return res.json() as Promise<Garden>;
+}
+
+export function putGarden(garden: GardenPut): Promise<Garden> {
+  return apiFetch(`/api/garden`, {
+    method: "PUT",
+    body: JSON.stringify(garden),
+  });
+}
+
+export function getExampleGarden(): Promise<ExampleGarden> {
+  return apiFetch(`/api/example-garden`);
+}
+
+export function listPlantings(): Promise<Planting[]> {
+  return apiFetch(`/api/plantings`);
+}
+
+export function createPlanting(planting: PlantingCreate): Promise<Planting> {
+  return apiFetch(`/api/plantings`, {
+    method: "POST",
+    body: JSON.stringify(planting),
+  });
+}
+
+export function updatePlanting(id: number, patch: PlantingUpdate): Promise<Planting> {
+  return apiFetch(`/api/plantings/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deletePlanting(id: number): Promise<void> {
+  return apiFetch(`/api/plantings/${id}`, { method: "DELETE" });
+}
+
+export function listBedEquipment(): Promise<BedEquipment[]> {
+  return apiFetch(`/api/bed-equipment`);
+}
+
+export function createBedEquipment(equipment: BedEquipmentCreate): Promise<BedEquipment> {
+  return apiFetch(`/api/bed-equipment`, {
+    method: "POST",
+    body: JSON.stringify(equipment),
+  });
+}
+
+export function updateBedEquipment(id: number, patch: BedEquipmentUpdate): Promise<BedEquipment> {
+  return apiFetch(`/api/bed-equipment/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteBedEquipment(id: number): Promise<void> {
+  return apiFetch(`/api/bed-equipment/${id}`, { method: "DELETE" });
 }
 
 export function listPlants(limit = 500): Promise<Plant[]> {
