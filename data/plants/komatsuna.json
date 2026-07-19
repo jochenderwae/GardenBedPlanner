@@ -1,7 +1,7 @@
 {
   "slug": "komatsuna",
   "common_name": "Komatsuna",
-  "botanical_name": "brassica rapa (pervidis / komatsuna)",
+  "botanical_name": "Brassica rapa var. perviridis",
   "description": "Komatsuna, or Japanese mustard spinach, is a fast-growing leafy brassica harvested for its mild, tender greens. It shrugs off both heat and frost better than true spinach, making it a productive cut-and-come-again crop across much of the year. Sow directly and harvest leaves young or let plants mature.",
   "data_sources": [
     {
@@ -11,7 +11,19 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Komatsuna is a leafy green that grows in a rosette form, similar to spinach."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Komatsuna",
+      "attribution": "manual-research",
+      "notes": "botanical_name normalized from the lowercase, typo'd 'brassica rapa (pervidis / komatsuna)' (broke etl.backfill_taxonomy's genus_from_botanical_name, which requires an uppercase first letter by design) to 'Brassica rapa var. perviridis' - verified 2026-07-19 against Wikipedia's Komatsuna article, confirming both the corrected spelling ('perviridis', not 'pervidis') and that the parenthetical cultivar-group notation doesn't change the answer: komatsuna is a Brassica rapa variety, same species as turnip/mizuna/napa cabbage/rapini. Genus/family then backfilled normally via etl.backfill_taxonomy."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Brassica",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Brassica'"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "genus": "Brassica",
+  "family": "Brassicaceae"
 }

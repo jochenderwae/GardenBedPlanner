@@ -1,7 +1,7 @@
 {
   "slug": "snow-man-carrot",
   "common_name": "Snow Man Carrot",
-  "botanical_name": "Carotte Hybride",
+  "botanical_name": "Daucus carota",
   "spread_cm": 5,
   "row_spacing_cm": 5,
   "height_cm": 10,
@@ -21,7 +21,19 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Carrot plants have a rosette of leaves that radiate from the ground level."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Carrot",
+      "attribution": "manual-research",
+      "notes": "botanical_name normalized from 'Carotte Hybride' ('Carotte' is just French for 'carrot', not a genus - etl.backfill_taxonomy's genus_from_botanical_name correctly declined it as nonsense input) to 'Daucus carota', matching the sibling plants/carrot.json record's own botanical_name convention. Verified 2026-07-19: 'Snow Man' is a real F1 hybrid white carrot cultivar sold by multiple seed companies (Territorial Seed, Stokes Seeds, Wong Sam Hing Seeds, nunhems) as an Imperator-type Daucus carota, confirming the existing companions[] entry pointing at plants/carrot.json was already correct. Genus/family then backfilled normally via etl.backfill_taxonomy."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Daucus",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Daucus'"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "genus": "Daucus",
+  "family": "Apiaceae"
 }
