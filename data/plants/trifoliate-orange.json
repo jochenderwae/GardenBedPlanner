@@ -11,6 +11,11 @@
     {
       "attribution": "ollama-inference",
       "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The trifoliate orange is described as growing into a large shrub or small tree 4–8 m tall."
     }
-  ]
+  ],
+  "growth_habit": "tree"
 }

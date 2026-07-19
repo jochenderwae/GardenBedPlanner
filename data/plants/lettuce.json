@@ -95,6 +95,112 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "notes": "growing_information text sourced from 'A-B-C of Vegetable Gardening'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Lettuce forms a rosette of leaves that radiate from the base."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Corn salad is also known as lamb's-lettuce and fetticus. Sow the seed\n\nduring the early spring in drills 14 to 18 inches apart and cultivate\n\nthe same as for lettuce or mustard. For an extra early crop the seed\n\nmay be planted during the autumn and the plants covered lightly during\n\nthe winter. In the Southern States the covering will not be necessary\n\nand the plants will be ready for use during February and March. The\n\nleaves are frequently used in their natural green state, but they may\n\nbe blanched by covering the rows with anything that will exclude the\n\nlight. Corn salad is used as a salad in place of lettuce, or mixed with\n\nlettuce or water cress. The flavor of corn salad is very mild, and it\n\nis improved by mixing with some other salad plant for use. It is also\n\nboiled with mustard for greens.—(F. B. 255.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#CORN_SALAD",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "This crop attains its best development in a rich sandy loam in which\n\nthere is plenty of organic matter. Lettuce thrives best during the\n\nearly spring or late autumn and will not withstand the heat of summer.\n\nIn order that the leaves may be crisp and tender, it is necessary to\n\nforce the growth. The usual method of growing lettuce for home use is\n\nto sow the seeds broadcast in a bed and remove the leaves from the\n\nplants as rapidly as they become large enough for use. A much better\n\nmethod is either to thin or transplant the seedlings and allow the\n\nplants to form rather compact heads and then cut the entire plant for\n\nuse. In the Southern States the seeds may be sown during the autumn\n\nand the plants allowed to remain in the ground over winter. At the\n\nNorth the seeds may be sown in a hotbed or cold frame and the seedlings\n\ntransplanted to the open ground, or the seeding may be in rows in the\n\ngarden and the plants thinned to 5 or 6 inches in the row. Lettuce may\n\nbe grown in rows about 12 inches apart. In order to produce crisp and\n\ntender lettuce during the summer months, it may be necessary to provide\n\nsome form of partial shading.—(F. B. 255; N. Y. E. S. 208; N. Car. E.\n\nS. 147; Tenn. E. S. 2; Purdue Ind. E. S. 66 and 84; Kas. E. S. 70.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#LETTUCE",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "This is generally known as salad, which is a misnomer, as salad means anything that is served in a green state; it may be onions,\r\ntomatoes, cabbage, lettuce, or anything of that kind. By general usage\r\nthe word salad has been appropriated to the lettuce, as the latter is\r\nthe plant most frequently grown in this country for salad. But call it\r\nwhichever you like, it is one of the greatest additions to our tables,\r\nand in our kitchen garden it should not be made a side issue of a week\r\nor two in the spring, but should be raised in the finest condition\r\npossible throughout the season, and by using the hotbeds and cold\r\nframes it is possible to have it the whole year round.\n\nTo raise head lettuce in perfection the greatest care must be taken\r\nto reserve the very best and tightest heads for seed, or if the seed\r\nis to be purchased select the hardest-heading varieties. For the\r\nearliest planting the seed should be sown in the hotbed and have the\r\nsame treatment as its associate, the cabbage; the [97] young plants should\r\nnot be allowed to stand too thickly; they should be at least an inch\r\napart in the seed bed, or be transplanted to that distance when half\r\nan inch high. When the cabbage is set out, one or two lettuce plants\r\nmay be set between each pair of cabbages in the row, according to the\r\ndistance the cabbages are apart. There must be space enough between the\r\nplants to give the soil a good stirring with the hoe around each plant,\r\nas thorough cultivation is essential to the best development of both\r\ncabbage and lettuce. A second lot of seed should be planted when the\r\ntomatoes and egg plants are sown; these can be set out in the garden\r\nas soon as they are large enough to handle. The third sowing should be\r\nmade in the open garden when the first planting is done, and the young\r\nseedlings should be transplanted as soon as the plants are large enough\r\nand before they begin to be crowded in the row, as this last sowing\r\nwill not form heads without it receives the best of care. These three\r\nsowings are about all that can be depended upon to make hard heads,\r\nunless it can be planted in some rich, shady corner, and carefully\r\nnursed with the watering pot.\n\nPERPETUAL LETTUCE.\n\nAbout the first or middle of May a sowing should [98] be made of the\r\n“Perpetual Lettuce,” and the plants, when large enough, should be\r\ntransplanted and treated the same as the head lettuce; it will not\r\nform tight heads, but produces a fine bunch of broad, yellowish-green\r\nleaves, which are very crisp and delicate, not being strong and bitter,\r\nas most lettuces are in hot weather. This lettuce will stand from four\r\nto six weeks without running to seed, so that if plantings are made\r\nabout once a month it can be had in perfection throughout the balance\r\nof the season. If the head lettuce is more particularly desired, a\r\nsowing should be made about the first of August, and another about the\r\nfifteenth; the young plants should be transplanted and treated in the\r\nsame manner for heading as is followed in the spring; the first sowing\r\nwill not produce heads unless the latter part of August and the first\r\npart of September be cool and moist; but you are almost sure to have\r\nfine heads from the second sowing. Personally, I prefer the Perpetual,\r\nboth for its fine qualities and the ease of growing it.\n\nAnother way, and the easiest, to have a constant succession of lettuce\r\nfor the table throughout the season, is to sow the seed thickly in\r\ndrills and to cut the loose leaves close to the ground when it is three\r\nor four inches high; this produces rather narrow leaves, which are very\r\ntender and juicy, but which have not the substance of those grown as\r\nseparate plants or heads, and are not so easily prepared for the table.\r\nThese sowings can be made every few weeks, and a constant succession of\r\nyoung leaves be had for use throughout the entire season. It should [99] be\r\nthe object in sowing lettuce to plant small lots frequently, that it\r\nmay always be had in the best condition.\n\nAbout the second week in September a sowing of some early hard-heading\r\nvariety should be made, and a succeeding one about the first of\r\nOctober; from these two sowings the cold frames should be planted,\r\nabout one-third from the first and two-thirds from the second; the\r\nplants should be set about six inches apart each way, which will allow\r\nabout fifty plants to each sash. When cold weather comes the sash\r\nshould be put on, and the outsides of the frames banked around with\r\nlong stable manure. The plants must be treated to plenty of fresh\r\nair whenever the weather will permit of it, and on very cold nights\r\nthe sash should be reinforced with a covering of straw, old mats,\r\nor carpet. The lettuce grown in these frames is apt to be infested\r\nwith the small insect known as the “Green Fly;” to prevent or to get\r\nrid of the presence of this pest, tobacco refuse and sweepings from\r\na cigar-maker’s shop should be strewn on the soil under the leaves;\r\nthis will destroy the fly and act as a fertilizer, but if too much is\r\napplied it will spoil the delicate flavor of the lettuce.\n\nIf a few very early cabbages are desired, the seed should be sown about\r\nthe first of October and transplanted with the lettuce into the cold\r\nframes; planting them about two inches apart each way; if these are in\r\ngood condition and the spring favorable, they can be planted out about\r\nthe 15th of March, and will produce heads one to two weeks earlier than\r\nthose raised in the hotbeds.\n\n[100]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Burpee’s Hard-Head. —This is the fastest growing and the best\r\nheading kind that I have ever grown. With this variety the ordinary\r\ngardener is able to grow as fine, large, solid heads as those grown\r\nby the professional market gardener. In shape it very much resembles\r\na cabbage, as even the outer leaves tend to curl in over the head,\r\ninstead of spreading outward, as in most lettuces. In appearance it is\r\nquite novel and striking, the edges of the leaves being tinged with a\r\ndeep brownish-red, while in the centre of its hard heads the leaves\r\nare blanched to a beautiful creamy white. In quality it is remarkably\r\ntender, rich, juicy, and never bitter.\n\nBURPEE’S HARD-HEAD LETTUCE.\n\nBURPEE’S TOMHANNOCK LETTUCE.\n\nBurpee’s Tomhannock. —This is the finest of all [101] the cutting\r\nlettuces, as it is of large size, handsome appearance, and the very\r\nchoicest quality. It grows very quickly, is soon ready to cut, and\r\nstands a long time without running to seed, retaining throughout the\r\nseason its delicate and delicious flavor. The growth is erect; a fully\r\ndeveloped plant is ten to twelve inches in height, and nearly as great\r\nin diameter across the top; the outer edges of the leaves curl outward.\r\nThe outer leaves are shaded with reddish-brown, while the inner leaves\r\nare almost white. It is entirely free from any bitter taste throughout\r\nthe entire summer.\n\nStonehead Golden Yellow. —This is a new variety, which makes\r\nvery solid heads, of handsome appearance and the finest quality. Its\r\nearliness, large, tight heads and superior quality render it one of the\r\nbest kinds for forwarding under glass.\n\nGOLDEN STONEHEAD LETTUCE.\n\nBurpee’s Silver Ball. —This, next to the Hard Head, is the\r\nbest heading variety for general purposes, and where the brown markings\r\nin the latter kind are an objection, the gardener will find in this\r\nkind all the good qualities that go to make a desirable lettuce. It\r\nproduces a beautiful head, very firm and solid, with handsomely curled\r\nleaves. The [102] head is of a silvery white color, very rich and buttery\r\nin flavor, and stands for some time before running to seed. Other\r\nexcellent varieties of cabbage lettuces are Philadelphia White\r\nCabbage , The Hanson and The Deacon , while The\r\nTennis Ball is a great favorite with market gardeners for forcing.\n\nBURPEE’S SILVER BALL LETTUCE.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Seed of lettuce, spinach and radish should be sown broadcast and\r\nas early as possible, with later sowings at intervals of about two\r\nweeks for a successive [179] supply. Soil for lettuce and spinach should\r\nbe of more than ordinary richness, and should contain sufficient\r\nmoisture to insure rapid continuous growth. The best lettuce heads\r\nare raised by sowing seed in a hotbed and transplanting to the open\r\nground when plants are two inches high. Cabbage varieties should be\r\nselected for this purpose. In this way I have grown heads of the New York Lettuce to weigh two pounds each, under ordinary\r\ntreatment. Hanson , Burpee’s Golden Heart and Perpetual\r\nLettuce are all good sorts. The Cos varieties do best if\r\ntied up a few days before using, to blanch all the inner leaves.\n\nThe Radish will thrive in any good garden soil, but a light sandy\r\nloam is better than heavily manured ground. In order to be crisp and\r\ntender, the growth should be rapid and unchecked. I can recommend French Breakfast , Golden Globe , White Stuttgart and Chartiers . The latter is of unusual merit.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "In some sections, especially in the South, lettuce can be\r\ngrown with profit by farm gardeners. Depending on the\r\nlatitude, the seed may be planted from autumn until spring.\r\nThe plants are usually sheltered and headed under glass, or\r\nunder muslin-covered sash, and are sent North in ventilated\r\nbarrels.\n\nThe lettuce is naturally a cool-weather plant, and its culture [Pg 93] [Pg 94] is easy. The seed is cheap and it germinates quickly.\r\nWell-grown lettuce always commands good prices. It is\r\nusual to start the seeds in a border or under a frame, and to\r\nprick out the plants into more roomy quarters as soon as\r\nthey are large enough to handle. In a few weeks after transplanting,\r\nin good growing weather, they are headed ready\r\nfor market. Good soil, abundance of moisture and free\r\nventilation are essentials in lettuce production.\n\nIn some parts of the North lettuce culture would be\r\nfound profitable by farmers in the summer season, for there\r\nare varieties well adapted to high temperature, provided\r\ngood soil and sufficient water be furnished. There is not a\r\nmonth in the year when lettuce is not demanded for use in\r\nsalads, and this demand is likely to increase.\n\nLettuce. —For the South, we especially recommend Reichner's Early\r\nWhite Butter, Big Boston and New Treasure; for the North, New\r\nSensation, Mammoth Salamander and Hornberger's Dutch Butter.\r\nPlease see \"Johnson & Stokes' Garden and Farm Manual.\"",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The most popular salad crop is lettuce, a\r\nhardy, short-season, companion- or succession-crop\r\nrequiring moist, rich, mellow soil, and\r\nplant food in quickly available form. It is\r\neasy of culture and is chiefly grown in the open,\r\nthough the demand for it has increased to such\r\nan extent that it is started in hot-beds or forcing\r\nhouses that it may be earlier on the market.\r\nYou can get it in about five weeks. Coolness\r\nand continuous growth are necessary to prevent\r\ntoughness and bitterness. It is little\r\ngrown in the summer, though the Cos variety\r\ncan stand the hot weather very well, if the soil\r\nis moist and cool. Lettuce does better if transplanted\r\nand for that reason it is usually sown in\r\nseed-beds; in transplanting, it is usual to cut\r\noff the top third of the leaves, unless the seedlings\r\nare very stocky; but the mid-season and\r\nlater crops may be sown where the plants are\r\nto stand. Fall lettuce should be sown in late\r\nAugust or early September, and, as it is easier\r\nto control soil conditions and to get quick\r\nsprouting in a seed-bed than in the field at that\r\ndry time of year, it is better to use the seed-bed. [143] At any time lettuce does best in a soil that is\r\nloose and “warm,” that is known to gardeners\r\nas “quick.” Heavy, clayey soils are not adapted\r\nto lettuce, so see that your soil is pulverized\r\nand well fertilized before the seeds are sown.\r\nIt has been found to pay well to treat the soil\r\nwith nitrate of soda after the plants are set,\r\nbecause of the more rapid growth. The soda\r\nis applied dry, at the rate of two or three hundred\r\npounds to the acre, and then raked or tilled in.\r\nLettuce seed is sown thickly and the plants\r\nthinned, as they become edible, to about a foot\r\napart. The thinnings make excellent “greens.”\r\nThe rows are usually 8 to 12 inches apart.\n\nWhen grown as a succession-crop, lettuce\r\nmay be followed by cabbage, early cauliflower,\r\ncelery and other things. Or, it may be grown\r\nbetween the cabbages and cauliflower as a\r\ncompanion-crop, since it matures before either,\r\nand leaves the land to those plants when they\r\nneed all the space. Seed may be sown successionally\r\nuntil warm weather, and you may\r\ncount upon 1000 plants for each ounce of seed.\r\nThere are three well-known tribes: head lettuce,\r\ncut or curly-leaved, and Cos, and a fourth\r\nvariety little known, called narrow-leaved lettuce.\r\nThere are about 100 varieties. Field-grown\r\nlettuce has few enemies.\n\n[144]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "This plant should be started in the hotbed\r\nif there is one. The seedlings should be\r\ntransferred to the cold-frame before they\r\nhave attained much size, and left there until\r\nthe ground becomes warm. Very fine lettuce,\r\nhowever, can be grown from seed sown\r\ndirectly in the open ground about the first\r\nof May, if the soil is warm and rich. A fertile\r\nsoil is quite important, as it is necessary\r\nto bring on a rapid growth in order to have\r\nthe plant crisp and tender. Slow development\r\ngives a comparatively worthless article.\n\nThe All Heart variety is excellent for spring\r\nand early summer use. It forms a solid\r\nhead, and is very crisp and tender, with that\r\nrich, buttery flavor that the lover of this\r\nplant insists on. Mammoth Salamander is\r\none of the best late-season kinds.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "attribution": "A-B-C of Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Lettuce thrives in rich, sandy loam soil with plenty of organic matter and requires cool conditions for optimal growth. Sow seeds broadcast or in drills 12-18 inches apart during early spring or late autumn. For an extra early crop, plant seeds in autumn and cover lightly during winter; in warmer regions, covering may not be necessary. Lettuce can also be grown in rows about 12 inches apart, with plants thinned to 5 or 6 inches within the row. To produce crisp and tender lettuce during summer months, provide partial shading. For a continuous supply, sow seeds every few weeks and transplant seedlings when they are large enough to handle, ensuring space for thorough cultivation around each plant.\n\nFor head lettuce, reserve the best heads for seed or select hard-heading varieties like Burpee’s Hard-Head, which produces solid heads with a creamy white center. For cutting lettuces, Burpee’s Tomhannock is recommended for its large size and delicate flavor. Other good varieties include Hanson, Perpetual Lettuce, and Cos types, which do best if tied up a few days before using to blanch the inner leaves.\n\nTo raise head lettuce in perfection, sow seeds in hotbeds or cold frames for early planting, transplanting seedlings when they are an inch apart. For perpetual lettuce, make sowings about once a month from May onwards and transplant as needed. In late summer, sow hard-heading varieties around the second week of September and first of October, using cold frames to protect plants during winter.\n\nLettuce is susceptible to pests like the 'Green Fly'; use tobacco refuse or cigar-maker’s sweepings under the leaves to control this pest. For fall lettuce, sow in late August or early September in seed-beds for better control over soil conditions and quick sprouting.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of A-B-C of Vegetable Gardening, Farm Gardening with Hints on Cheap Manuring, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "composting_needs": "rich, sandy loam soil with plenty of organic matter",
+  "needs_rain_cover": true,
+  "bedding_needs": [
+    {
+      "need_type": "partial shading",
+      "notes": "for crisp and tender lettuce during summer months"
+    },
+    {
+      "need_type": "cold frames",
+      "notes": "for early planting and protecting plants during winter"
+    }
+  ],
+  "growth_habit": "rosette"
 }

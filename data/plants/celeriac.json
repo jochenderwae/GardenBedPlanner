@@ -25,6 +25,49 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Celeriac develops a large root at soil level topped with curly leaves radiating from the center."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "This vegetable, which is also known as turnip-rooted celery, or knot\n\ncelery, is closely related to our ordinary celery, being indeed a\n\ncultural variety of the same original plant grown under conditions\n\nwhich have developed the root rather than the stalk. In Europe it is\n\nby far the most common form of celery, but has never been extensively\n\ncultivated in the United States, though it is found in the larger\n\nmarkets. The roots are white and more or less globular in shape,\n\nclosely resembling turnips in appearance. This vegetable deserves to be\n\nmore widely known, being extremely hardy and of easy cultivation. It\n\nis mostly used for flavoring soups, except by the Germans who use it\n\nin the same manner as potatoes for potato salad. Planted 7 or 8 inches\n\napart and 3 feet between the rows it will yield abundantly, and succeed\n\nbest where celery will. The edible portion develops into a bulbous root\n\nweighing 4 to 6 ounces when trimmed, and these bulbs when properly\n\npacked away in the cellar will keep almost until spring. Where the\n\nground but slightly freezes, the plants may be safely left unharvested\n\nfor spring use.—(F. B. 255, 295; Mich. E. S. 20.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#CELERIAC",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Celeriac is a form of celery, or at least is a\r\nvery near relation to the real celery, and requires\r\nabout the same soil preparation and the\r\nsame conditions and tillage. Celeriac is frequently\r\nsown where it is to stand, but as the\r\nseed is as slow to sprout as celery, this is not\r\nreally a wise plan. Sown in a seed-bed and\r\ntransplanted, the crop gives far better results.\r\nIn celeriac it is not the stalk but the enlarged,\r\ntuber-like root which is eaten, and the plant\r\nrequires no blanching. It may be eaten raw\r\nin a salad, or cooked, as you like. Good roots\r\nshould be from three to four inches in diameter\r\nand they may be kept through winter by packing\r\nin sand or moss as many other vegetables\r\nmay be kept. Celeriac is sown in the same\r\nquantities as celery seed, the rows being only [160] far enough apart to allow of cultivation, and\r\nthe plants from six to eight inches apart in\r\nthe rows. Being of a dwarf nature the close\r\nplanting does not cause the plant to over-shade\r\nitself.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Celeriac, also known as turnip-rooted celery or knot celery, is a hardy and easy-to-cultivate vegetable closely related to ordinary celery. It produces a white, globular root resembling a turnip, which is the edible portion of the plant. For best results, sow celeriac seeds in a seed-bed rather than directly where they are to stand, as the seeds are slow to sprout. Transplant the seedlings when they are ready, spacing them 7 or 8 inches apart with rows 3 feet apart. Celeriac requires similar soil preparation and conditions as celery and does not need blanching. The roots can be eaten raw in salads or cooked and should be about three to four inches in diameter at maturity. To store celeriac over winter, pack the roots in sand or moss. This vegetable is extremely hardy and can be left unharvested in the ground over winter in areas where the soil freezes only slightly.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "seed-bed",
+      "notes": "sow seeds in a seed-bed rather than directly where they are to stand"
+    }
+  ],
+  "growth_habit": "rosette"
 }

@@ -59,6 +59,12 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Shrub, Subshrub' includes Shrub/Subshrub"
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

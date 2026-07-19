@@ -20,6 +20,25 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Ice Plant is described as a ground-creeping plant that spreads readily through seed and segmentation."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "This plant ( Mesembryanthemum cristallinum ) gets its name from the\n\ncrystalline ice-like covering of the leaves. In hot countries [74] the\n\nleaves are used as a salad or boiled the same as spinach.—(S. Dak. E.\n\nS. 68.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#ICE_PLANT",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "growth_habit": "spreading"
 }

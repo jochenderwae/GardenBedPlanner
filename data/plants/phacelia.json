@@ -18,6 +18,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Phacelia tanacetifolia is known for its low, spreading growth habit and is often used as a ground cover."
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

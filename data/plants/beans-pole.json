@@ -60,6 +60,11 @@
     {
       "attribution": "ollama-inference",
       "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Pole beans are known for their vining habit and require a trellis or support to grow upward."
     }
-  ]
+  ],
+  "growth_habit": "climbing"
 }

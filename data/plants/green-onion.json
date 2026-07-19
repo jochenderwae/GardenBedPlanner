@@ -24,6 +24,31 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Green onions grow as tall, hollow, tubular leaves from a small bulb, forming an upright clump."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "The Ciboule or Welsh onion, and Cives, are\r\ngrown for their leaves which are used for seasoning.\r\nThe Ciboule is the most like the common\r\nonion and grows the same way and requires\r\nthe same cultivation . Cives grow in dense\r\ntufts and are propagated by separating the\r\ntufts and planting a section. They are perennial,\r\nand make a good border for the garden\r\nwalk, combining grace and toothsomeness.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "propagation",
+      "notes": "separating the tufts and planting a section"
+    }
+  ],
+  "growth_habit": "upright"
 }

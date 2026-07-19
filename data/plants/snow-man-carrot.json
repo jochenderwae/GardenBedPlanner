@@ -17,6 +17,11 @@
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
       "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Carrot plants have a rosette of leaves that radiate from the ground level."
     }
-  ]
+  ],
+  "growth_habit": "rosette"
 }

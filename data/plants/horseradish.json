@@ -32,6 +32,80 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Horseradish grows as an upright clump from the ground with a taproot and does not form a rosette or spread widely."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "This plant will thrive best in a deep, rich soil, where there is\n\nplenty of moisture. The rows should be 3 feet apart and the plants 12\n\nto 18 inches apart in the row. Tops cut from large roots or pieces\n\nof small roots are used for planting. A comparatively few hills of\n\nhorse-radish will be sufficient for family use, and the roots required\n\nfor starting can be secured of seedsmen for 25 or 30 cents a dozen.\n\nThis crop will require no particular cultivation except to keep down\n\nthe weeds, and is inclined to become a weed itself if not controlled.\n\nThe large fleshy roots are prepared for use by peeling and grating.\n\nThe grated root is treated with a little salt and vinegar and served\n\nas a relish with meats, oysters, etc. The roots should be dug during\n\nthe winter or early spring before the leaves start. After being treated\n\nwith salt and vinegar the grated root may be bottled for summer use.\n\nAs this has always been considered strictly a cold-weather plant, is\n\nwould seem useless to try to grow it in Porto Rico, but, as it gave\n\nvery favorable results at this station, it can no doubt be produced for\n\nlocal consumption. It is practically unknown in Porto Rico, but most\n\npeople acquire a taste for it, and foreigners, who are used to it in\n\ntheir native country, will find it very gratifying that they can grow\n\nit here. In the North it thrives in any soil from a light sand to a\n\nheavy clay, but prefers a medium heavy loam. Here it grows luxuriantly\n\nin heavy clay but may not do so well in sand. It is planted from\n\ncuttings of the lateral roots, which should be from 4 to 6 inches long\n\nand planted at a distance of 12 to 15 inches in rows 24 to 30 inches\n\napart. Root cuttings can be obtained either in spring or fall from any\n\nseed firm, and these should be planted when received. The roots can\n\nbe dug when large enough for use or can be left in the ground until\n\nwanted.—(F. B. 255: U. Id. E. S. 10; P. Rico E. S. 7.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#HORSE-RADISH",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "This pungent root is a great favorite as a relish in the early spring,\r\nand is credited with tonic properties; at any rate it is a very\r\npleasant appetizer at a season when we have been almost without fresh\r\nvegetables for several months. It can be raised in almost any soil,\r\nthough preferring a moist situation, and is most at home where it is\r\nconstantly moistened or occasionally overflowed by some stream. It is\r\nraised from pieces of root, three or four inches in length and from ¼\r\nto ½ inch in diameter. These slips [95] are made from the tails or rootlets\r\ncut off in trimming the roots for grating, they should be cut off\r\nsquare at the top and sloping at the bottom, that you may readily know\r\nwhich end goes up when you plant them. The slips should be kept in a\r\nbox of moist earth, in a cool cellar, after they have been trimmed,\r\nuntil planting time. The slips can be planted with a long trowel; but\r\nthe best and quickest way is to drive a spade, full depth, into the\r\nsoil, flatways with the garden line, move it slightly back and forward,\r\nto widen the hole, and slip a piece of root down each side of the cut\r\nmade by the spade, which will make them six or seven inches apart; the\r\nspade should then be driven in about one inch back of its previous\r\nposition and the handle pressed forward, which will pack the dirt\r\nsolidly against the planted roots, the tops of which should be placed\r\nabout one inch under the surface. Where it is desired to increase the\r\nsupply as fast as possible, and where the roots have been used at home,\r\nthe crowns or tops, with an inch or so of root adhering, can be planted\r\nagain, but they will not make long, smooth roots, like the slips, but\r\nwill have a tendency to make several small roots.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The best is grown by planting 8-inch lengths of root grown the previous\r\nyear. These young roots planted in spring, small end down, with the\r\ntop two inches below the surface, in rich, well-cultivated soil, will\r\nform radish of large size and superior quality, in one season’s growth.\r\nAfter having several weeks’ growth rub off the young side roots from\r\nthe newly-planted roots, to increase the size and insure a smooth,\r\nwell-shaped root. See to it that no roots are scattered about the\r\ngarden, as every piece of root, however small it may be, will, in a\r\nshort time, become [175] a strong plant, difficult to eradicate, and thus\r\nprove how annoying a good thing is in the wrong place.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Farmers who have soil that is both rich and deep can find\r\nprofit in growing horseradish on a large scale, in connection\r\nwith early peas, beans or sweet corn. The sets are planted\r\nin May, in the rows between crops, and after the crops are\r\nremoved the horseradish makes its main growth. It is perfectly\r\nhardy, and comes on rapidly during the late summer\r\nand autumn months. Where the ground is not strong\r\nenough to produce large roots the first year, the business\r\nwill not prove very remunerative.\n\nThe Sets. —Horseradish sets are made by cutting small\r\nroots (¼ to ½ inch in thickness) into pieces 6 or 8 inches\r\nlong. The upper end is cut square off; the lower end with a\r\nslope. This is to get them right end up at planting time.\r\nThe small roots are available in quantities in the autumn,\r\nwhen the large roots are trimmed for market. The sets are\r\nkept in sand during the winter, or buried in the open ground,\r\nin a carefully-marked spot, where they can be easily found\r\nin the spring.\n\nIf planted 2 feet apart in rows 3 feet apart, each plant\r\nwill represent 6 square feet of space, and, hence, about 7,300\r\nsets will be needed for an acre.\n\n[Pg 57] The method of planting is to strike out rows, and with a\r\nlong dibber or crowbar make holes 8 or 10 inches deep. A\r\nset is dropped into each hole and the earth pressed about it.\n\nShoots will soon appear above\r\nthe surface, and when the\r\nearly crop has been removed\r\nfrom the land, the horseradish\r\nshould be well cultivated once or\r\ntwice. Little further attention is\r\nneeded.\n\nThe roots should be lifted the\r\nsame year, in December, and\r\nstored in an earth-covered heap\r\nor pit, or else in sand in a root\r\ncellar. The small lateral roots\r\nshould be saved for the next\r\nyear's sets. There is a good demand\r\nfor horseradish, both wholesale\r\nand retail; but prices should\r\nbe ascertained before going into\r\nthe business in a large way.\n\nGood roots, after trimming\r\nand washing, should weigh half\r\na pound or more each.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Although horse-radish is a perennial, it gets\r\nwoody the second year, so that the market\r\ngardeners grow it from fresh cuttings, called\r\n“Sets,” every year. These cuttings are taken\r\noff the side roots, from three to seven inches\r\nlong, and from the thickness of a lead-pencil [104] to that of a little finger. The cuttings are\r\nmade when the roots are dug in the fall and may\r\nbe stored all winter. Horse-radish grows very\r\neasily, but as it is a late season crop, and needs\r\ncool soil, there is nothing gained by planting it\r\nearly. It requires very deep soil if the roots are\r\nto grow straight, long and tender. Only long,\r\nlarge, even shaped and uniform roots bring any\r\nprice in the market. It may be planted with\r\nearly cabbage or beets, and when they are\r\nharvested, the horse-radish takes the land. It\r\nwill grow until freezing weather and is the better\r\nfor being left in the ground as late as possible.\r\nSets are planted either upright or slanting, three\r\nto five inches below the surface and from twelve\r\nto eighteen inches apart in rows. If they grow\r\ntoo fast they may be cut down two or three\r\ntimes, as horse-radish stands considerable ill-usage,\r\nif it is planted deep and in good soil.\r\nBefore sending to market, wash the roots and\r\ntrim them of all side shoots; tie them in bunches\r\nof six or eight; or they may be sold in bulk or\r\nby the barrel. The price ranges from ten to\r\nfifty dollars a ton, and in good rich soil four\r\ntons can be raised to the acre. The usual\r\nyield is only two tons. The extra two come\r\nfrom knowing how.\n\nBut horse-radish can easily become a bad [105] weed, for weeds are only plants misplaced.\r\nSo plow the roots out as soon as you have dug\r\nyour crop and have them removed. Although\r\nit is next to impossible to get them all out, they\r\ncannot do much harm if the ground is kept\r\nthoroughly busy with some other crop. There\r\nis a good deal of the Old Nick in Nature, and\r\nwherever she finds idle land she sets to work\r\nto grow weeds. She would just as readily\r\nhelp your crops; so it is for you to profit by her\r\nwillingness.\n\n[106]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Horseradish thrives in deep, rich, moist soil and can be grown from root cuttings or 'sets,' which are pieces of root 3 to 8 inches long and about ¼ to ½ inch thick. These sets should be planted with the top end square-cut and the bottom end sloped for easy identification, placed 12 to 18 inches apart in rows that are 24 to 30 inches apart, or 2 feet apart in rows 3 feet apart for larger-scale planting. Planting depth should be about 3 to 5 inches below the surface. Horseradish can be planted in spring or fall and prefers cool soil, so early planting is not beneficial. It grows well with crops like peas, beans, sweet corn, cabbage, or beets, taking over the land after these crops are harvested. The plant requires little cultivation beyond weed control but can become invasive if not managed properly; plowing out roots after harvest helps prevent this. Roots should be dug in winter or early spring before leaves start to grow and can be stored in an earth-covered heap, pit, or sand in a root cellar. For market use, roots should be washed, trimmed of side shoots, and tied in bunches or sold by the barrel. Yields can range from 2 to 4 tons per acre in good soil conditions.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of Farm Gardening with Hints on Cheap Manuring, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "deep",
+      "notes": "deep, rich, moist soil"
+    }
+  ],
+  "growth_habit": "upright"
 }

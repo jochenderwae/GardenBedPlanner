@@ -25,6 +25,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Datil peppers grow as upright bushes and do not have a vining, climbing, or ground-hugging habit."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

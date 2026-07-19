@@ -103,6 +103,11 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Basil typically grows as an upright clump of leaves and stems from the ground."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

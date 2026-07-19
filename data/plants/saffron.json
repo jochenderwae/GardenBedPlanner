@@ -18,6 +18,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Saffron (Crocus sativus) grows from a corm and has leaves that radiate from the base in a rosette pattern."
     }
-  ]
+  ],
+  "growth_habit": "rosette"
 }

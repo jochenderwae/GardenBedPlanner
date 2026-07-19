@@ -21,6 +21,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Midgen Berry is described as a spreading shrub that can have a lower, spreading habit in shaded areas."
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

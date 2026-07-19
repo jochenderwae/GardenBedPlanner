@@ -22,6 +22,11 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Luffa is described as a vine that needs support to grow upward."
     }
-  ]
+  ],
+  "growth_habit": "climbing"
 }

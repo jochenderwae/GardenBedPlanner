@@ -41,6 +41,12 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Forb/herb' includes Shrub/Subshrub"
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

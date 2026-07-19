@@ -12,6 +12,46 @@
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
       "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html",
+      "notes": "growing_information text sourced from 'Home Vegetable Gardening'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Rainier Cherry is described as a cultivar of Prunus avium, which is a tree."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Cherries have one advantage over the other fruits—they give quicker\r\nreturns. But, as far as my experience goes, they are not as long-lived.\r\nThe sour type is hardier, at least north of New Jersey, than the sweet.\r\nIt will probably pay to try a few of the new and highly recommended\r\nvarieties. Of the established sorts Early Richmond is a good early, to\r\nbe followed by Montmorency and English Morello. Windsor is a good sweet\r\ncherry, as are also Black Tartarian, Sox, Wood and Yellow Spanish.\n\nAll the varieties mentioned above are proved\r\nsorts. But the lists are being added to constantly,\r\nand where there is a novelty strongly recommended\r\nby a reliable nurseryman it will often pay to try\r\nit out—on a very small scale at first.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00614",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Sour cherries are more easily grown than the sweet varieties, and are\r\nless subject to the attacks of fruit enemies. Sweet cherries are\r\ntroubled by the curculio, or fruit-worm, which attacks also peaches and\r\nplums. Cherries and plums may be sprayed, when most of the blossoms are\r\noff, with a strong arsenate of lead solution, 5 to 8 lbs. to 100 gals.\r\nwater. In addition to this treatment, where the worms have once got a\r\nstart, the beetles may be destroyed by spreading a sheet around and\r\nbeneath the tree, and every day or so shaking or jarring them off into\r\nit, as described below.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00656",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Cherries offer quicker returns compared to other fruits but may not be as long-lived. Sour cherries are generally hardier and easier to grow than sweet varieties, especially north of New Jersey. For sour cherries, established varieties like Early Richmond, Montmorency, and English Morello are recommended. Sweet cherry varieties such as Windsor, Black Tartarian, Sox, Wood, and Yellow Spanish are also reliable choices. It is advisable to try new and highly recommended varieties on a small scale first. Sour cherries are less susceptible to pests compared to sweet cherries, which can be troubled by the curculio or fruit-worm. To manage these pests, spray trees with a strong arsenate of lead solution (5 to 8 lbs. per 100 gallons of water) after most blossoms have fallen. Additionally, use a sheet around and beneath the tree to shake off and collect beetles regularly.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of Home Vegetable Gardening",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "sheet",
+      "notes": "around and beneath the tree to shake off and collect beetles regularly."
+    }
+  ],
+  "growth_habit": "tree"
 }

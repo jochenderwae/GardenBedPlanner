@@ -80,6 +80,33 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Broccoli grows as an upright clump with a thick stem and large flower heads atop it."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "[49]\n\nBroccoli is simply a variety of cauliflower that is more commonly grown\n\nfor fall use, as it is rather more hardy than the true cauliflower.\n\nLee's Sprouting Broccoli is a branching sort that is esteemed in\n\nsome places. There is a great deal of misunderstanding regarding the\n\nCauliflower and Broccoli. Both are the same in their general make\n\nup and growth, both producing heads in the same manner and to the\n\ncasual observer are taken one for the other. The difference is that\n\nCauliflower is a more tender variety and therefore will not stand a\n\nvery low temperature. The seed is sown in early spring and will produce\n\nheads during the summer. The Broccoli will stand a temperature as low\n\nas 25 without much injury to the plant. The seed is sown in the spring,\n\nthe plants set out in June or early part of July and continue to grow\n\nuntil the spring following, some varieties producing heads at intervals\n\nduring winter and up to as late as May. Attention needs to be directed\n\nduring the winter to such plants as are about to produce heads. These\n\nshould have the outer leaves turned over the head to protect it from\n\nfrost to which it is very susceptible. The seed may be sown and the\n\nplants treated in every way as for the cabbage. They thrive well in a\n\ndeep, rich soil. Much better results would be had if more attention\n\nwere given to the matter of deep cultivation, that is, in deep spading\n\nor plowing of the ground. Manure that has been well composted should\n\nbe used plentifully and plowed in deep. By so doing the roots of the\n\nplants are encouraged to penetrate deep into the soil where they can\n\nfind moisture as well as food. The shallow plowing in of manure has\n\nthe tendency to keep the feeding roots of plants near the surface and\n\nwill therefore soon dry out and turn blue, and when once the plants are\n\nstricken with the blues no further growth will be made and they might\n\nas well be discarded.—(Oreg. E. S. 74; N. C. E. S. 132.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#BROCCOLI",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "composting_needs": "Manure that has been well composted should be used plentifully and plowed in deep",
+  "needs_rain_cover": true,
+  "bedding_needs": [
+    {
+      "need_type": "hilling",
+      "notes": "The outer leaves turned over the head to protect it from frost"
+    }
+  ],
+  "growth_habit": "upright"
 }

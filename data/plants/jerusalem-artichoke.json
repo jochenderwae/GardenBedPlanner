@@ -31,6 +31,62 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/63013/pg63013-images.html",
+      "notes": "growing_information text sourced from 'War Gardens: A Pocket Guide for Home Vegetable Growers'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: The Jerusalem Artichoke grows as an upright plant from the ground, with a height of 5-10 feet and a spread of 2-3 feet."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "This useful and productive plant will grow in any good garden soil,\n\nand should be planted three to four feet apart each way, with three or\n\nfour small tubers in a hill. If large tubers are used for planting they\n\nshould be cut the same as Irish potatoes. Plant as soon as the ground\n\nbecomes warm in the spring and cultivate as for corn. A pint of tubers\n\ncut to eyes will plant about thirty hills. The tubers will be ready for\n\nuse in October, but may remain in the ground and be dug at any time\n\nduring the winter.—(F. B. 255; U. Idaho 10.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#ARTICHOKE_JERUSALEM",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The Jerusalem Artichoke needs only to be planted in order to thrive.\r\nIts tubers can be made into quite palatable pickles, and I have\r\nseen instances where, in the absence of cucumber pickles, the artichoke\r\ntuber was prepared the same way and used as a substitute.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Artichoke (Jerusalem). —The tubers of\r\nthis plant are unaffected by frost and may be\r\nallowed to remain in the ground all winter.\r\nIn those sections where the frost penetrates\r\nthe ground deeply a supply sufficient for use\r\nduring the winter should be dug in the fall\r\nand stored in sand in a cool cellar.\n\nParsnip , Horseradish , and Salsify may\r\nbe treated in the same way as the preceding.\n\nBeets should be carefully dug up after the\r\nfirst frost and handled gently to avoid breaking\r\nor bruising them. Cut off the leaves\r\nabout an inch above the roots and pack them\r\nwith moist sand or earth in boxes in a cool\r\ncellar. Covering the roots in this way maintains\r\ntheir freshness and prevents shriveling.\n\nCarrots. —In the fall large numbers of\r\nfibrous roots are produced on the sides of the\r\nlarge tap-root. These roots spoil the symmetry\r\nof the carrots and impair their flavor.\r\nThe crop should therefore be harvested before\r\nthese fibrous roots form. Observation of the\r\nroots is the only way of determining the\r\nproper time to dig them up. In other respects\r\nthey are stored the same as beets.\n\nPotatoes for winter use should be dug on\r\na dry day as soon as possible after the tops\r\nhave died down. Leave them lying on the\r\nsurface of the ground for a few hours, so that\r\nthey may dry properly. (It is inadvisable to\r\nallow them to be exposed to the light for\r\ntoo long a period, as it will cause the tubers to\r\nbecome green and unfit for use.) They can\r\nthen be gathered up and placed in boxes or\r\nbarrels in a cool, frost-proof cellar, but not\r\nexposed to the light. All diseased or injured\r\ntubers should be laid aside for immediate\r\nuse, provided they are not too far gone, in\r\nwhich case they may be boiled and fed to\r\npigs or chickens, or destroyed by burning, so\r\nas to avoid the possibility of spreading\r\ndisease.\n\nPotatoes may also be stored outdoors in\r\nsections where the winters are not too severe.\r\nA high-lying sandy piece of ground should be\r\nchosen on which to make the “pit.” Dig out\r\nthe soil for a depth of about six inches and\r\nline the excavation with three inches of straw.\r\nPlace the potatoes in a pile on this and cover\r\nwith a similar thickness of straw or hay.\r\nPlace over this a layer of earth three inches\r\nthick to prevent the straw from blowing\r\naway. Gradually increase the covering as the\r\nweather becomes more severe, until a thickness\r\nof a foot or eighteen inches is reached.\r\nA layer of manure over this is advisable in\r\nvery cold climates. If the pile is a large one\r\nit is important that ventilation should be provided\r\nfor. This may be accomplished by sticking\r\na stovepipe into the center of the pile and\r\nallowing the top to project above the covering\r\nof earth, or by allowing a tuft of the straw\r\nthat forms the first covering to extend in\r\nthe same manner. This vent-hole must be\r\ncovered with a board, a piece of oilcloth, or\r\nsomething similar to prevent rain from entering.\n\nOther vegetables that may be stored in this\r\nway are beets, carrots, turnips, salsify , and parsnips .\n\nRutabagas and Turnips require to be\r\ndug up before severe frost. They can be\r\nstored the same way as potatoes.\n\nSweet Potatoes are very difficult to store\r\nover the winter. The loss through decay in\r\nstorage is enormous every year, even though\r\nproper facilities are obtainable. They need a\r\nwarm, dry room and a constant temperature.\r\nThe less they are handled after being stored\r\nthe better. The best advice for those who\r\nhave raised a crop of this vegetable is to\r\navoid loss by eating them as quickly as\r\npossible.\n\nOnions should be properly “cured” before\r\nthey are stored. This is accomplished by\r\nharvesting them during dry, settled weather,\r\nand allowing them to lie in windrows two or\r\nthree days before bringing them indoors.\r\nThey should then be placed in a cool, airy\r\nroom in slatted crates, so that air has free\r\naccess to them. If wet weather is prevalent\r\nat harvesting-time they may be “cured” by\r\nplacing them in a single layer under cover\r\nuntil they are thoroughly dry. The dead\r\nleaves and loose scales should be pulled off\r\nbefore storing them.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/63013/pg63013-images.html",
+      "attribution": "War Gardens: A Pocket Guide for Home Vegetable Growers",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The Jerusalem Artichoke is a hardy plant that thrives in any good garden soil and requires minimal care. Plant tubers three to four feet apart each way, with three or four small tubers per hill, as soon as the ground warms up in spring. Larger tubers can be cut like Irish potatoes before planting. Cultivate the plants similarly to corn. A pint of tuber pieces will plant about thirty hills. The tubers are ready for harvest in October but can remain in the ground throughout the winter in mild climates. In areas with deep frost, dig up a sufficient supply in the fall and store them in sand in a cool cellar. Jerusalem Artichoke tubers are versatile and can be made into pickles as a substitute for cucumbers. The plant is resistant to pests and diseases, making it a low-maintenance addition to any garden.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, War Gardens: A Pocket Guide for Home Vegetable Growers",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "needs_rain_cover": false,
+  "bedding_needs": [
+    {
+      "need_type": "hilling",
+      "notes": "three or four small tubers per hill"
+    }
+  ],
+  "growth_habit": "upright"
 }

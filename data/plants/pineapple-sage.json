@@ -65,6 +65,11 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Pineapple Sage is described as a shrub and grows in an upright manner."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

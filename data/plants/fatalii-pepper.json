@@ -11,6 +11,11 @@
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
       "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Fatalii pepper is described as a Capsicum chinense cultivar, which typically grows as an upright bush."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

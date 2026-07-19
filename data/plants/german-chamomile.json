@@ -47,6 +47,11 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: German Chamomile grows as an upright clump, reaching heights of 60cm and is more compact than its Roman counterpart."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

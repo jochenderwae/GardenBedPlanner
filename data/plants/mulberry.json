@@ -24,6 +24,12 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='tree' - Trefle growth_habit='Shrub, Tree' includes 'Tree'"
     }
-  ]
+  ],
+  "growth_habit": "tree"
 }

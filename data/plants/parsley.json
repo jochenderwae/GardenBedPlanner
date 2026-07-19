@@ -75,6 +75,84 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "notes": "growing_information text sourced from 'A-B-C of Vegetable Gardening'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Parsley grows as an upright clump of leaves and stems from the ground."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "After soaking the seeds of parsley for a few hours in warm water,\n\nthey may be sown in the same manner as celery seed and the plants\n\ntransplanted to the open ground. At the North, parsley will live over\n\nwinter in a cold frame or pit, and in the South it will thrive in the\n\nopen ground during the winter, but it can not withstand the heat of\n\nsummer. The plants should be set in rows 12 inches apart and every\n\n4 inches in the row. The leaves of parsley are used for garnishings\n\naround meats and for flavoring soups.—(F. B. 255, 295; N. Car. E. S.\n\n132; U. Id. E. S. 10.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#PARSLEY",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "This should be grown by every gardener on account of its usefulness,\r\nboth for seasoning and garnishing. As it seeds in the second season,\r\nfresh plantings should be made every spring. The seed, being very slow\r\nto germinate, should be soaked in tepid water for twenty-four hours\r\nbefore planting. The best way is to sow in the hotbed or cold frame and\r\ntransplant to the garden, but it can be sown in drills where wanted\r\nand thinned out to the proper distance apart. I always try to have a\r\nbed of it near the kitchen door, as it saves much running; if such a\r\nbed cannot be conveniently placed, some should be cut and brought in\r\nwith the other vegetables, as it will keep fresh some days if kept\r\nin cold water. In the fall some of the best roots should be taken up\r\nand planted in the cold frame, or put in pots and boxes in the sunny [113] windows of the house, for a winter supply. The leaves and tops from\r\ntrimming the celery are also very fine for flavoring.\n\nEXTRA CURLED DWARF PARSLEY.\n\nThe Extra Curled Dwarf is so much finer and handsomer than the\r\nother kinds that it should be the only one grown.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "As parsley seed is so obstinate about germinating in spring, it does\r\nbetter if sown in autumn, as soon as ripe. Where that is not possible,\r\nthe seed may be sown in spring, but “don’t look for the plants till you\r\nsee them coming,” since parsley seed just comes up when it feels like\r\ncoming up, and not before. The plants should be given a moist, rich\r\nsoil and a partly-shaded situation. The curled sorts are ornamental,\r\nbut the plain-leaved is best for general use in cookery. When once\r\nestablished, a supply can easily be kept up from self-sown seed. [19]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Parsley is the most popular of all the garnishing\r\nherbs, and requires no special care from the\r\ngardener, so long as it is planted in a cool,\r\nmoist soil. The leaves are used for salads and\r\nfor flavoring as well as for garnishing. Parsley\r\nseed is slow growing, and unless the garden\r\nsoil is in excellent tilth and moist to the very\r\nsurface, it is better to start the plants in a seed-bed.\r\nAlthough the plant is biennial, the foliage\r\nis usually gathered the first year and the plant\r\ndestroyed, unless seed is wanted. In all these\r\ngreen things, it has been found better to adopt\r\nthe annual treatment rather than let them develop\r\ninto biennials or perennials, though that\r\nmay be their natural habit: we can improve the\r\nnature of plants, animals and men.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Sow this plant thickly, in April, in rows\r\nof mellow soil. As the seed germinates very\r\nslowly, it is well to soak it in warm water before\r\nsowing. If you have a light cellar,\r\nplants can be potted in fall and stored there\r\nfor winter use. The cellar window is a good\r\nplace for them. Every housewife who prides\r\nherself on the attractive appearance of her\r\nroasts and other meat dishes and many kinds\r\nof salad will not be willing to be without\r\nthis plant. Dwarf Perpetual is the standard\r\nvariety for the home garden. Its leaves are\r\ncharmingly crimped and curly, and of beautiful [49] dark green that makes them very ornamental\r\nwhen used as a garnish for the table.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "attribution": "A-B-C of Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Parsley is a versatile herb used for seasoning and garnishing, and it should be grown by every gardener. It is best to soak parsley seeds in warm water for a few hours before planting to aid germination, which can be slow. Sow the seeds in autumn as soon as they are ripe, or in spring if autumn sowing is not possible. Parsley seed germinates better when sown in a hotbed or cold frame and then transplanted to the garden, but it can also be sown directly in drills and thinned out accordingly. The plants should be set in rows 12 inches apart with 4 inches between each plant. Parsley prefers a moist, rich soil and a partly-shaded situation. It is biennial but is usually treated as an annual, with foliage gathered the first year. For winter supply, some of the best roots can be taken up in the fall and planted in a cold frame or kept in pots near sunny windows. The Extra Curled Dwarf variety is recommended for its ornamental value, while the plain-leaved variety is better for general use in cookery. In regions with mild winters, parsley can thrive in open ground year-round.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of A-B-C of Vegetable Gardening, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "needs_rain_cover": false,
+  "seed_info": {
+    "pretreatment": "soak in warm water"
+  },
+  "bedding_needs": [
+    {
+      "need_type": "spacing",
+      "notes": "12 inches apart with 4 inches between each plant"
+    }
+  ],
+  "growth_habit": "upright"
 }

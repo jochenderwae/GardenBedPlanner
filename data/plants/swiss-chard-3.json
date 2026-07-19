@@ -53,6 +53,55 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Swiss Chard grows as an upright clump with tall stems and large leaves, fitting the 'upright' category."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "The part eaten is not the root, but the midrib of the leaf which is\n\nprepared much the same as asparagus. The flavor is distinct from that\n\nof the ordinary beet root. Give the same culture as required for beets.\n\nThe soil should be richer. In the fall cover with straw. This will aid\n\nan early growth and help blanch the stems. This is a very valuable\n\nplant and should be cultivated more extensively.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#SWISS_CHARD",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "One of the best of the pot-herbs, though not\r\nso generally known, is the chard or leaf-beet,\r\nwhich usually requires the whole season to\r\nmature, although it will give a succession of\r\nleaves from early summer until fall. The leaf-blades\r\nand midribs of the chard are very broad,\r\nand are usually white or slightly tinted, instead\r\nof green. Gardeners often blanch them\r\nfurther by tying the leaves together while\r\ngrowing. The seeds are sown in the spring as\r\nthickly as the ordinary beet is sown, and the\r\nplants are thinned until they stand six to twelve\r\ninches apart in the row.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Swiss chard, also known as leaf-beet, is a valuable pot-herb that requires the whole growing season to mature but provides a succession of leaves from early summer until fall. The edible parts are the broad leaf-blades and midribs, which are typically white or slightly tinted rather than green. To cultivate Swiss chard, sow seeds in the spring as densely as you would for beets, then thin the plants to stand six to twelve inches apart in rows. The soil should be richer than that required for beets. For early growth and to help blanch the stems, cover the plants with straw in the fall. Additionally, gardeners often further blanch the leaves by tying them together while they are growing. Swiss chard is distinct from beetroot in flavor and should be prepared similarly to asparagus.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "fertilizer_needs": "richer than that required for beets",
+  "needs_rain_cover": false,
+  "bedding_needs": [
+    {
+      "need_type": "straw cover",
+      "notes": "for early growth and to help blanch the stems"
+    },
+    {
+      "need_type": "tying leaves together",
+      "notes": "to further blanch the leaves"
+    }
+  ],
+  "growth_habit": "upright"
 }

@@ -19,6 +19,25 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Shallots grow as an upright clump of bulbs from the ground."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Shallot is much like garlic, only it is milder,\r\nand is grown in the same way. There is one\r\ninteresting difference, however, between the\r\ntwo. The “cloves” of the garlic are all encased\r\nin one outer skin, those of the shallot\r\ngrow separately.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "growth_habit": "upright"
 }

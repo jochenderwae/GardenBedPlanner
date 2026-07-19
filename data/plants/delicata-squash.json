@@ -26,6 +26,81 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "notes": "growing_information text sourced from 'A-B-C of Vegetable Gardening'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Delicata squash grows on vines and can be either bush or running varieties, both of which spread outward from their base."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "There are two types of the squash, the bush varieties, which may be\n\nplanted in hills 4 or 5 feet apart each way, and the running varieties,\n\nwhich will require from 8 to 16 feet for their development. Squashes\n\nmay properly be grown in the garden, as 3 or 4 hills will produce all\n\nthat are required for family use. They require practically the same\n\nsoil and cultural methods as the muskmelon. A number of varieties are\n\nused during the summer in the same manner as vegetable marrow, but\n\nsquashes are principally used during the winter, in much the same way\n\nas pumpkins, to which they are superior in many respects. Squashes are\n\nalso used extensively for pie purposes. The varieties known as Hubbard\n\nand Boston Marrow are most commonly grown. Squashes, like pumpkins,\n\nshould be handled carefully to avoid bruising, and should be stored in\n\na moderately warm but well ventilated room.—(F. B. 255; Mich. E. S.\n\n190; S. Dak. E. S. 42, 68.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#SQUASH",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Hills should be made for the culture of these, in the same manner and\r\nat the same time as described for cucumbers, cantaloupes, etc. These\r\nhills should be at some distance from the vines above mentioned, as\r\nthere is danger of the pollen mixing and spoiling the melons, etc.\r\nThere are some localities where the winter squashes do not do well or\r\nare difficult of cultivation; but the small summer squashes are of\r\neasy culture in any locality, though of finer quality on a warm sunny\r\nslope than elsewhere. The only trouble in growing them is to protect\r\nthem from the ravages of the Striped Squash Bug while young, for which\r\npurpose I use slug shot, dusted on the leaves early in the morning,\r\nwhile the dew is still on them.\n\nThe vines should be allowed plenty of room to run, at least four feet\r\non every side. The vines soon cover the ground and prevent using the\r\ncultivator; but the large leaves so shade the soil that few weeds grow,\r\nand where they rear their heads above the vines they can be cut out\r\nwith hand hoes or pulled out after a rain, by hand.\n\nAs we can hardly use the product of more than a [139] dozen hills, I\r\ndivide the long row across the garden into three parts, planting the\r\nsquashes at one end, watermelons in the centre, while the other end is\r\noccupied by cucumbers, which prevents any mixing of pollen, and gives\r\na sufficient quantity of each fruit without disturbing the symmetry\r\nof the garden. In gathering the squashes for table use, care must be\r\ntaken that they are not too old, or they will be tough and stringy when\r\ncooked; the easiest way to judge them is to try them with the nail or\r\nsmall stick; if it does not cut the skin freely and easily they are\r\ntoo old; no push should be required to make the cut. This is also a\r\ngood test when in doubt about the proper condition of sweet corn, and\r\nshould be applied to grains near the base of the ear. No old squashes\r\nshould be allowed to remain on the vines of the summer varieties, for\r\nif they are allowed to ripen, the vine, having fulfilled its natural\r\npurpose, will dry up and die, while if the fruits are picked off, it\r\nwill continue to grow and produce fruit.\n\nThe winter squashes are raised in the same manner, but are more\r\ndifficult to start, as the young plants are subject to a borer which\r\neats them off under ground. Plenty of seed should be sown in each hill,\r\nand as soon as you see a plant wilting or cut off, dig around its\r\nroots with your fingers or a stick until you find and kill the borer,\r\notherwise, he will continue his labors on the other plants in the hill.\r\nThe plants should also have careful watching and dusting, to preserve\r\nthem from the usual insects that prey on young vines. When the plants\r\nare about one foot in length they should be thinned out to two or three\r\nin a hill, [140] though the danger from borers is hardly passed yet, but to\r\nallow them to stand too thickly after attaining this size would stunt\r\nthem and lessen the crop. The squashes should be gathered before there\r\nis any hard frost and stored in a cool, well-aired cellar. Some of the\r\nwinter varieties are equally good for summer use before they become too\r\nold and hard; if these are planted, the one planting will furnish fruit\r\nfor both seasons.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Early White Bush, or Patty-Pan. —This is the best known and\r\nmost generally planted of the early squashes; when young the quality is\r\nvery fine, the flesh is fine grained and of delicate flavor. It is a\r\nbush variety and the vine does not “run.”\n\nEARLY WHITE BUSH SQUASH.\n\nGOLDEN SUMMER CROOKNECK SQUASH.\n\nGolden Summer Crookneck. —A small crook-necked summer squash,\r\nthe skin of which is a bright yellow color and is covered with warty\r\nexcrescences. It is early, productive and of excellent flavor.\n\nWhite Pineapple, or White Turban. —This variety produces a\r\nvery handsome fruit, though of peculiar shape, as will be seen from the\r\naccompanying [141] illustration. The blossom end of the squash is smooth\r\nand round, while from the stem end start ribs or ears, which attain\r\ntheir largest breadth and end near the middle of the squash; these ears\r\nusually grow in pairs. This variety is of excellent quality, and can\r\nbe used at any stage of its growth, and the full-grown fruits can be\r\npreserved for early winter use. The skin and flesh are both of a pure\r\ncreamy white tint; the flesh being very thick, while the seed cavity\r\nis quite small. The flesh is fine grained and of the best quality,\r\npossessing a rich cocoanut flavor.\n\nWHITE PINEAPPLE SQUASH.\n\nESSEX HYBRID SQUASH.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Essex Hybrid. —A very productive squash of the finest quality\r\nand an excellent keeper, specimens having been kept until June, as\r\nsound and good as when gathered. It is one of the richest flavored,\r\nfinest grained and sweetest of all squashes, while at [142] the same time it\r\nis one of the largest and most productive, growing close together on\r\nthe vines and averaging from eight to twelve pounds in weight. It is of\r\nearly, quick growth, and can be raised very successfully as a second\r\ncrop, following early potatoes, peas, etc.\n\nHUBBARD SQUASH.\n\nHubbard. —This is a standard and well-known winter squash, and\r\nis of most excellent quality for winter use, but is not so well adapted\r\nto all soils and localities as the preceding varieties, nor of such\r\neasy culture.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Probably the best variety of summer\r\nsquash for home use is Giant Crook Neck.\r\nFor winter use the Hubbard stands at the [54] head of the list. These favorite vegetables\r\nrequire a rich soil. They should be planted\r\nin hills about three feet apart. Have the\r\nsoil rich. Keep watch of them, for they are\r\nliable to attacks from beetles. It is well to\r\nsprinkle a handful of tobacco-dust about the\r\nyoung plants. As they become larger they\r\ncan be sprayed with the Nicoticide infusion\r\nheretofore spoken of.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "attribution": "A-B-C of Vegetable Gardening",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Delicata squash can be grown in both bush and running varieties. Bush varieties should be planted in hills spaced 4 to 5 feet apart, while running varieties need 8 to 16 feet for development. Hills should be made similarly to those for cucumbers and cantaloupes, with care taken to avoid pollen mixing by keeping them at a distance from these vines. Delicata squash requires rich soil and similar cultural methods as muskmelons. They are susceptible to pests such as the Striped Squash Bug and borers; use slug shot or tobacco-dust for young plants, and Nicoticide infusion for larger plants. For summer varieties, pick fruits before they become tough and stringy by testing with a nail or small stick. Winter squashes should be gathered before hard frost and stored in a cool, well-aired cellar. Popular varieties include Early White Bush (a bush variety), Golden Summer Crookneck (small, yellow, warty), White Pineapple (creamy white, coconut-flavored), Essex Hybrid (productive, fine-grained, sweet), and Hubbard (standard winter squash).",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of A-B-C of Vegetable Gardening, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "needs_rain_cover": false,
+  "bedding_needs": [
+    {
+      "need_type": "hilling",
+      "notes": "Hills should be made similarly to those for cucumbers and cantaloupes, with care taken to avoid pollen mixing by keeping them at a distance from these vines."
+    }
+  ],
+  "growth_habit": "spreading"
 }

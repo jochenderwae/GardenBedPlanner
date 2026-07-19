@@ -17,6 +17,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Culantro is typically grown as an upright herb with long, slender leaves that grow in a clump from the ground."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

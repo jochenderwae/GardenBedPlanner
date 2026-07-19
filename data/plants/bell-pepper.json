@@ -36,6 +36,58 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Forb/herb' includes Shrub/Subshrub"
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "The seed should be sown about the middle of March, in the hotbed, if\r\nwanted for summer use, and as soon as the nights are warm they should\r\nbe planted out. They can be sown in the open ground if the fruit is not\r\nwanted for use before fall. As they are used in preparing various kinds\r\nof pickles, etc., it would probably be the better plan to plant some\r\nat both times. When about six inches high, they should be transplanted\r\nto the rows where they are to fruit, and should be set about two feet\r\napart in the row. Where room is scarce, I usually set two pepper plants\r\nbetween each hill of cantaloupes, as they grow well above the vines\r\nand are not at all in the way, while having the ground shaded from the\r\nhot sun by the vines of the melons, the surface being kept cool and\r\nmoist by their broad leaves, is of great advantage to the peppers.\r\nIn choosing varieties, [122] those kinds having the mildest flavor and\r\nhandsomest appearance should be selected.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Burpee’s Ruby King. —This variety produces the handsomest,\r\nand at the same time the largest and mildest peppers that I have ever\r\ngrown; one specimen this season being six inches long and over ten\r\ninches in round circumference. When ripe the fruit is a beautiful,\r\nbright, ruby-red color, and the flavor is mild and pleasant, being much\r\nmilder than in any other variety of red pepper.\n\n[123]\n\nBURPEE’ S RUBY KING.\n\nBurpee’s Golden Upright. —In this variety the fruit grows in a\r\ndifferent manner from any other large pepper that I have ever seen; it\r\ngrows upright on the fruit stems, instead of pendulous. The fruits are\r\nlarge and handsome, being about four to five inches in length, and are\r\nof rich golden yellow tinged with red. In taste it is as mild as the\r\nRuby King—the two making a very fine contrast when used together.\n\nBURPEE’S GOLDEN UPRIGHT PEPPER.\n\nBull Nose and Golden Dawn are the finest of the older kinds,\r\nbut do not compare with the two above given, either for size or\r\nmildness of flavor.\n\nRed Cluster. —This is one of the finest varieties that I\r\nhave ever grown; it is low and bushy in [124] growth, and is covered with\r\na profusion of thin, round peppers, about three inches in length and\r\none-quarter inch in diameter at the base, tapering to a long, sharp\r\npoint. When ripe, the fruit is a brilliant coral red, and a plant\r\ncovered with fruit looks like some brilliant-foliaged plant that has\r\nescaped from the flower garden. It is very hot and pungent in flavor,\r\nand an idea of the productiveness can be had from the fact that over\r\ntwelve hundred were counted on a single plant this last summer. [10]\n\n[125]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Peppers are started in frames and when\r\ntransplanted are set from eight to twelve\r\ninches apart in the row. They are cultivated\r\njust as tomatoes are, and, as they do not suffer\r\nfrom pests or diseases, the crop is more sure.\n\nPeppers will thrive in a cooler season than\r\ntomatoes, and will even endure slight frost,\r\nbut in all other respects they require the same\r\ntreatment as tomatoes. They have only recently\r\nacquired any importance as a crop, and\r\neven now, their use in cooking being only semi-occasional,\r\nthey are not very staple. Italians\r\nuse them extensively, and as Italian communities\r\ngrow, the demand for peppers will\r\nincrease. We use them mainly for making [182] pickles, for which purpose the small Cayenne,\r\nChili and Cranberry varieties are grown. For\r\nstuffing, the favorite sorts are the large sweet\r\npeppers, Sweet Mountain and Ruby King.\r\nThese peppers are not at all similar to the pepper-berries\r\nof commerce, which belong to other\r\nfamilies.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "To grow bell peppers, sow seeds in a hotbed around mid-March for summer use or directly in the open ground if fruit is not needed until fall. Transplant seedlings to their permanent rows when they are about six inches tall, spacing them two feet apart. In tight spaces, plant two pepper plants between each hill of cantaloupes; the melon vines will shade and cool the soil, benefiting the peppers. For variety selection, choose mild-flavored types with attractive appearances, such as Burpee’s Ruby King (large, ruby-red, and very mild) or Burpee’s Golden Upright (upright-growing, golden-yellow fruits). Other notable varieties include Bull Nose, Golden Dawn, and Red Cluster (smaller, hotter peppers). Peppers can be started in frames and transplanted with eight to twelve inches between plants. They thrive in cooler seasons than tomatoes and can endure slight frost but require similar care otherwise. Cultivate them like tomatoes, as they are generally pest- and disease-free.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of How and what to grow in a kitchen garden of one acre, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "needs_rain_cover": false,
+  "bedding_needs": [
+    {
+      "need_type": "hilling",
+      "notes": "plant two pepper plants between each hill of cantaloupes"
+    }
+  ],
+  "growth_habit": "spreading"
 }

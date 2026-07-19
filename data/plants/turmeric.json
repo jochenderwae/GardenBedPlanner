@@ -14,6 +14,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Turmeric grows as an upright clump of leaves from the ground, with its harvestable part (rhizomes) underground."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

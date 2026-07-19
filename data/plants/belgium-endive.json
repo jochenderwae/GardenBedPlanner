@@ -30,6 +30,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Belgian Endive forms a head of leaves that radiate from a central point, similar to other rosette-forming leafy greens."
     }
-  ]
+  ],
+  "growth_habit": "rosette"
 }

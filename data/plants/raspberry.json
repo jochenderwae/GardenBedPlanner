@@ -55,6 +55,66 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html",
+      "notes": "growing_information text sourced from 'Home Vegetable Gardening'"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub' includes Shrub/Subshrub"
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "The culture is the same for all these, and they should be planted in\r\nliberal quantities, so that there may be plenty to preserve, as well as\r\na full supply for the table. In my own kitchen garden I have two rows\r\nof Wilson’s Early Blackberry, one row Gregg Black Cap, and one row each\r\nof Philadelphia and Cuthbert Raspberries, and still the family cry for\r\nmore, so I shall add about two rows of Wilson, Jr. Blackberries, and\r\none of Lucretia Dewberry, in the spring. The dewberry will ripen before\r\nthe blackberries, and thus prolong the season, as is already done with\r\nthe two varieties of red raspberries.\n\nThe plants should be planted as early in the spring as the ground can\r\nbe gotten into suitable condition, and if purchasing from a nursery,\r\nselect those plants which are grown from root-cuttings, for they will\r\nnot “sucker” so much, and where the garden is constantly well fed\r\nand cultivated this will save much in working, and the plants being\r\ncarefully trimmed will last for years without replacing. The rows\r\nshould be ten or twelve feet apart, so as to admit of free passage in\r\ncultivating and picking. As they do not grow so wildly until after\r\nthe fruit has been picked, a couple of rows of peas or a row of early\r\ncorn can be grown between each row. I have tried planting at closer\r\ndistances, with the invariable result that by fall the berry patch was\r\nan impassable jungle. [162] For manuring the berries coarse manure should\r\nbe applied in the fall, or short, well-rotted manure in the spring;\r\nin either case plowing it under as applied; if plowed in the fall the\r\nfurrows should all be thrown toward the rows, thus partly banking them\r\nover for the winter.\n\nIn the first warm days in the spring these bushes should have their\r\ntrimming; all the old wood that has borne fruit will be dead and should\r\nbe cut out at the ground. Three or four good healthy young shoots\r\nshould be selected to each plant, cut off at three and a half or four\r\nfeet in height, and the side shoots cut back to three or four inches;\r\ncut off all the rest of the suckers. This is important, for if too many\r\nare left there will be but a small crop of inferior fruit. When the\r\nwhole patch has been trimmed and cleared up it should be staked; or\r\neach plant may be staked as trimmed, but the trimming will have to be\r\nleft until a week or so later, as the stakes cannot be driven in the\r\nfrozen ground. For this purpose I use old fence rails, sawing them in\r\nthe middle and then splitting each piece into two or three stakes, or\r\nthe large limbs, say one to two inches thick, left from trimming brush,\r\ncan be used; the fence-rail stakes, however, last longer than the fresh\r\ncut poles, and are much more easily driven.\n\nIt will be a great help in picking-time if the row is gone over with\r\na large pair of hedge shears, and the longest of the young shoots\r\nshortened in, so as to allow easy access to the row. Where it is more\r\nconvenient, the bearing wood may be cut out as soon [163] as the crop is\r\ngathered, thus throwing all the strength of the plant into the young\r\nshoots.\n\nWhere there is not plenty of manure, bone dust or phosphate can be sown\r\non after the plowing in the spring and worked down with the harrow\r\nor cultivator. It, of course, takes a good deal of rope to tie all\r\nthese and a good patch of grape vines up every spring, so I go to a\r\nprinting office and buy the old Sisal rope which comes on the bundles\r\nof paper; this is strong, and can be bought very cheaply, as it is all\r\nin short lengths, in fact, most offices would be glad to oblige a good\r\nsubscriber by giving it to him. The bushes should be planted eight feet\r\napart in the row.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The black and the red types are distinct in flavor, and both should be\r\ngrown. The blackcaps need more room, about three by six or seven feet;\r\nfor the reds three by five feet will be sufficient. The blackcaps, and\r\na few of the reds, like Cuthbert, throw out fruiting side branches, and\r\nshould have the main canes cut back at about two and a half feet to\r\nencourage the growth of these laterals, which, in the following spring,\r\nshould be cut back to about one-third their length. The soil for\r\nraspberries should be clayey if possible, and moist, but not wet.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00715",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The orange rust, which attacks the blackberry also, is a serious\r\ntrouble. Pull up and burn all infested plants at once, as no good\r\nremedy has as yet been found. The cut-worm, especially in newly set\r\nbeds, may sometimes prove destructive of the sprouting young canes. The\r\nraspberry-borer is the larva of a small, flattish, red-necked beetle,\r\nwhich bores to the center of the canes during summer growth, and kills\r\nthem. Cut and burn.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00717",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Of the blackcaps, Gregg, McCormick, Munger, Cumberland, Columbian, Palmer (very early), and Eureka (late), are all good sorts. Reds: Cuthbert, Cardinal (new), Turner, Reliance, The King (extra early), Loudon (late). Yellow: Golden Queen.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00719",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "To grow raspberries successfully, plant them in early spring as soon as the ground is workable. Choose plants from root-cuttings to minimize suckering. Space rows 10-12 feet apart for easy cultivation and picking, with plants spaced 8 feet apart within rows. For blackcaps, allocate about 3x6 or 7 feet per plant; red varieties need about 3x5 feet. Plant in clayey, moist but not wet soil. Apply coarse manure in the fall or well-rotted manure in the spring, plowing it under. In early spring, trim bushes by removing old wood and selecting 3-4 healthy young shoots per plant, cutting them to 3.5-4 feet and side shoots to 3-4 inches. Stake plants using durable materials like old fence rails or large limbs. After trimming, use hedge shears to shorten long shoots for easier access during picking. For manuring, apply bone dust or phosphate in the spring if manure is scarce. Be vigilant against pests: pull up and burn plants infested with orange rust; monitor for cut-worms in new beds; and watch for raspberry-borer larvae, cutting and burning affected canes. Varieties to consider include blackcaps like Gregg, McCormick, Munger, Cumberland, Columbian, Palmer (very early), and Eureka (late); reds such as Cuthbert, Cardinal (new), Turner, Reliance, The King (extra early), Loudon (late); and yellow varieties like Golden Queen.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of Home Vegetable Gardening, How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "fertilizer_needs": "Apply coarse manure in the fall or well-rotted manure in the spring, plowing it under. In early spring, apply bone dust or phosphate if manure is scarce.",
+  "needs_wind_cover": true,
+  "bedding_needs": [
+    {
+      "need_type": "staking",
+      "notes": "Stake plants using durable materials like old fence rails or large limbs."
+    }
+  ],
+  "growth_habit": "spreading"
 }

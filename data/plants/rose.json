@@ -47,6 +47,12 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='climbing' - Trefle growth_habit='Vine, Subshrub' includes 'Vine'"
     }
-  ]
+  ],
+  "growth_habit": "climbing"
 }

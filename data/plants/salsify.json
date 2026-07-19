@@ -20,6 +20,74 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "notes": "growing_information text sourced from 'A-B-C of Vegetable Gardening'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Salsify grows with leaves radiating from a central point at ground level and has an edible root."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Sow seeds of salsify during the spring in the same manner as for\n\nparsnips or carrots. At the South, a sowing may be made in summer to\n\nproduce roots for winter use. One ounce of seed is required to plant\n\n100 feet of row, and on a large scale 10 pounds to the acre. After\n\nthe plants are well established they should be thinned sufficiently\n\nto prevent their crowding. The cultivation should be the same as for\n\nparsnips or carrots, and frequent use of a wheel hoe will avoid the\n\nnecessity for hand weeding. Salsify may be dug in the autumn and stored\n\nor allowed to remain in the ground during the winter, as its treatment\n\nis the same as for parsnips. Salsify is a biennial, and if the roots\n\nare not dug before the second season they will throw up stems and\n\nproduce seed. It is of a weedy nature and care should be taken that\n\nit does not run wild by seeding freely. Salsify is deserving of more\n\ngeneral cultivation, as it is one of the more desirable of the root\n\ncrops for the garden. The uses of salsify are similar to those of the\n\nparsnip, and when boiled and afterwards coated with rolled crackers and\n\nfried in butter it has a decided oyster flavor, from which the name\n\nvegetable oyster is derived.—(F. B. 255, 295; N. Car. E. S. 132; Idaho\n\nE. S. 10.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#SALSIFY_VEGETABLE_OYSTER",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Mammoth Sandwich Island Salsify as Bunched for Market.\n\nSalsify, oyster plant or\r\nvegetable oyster is a root of easy culture and of high food\r\nvalue. In shape it resembles the carrot and parsnip, and is\r\nas perfectly hardy as the latter. The seed should be sown\r\nan inch under the surface, in spring, in rows 2½ to 3½ feet [Pg 59] apart, and the plants thinned to stand 5 inches apart in the\r\nrows. The culture is the same as for parsnips. Fresh manure\r\nmust be avoided, as it makes the roots ill-shaped. The roots,\r\nunder good treatment, will exceed an inch in diameter, and\r\nmay attain a size of 2 inches or more. They may remain in\r\nthe ground over winter, to be taken up whenever the frost\r\npermits or they may be taken up in late autumn and preserved\r\nin sand in a cellar. Good salsify is in demand where\r\nits merits are known.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The salsify plant tastes so like an oyster that\r\nit is called the oyster plant. It is grown for\r\nkitchen use only, not for stock. Like its\r\ncousin, the parsnip, it must be sown in deep,\r\nrich soil and given the whole season to mature.\r\nSalsify can be left in the ground all winter, unless\r\nit is needed for the late winter or early\r\nspring market. The seeds sprout quickly and\r\nmay be sown as early as the soil is ready. Like\r\nbeet seed, the salsify seed is really a fruit,\r\nlong and hard like a stick, and it is somewhat difficult\r\nto use a seed drill in sowing them. An\r\nounce of seed sows only about 70 feet of drill;\r\nan acre requires eight to ten pounds and a\r\ngood yield is from 200 to 300 bushels per acre.\r\nThere are no serious insects or diseases.\n\nThere are two important modifications of\r\nsalsify known as Black Salsify and Spanish [103] Salsify. The regular type is a biennial, though\r\ncultivated as an annual, becoming wild and\r\nlosing its fleshy root if left in the ground longer;\r\nbut the Black, which is grown just the same as\r\nthe main type, is perennial, and the roots continue\r\nto enlarge, yet to remain edible, though\r\nleft in the ground more than one year. It has\r\nbroader leaves than the regular salsify and a\r\nlong black root, yellow flowers and light seeds.\n\nSpanish salsify is not generally known in\r\nthis country. Its root is much lighter in color\r\nand not so strong in flavor, but with careful\r\ncooking it develops other qualities of its own\r\nthat are most agreeable. Moreover, it is easily\r\ncultivated and yields larger returns than the\r\nregular salsify and the average person would\r\nnot know the difference. It is sown and cultivated\r\njust as salsify is, and when bleached the\r\nyoung leaves are eaten like cardoons, that is, as\r\na pot-herb.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "A vegetable that ought to be grown a\r\ngreat deal more than it is. Its popular\r\nname of \"vegetable oyster\" is not a misnomer,\r\nfor it has a distinct oyster flavor. Many\r\npersons prefer it to the bivalve, when it is\r\ncooked properly. Being hardy, it can be\r\nleft in the ground over winter, or it can be\r\ndug and stored in the cellar along with parsnips\r\nand carrots for use in winter. Sow\r\nearly.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "attribution": "A-B-C of Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Salsify, also known as the oyster plant or vegetable oyster due to its distinct oyster flavor when cooked, is a hardy root crop similar in shape to carrots and parsnips. It should be sown early in spring, with seeds planted an inch deep in rows 2½ to 3½ feet apart, and thinned to stand 5 inches apart within the rows. An ounce of seed is required to plant about 70-100 feet of row, and on a large scale, 8-10 pounds are needed per acre. Salsify prefers deep, rich soil and benefits from the whole growing season to mature. It can be left in the ground over winter or dug up in late autumn and stored in sand in a cellar. Fresh manure should be avoided as it can deform the roots. Cultivation is similar to that of parsnips or carrots, with frequent use of a wheel hoe to minimize hand weeding. Salsify is a biennial but is cultivated as an annual; if left in the ground for too long, it will produce seeds and become woody. There are two notable varieties: Black Salsify, which is perennial and has broader leaves and a black root, and Spanish Salsify, which has a lighter-colored root and milder flavor. Both varieties are cultivated similarly to regular salsify. Salsify is generally free from serious insects or diseases.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of A-B-C of Vegetable Gardening, Farm Gardening with Hints on Cheap Manuring, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "fertilizer_needs": "Fresh manure should be avoided",
+  "bedding_needs": [
+    {
+      "need_type": "deep",
+      "notes": "prefers deep, rich soil"
+    }
+  ],
+  "growth_habit": "rosette"
 }

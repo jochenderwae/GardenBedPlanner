@@ -31,6 +31,12 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Forb/herb, Vine' includes 'Vine', but butternut-squash is a known ground-sprawling vine (curated override), not a trellised climber"
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

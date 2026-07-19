@@ -31,6 +31,55 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Garlic grows as an upright clump from the ground with a tall stalk and branching leaves."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Garlic is closely allied to the onion, but will remain in the ground\n\nfrom one year to another if undisturbed. Garlic is planted by setting\n\nthe small bulbs, or cloves, either in the autumn or early spring. The\n\nculture is practically the same as for the onion. The bulbs are used\n\nfor flavoring purposes.—(F. B. 255.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#GARLIC",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "The garlic is the strongest of all the bulb\r\nfamily in flavor. It is grown from “cloves,” as\r\nthe separate sections of the bulb are called, and\r\nis planted early. It does not fully mature\r\nuntil the end of the summer or early fall.\n\n[112]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Garlic is a hardy plant closely related to onions and can remain in the ground for multiple years if left undisturbed. It is planted using individual cloves, which are the segments of the bulb. Planting should be done either in early autumn or early spring. Garlic prefers well-drained soil and full sun. The bulbs are used primarily for flavoring purposes. Unlike onions, garlic does not fully mature until late summer or early fall. It is important to note that garlic is the strongest-flavored member of the bulb family.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "well-drained soil",
+      "notes": "prefers well-drained soil"
+    },
+    {
+      "need_type": "full sun",
+      "notes": "prefers full sun"
+    }
+  ],
+  "growth_habit": "upright"
 }

@@ -70,6 +70,61 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Kohlrabi grows as an upright clump with a swollen stem and leaves sprouting from the top."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Kohl-rabi belongs to the same class as cabbage and cauliflower, but\n\npresents a marked variation from either. It is, perhaps, half-way\n\nbetween the cabbage and turnip, in that its edible part consists of the\n\nswollen stem of the plant. For an early crop, plant and cultivate the\n\nsame as for early cabbage. For a late crop or for all seasons in the\n\nSouth the seed may be sown in drills where the crop is to be grown and\n\nthinned to about 8 inches apart in the row. The rows [75] should be from\n\n18 to 36 inches apart, according to the kind of cultivation employed.\n\nThe fleshy stems should be used while they are young and quite tender.\n\nPrepare kohl-rabi for the table in the same manner as turnips, which it\n\nvery much resembles when cooked.—(F. B. 255; U. Id. E. S. 10; Mich. E.\n\nS. 20; N. C. E. S. 132; La. E. S. 90.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#KOHL-RABI",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Seed of kohl rabi, early cabbage and cauliflower should be sown in a\r\nhotbed, and the plants transplanted to the open ground when four inches\r\nhigh.\n\nKohl rabi is grown for its turnip-shaped bulb, which is formed above\r\nground, by the expansion of the stem. The bulb should be used while\r\nyoung and tender, as age detracts from its good quality. Set the\r\nplants eight inches apart in the row. For later use sow seed in drills\r\nand thin to the proper distance apart. When well grown and properly\r\nprepared for the table, the kohl rabi is one of the most desirable of\r\nvegetables, and should be in every garden. Early White Vienna is\r\nthe best variety.\n\nPlant early cabbage in rows, with plants eighteen inches apart in the\r\nrow. After trying several different sorts I have decided upon Early\r\nJersey Wakefield , Early Flat Dutch , and Fottler’s\r\nBrunswick , as the best varieties for this latitude, and, as the\r\ncabbage worm has made late cabbage an uncertain crop for several years\r\npast here, in southern Illinois, we have planted largely of the Early\r\nFlat Dutch cabbage and had it picked and put up before the cabbage\r\nworm [182] made its appearance. This I know, from experience, to be better\r\nthan the use of all the insect powders combined. [20]\n\nTo grow cauliflower to perfection, the ground needs extra heavy\r\nmanuring, and the plants must be supplied with an abundance of water\r\nas soon as heads begin to form. Plants should stand the same distance\r\napart as early cabbage. The outside leaves should be pinned together\r\nover the centre, to shield the head from the direct rays of the\r\nsun, which often cause it to turn green, thus rendering it inferior\r\nin quality or entirely unfit for use. Early Snowball and Erfurt are both good and reliable. Nowhere does success depend\r\nmore on the quality of the seed than in the cauliflower.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Although of the cabbage family, kohlrabi\r\nlooks and tastes more like turnips and is cultivated\r\nlike turnips. It is grown for the thickened\r\nstem or tuber which grows above the\r\nground, and if eaten when young is very tender\r\nand more delicate in flavor for early spring use\r\nthan turnips. It is also excellent for stock feed\r\nand is grown extensively for that. The best\r\nvariety for garden use is the White Vienna, and\r\nthe tubers should be eaten when from two to\r\nthree inches in diameter. Like all cole crops\r\nthey need continuous growth, otherwise they\r\nbecome bitter and stringy. Successive sowings\r\nof the crop may be made and when thinned the\r\nplants should stand from six to ten inches apart.\r\nThey require from two and one-half to three\r\nmonths to mature and may be planted and\r\ntilled just as turnips are.\n\nCole crops all suffer from the same insects\r\nand diseases and it is well to get the latest\r\nadvice upon how to deal with them. For root\r\nmaggot, a most troublesome pest, read Cornell\r\nBulletin 78 (published at Ithaca, New York),\r\nthough the only really effective remedy is well-planned [132] rotation. In this bulletin, Slingerland\r\nrecommends placing tarred paper cards close\r\nto the young plants to protect them against the\r\nmaggot; rubbing the eggs of the maggot off\r\nthe base of the young plants, and injecting\r\nbisulphide of carbon or carbolic acid emulsion\r\ninto the soil about the plants. It is necessary\r\nto use a syringe made specially for this purpose.\n\nThe Cornell Bulletin 104, deals with cut-worms,\r\nand New York Bulletins 83 (p. 657) and No.\r\n144, tell about the cabbage worm or butterfly,\r\nthe common yellow butterfly. Better look\r\nthem up. They recommend persistent use\r\nof Paris green on the first crop, and a mixture\r\nmade of five pounds pulverized resin; one\r\npound concentrated lye; one pint fish oil or any\r\ncheap oil except tallow; five gallons water. The\r\nsame treatment does for the cabbage looper.\n\nFor aphids, or lice, read the New York Bulletin\r\n83 (p. 657) and Florida Bulletin 34 (p. 270).\r\nThe injection of bisulphide of carbon in the\r\nground, or the application of kerosene emulsion\r\nto both sides of leaves when young and small;\r\ntobacco; pyrethrum; Persian insect powder—any\r\nof these will prove more or less effective.\n\nNew York Bulletin 83 (p. 683) will tell you\r\nabout methods of dealing with the Harlequin [133] Cabbage Bug. Hand-picking is effective, and\r\nwith clean culture, should eradicate this pest.\n\nClub-root is really cured only by a thoroughly\r\nplanned system of rotation, although air-slaked\r\nstone lime, applied in the proportion of 75\r\nbushels to the acre, does good work. Read\r\nNew Jersey Bulletin 98.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Kohlrabi, a member of the cabbage family, is grown for its swollen stem or tuber that forms above ground. For an early crop, plant kohlrabi seeds in drills and thin to about 8 inches apart in rows spaced 18 to 36 inches apart. Alternatively, start seeds in a hotbed and transplant seedlings when they are four inches high. The Early White Vienna variety is recommended for its quality. Kohlrabi should be harvested while young and tender, ideally when the tubers are two to three inches in diameter, as older plants become bitter and stringy. Successive sowings can be made, with plants spaced six to ten inches apart, and the crop requires two and a half to three months to mature. Cultivate kohlrabi similarly to turnips, ensuring continuous growth. Pests such as root maggots, cutworms, cabbage worms, aphids, and Harlequin Cabbage Bugs can be managed through well-planned rotation, tarred paper cards for protection, injecting bisulphide of carbon or carbolic acid emulsion into the soil, persistent use of Paris green, and hand-picking. For club-root, apply air-slaked stone lime at 75 bushels per acre.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "spacing",
+      "notes": "8 inches apart in rows spaced 18 to 36 inches apart"
+    }
+  ],
+  "growth_habit": "upright"
 }

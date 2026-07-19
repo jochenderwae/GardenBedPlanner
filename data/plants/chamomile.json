@@ -58,6 +58,11 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Chamomile is known for its low-growing, mounding habit that spreads outward from its base."
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

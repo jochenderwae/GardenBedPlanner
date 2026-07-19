@@ -13,6 +13,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The description explicitly states that kawakawa is a small tree."
     }
-  ]
+  ],
+  "growth_habit": "tree"
 }

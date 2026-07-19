@@ -27,6 +27,46 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    }
+  ],
+  "growing_information": [
+    {
+      "text": "Chicory is grown for two or three purposes. The root of this plant is\n\nthe common adulterant of coffee, and large quantities are used for\n\nthis purpose. The commercial growing of chicory is con [65] fined to a few\n\nsections, as the crop will not thrive on every kind of soil. A deep,\n\nrich loam, without excessive amounts of clay or sand, is desirable,\n\nand soil that is not too rich in nitrogenous matter is best suited\n\nto the production of roots. The roots are frequently placed in soil\n\nunder a greenhouse bench or in a warm cellar and covered with a foot\n\nor more of straw, or with a light covering of straw and then several\n\ninches of warm manure. Under this covering the leaves will be formed\n\nin a solid head, which is known on the market as witloof. Chicory has\n\nrun wild in some parts of the country and is considered a bad weed.\n\nThe handsome blue flowers, which are borne the second season, are very\n\nattractive. As a pot herb chicory is used like spinach, but the leaves\n\nshould be boiled in two waters to remove the bitter taste. As a salad\n\nthe roots are dug in the autumn and planted in cellars or under a\n\ngreenhouse bench, where they produce an abundance of blanched leaves,\n\nwhich are eaten raw. The blanched leaves are also boiled and used as\n\ngreens.—(F.B. 255; U. Idaho E. S. 10.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#CHICORY",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Chicory has various uses and is now quite\r\nlargely grown in gardens. As a salad plant\r\nonly the tender, blanched leaves of the crown\r\nare used. The outer, green leaves are often\r\nused for “greens,” like dandelion. Chicory is\r\nnot a surface feeder like most salad plants, but\r\nis grown as a root crop the same as carrots or\r\nparsnips. The soil must be deep, that the roots\r\nmay come to perfection by fall; cuttings of\r\nleaves may be made during the season. The\r\nroots may be left in the ground over the winter.\r\nChicory is really a perennial, but under cultivation [146] it is better to grow a new lot of plants\r\neach year. When wanted for winter use, the\r\nstrong roots are taken up in the fall, and buried\r\nin a sloping direction in a pit or cellar, with the\r\ncrown of the plant showing an inch or so above\r\nthe sand or earth. The growing-place must be\r\nkept dark, and in a few weeks the small, prized\r\nleaves begin to show. When chicory plants are\r\ncovered, crowns and all, with about two feet\r\nof manure, they develop heads resembling lettuce\r\nheads. The young, tender roots of chicory\r\nare eaten as beets or carrots are, while the dried\r\nroot is extensively used in place of coffee.\r\nThis accounts for the increased area devoted\r\nto chicory in this country of recent years; it\r\nis less injurious to the nerves than coffee.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Chicory is a versatile plant grown for its roots, which are used as a coffee substitute, and for its tender leaves, which can be eaten raw in salads or cooked like greens. To grow chicory successfully, choose a deep, rich loam soil that is not excessively clayey or sandy and has moderate nitrogen content. Chicory roots require ample depth to develop fully by fall. Plant chicory seeds directly into the garden in early spring, spacing them about 6-8 inches apart in rows that are 12-15 inches apart. The plants can be left in the ground over winter if desired. For winter use, dig up the strong roots in the fall and bury them in a pit or cellar at a sloping angle, with the crown of the plant showing about an inch above the sand or earth. Keep the growing area dark; within a few weeks, small, tender leaves will begin to emerge. Alternatively, cover the plants with about two feet of manure to develop heads resembling lettuce. Chicory is considered a perennial but is typically grown as an annual for better control over plant health and yield. The young, tender roots can be eaten like beets or carrots. Chicory has attractive blue flowers in its second season but can become weedy if not managed properly.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "fertilizer_needs": "moderate nitrogen content",
+  "needs_rain_cover": false,
+  "bedding_needs": [
+    {
+      "need_type": "hilling",
+      "notes": "Cover the plants with about two feet of manure to develop heads resembling lettuce."
     }
   ]
 }

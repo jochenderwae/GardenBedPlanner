@@ -79,6 +79,85 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Pumpkins grow on sprawling vines that spread across the soil."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "The true pumpkin is hardly to be considered as a garden crop, and, as\n\na rule, should be planted among the field corn. Plant where the hills\n\nof corn are missing and cultivate with the corn. However, some of the\n\nbetter sorts of pie pumpkins should be grown in the garden for cooking\n\npurposes, because they are productive and much superior in quality to\n\nthe common field pumpkins.—(F. B. 255; Mich E. S. 20, 190.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#PUMPKIN",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "These take up so much room that they properly belong in the corn field,\r\nor in a patch of their own, in one of the cultivated fields. If there\r\nis no place for them outside the kitchen garden, and they can be kept\r\nfar enough away from the squashes and cantaloupes, they can be planted\r\nabout every twenty feet, in every fourth row of potatoes or sweet corn.\r\nThey should not be planted until the corn or potatoes have grown three\r\nor four inches high, or they will be in the way of cultivating these\r\ncrops. If one row of the corn were left out, and a row of pumpkins\r\nplanted, it would probably be the most satisfactory way to grow them,\r\nas the tall growing corn, of which there should be at least five rows\r\nbetween them and any other vines, would prevent the pollen from mixing,\r\nand as the hills need only be four or five feet apart, a great many\r\ncould be raised in a row. The [126] pumpkins must all be gathered in and\r\nstored before any heavy frosts, as it will spoil and start them to\r\nrotting.\n\nSMALL SUGAR PUMPKIN.\n\nNEW GOLDEN MARROW PUMPKIN.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Small Sugar. —This is very handsome and prolific, of small\r\nsize, the pumpkins averaging about ten inches in diameter; the skin is\r\na deep orange yellow. It is very fine grained in flesh, sweet in taste,\r\nand an excellent keeper.\n\nGolden Marrow. —Of round shape, slightly ribbed and flattened\r\nat the ends; the skin is a rich golden orange color; the flesh is of\r\nextra quality, and very soft and tender when cooked. It is a splendid\r\nkeeper, vigorous grower, and keeps well throughout the winter. [11]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Mammoth Golden Cashaw Pumpkin, One of the Best for Market or Stock Feeding.\n\nThere is no clear\r\ndividing line between\r\npumpkins\r\nand squashes, as they\r\nbelong to the same\r\nbotanic family—the\r\nCucurbita. Some\r\nmembers of the\r\ngroup are clearly\r\npumpkins, and\r\nothers just as clearly\r\nsquashes, but\r\nwhen an attempt is\r\nmade to draw a\r\nsharp line between\r\nthem, we get into\r\ndifficulty. In general\r\nterms the pumpkin\r\nhas a soft rind\r\nor shell and the\r\nsquash a hard rind.\r\nBut even this thumbnail\r\ntest is not infallible.\n\nThese vegetables\r\nbelong on the farm,\r\non account of the\r\nlarge ground space\r\noccupied by the\r\nvines. Pumpkins\r\nmay be economically [Pg 66] grown in corn fields, the seeds being planted along\r\nwith the corn—one pumpkin seed to every fourth hill. No\r\nspecial care is needed besides the cultivation given the corn.\n\nFarmers should give far more attention to growing\r\nsquashes, as they are much superior to pumpkins in food\r\nquality, both for the table and for stock.\n\nThere are numbers of excellent squashes now catalogued\r\nby the seedsmen which many farmers have never tried, but\r\nwhich are worthy of cultivation for market purposes. When\r\na farmer by experiment has found a high-quality squash\r\nadapted to his soil, he has put himself in possession of a\r\nproduct of permanent market value.\n\nPumpkin. —We especially recommend Mammoth Golden Cashaw and\r\nWinter Luxury. For descriptions, see \"Johnson & Stokes' Garden and\r\nFarm Manual.\"\n\nSquash. —Early varieties—Mammoth White Bush Scalloped, Giant\r\nSummer Crookneck. Winter-keeping varieties—Sweet Nut, Faxon,\r\nChicago Warted, Hubbard, Early Prolific Orange Marrow. For descriptions,\r\nsee \"Johnson & Stokes' Garden and Farm Manual.\"",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Although so closely allied, pumpkins and\r\nsquash do not usually cross, despite the common [190] notion to the contrary. They are distinct\r\ntypes of the same family. The standard variety\r\nof pumpkin in this country is the Connecticut\r\nField. The fruits are large, orange-colored and\r\nsmooth furrowed. They are used to make pies\r\nfor man and as food for stock, while to the small\r\nboy they are chiefly useful as “jack lanterns.”\n\nThe pumpkin is often grown in corn-fields and\r\nin England they have a summer variety called\r\nvegetable marrow, which is in great demand,\r\nwhile our summer squashes, Crookneck, Scallop\r\nand Pattypan are also forms of the pumpkin.\r\nThese are called bush squashes, and may be\r\ngrown as close as three by four feet in the garden,\r\nwhile the regular pumpkin and squashes require\r\nto be planted eight to ten feet apart. It\r\ntakes three pounds of seed to the acre for each,\r\nand a yield of two or three fruits to the vine is a\r\nlarge crop.\n\nThere are several leading types of winter or\r\nfield squashes such as the Hubbard, Marblehead,\r\nBoston Marrow, Essex Hybrid, and Turban.\r\nTo keep them through the winter they should\r\nbe free from bruises or cracks, be fully ripe and\r\nhave the stem on. A touch of frost injures\r\nthem. They should be stored in a dry place\r\nwith a temperature above 50° and placed on\r\nshelves or in shallow bins. Large growers have [191] specially constructed, stove-heated houses for\r\nstoring them.\n\nA third type includes the Winter Crooknecks,\r\nDunkard, Tennessee Sweet Potato Pumpkin,\r\nand some others. The culture of both squash\r\nand pumpkin is the same as for cucumber.\n\nThe insects from which they most suffer are:\r\nthe squash bug and the melon louse. To rid\r\nthe fields of the bug, keep them free from rubbish.\r\nTrap the bugs with bits of squash leaves\r\nand every day in spring pick off the old bugs.\r\nRead New Jersey Bulletin 94; New York Bulletin\r\n75, and Florida Bulletin 34.\n\nFor melon louse read Kentucky Bulletin 53\r\nas well as those already mentioned. Get lice\r\nin their winter quarters and destroy at first\r\nappearance. Use bisulphide of carbon as the\r\nbulletin directs.\n\nPowdery and Downy Mildew are the worst\r\ndiseases. For powdery mildew, spray with ammoniacal\r\ncopper carbonate, and read Massachusetts\r\nState Report, 1892, p. 225, and Cornell\r\nBulletin 31. For downy mildew, use Bordeaux\r\nmixture every eight or ten days, until frost, and\r\nread Massachusetts State Report, 1890, p. 211,\r\nand New York Bulletin 119.\n\n[192]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Pumpkins are typically grown in corn fields or in separate patches due to their large space requirements. Plant pumpkin seeds along with corn, placing one seed per every fourth hill of corn. Alternatively, plant them in rows about 20 feet apart, either in a dedicated patch or interspersed with other crops like potatoes or sweet corn, ensuring they are planted after these crops have grown to at least three or four inches high to avoid interference during cultivation. For garden planting, space pumpkins eight to ten feet apart and bush squashes closer, around three by four feet. Pumpkin varieties suitable for the garden include Small Sugar (deep orange yellow skin, fine-grained flesh) and Golden Marrow (rich golden orange color, tender when cooked). Mammoth Golden Cashaw is recommended for market or stock feeding. To prevent cross-pollination with other vines like squashes and cantaloupes, ensure there are at least five rows of tall-growing corn between them. Pumpkins should be harvested before heavy frosts to prevent rotting. Store pumpkins in a dry place above 50°F, ensuring they are free from bruises or cracks and fully ripe with the stem intact. Common pests include squash bugs and melon louse; control these by keeping fields clean of rubbish and using traps for bugs. Diseases to watch out for are powdery and downy mildew, which can be treated with ammoniacal copper carbonate and Bordeaux mixture respectively.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of Farm Gardening with Hints on Cheap Manuring, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "needs_rain_cover": true,
+  "bedding_needs": [
+    {
+      "need_type": "spacing",
+      "notes": "eight to ten feet apart for pumpkins and three by four feet for bush squashes"
+    },
+    {
+      "need_type": "interplanting",
+      "notes": "with corn, potatoes or sweet corn"
+    }
+  ],
+  "growth_habit": "spreading"
 }

@@ -24,6 +24,32 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Watercress grows in a flat rosette form with leaves radiating from the base."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Water cress, a vegetable closely allied to several other\r\nedible cresses, is used in very large quantities in all city\r\nrestaurants. It is a much-esteemed winter relish, and is\r\nmostly served with every one of the thousands of beefsteak [Pg 85] orders daily filled in the great eating houses and lunch\r\nrooms. The demand for it seems to be on the increase.\n\nWater Cress.\n\nWater cress is of the easiest culture.\r\nIt can be grown in the soil of a\r\nforcing house under glass, and is extensively\r\nproduced in this way by market\r\ngardeners.\n\nThe cheapest method is to grow it\r\nin running water, preferably near a\r\nspring head; and many such situations\r\nare available to farmers. Flat beds,\r\nmade of loam, gravel, or sand, covered with 3 or 4 inches of\r\nwarm, spring water, will yield great quantities of water cress\r\nin early spring; and the use of a few sash will keep the cress\r\nin growth during the winter. The cress should be cut frequently,\r\nas the young shoots are most succulent and\r\ntender.\n\nFor market purposes the water cress is tied in bunches,\r\nand retailed at from 3 to 10 cents per bunch, or packed in\r\npint boxes, leaves uppermost, and retailed for about 10 cents\r\nper box. These are winter and early spring prices. Water cress\r\nculture is profitable in favored locations.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "needs_rain_cover": false,
+  "bedding_needs": [
+    {
+      "need_type": "ground-cover",
+      "notes": "3 or 4 inches of warm, spring water"
+    }
+  ],
+  "growth_habit": "rosette"
 }

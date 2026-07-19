@@ -44,6 +44,11 @@
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
       "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Daikon is a root vegetable that grows from the ground with leaves radiating outward."
     }
-  ]
+  ],
+  "growth_habit": "rosette"
 }

@@ -21,6 +21,25 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Collards form a loose rosette of leaves that radiate from a central point at ground level."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "The culture and uses of collards are the same as for cabbage and kale.\n\nCollards withstand the heat better than either cabbage or kale, and\n\na type known as Georgia collards is highly esteemed in the Southern\n\nStates. Collards do not form a true head, but instead a loose rosette\n\nof leaves, which, when blanched, are very tender and of delicate\n\nflavor.—(F. B. 255; U. Idaho E. S. 10; P. Rico A. E. S. 7.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#COLLARDS",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "growth_habit": "rosette"
 }

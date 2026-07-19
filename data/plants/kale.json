@@ -83,6 +83,62 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Kale grows as an upright clump with multiple stems and does not form a flat rosette or spread widely across the ground."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "There are a large number of forms of kale, and these are thought by\n\nsome to be the original type of the cabbage. Kale does not form a head\n\nand has convoluted leaves and thick leaf stems. It is cultivated the\n\nsame as cabbage, but may be set somewhat closer. This crop is very\n\nhardy and will live through the winter in the open ground in localities\n\nwhere freezing it not too severe. The flavor of kale is improved by\n\nfrost. Kale is used for greens during the winter, and as a substitute\n\nfor cabbage.—(F. B. 255; N. Car. E. S. 132; U. Id. E. S. 10.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#KALE_OR_BORECOLE",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Kale, of which there are many varieties, is a headless\r\ncabbage, closely allied to such vegetables as Brussels sprouts, [Pg 92] collards, etc. It is one of the most hardy of vegetables, and\r\nin this latitude it will live over winter in the open ground,\r\nwith only straw or litter as a protection. If cut for use when\r\nfrozen it should be thawed out in cold water. The kales are\r\namong the most delicately flavored cabbages. Some of them\r\nare of such ornamental shape as to be full worthy of cultivation\r\nfor decorative purposes. The height varies from 1 to\r\n2 feet, and the colors include both greens, dark purples and\r\nintermediate shades.\n\nKale demands a rich, deep soil. The seed should be\r\nsown in a border or seed-bed, and transplanted to the open\r\nfield and set in rows, after the manner of cabbage. It is\r\nlargely and profitably grown in the South for shipment to\r\nthe great Northern markets. Where farmers are situated\r\nnear centres of population where kale is in demand, its culture\r\nwill be found profitable, as it requires even less labor\r\nthan cabbage. It is planted both in spring and autumn.\r\nThe former crop is for autumn consumption and the latter\r\ncrop is carried over winter after the manner of spinach, protected\r\nby a light covering of some sort of litter.\n\nKale. —For the South, we recommend Extra Dwarf Green Curled\r\nScotch; for the North, Johnson & Stokes' New Imperial. See our\r\n\"Garden and Farm Manual\" for descriptions.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Kale requires much less care than cabbage,\r\nand is usually sown where it stands. It is\r\nprobably nearer the original type of cole plant\r\nthan any other, and even in cultivation produces\r\nno heads, but very large, heavy foliage.\r\nIt is a very hardy plant, and is grown especially\r\nfor spring and fall crops, and is much used as\r\ngreens at seasons when other greens are not to\r\nbe had. In the Northern States the seeds are\r\nsown in the spring and the plants are ready for\r\nuse in the fall. When the crop has been\r\nthinned, the plants that are to reach maturity\r\nshould be from 10 to 20 inches apart, and the\r\ndistance between rows may depend upon the\r\nsort of cultivation to be given. In large areas\r\nof kale, horse-cultivation is best, but in a small\r\nplot the usual 12 to 18 inches will allow of\r\nwheel-hoe work.\n\nKale is such a hardy plant that frost will not\r\nhurt it, and the crop is often allowed to stand\r\nin the field until very late in the season, or even\r\nall winter. The large outer leaves are improved [127] by frost. In the South and Middle South, kale\r\nseed is sown in the late summer and the young\r\nplants allowed to stand in the field unprotected\r\nall winter, but this cannot be done in the North.\r\nThere the young plants need cold-frame protection.\r\nFor this reason there is little winter-grown\r\nkale in the North, and the extensive supply\r\nthat comes from Virginia from January until\r\nlate spring makes it unprofitable to force it\r\nfor early spring in the North.\n\nThere is a form of kale called collards, which\r\nis much grown in the South, especially where\r\nthe climate is too hot for successful cabbage-growing.\r\nThe seed is sown very early in the\r\nspring in protected seed-beds, so that the\r\ncrop may get its growth before the hot weather\r\nsets in. It is much like cabbage, and sometimes\r\nyoung cabbage plants are raised for greens, and\r\nare called collards. Kale is subject to the same\r\nenemies as cabbage ( which see ), and requires the\r\nsame sort of cultivation.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Kale is a hardy, headless cabbage variety that thrives in rich, deep soil and is suitable for both spring and fall crops. It can be sown directly where it stands or transplanted from seed-beds to the field, similar to cabbage. For optimal growth, space plants 10 to 20 inches apart with rows 12 to 18 inches apart for small plots or wider spacing for horse-cultivation in larger areas. Kale is extremely frost-tolerant; its flavor improves after a frost, and it can survive winter in mild climates. In the North, sow seeds in spring for fall use, while in the South, late summer sowing allows plants to overwinter unprotected. For early spring harvests in the North, cold-frame protection is necessary. Kale varieties recommended include 'Extra Dwarf Green Curled Scotch' for the South and 'Johnson & Stokes' New Imperial' for the North. Kale shares pests with cabbage and requires similar cultivation practices. A form of kale called collards is popular in hotter climates where cabbage struggles.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of Farm Gardening with Hints on Cheap Manuring, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "needs_rain_cover": true,
+  "bedding_needs": [
+    {
+      "need_type": "cold-frame protection",
+      "notes": "For early spring harvests in the North"
+    }
+  ],
+  "growth_habit": "upright"
 }

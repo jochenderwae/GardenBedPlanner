@@ -52,6 +52,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Summer Squash (Cucurbita melopepo) typically grows as a low, wide, mounding plant that spreads outward from its base."
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

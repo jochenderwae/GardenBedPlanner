@@ -11,6 +11,11 @@
     {
       "attribution": "manual-verification",
       "notes": "botanical_name inferred value declined by Ollama (not confident) - manually verified against public sources instead; see _MANUAL_BOTANICAL_NAME_OVERRIDES in export.py"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Kamokamo is a type of summer squash that grows low and wide, spreading outward from its base."
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

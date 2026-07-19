@@ -17,6 +17,11 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Bitter orange is a citrus tree with a single trunk and a canopy well above ground level."
     }
-  ]
+  ],
+  "growth_habit": "tree"
 }

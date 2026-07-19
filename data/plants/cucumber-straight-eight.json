@@ -18,6 +18,12 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='climbing' - Trefle growth_habit='Forb/herb, Vine' includes 'Vine'"
     }
-  ]
+  ],
+  "growth_habit": "climbing"
 }

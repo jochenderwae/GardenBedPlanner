@@ -14,6 +14,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The blood orange is a variety of Citrus × sinensis, which is typically grown as a tree."
     }
-  ]
+  ],
+  "growth_habit": "tree"
 }

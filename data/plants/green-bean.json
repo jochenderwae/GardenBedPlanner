@@ -25,6 +25,38 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "notes": "growing_information text sourced from 'A-B-C of Vegetable Gardening'"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='climbing' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine'"
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Mammoth Stringless Green Pod matures\r\nearly, and is very tender, fine-flavored, and\r\nproductive. It is a general favorite for the\r\nhome garden.\n\nGolden Wax is later than the green-podded [38] variety mentioned above. It is valuable as\r\na string-bean, and for shelling.\n\nBeans are quite tender, therefore they\r\nshould not be planted until the weather becomes\r\nwarm and settled. Plant in rows two\r\nfeet apart, and about four inches apart in the\r\nrow, or in hills of three or four plants each.\r\nCultivate frequently during the early part\r\nof summer, throwing the soil toward the\r\nplants. Do not work among them while\r\nthey are wet from dew or rain.\n\nIf a pole-bean is wanted, Improved Lima\r\nwill be found extremely satisfactory because\r\nof its productiveness and its fine, buttery\r\nflavor. This class supplies the table with\r\nshelled beans only, its pods being too tough\r\nto use as a string-bean. Plant in hills of six\r\nor eight, setting a pole six or seven feet tall\r\nin the center of each hill for the plants to\r\nclimb by.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "attribution": "A-B-C of Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "needs_wind_cover": false,
+  "needs_rain_cover": true,
+  "bedding_needs": [
+    {
+      "need_type": "hills",
+      "notes": "of three or four plants each"
+    },
+    {
+      "need_type": "rows",
+      "notes": "two feet apart, and about four inches apart in the row"
+    }
+  ],
+  "growth_habit": "climbing"
 }

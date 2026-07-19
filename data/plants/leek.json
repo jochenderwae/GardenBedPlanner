@@ -39,6 +39,49 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Leeks grow as an upright clump from the ground and develop a uniformly thick stem."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "This plant belongs to the same class as does the onion, but requires\n\nsomewhat different treatment. Leeks can be grown on any good garden\n\nsoil and are usually sown in a shallow trench. The plants should be\n\nthinned to stand about 4 inches apart in the row and the cultivation\n\nshould be similar to that for onions. After the plants have attained\n\nalmost full size the earth is drawn around them to the height of 6 or\n\n8 inches to blanch the fleshy stem. The leek does not form a true bulb\n\nlike the onion, but the stem is uniformly thick throughout. Leeks are\n\nmarketed in bunches like young onions, and they may be stored the same\n\nas celery for winter. Leeks are used for flavoring purposes and are\n\nboiled and served with a cream dressing the same as young onions.—(N.\n\nCar. E. S. 132; La. E. S. 90; F. B. 255.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#LEEK",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "To the average American, there is but one\r\nimportant bulb crop, the onion, but the foreign-born\r\nuse garlic, leek and others also. Of these\r\nthe leek is the mildest flavored and the best\r\nworth knowing. It is grown from seed sown in\r\nthe early spring, and requires the whole season\r\nto reach full development. It produces soft\r\nbulbs and thick leaves, both being used for\r\nseasoning. The leek is stored green, as celery\r\nis, being set in earth in a pit or cellar.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Leeks, belonging to the same family as onions, require slightly different cultivation methods. They can be grown on any good garden soil and are typically sown in a shallow trench in early spring. The seeds should be thinned to stand about 4 inches apart in the row. Cultivation is similar to that of onions, but leeks do not form a true bulb; instead, they develop a uniformly thick stem. As the plants approach full size, earth should be drawn around them to a height of 6 or 8 inches to blanch the fleshy stem. Leeks are harvested and marketed in bunches like young onions and can be stored for winter similar to celery, either by setting them in earth in a pit or cellar. Both the soft bulbs and thick leaves are used for seasoning, making leeks a versatile addition to any garden.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "hilling",
+      "notes": "earth should be drawn around them to a height of 6 or 8 inches to blanch the fleshy stem"
+    }
+  ],
+  "growth_habit": "upright"
 }

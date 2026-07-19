@@ -49,6 +49,34 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Anise is described as an annual flowering plant that grows well and gives a good yield of seed, suggesting it has an upright growth habit."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "This is an annual. Leaves used as a garnish. The seeds are the source\n\nof Anise oil. This plant grows well and gives a good yield of seed.\n\nSeeds should be soaked over night in warm water and sown thickly.—(U.\n\nIdaho 10.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#ANISE",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "seed_info": {
+    "pretreatment": "soaked over night in warm water"
+  },
+  "bedding_needs": [
+    {
+      "need_type": "sowing",
+      "notes": "thickly"
+    }
+  ],
+  "growth_habit": "upright"
 }

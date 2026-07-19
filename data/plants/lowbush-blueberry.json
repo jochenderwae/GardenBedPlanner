@@ -20,6 +20,12 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Shrub' includes Shrub/Subshrub"
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

@@ -25,6 +25,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Elephant Garlic grows as an upright clump from the ground and has a bulbous base."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

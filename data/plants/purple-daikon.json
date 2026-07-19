@@ -11,6 +11,11 @@
     {
       "attribution": "ollama-inference",
       "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Purple daikon radishes grow from a central point at ground level with leaves radiating outward and the harvestable part (the radish) underground."
     }
-  ]
+  ],
+  "growth_habit": "rosette"
 }

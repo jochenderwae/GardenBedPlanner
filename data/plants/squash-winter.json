@@ -51,6 +51,12 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine', but squash-winter is a known ground-sprawling vine (curated override), not a trellised climber"
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

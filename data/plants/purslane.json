@@ -25,6 +25,31 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Purslane spreads outward from its base to create a mat of foliage."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Purslane, or, as it is more generally called,\r\n“pusley,” is another herb that the French\r\ngrowers have greatly improved. The common\r\npusley weed is a weak, trailing plant, but the\r\nFrench, cultivated variety stands up stiff with\r\nlarge leaves and juicy stems. It grows easily\r\nin any good garden soil, matures quickly and\r\nis not hurt by warm weather. The seeds are\r\nsown early in the spring and there is little\r\ndanger of the cultivated sort sowing itself and\r\nbecoming a pest.\n\nThere are some other varieties of greens;\r\nbut this book aims only to treat of those which\r\nare generally grown and for which there is a\r\nsure market each year.\n\n[141]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "ground-cover",
+      "notes": "grows easily in any good garden soil"
+    }
+  ],
+  "growth_habit": "spreading"
 }

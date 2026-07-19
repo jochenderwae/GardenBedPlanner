@@ -11,6 +11,11 @@
     {
       "attribution": "ollama-inference",
       "notes": "botanical_name inferred from common_name by Ollama - no source had one; not sourced from an external database, verify before trusting"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Chocolate mint spreads by rhizomes into an attractive ground cover."
     }
-  ]
+  ],
+  "growth_habit": "spreading"
 }

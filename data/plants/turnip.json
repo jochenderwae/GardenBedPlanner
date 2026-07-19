@@ -28,6 +28,81 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Turnips have a central root with foliage radiating from it, fitting the rosette description."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "A great variety of turnips is grown throughout temperate climates,\n\nsome of which being coarse in texture are used as food for farm\n\nanimals while other varieties are raised as table vegetables. There\n\nis considerable variation in the color, flavor, and composition\n\nof the turnip, the yellow-fleshed sorts as a group being commonly\n\ndistinguished from the white by the name \"Swedes\" or \"ruta-bagas.\" In\n\nthe summer the early white varieties are usually preferred in spite of\n\nthe fact that they are more watery, while in winter the yellow turnips\n\nare more commonly used.\n\nThe turnip requires a rich soil, and may be grown either as an early or\n\na late crop. For an early crop, sow the seeds in drills 12 to 18 inches\n\napart as early in the spring as the condition of the soil will permit.\n\nTwo pounds of seed are required to plant an acre. After the plants\n\nappear, thin to about 3 inches. The roots will be ready for use before\n\nhot weather. For late turnips the seeds are usually sown broadcast on\n\nland from which some early crop has been removed, generally during July\n\nor August, but later in the South. Turnips are quite hardy, and the\n\nroots need not be gathered until after several frosts. Turnips may be\n\nstored in a cellar or buried in a pit outside. Before storing, the tops\n\nshould be removed.—(F. B. 255, 295; U. Id. E. S. 10; Mich. E. S. 20.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#TURNIPS",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "With our hot, dry summers, turnips can only be raised satisfactorily\r\nas a fall crop. They can be grown as a second crop, after early sweet\r\ncorn, potatoes or peas, and should be sown as soon as possible after\r\nthe first of August. The ground should be plowed or run over two or\r\nthree times with the cultivator, and then harrowed till it is as fine\r\nas it is possible to make it. If the seed is sown broadcast, some\r\nwinter radish seed should be mixed and sown with it. The ground should\r\nbe rolled after sowing, not only to compact the soil round the seeds,\r\nwhich is essential to good germination, but also to prevent washing by\r\nthe September rains, if the ground is at all sloping. But where the\r\nfinest turnips and a sure crop are desired, it is much better to sow\r\nour garden turnips in drills, one foot apart if you have a wheel hoe,\r\nor as narrow as you can cultivate, if you have not. This will tend to\r\nhaving the roots of even size, and the finest appearance, as they can\r\nbe frequently worked. When about three inches high, or when beginning\r\nto form bulbs, they should be thinned out to four or five inches apart\r\nin the rows, with the narrow hoe, leaving each bulb to stand by itself.\r\nIt will be found that by this method, with careful culture, a larger as\r\nwell as a much finer crop can be raised on the same ground than if they\r\nwere sown broadcast, and that not half as much seed need be used, as it\r\nis carefully planted just where it is to grow.\n\n[152]\n\nIllustration showing manner of storing turnips, beets, carrots,\r\netc., in the garden for winter use. S, straw covering and\r\nventilating chimney; D, covering of soil over the straw.\n\nAbout the third week in November, or before there is danger of the\r\nground becoming hard, the turnips should be pulled and the tops cut\r\noff; take enough in the cellar for immediate use, and store the rest in\r\nheaps. Select a well-drained piece of ground, as directed for burying\r\ncabbages; it will be most convenient to have them near together; spread\r\nabout two inches of straw on the ground, and heap the turnips upon it\r\nin the shape of a cone, not more than ten or fifteen bushels in a heap;\r\ncover this with straw, an inch or two thick, and bind it together at\r\nthe top, and let it stick up a foot or so above the top of the cone;\r\nthen cover the heap with four to six inches of soil, all but the straw\r\ntop to the cone, which acts as a chimney or ventilator; the roots can\r\nthus be kept in good order throughout the winter. The surplus beets and\r\ncarrots can be put in with the turnips, and the whole can be gotten at,\r\nany day when the temperature is above freezing, by making a hole in one\r\nside of the heap, taking out what you want, and carefully closing [153] the\r\nopening again. The straw bottom and sides are not absolutely necessary,\r\nbut are a great improvement and convenience, and will preserve the\r\nroots in a much cleaner and finer condition; the straw not only helping\r\nto keep out the frost, but at the same time providing ventilation for\r\nthe heap.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Early Red, or Purple Top Strap-Leaved. —The best known and\r\nmost generally planted variety. It is a quick grower, and the flesh is\r\nvery fine grained and flavored. The red top of the bulb, which extends\r\ndown to where it rests in the soil, adds very much to the appearance of\r\nthis popular variety.\n\nPURPLE TOP STRAP-LEAVED.\n\nEARLY WHITE FLAT DUTCH TURNIP.\n\nEarly White Flat Dutch. —This is a quick growing and very\r\nearly variety. The skin and flesh are a clear white, and the flesh is\r\nsolid; very sweet and juicy, and of mild flavor.\n\n[154]\n\nExtra Early Purple Top Milan. —This kind is said to be the\r\nearliest of all turnips, maturing two weeks earlier than the Early Red.\r\nThe bulb is very flat, of medium size, quite smooth, with a bright\r\npurple top; leaves grow very short, making a small, neat top. The pure\r\nwhite flesh is solid, fine grained, and of superior quality, even in\r\nthe largest specimens. It is an excellent keeper, retaining its good\r\nquality throughout the winter.\n\nWhite Egg. —As its name implies, this is a pure white turnip,\r\nof egg-shaped growth. It grows very quickly; has a thin white skin, and\r\nvery solid, fine-grained white flesh. It is very sweet and juicy, of\r\nmild flavor and grows to a good size. It is a good variety for either\r\nearly or late planting.\n\nWHITE EGG TURNIP.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Turnips and ruta bagas are closely related. The latter are\r\nturnips in fact, and are frequently called Swedes. The common\r\nmethod on many farms is to sow turnips broadcast,\r\nbut it is a far better practice to sow both these and the ruta\r\nbagas in drills, so that they can be kept clear of weeds and\r\nworked by horse-power. Not only are these advantages\r\nsecured, but the row system makes it possible to take out\r\nthe superfluous plants, and secure roots of uniform size and [Pg 72] shape. Turnips and ruta bagas have high economic value\r\nas foods, both for humanity and for live stock.\n\nTurnips. —Turnips are grown for market purposes both\r\nin spring and in fall. In the spring the seed should be sown\r\nearly, in mellow soil. For the fall crop the seed may be\r\nsown either in July or August. The rows in garden or field\r\nmay be as close as can be conveniently worked.\n\nTurnip. —For earliest, we recommend Purple Top and White Milan.\r\nFor fall crop, Mammoth Purple Top Globe and Golden Ball. For\r\ndescriptions, see \"Johnson & Stokes' Garden and Farm Manual.\"\n\nBudlong or Breadstone Turnip.\n\nRuta Bagas or Swedes. —The seed of ruta baga or\r\nSwedish turnip should be sown (in the latitude of Philadelphia)\r\nin July, a little earlier than the seed of the common\r\nturnip. The ground should be well enriched with rotted\r\nmanure, the rows 2½ to 3 feet apart, the seed covered to the\r\ndepth of half an inch, and the plants afterward thinned out\r\nso as to stand 6 or 8 inches apart in the row. The crop is\r\nalmost always large and satisfactory.\n\nRuta Baga. —We recommend Myer's Purple Top Beauty and Budlong.\r\nFor descriptions, see our \"Garden and Farm Manual.\"\n\n[Pg 73]\n\nMyer's Purple Top Beauty Ruta Baga.\n\nStorage. —Turnips of all kinds sell well in the winter\r\nmarkets, to say nothing of their high value as stock foods.\r\nThey are easily preserved in root cellars, covered with sand,\r\nor in pits in dry soil, covered with straw and earth to prevent\r\nfreezing.\n\n[Pg 74]\n\nDistribution of Water through Home-made Hose Pipe. An Illustration\r\nfrom our New Book—\"Irrigation by Cheap Modern Methods.\" No Gardener should miss\r\nReading this Work. See page 125.\n\n[Pg 75]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The turnip is such an easy crop to grow that\r\nthe gardener would have a snap with it if it\r\nwere not for the snap that the root maggot\r\nhas. It is a hardy, quick-growing crop, requiring\r\na cool, short season and a moist soil.\r\nThe turnip is so hardy that the herbage can\r\nbear considerable cold without real injury, so\r\nthat when grown for winter use it is left\r\nstanding in the field until the black frosts;\r\nbut the roots will not stand such hard freezing\r\nas parsnips or salsify.\n\nTurnips should be planted in moist, rich soil\r\nto insure quick sprouting, because their chief\r\nvalue as food is the result of rapid growth. [100] Like the radish, the turnip, if it grows slowly,\r\nis likely to be tough, woody and stringy. True\r\nturnip has soft, white flesh (sometimes the\r\nboys eat it raw) and the roots are flatly\r\nrounded, while the leaves are rough and hairy.\r\nThe seed is sown as soon as the soil can be got\r\nready in the spring for the early crop, and as\r\nlate as the last week in July in the Northern\r\nStates, or the middle of August in the Middle\r\nStates, for a fall crop. They are ready for the\r\ntable in six to ten weeks. Turnips are planted\r\nfrom 1 to 1½ inches deep in drills from 10 to 18\r\ninches apart; one ounce of seed for every 200\r\nto 300 feet, or one pound to the acre. Plants\r\nshould be thinned until they stand three or four\r\ninches apart, and later, as the roots are pulled,\r\na foot of space will allow of full development.\n\nTurnips suffer so from root maggot, that\r\nwhere the land has become infested with this\r\npest, it is better not to try to grow them until\r\nthe insects are starved out, because the only\r\neffective treatment that we have found so far\r\nis to inject bisulphide of carbon into the soil,\r\nwhich costs too much for turnip crops.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Turnips are versatile vegetables that can be grown as both early and late crops in temperate climates. For an early crop, sow seeds in drills 12 to 18 inches apart as soon as the soil is workable in spring, thinning plants to about 3 inches apart after germination. For a fall crop, sow seeds broadcast or in drills one foot apart from July to August, depending on your location, and thin to four or five inches apart when the plants are about three inches high. Turnips prefer rich, moist soil and require careful cultivation to ensure uniform root size and prevent pests like root maggots. They are hardy and can withstand several frosts before being harvested. For storage, remove tops, store in a cellar or bury in a pit outside with straw and soil for ventilation. Popular varieties include Early Red (Purple Top Strap-Leaved), Extra Early Purple Top Milan, White Egg, and Early White Flat Dutch turnips, as well as Swedes or ruta bagas like Myer's Purple Top Beauty.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of Farm Gardening with Hints on Cheap Manuring, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "needs_rain_cover": false,
+  "bedding_needs": [
+    {
+      "need_type": "drills",
+      "notes": "12 to 18 inches apart for early crop"
+    }
+  ],
+  "growth_habit": "rosette"
 }

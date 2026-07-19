@@ -30,6 +30,94 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "notes": "growing_information text sourced from 'A-B-C of Vegetable Gardening'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Rhubarb grows as an upright clump with large leaves and edible stalks, fitting the 'upright' category."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "The soil for rhubarb should be deep, and there is little danger of\n\nhaving it too rich. Like asparagus the seedling plants of rhubarb can\n\nbe grown and transplanted. Ten to twelve good hills are sufficient to\n\nproduce all the rhubarb required by the average family, and these are\n\nmost easily established by planting pieces of roots taken from another\n\nbed. Good roots may be secured from dealers and seedsmen at about\n\n$1.50 a dozen. The old hills may be divided in [117] the early spring or\n\nlate fall by digging away the earth on one side and cutting the hill\n\nin two with a sharp spade, the part removed being used to establish a\n\nnew hill. The usual method of planting rhubarb is to set the plants in\n\na single row along the garden fence, and the hills should be about 4\n\nfeet apart. If more than one row is planted the hills should be 3½\n\nor 4 feet each way. The thick leaf stems are the part used, and none\n\nshould be pulled from the plants the first year after setting. Rhubarb\n\nshould receive the same treatment during winter as asparagus, and the\n\nplants should never be allowed to ripen seed. The roots may be brought\n\ninto the greenhouse, pit, cold frame, or cellar during the winter and\n\nforced. Rhubarb does not thrive in warm climates. The use of rhubarb is\n\nprincipally during the early spring for making pies and sauces, and the\n\nstems may be canned for winter use.—(F. B. 255; N. Car. E. S. 132; U.\n\nId. E. S. 10.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#RHUBARB_PIE_PLANT",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "These three I would plant in the same row, in the small fruit plot or\r\npermanent part of the garden, mainly because a third of a row of each\r\nwill afford an ample supply for a good-sized family, and all require\r\nnearly the same treatment. The plants of each are all set together,\r\neach in its own third of the row, not interspersed. The plants should\r\nbe set as early in the spring as possible, or can be planted in the\r\nfall and well mulched with manure. The crowns of the rhubarb should be\r\nset an inch or two under the surface, and no stalks pulled until the\r\nsecond or third season; in the fall, when the ground is frozen hard,\r\nthe old leaves should be pulled off and the row well mulched with long\r\nmanure; in the spring this should be worked down to the roots, when\r\nthe ground is fit to work, and the soil kept loose and free from weeds\r\nwhile the rhubarb is making its growth. The stalks can be pulled as\r\nsoon as they are large enough for use, and can be pulled until they\r\nbecome so small as to be unfit for use; then dig in some fine manure or\r\ncompost, and let it grow at will until fall, when the stalks will again\r\nbe fit for use, though this second crop is generally allowed to go to\r\nwaste, mainly, I think, through ignorance of the fact that it is just\r\nas [160] palatable as in the spring, and that it can easily be canned for\r\nwinter use. Like asparagus, it must be liberally and continually fed,\r\nto have it in fine condition and of good size.\n\nThe currants and gooseberries are subject to the ravages of the currant\r\nworm, which cleans up every leaf and berry on the bushes just as they\r\nare about to ripen. To prevent this, the bushes should be dusted with\r\nwhite hellebore when the first worm makes his appearance; as this is a\r\nvery strong poison many are afraid to use it; and, indeed, great care\r\nmust be taken in using the fruit; still, the worms usually appear about\r\nthe time the bushes are in bloom, and if promptly welcomed will have\r\ndisappeared, and the poison be washed off the bushes before the fruit\r\nhas formed. Any one who does not like to use the hellebore can dust the\r\nbushes with road dust or dry wood ashes every morning while the dew is\r\nstill on the leaves; care should be taken that the under side\r\nof the leaves should receive a good portion of whatever is used. There\r\nis still another way of getting rid of these pests, and that is by\r\nhand-picking them; but any one who has tried it will agree with me that\r\nit is a somewhat tedious process when done every morning for a couple\r\nof weeks.\n\nWhen the fall comes these bushes should be well mulched, and in the\r\nspring, before the growth starts, the old wood should be cut out of\r\nthem, care being taken not to trim them too severely; never take out\r\nmore than a third of the wood, or you will trim away your crop of\r\nfruit for the season. When the spring opens, dig in the mulch and keep\r\nthe ground well [161] worked and free from weeds, as in the asparagus and\r\nrhubarb.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Rhubarb, known familiarly as Pie Plant , succeeds best in deep,\r\nsomewhat retentive soil. Coming, as it does, before berries or fruit,\r\nits acid leaf stalks form an admirable substitute. It may be raised\r\nfrom seed, but to get the quickest returns procure strong roots in\r\nspring, and plant them three feet apart each way, the ground having\r\nfirst been fertilized and dug to a considerable depth. Never permit a\r\nplant to exhaust itself by seed-bearing; stir the soil often, cover\r\nwith coarse litter in fall, fork it over in the following spring, and\r\nyou may rely upon a good supply of pie plant for many years to come.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "In some parts of the United States rhubarb or pie plant\r\nis grown in very considerable quantities for market purposes,\r\nand with profit. Its culture is extremely simple. It is\r\nmerely necessary to plant seed or roots, and to have the\r\nplants about 4 feet apart each way in a permanent bed. The\r\nplant is a perennial, lasting for many years. It is a rank\r\nfeeder, and the more manure given it, the larger and more\r\nsucculent will be the young shoots. The roots should be\r\ndivided every five years, as they finally become too large.\r\nThe demand for rhubarb continues through the spring and\r\ninto summer, and large quantities are canned for pie-making.\r\nFive leaf stalks make a large bunch. It is worth\r\n$2 to $3 per 100 bunches, wholesale.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Of all the perennial garden plants rhubarb\r\nis the easiest to grow, and the most inexperienced\r\nmay be sure of success. It is very hardy and\r\nthe roots remain in the garden all winter, even\r\nin climates where the frost is heavy and the cold\r\nquite severe. But in spite of its hardiness and\r\nwillingness to flourish under ordinary conditions,\r\nrhubarb responds quickly to good care and\r\ngives such enormously increased returns that it\r\npays to attend to it.\n\nRhubarb likes a deep, rich soil, thoroughly\r\ncultivated and fertilized before the plants are\r\nset out. It is usually more satisfactory to\r\npropagate by roots than by seed, although some\r\ngrowers prefer to raise their plants from seed.\r\nLike asparagus, rhubarb will last twenty years,\r\nif given a good start and if the roots are occasionally\r\nseparated. All this time it will\r\nyield large, tender, juicy stalks if the soil be in\r\ngood condition, and if a little tillage is given to\r\nthe plant in fall and spring.\n\nSet out the plants in rows where the soil has\r\nbeen fertilized, is deep and in good tilth. The [209] best strains of rhubarb will not produce good\r\nstalks if the land be hard or the subsoil high and\r\nhard. The rows should be four feet apart to\r\nallow of horse tillage. The plants may be from\r\nthree to four feet apart in the row. During\r\nthe growing season they require the same sort\r\nof surface tillage that you would give to corn or\r\npotatoes. If you are making the most of your\r\nrhubarb bed, you will give it quite a heavy coat\r\nof manure in the fall, to act as mulch to keep\r\nthe soil from freezing too deep, and also to preserve\r\nits texture. During the storms of winter,\r\nthe manure leaches away somewhat and fertilizes\r\nthe roots, so that they are prepared to\r\nmake an early growth in the spring.\n\nThe season for selling is short, as early in the\r\nsummer the demand for rhubarb gives place to\r\nstrawberries and other small fruits. It is the\r\ngrower who has it early in the market who reaps\r\nprofit from rhubarb.\n\nBy means of the New Rhubarb Culture, rhubarb\r\nmay now be forced for market out of\r\nseason, and then it brings the best prices of\r\nall. Roots are left in the garden until they\r\nhave been frozen and are then transplanted\r\nto specially prepared beds and forced for the\r\nChristmas trade. These beds may be in the\r\nopen field if one has a system of heating by [210] steam forced through trenches, or they may be\r\nin specially constructed forcing houses; or, simplest\r\nof all, they may be in the house cellar,\r\neven though the floor be of concrete.\n\nRhubarb requires but little moisture and when\r\nit is being forced, it need not go deep to find its\r\nfood, if the soil it has is rich enough. Three\r\ninches of earth will give it all the hold it needs,\r\nand if the light is completely excluded, the growth\r\nwill all go to stalk.\n\nIf you have a cellar bed, screen it off from\r\nthe rest of the cellar so that no light can reach\r\nit; a small kerosene-oil lamp with a chimney\r\nthat has been thoroughly smoke-blackened, will\r\ngive all the heat necessary to start growth.\r\nThe stalks begin to shoot up looking for light\r\nand will do almost nothing in the way of\r\nleaf-growth because of its lack. In this way\r\nthe whole energy of the plant is diverted into\r\nprofit-making stalks.⁠ [9] The roots that have been\r\nforced for the Christmas market cannot be used\r\nagain the following season. They need a season’s\r\nrest. (Read J. E. Morse’s “New Rhubarb\r\nCulture.”)\n\nBut this absence of leaf, which is so desirable [211] in forced rhubarb, would be injurious to the\r\ngarden rhubarb. In out-of-door growth, the\r\nvigor and fruitfulness of the plants in any growing\r\nseason, are largely determined by the spread\r\nof leaves in the preceding season. For this\r\nreason, after the cutting season is over, the\r\nplants are encouraged to develop leaves; the\r\nsmaller and weaker ones being cut off that the\r\nlarge ones may grow still larger, but all seed\r\nstalks should be cut, so as to preserve the vigor\r\nfor next season’s growth of stalks.\n\nWhen ready for market, rhubarb is tied in\r\nbunches of two to five stalks and an acre will\r\nproduce about 3000 dozen bunches. That is\r\na pretty good return when it requires only about\r\na pound of seed to sow an acre in the first place.\n\nRhubarb is native to eastern Asia and has no\r\nserious insect enemies or diseases.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "This plant likes a deep, rich, and rather\r\nmoist soil. It should be planted in permanent\r\nbeds, about three feet apart. I would\r\nnot advise attempting to grow it from seed.\r\nGet roots one or two years old. Victoria is\r\na standard variety.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "attribution": "A-B-C of Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Rhubarb thrives in deep, rich, and somewhat retentive soil that is well-cultivated and fertilized before planting. It is best propagated by roots rather than seeds, with plants set out in permanent beds about 3 to 4 feet apart each way. For optimal growth, rhubarb requires a lot of manure and should be divided every five years to maintain vigor. The plants are hardy and can remain in the garden all winter, even in severe climates. In early spring or late fall, old hills can be divided by digging away the earth on one side and cutting the hill in two with a sharp spade. Rhubarb should never be allowed to ripen seed, as this exhausts the plant. The stalks can be pulled as soon as they are large enough for use, typically from the second or third season onward. During the growing season, rhubarb requires surface tillage similar to that given to corn or potatoes. In fall, apply a heavy coat of manure to act as mulch and preserve soil texture. Rhubarb is susceptible to no serious insect enemies or diseases but can be affected by currant worms; dusting with white hellebore or road dust can help control these pests. For market purposes, rhubarb can be forced for out-of-season growth using specific techniques such as transplanting roots to prepared beds and excluding light to divert energy into stalk growth.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of A-B-C of Vegetable Gardening, Farm Gardening with Hints on Cheap Manuring, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "fertilizer_needs": "a lot of manure",
+  "needs_rain_cover": false,
+  "bedding_needs": [
+    {
+      "need_type": "mulch",
+      "notes": "heavy coat of manure in fall"
+    }
+  ],
+  "growth_habit": "upright"
 }

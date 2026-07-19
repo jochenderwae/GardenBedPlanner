@@ -18,6 +18,11 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Orange is described as a tree that produces round orange fruits."
     }
-  ]
+  ],
+  "growth_habit": "tree"
 }

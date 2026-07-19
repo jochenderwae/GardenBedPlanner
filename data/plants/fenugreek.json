@@ -31,6 +31,11 @@
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
       "attribution": "usda-plants"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Fenugreek is described as an herbaceous plant with a maple scent and is grown for its leaves and seeds, which suggests it grows as an upright clump rather than spreading or forming a rosette."
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

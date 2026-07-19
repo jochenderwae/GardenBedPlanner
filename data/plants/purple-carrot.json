@@ -19,6 +19,103 @@
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
       "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "notes": "growing_information text sourced from 'A-B-C of Vegetable Gardening'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Carrots grow from a central point at ground level with leaves radiating outward and the harvestable part (the root) underground."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "The culture of the carrot is practically the same as the parsnip,\n\nexcept that carrots are not thinned so much and are allowed to grow\n\nalmost as thickly as planted. Carrots should be dug in the autumn\n\nand stored the same as parsnips or turnips. Any surplus can be fed\n\nsparingly to horses, mules or cattle. The roots of the carrot are\n\nused at all times of the year, mostly in soups, but they may be\n\nboiled and served with butter or creamed. Carrots are planted in\n\nrows 16 inches apart and the plants thinned out to 4 inches in the\n\nrow. Chantenay is an excellent table carrot of medium size and dark\n\norange color, slightly tapering and abruptly terminating with a\n\nshort, fine taproot. The flesh is orange colored, brittle, juicy and\n\nmild flavored. What it lacks in size it makes up in quality and good\n\nshape. Scarlet Intermediate, somewhat larger than Chantenay, is of\n\ngood size for table use. In shape more tapering and with a longer\n\ntaproot. It is dark orange colored; flavor and quality good. Flesh is\n\nquite brittle and orange colored with a white center. To these two\n\nare added two varieties principally grown for stock feed, similar\n\nvarieties being grown for table use in many parts of Europe, and more\n\nespecially those of the White Belgian variety. Both varieties are\n\nof slender shape, 1½ to 2 inches in diameter, holding their size\n\nwell, although averaging 12 inches in length, 3 to 4 inches of which\n\ngrows above ground and which as a consequence is colored light green\n\non the outside. White Belgian is the sweeter of the two, and while\n\nthe flesh is somewhat coarse, the flavor of it, when well stewed and\n\nmashed, is sweeter and not unlike that of the parsnip. Victoria, the\n\nother variety, is of the same texture, fairly sweet and with a more\n\npronounced carrot flavor, the flesh instead of white, being light\n\norange colored. This vegetable can be grown to perfection in Porto\n\nRico almost any time of the year. It prefers a rich loam and grows\n\nvery well on a heavy clay which is not too wet, but a light sandy soil\n\nis not well adapted to it. For fertilizer, stable manure will do when\n\nnothing else is available, but a commercial fertilizer, rich in potash\n\nand phosphoric acid, is much to be preferred for this crop.—F. B. 255,\n\n295; Mich. E. S. 20; N. C. E. S. 132; U. Idaho E. S. 10; P. R. A. E. S.\n\n7.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#CARROT",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "These are ordinarily little used as table vegetables, but will be found\r\nvery palatable as an ingredient of soups and stews. They are very\r\neasily grown, the seed being planted in drills and the plants thinned\r\nto six or eight inches apart. The seed should be sown in April or May,\r\nand they will be ready for use early in the summer. For winter use they\r\nshould be stored in the manner described for beets and turnips; they\r\nwill retain their quality throughout the winter, and form a pleasant\r\nvariety in the winter supply of vegetables. The rich yellow and\r\nred-fleshed varieties are the most popular, and retaining their bright\r\ncolors when cooked, lend an attractive appearance to the dish of which\r\nthey form a part.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Danvers Half-long Orange. —This is claimed to have the\r\ngreatest bulk with the shortest length of root, and is a remarkably\r\nheavy cropper. The root is of a rich, dark orange color, and grows very\r\nsmooth and succeeds in all soils. It is quite a favorite market sort.\n\nShort Horn. —The flesh of this variety is very [68] fine grained,\r\nof deep orange color and superior quality. The roots do not penetrate\r\ndeeply, and the top is small, which allows of their being planted quite\r\nclosely.\n\nIMPROVED LONG ORANGE\n\nS T VALERY\n\nDANVERS\n\n3 of the best Carrots\n\nEarly Very Short Horn, or Golden Ball. —The earliest variety;\r\nthe roots are round, turnip shaped, of small size, deep color, and the\r\nquality is of the best.\n\nOx Heart. —This variety is of large size, the roots being\r\nseven to eight inches in length and three to four inches in diameter at\r\nthe top; it tapers [69] gradually down to one and one-half to two inches at\r\nthe bottom, making very little waste in preparing it for the table. It\r\nis of fine quality, while its size will render any surplus valuable for\r\nfeeding to the stock.\n\nRed Saint Vallery. —This is a large late variety and makes a\r\ngood kind to raise for winter use; the roots grow ten to twelve inches\r\nin length and measure two to two and one-half inches in diameter at the\r\ntop, tapering gradually to a point at the base. It should have deep\r\ncultivation to produce the finest roots. The color is a deep orange red\r\nand the quality is very fine.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "A sandy soil or light loam is best for carrots, but they\r\nwill grow anywhere under good culture. Enormous quantities\r\nare grown by the market gardeners, both under glass\r\nand in the open ground, for use in soups and for seasoning\r\npurposes. The short or half-long varieties are demanded by\r\nthis trade.\n\n[Pg 50]\n\nAverage Specimens of Rubicon Half-Long Carrots.\n\nFarm gardeners will do best with half-long and long\r\nkinds, unless a special demand calls for the smaller carrots.\r\nThe large half-long and long ones are suited to both culinary\r\nand stock-feeding purposes.\n\nIt requires from three to four pounds of seed to the acre,\r\ndepending on the distance between the rows. The plants [Pg 51] should be from 3 to 5 inches apart in the rows, and the rows\r\nas near together as is feasible for horse work. Clean culture\r\nis demanded. The seed must be planted shallow, and may\r\ngo into the ground as early as it can be worked in the spring,\r\nand from that time until the middle of June. The only danger\r\nabout late planting is the possibility of dry weather.\n\nThe carrot is quite free from insect or other enemies, as\r\na rule, and its culture is not difficult. It demands thinning\r\nand hoeing after the plants are well above ground, but no\r\nextra attention of any kind.\n\nThe winter storage is the same as for beets or turnips,\r\neither to be put away in earth-covered heaps or preserved in\r\na cool, non-freezing root cellar.\n\nThe so-called Belgian carrots (both yellow and white) are\r\nused only as stock food; though the other sorts, such as\r\nRubicon, Danvers and Long Orange, if in excess of market\r\ndemands, are equally good for stock. Cows and horses are\r\nfond of them, and they are most wholesome. The farm gardener\r\nshould raise them, however, for their cash value in the\r\nproduce markets. The carrot is in high favor with good\r\ncooks everywhere.\n\nThe carrot does not demand excessively rich ground; in\r\nfact, too much manure tends to stimulate the growth of the\r\ntop at the expense of the root, and fresh manure makes the\r\nroot rough.\n\nThe smaller carrots are bunched and sold like radishes\r\nor early beets. The larger kinds are sold by measure—about\r\n60 cents or more per basket at this time (January, 1898).\r\nThis is at the rate of $1.50 per barrel, or about $300 per\r\nacre. The crop is a good one, if near a market where\r\ncarrots are demanded.\n\nCarrot. —We especially recommend Rubicon Half-Long for market\r\nor stock. See \"Johnson & Stokes' Garden and Farm Manual.\"\n\n[Pg 52]",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Besides being a hardy crop that may be planted\r\nin the early spring as soon as the ground\r\ncan be worked, carrots have the advantage of\r\nhaving no serious insects or diseases. They\r\nrequire a clean, mellow soil, that will not “bake”\r\nover the seeds, and the best of surface tillage.\r\nCarrot seeds are so small and so slow in sprouting,\r\nthat it is good practice to plant radishes or\r\nturnips or other quick seeds in the same row,\r\nto help break the crust for the tender seedlings.\r\nThe young carrots have such a slight hold\r\nupon the soil, that they need petting, only the\r\nshallowest, surface tillage being possible, yet\r\nscarcely any of the garden crops need tillage\r\nmore. But once let the carrots get established\r\nin the soil, and they are easy to grow and give\r\ngood returns. They are sown thickly about\r\none inch deep in rows from 12 to 18 inches\r\napart. When they are well up, they should be [98] carefully thinned so as to stand two to three\r\ninches apart in the row. The early varieties\r\nwill bear forcing and respond to hot-bed culture,\r\nbut they are slower of growth than radishes or\r\nbeets, requiring from two to two and a half\r\nmonths to be ready for market. They are tied\r\nin bunches of six with the tops left on, and are\r\nin great demand in the early season when\r\nsmall and bright and tender.\n\nCarrots are of two main types, the early,\r\nsmall variety and the large sort grown in the\r\nfield for winter use. The large kind is not\r\nmuch grown, because the smaller varieties may\r\nbe planted late for winter use, and as feed for\r\nstock, carrots are no better than the larger\r\nroot crops. If you grow the early variety for\r\nwinter use, you will need to be sure that the\r\nsoil is in good tilth, as dry or weedy soil would\r\nbe fatal to carrots. Maybe you are tired of\r\nreading that all these crops need good tillage;\r\nbut you will be much more tired if you neglect\r\nit. This crop may be sown as late as the middle\r\nof June in the Northern States, and the ground\r\nshould be sown with some early crop, like radishes,\r\nto keep it in good condition until needed\r\nfor the late carrots.\n\nCarrot seed is sown thickly, about two pounds\r\nof seed being required for an acre, or one ounce [99] to about 300 feet of drilled row, if the seed is\r\nfresh. A good crop of carrots is from 200 to\r\n300 bushels per acre.\n\nThe best varieties are the Early Forcing,\r\nwhich may be grown in hot-beds, cold-frames,\r\nopen garden in the spring, and also in the fall\r\nfor home use; the half-long Danvers for a good,\r\nreliable mid-season crop and the Long Scarlet\r\nfor a good late crop.\n\nThese root crops are among the prettiest\r\n“fancy goods”—where they can be sold directly\r\nto well-to-do people they bring fancy prices.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "This plant likes a deep, warm, sandy soil.\r\nEarly Short Horn matures by midsummer.\r\nIt is rich and sweet in flavor. Red Intermediate\r\nis a later variety, excellent for fall\r\nand winter use. Comparatively few persons\r\ngive this plant a place in their gardens, but\r\nit richly deserves a place there because of its\r\nvalue as an article of food, as well as because [42] of its health-giving qualities. It adds greatly\r\nto the variety of the bill of fare, and where\r\nit appears frequently on the table a liking for\r\nit is soon developed, and thereafter it becomes\r\na standard vegetable in the housewife's\r\nlist of \"must-haves.\" It adds a delightful\r\nflavor to vegetable soups.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "attribution": "A-B-C of Vegetable Gardening",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Carrots are versatile vegetables that can be grown in various soils but thrive best in deep, warm, sandy loam or light loam. They should be planted in rows 12 to 18 inches apart and thinned out to 3 to 5 inches within the row. Sow seeds about one inch deep as early as the ground can be worked in spring, continuing until mid-June. For winter use, plant in April or May and store like beets or turnips. Carrots are relatively pest-free but require clean culture and shallow tillage, especially when young. They mature in 2 to 2.5 months for early varieties. Recommended varieties include Danvers Half-Long Orange for bulk, Short Horn for fine-grained flesh, Early Forcing for hot-bed culture, and Long Scarlet for late crops. Carrots are excellent for soups, stews, and can be fed to livestock if in excess. They prefer a soil rich in potash and phosphoric acid but avoid excessive manure which stimulates top growth at the expense of roots.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of A-B-C of Vegetable Gardening, Farm Gardening with Hints on Cheap Manuring, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "fertilizer_needs": "prefers a soil rich in potash and phosphoric acid but avoid excessive manure",
+  "bedding_needs": [
+    {
+      "need_type": "rows spacing",
+      "notes": "12 to 18 inches apart"
+    },
+    {
+      "need_type": "within row spacing",
+      "notes": "3 to 5 inches within the row"
+    }
+  ],
+  "growth_habit": "rosette"
 }

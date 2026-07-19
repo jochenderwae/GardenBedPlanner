@@ -102,6 +102,32 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Shrub, Forb/herb' includes Shrub/Subshrub"
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "A dozen roots or more of this herb should be planted in some part of\r\nthe garden where it will not be disturbed by the plow, or if this\r\ncannot be done readily, the roots can be taken up when the plowing is\r\ndone, divided and reset, which would probably raise a larger and finer\r\ncrop of leaves than allowing them to stand in the same place year\r\nafter year. The crop should be cut off a few inches above the ground,\r\nas soon as it has made its growth and before it begins to bloom. The\r\nshoots will again start to grow, and two or three crops can be cut in a\r\nseason; the cut tops can be tied in bunches and hung to the rafters, or\r\nspread thinly on the floor of a cool loft or garret.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "plowing",
+      "notes": "roots can be taken up when the plowing is done, divided and reset"
+    }
+  ],
+  "growth_habit": "spreading"
 }

@@ -21,6 +21,34 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='climbing' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine'"
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "At the end of one of the berry rows, or in some corner where they will\r\nbe out of the way of the plow, there should be a few poles of hops.\r\nThese are grown from pieces of root, and after being once planted will\r\nnot need further attention except to be kept clear of weeds and grass,\r\nto be supplied with a good topdressing [96] of manure in the fall, and\r\nsuitable poles to climb upon. These poles should be good strong ones,\r\nat least 8 to 10 feet in height. About the last of August or first of\r\nSeptember the vines should be cut off near the ground and the poles\r\npulled up, so that the crop may be gathered. There is an old saying\r\nthat “the September winds should never be allowed to blow on the hops.”\r\nThe hops should be spread on sheets and placed in some cool, airy\r\ngarret or loft, to dry. It will take five or six good poles to make a\r\nbushel of hops.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    }
+  ],
+  "fertilizer_needs": "good topdressing of manure in the fall",
+  "needs_wind_cover": true,
+  "bedding_needs": [
+    {
+      "need_type": "staking",
+      "notes": "good strong poles at least 8 to 10 feet in height"
+    }
+  ],
+  "growth_habit": "climbing"
 }

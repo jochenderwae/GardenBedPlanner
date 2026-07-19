@@ -221,6 +221,109 @@ def infer_botanical_name(slug: str, common_name: str, description: str | None) -
     return resolved, reasoning
 
 
+_GROWTH_HABIT_DESCRIPTIONS = {
+    "upright": (
+        "grows as an upright clump or bush from the ground, taller than wide; "
+        "no vining/climbing habit and no flat ground-hugging rosette (most "
+        "vegetables, upright herbs, alliums, grasses/corn)"
+    ),
+    "spreading": (
+        "low, wide, mounding, or ground-covering growth that spreads outward "
+        "from its base without a trunk or climbing structure - a woody bush/"
+        "subshrub (currant, gooseberry, blueberry, sage, thyme, rosemary), or "
+        "a trailing/sprawling plant that spreads across the soil rather than "
+        "climbing (strawberry runners, sweet potato, ground-grown winter "
+        "squash)"
+    ),
+    "climbing": (
+        "a vine that needs a trellis/support/fence to grow upward (peas, "
+        "pole beans, cucumbers when trellised, grapes, hops, kiwi)"
+    ),
+    "rosette": (
+        "leaves radiate from a central point at/near ground level in a flat "
+        "rosette, often with the harvestable/storage part underground (root "
+        "vegetables like carrot/beet/radish, and rosette-forming leafy "
+        "greens like lettuce/spinach)"
+    ),
+    "tree": "a single-trunk woody tree with a canopy well above ground level",
+}
+
+
+def infer_growth_habit(
+    slug: str,
+    common_name: str,
+    botanical_name: str | None,
+    family: str | None,
+    description: str | None,
+    growing_info_excerpt: str | None,
+    allowed_categories: list[str],
+    trefle_signal: str | None = None,
+) -> tuple[str | None, str]:
+    """Infers this project's own growth_habit rendering category (see
+    plant.schema.json - NOT a copy of Trefle's own raw growth_habit string)
+    for plants Trefle's cached data can't confidently place on its own -
+    see populate_growth_habit.py, which calls this for (a) plants with no
+    Trefle growth_habit data at all, and (b) plants whose Trefle
+    growth_habit is bare 'Forb/herb', genuinely ambiguous between
+    upright/rosette/spreading (confirmed against real cached data: tomato/
+    basil/garlic/sunflower are 'Forb/herb' and clearly upright; carrot/beet/
+    lettuce/spinach are 'Forb/herb' and clearly rosette; strawberry is
+    'Forb/herb' and clearly spreading).
+
+    allowed_categories narrows the choice when Trefle has already ruled some
+    categories out (e.g. bare 'Forb/herb' rules out tree/climbing) - always
+    a subset of the 5-category set in plant.schema.json. Deliberately
+    conservative like infer_botanical_name: returns (None, reasoning)
+    rather than a guess when not confident, so the caller can log it to
+    growth_habit_unmatched.jsonl instead of writing a wrong value."""
+    options_text = "\n".join(
+        f"- '{cat}': {_GROWTH_HABIT_DESCRIPTIONS[cat]}" for cat in allowed_categories
+    )
+    context_lines = [f"Common name: {common_name}"]
+    if botanical_name:
+        context_lines.append(f"Botanical name: {botanical_name}")
+    if family:
+        context_lines.append(f"Family: {family}")
+    if description:
+        context_lines.append(f"Description: {description[:500]}")
+    if growing_info_excerpt:
+        context_lines.append(f"Growing information excerpt: {growing_info_excerpt}")
+    if trefle_signal:
+        context_lines.append(
+            f"Note: a structured plant database already says this plant's raw "
+            f"growth habit is {trefle_signal!r} - herbaceous (not woody, not a "
+            "tree), which already rules out tree/climbing, but isn't specific "
+            "enough on its own to know which of the remaining options fits."
+        )
+
+    prompt = (
+        "You are categorizing a garden plant's overall growth shape for a "
+        "garden-bed layout editor, so it can be drawn with a visual "
+        "treatment that matches its real shape (climbing vine vs. tree vs. "
+        "low spreading bush vs. upright clump vs. ground-hugging rosette), "
+        "instead of a generic circle.\n\n"
+        + "\n".join(context_lines)
+        + "\n\nChoose exactly one of these categories:\n"
+        + options_text
+        + "\n\nIf you are not reasonably confident which one fits, respond "
+        'with null rather than guessing. Respond with JSON only: '
+        '{"resolved_value": "<category>" or null, "reasoning": "<one sentence>"}.'
+    )
+    value_type = {"enum": [*allowed_categories, None]}
+    try:
+        resolved, reasoning = _call_ollama(prompt, _response_schema(value_type))
+        if resolved is not None and resolved not in allowed_categories:
+            resolved, reasoning = (
+                None,
+                f"Ollama returned {resolved!r}, not one of the allowed categories - treated as unmatched",
+            )
+    except Exception as exc:  # noqa: BLE001 - never let an LLM hiccup abort the run
+        resolved, reasoning = None, f"Ollama call failed ({exc!r})"
+
+    _log_conflict(slug, "growth_habit (inferred)", [], resolved, reasoning)
+    return resolved, reasoning
+
+
 def _call_ollama(prompt: str, response_schema: dict) -> tuple:
     resp = httpx.post(
         f"{settings.ollama_host}/api/generate",

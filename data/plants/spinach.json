@@ -64,6 +64,94 @@
     {
       "source_url": "https://en.wikipedia.org/wiki/List_of_companion_plants",
       "attribution": "wikipedia-companion-plants"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html",
+      "notes": "growing_information text sourced from 'The Vegetable Garden: What, When, and How to Plant'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "notes": "growing_information text sourced from 'How and what to grow in a kitchen garden of one acre'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "notes": "growing_information text sourced from 'Farm Gardening with Hints on Cheap Manuring'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "notes": "growing_information text sourced from 'A-B-C of Vegetable Gardening'"
+    },
+    {
+      "attribution": "ollama-growth-habit-inference",
+      "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Spinach leaves radiate from a central point at ground level and form a flat rosette."
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "Spinach thrives in a rather cool climate and attains its best\n\ndevelopment in the Middle South, where it can be grown in the open\n\nground during the winter. Large areas are grown near Norfolk, Va.,\n\ncuttings being made at anytime during the winter when the fields are\n\nnot frozen or covered with snow. When the weather moderates in the\n\nearly spring the plants make a new growth, and a large crop of early\n\ngreens is available. North of the latitude of Norfolk, spinach can be\n\nplanted in the autumn and carried over winter by mulching with straw\n\nor leaves. Sow the seeds in drills 1 foot apart at the rate of 1 ounce\n\nto 100 feet of row or 10 to 12 pounds to the acre. To produce good\n\nspinach, a rich loam which will give the plants a quick growth is\n\nrequired. As ordinarily grown, it occupies the land during the autumn\n\nand winter only and does not interfere with summer cultivation. It is\n\nan easily grown garden crop, and there is, perhaps, no other of its\n\nkind that will give as good satisfaction. Three or four ounces of seed,\n\nplanted in the autumn after a summer crop has been harvested from the\n\nland, will produce an abundance of greens for the average family during\n\nthe late autumn and early spring. In gathering spinach the entire\n\nplant is removed rather than merely cutting off the leaves. The larger\n\nplants are selected first, and the smaller or later ones are thus given\n\nroom to develop. No thinning is required if this plan of harvesting is\n\npracticed.—(F. B. 255; Mich. E. S. 20; U. Id. E. S. 10; N. C. E. S.\n\n132.)",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/43531/pg43531-images.html#SPINACH",
+      "attribution": "The Vegetable Garden: What, When, and How to Plant",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "This is a quick-growing green, and very hardy, making it valuable for\r\nearly spring and late fall growing. It cannot be raised during summer,\r\non account of its running immediately to seed without [137] making many\r\nleaves. It can be sown as soon as the ground can be worked in the\r\nspring, and will be ready for use in a few weeks; about three sowings\r\nmay be made, two weeks apart, or more, if the season is longer, though\r\nit will hardly be good if planted after the middle of May. The whole\r\nplant is cut off even with the ground, at any time before it starts to\r\nrun to seed, the leaves and stems being used as boiled greens. Large\r\nsowings should be made in October, of the hardy variety, as it can be\r\ncut throughout the winter; a later sowing may be made the first of\r\nNovember, and lightly covered with litter when the ground has been\r\nfrozen hard; this covering should be raked off early in the spring, and\r\nit will complete its growth before the first spring planting is ready\r\nfor use.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "New Thick-leaved Round. —This variety produces large, thick,\r\ndark green leaves, somewhat crumpled. It possesses the valuable quality\r\nof standing for some time after attaining its growth, before running to\r\nseed.\n\nNEW LONG-STANDING SPINACH.\n\nThe Norfolk Savoy Leaved. —The leaves of this kind are\r\nwrinkled like a Savoy cabbage. It makes a large bunch of succulent\r\nleaves, producing more [138] weight of leaves than any other variety, and is\r\nmore hardy than any of the other kinds.\n\nNew Long Standing. —This is one of the best varieties for\r\nspring sowing, as it stands longer than any other before running to\r\nseed. The leaves are thick, fleshy and crumpled like the Norfolk Savoy\r\nLeaved.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/76930/pg76930-images.html",
+      "attribution": "How and what to grow in a kitchen garden of one acre",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Spinach (or spinage) is\r\ngrown for its leaves, which\r\nare cooked in winter and\r\nspring for use as \"greens.\"\r\nThe leaf is sweet and palatable\r\neven when raw, but it is always stewed for table purposes.\r\nIt is a cool weather plant, almost perfectly hardy. It may be\r\nsown in spring, for immediate use, or in the autumn for\r\nfall cutting, or for carrying over winter.\n\n[Pg 113]\n\nPlants and Roots of Parisian Long Standing Spinach.\n\nIt is of the easiest culture, requiring ten or twelve pounds\r\nof seed per acre, either broadcasted or sown in rows. In\r\nsmall gardens it is usually grown in rows, but in open field\r\nculture it is more commonly broadcasted. Patches of many\r\nacres in extent are seen near the large cities. It is also [Pg 114] grown quite extensively in some parts of the South for\r\nshipment to Northern markets during January and February.\n\nTo prepare it for market the leaves are cut before the\r\nseed stalk appears, and after washing are barrelled or crated\r\nfor shipment. Growers receive from $1.50 to $2.50 per\r\nbarrel in Philadelphia and New York in the winter and\r\nspring. Where accessible to market, spinach is a profitable\r\ncrop.\n\nBlight is the main enemy. The remedy is removal to\r\nanother soil.\n\nOf spinach there are many types; some smooth and some\r\nwith savoy or wrinkled leaves. The property of standing a\r\nlong time before going to seed is desirable, especially when\r\nsown in the spring, as it increases the length of the cutting\r\nseason.\n\nAt the North a slight protection of litter or straw is\r\nnecessary in winter. South of latitude of Washington no\r\nprotection is needed. Spinach is cut even when frozen; in\r\nfact, at any time when there is no snow on the ground. By\r\nthrowing it into cold water it quickly thaws, and affords a\r\npalatable and healthful food in midwinter. The dead or\r\nyellow leaves should be removed before sending it to market,\r\nand if carefully prepared it has an attractive green appearance\r\nduring cold weather when other vegetables are\r\nscarce. The winter crop is larger than any other, but much\r\nis also grown for spring sales. It is admirably adapted to\r\nfarm culture.\n\nSpinach. —For spring planting, we recommend Parisian Long Standing;\r\nfor autumn, American Savoy or Bloomsdale. See \"Johnson &\r\nStokes' Garden and Farm Manual.\"",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/36064/pg36064-images.html",
+      "attribution": "Farm Gardening with Hints on Cheap Manuring",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Spinach is a spring crop and a fall crop, because\r\nspring and fall give the cool, moist temperature\r\nit needs to come to perfection. Spinach\r\nbelongs to the pigweed family and is a\r\ncousin to the beet. There are two varieties, the\r\nprickly seeded and the round seeded. The\r\nprickly seeded is the hardiest, and is most\r\ncommonly used for fall sowing.\n\nFarmers in the North used to grow spinach\r\nextensively under glass, but of late years the\r\nlarge out-door crops grown around Norfolk, [135] Va., have spoiled the profit in that, and the\r\nSouthern product takes its place. The spinach\r\nfor early spring is sown in the field or garden in\r\nSeptember and should be thoroughly established\r\nbefore winter, with a spread of leaves at least\r\nthree or four inches.\n\nAs far north as New York State it is left out\r\nuncovered all winter and does not suffer unless\r\nthe frost causes the ground to “heave.” If\r\nstraw or litter can be had without trouble or\r\nexpense, the spinach can be covered lightly\r\nas that often prevents “heaving.” If all goes\r\nwell, the plants resume growth early in the\r\nspring, and may even continue growing during\r\nthe winter if the season is mild. It is ready\r\nfor market in April or May and should be off\r\nthe ground in June to make room for the main\r\ncrop. Southern spinach is marketed from late\r\nNovember until April or May.\n\nAlthough spinach is a comparatively easy\r\ncrop to grow, it needs certain conditions for\r\nperfection. The land must be rich and well\r\ndrained, and liquid fertilizer must be applied\r\nafter the crop gets started. Some put manure\r\non the plot in the fall, and, as it leaches during\r\nthe winter, it fertilizes the plants and starts\r\nthem growing in the spring. Hen manure\r\nmay be used. But the best way is to apply [136] nitrate of soda or sulphate of ammonia in a weak\r\nsolution so that 50 to 75 pounds will be sufficient\r\nfor an acre. This is generally used in a sprinkler\r\nand is applied two or three times at intervals\r\nof a week or ten days, using each time, 50 to 75\r\npounds of fertilizer.\n\nSpinach is sometimes sown in the spring in\r\nthe place where it is to grow. But in that\r\ncase, the position chosen must be a warm one,\r\nand even then, although a better stand is often\r\nobtained, the crop does not mature quickly.\r\nIt is still occasionally started under glass and\r\ntransplanted to the garden, and sometimes it is\r\ngrown in frames all the way through to maturity.\r\nGardeners who want to hasten their crop frequently\r\ncover it with glass during February\r\nand March, and it responds well to this treatment.\n\nA variety known as New Zealand spinach,\r\nwhich is hardly a true spinach, thrives in summer,\r\nbut as greens are not greatly in demand\r\nin summer, it has not become very popular\r\nin this country.\n\nAn ounce of spinach seed will sow 150 feet\r\nof drill, or 10 to 12 pounds to the acre. It is\r\nso necessary to have excellent drainage for\r\nspinach, that the land is usually plowed into\r\nlow ridges or beds six to nine feet wide. The [137] spinach is sown lengthwise of the beds 12 to\r\n18 inches apart, according to the sort of tillage\r\nto be used.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
+      "attribution": "The garden yard",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Desirable for \"greens.\" Sow as early in\r\nthe spring as the ground is in good working\r\ncondition. Have the soil quite rich to force\r\na tender, succulent growth. Sow for succession,\r\na month apart. The Long-Season\r\nvariety is the best I have any knowledge of.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/46052/pg46052-images.html",
+      "attribution": "A-B-C of Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Spinach thrives in cool climates and is best grown in the autumn and winter months. It can be sown as early as the ground can be worked in spring, or in late summer for a fall crop. For spring planting, varieties like Parisian Long Standing are recommended, while American Savoy or Bloomsdale are suitable for autumn. Spinach seeds should be sown in drills 12 to 18 inches apart at a rate of 1 ounce per 150 feet of row or 10 to 12 pounds per acre. The soil should be rich and well-drained, with liquid fertilizer applied after the crop gets started; nitrate of soda or sulphate of ammonia can be used in a weak solution. In colder regions, spinach can be mulched with straw or leaves for winter protection. Harvesting involves cutting the entire plant rather than just the leaves, selecting larger plants first to allow smaller ones room to develop. Blight is the main pest; if detected, remove affected plants and rotate crops to prevent recurrence. Spinach varieties like New Thick-leaved Round and Norfolk Savoy Leaved are known for their hardiness and large leaf production.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of A-B-C of Vegetable Gardening, Farm Gardening with Hints on Cheap Manuring, How and what to grow in a kitchen garden of one acre, The Vegetable Garden: What, When, and How to Plant, The garden yard",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "fertilizer_needs": "liquid fertilizer applied after the crop gets started; nitrate of soda or sulphate of ammonia can be used in a weak solution",
+  "needs_rain_cover": true,
+  "bedding_needs": [
+    {
+      "need_type": "mulching",
+      "notes": "with straw or leaves for winter protection"
+    }
+  ],
+  "growth_habit": "rosette"
 }

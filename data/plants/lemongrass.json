@@ -19,6 +19,12 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='upright' - Trefle growth_habit='Graminoid' is graminoid (grass-like), rendered as upright"
     }
-  ]
+  ],
+  "growth_habit": "upright"
 }

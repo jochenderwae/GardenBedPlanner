@@ -21,6 +21,52 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "project-gutenberg",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html",
+      "notes": "growing_information text sourced from 'Home Vegetable Gardening'"
+    },
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle-growth-habit",
+      "notes": "growth_habit='spreading' - Trefle growth_habit='Shrub' includes Shrub/Subshrub"
     }
-  ]
+  ],
+  "growing_information": [
+    {
+      "text": "This is given practically the same treatment as the currant. It is even\r\nmore important that it should be given the coolest, airiest, location\r\npossible, and the most moist soil. Even a partially shaded situation\r\nwill do, but in such situations extra care must be taken to guard\r\nagainst the mildew—which is mentioned below. Summer mulching is, of\r\ncourse, of special benefit.\n\nIn pruning the gooseberry, it is best to cut out to a very few, or even\r\nto a single stem. Keep the head open, to allow free circulation of air.\r\nThe extent of pruning will make a great difference in the size of the\r\nfruit; if fruit of the largest size is wanted, prune very close. All\r\nbranches drooping to the ground should be removed. Keep the branches,\r\nas much as possible, from touching each other.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00734",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "The currant-worm attacks the gooseberry also, and is effectively\r\nhandled by the arsenate of lead, Paris green or hellebore spraying,\r\nmentioned above.\n\nThe great trouble in growing gooseberries successfully is the powdery\r\nmildew—a dirty, whitish fungous growth covering both fruit and leaves.\r\nIt is especially destructive of the foreign varieties, the culture of\r\nwhich, until the advent of the potassium sulfide spray, was being\r\npractically abandoned. Use 1 oz. of potassium sulfide (liver of\r\nsulphur) to 2 gals. water, and mix just before using. Spray thoroughly\r\nthree or four times a month, from the time the blossoms are opening\r\nuntil fruit is ripe.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00737",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Of the native gooseberries—which are the hardiest, Downing and\r\nHoughton's Seedling are most used. Industry is an English variety,\r\ndoing well here. Golden Prolific, Champion, and Columbus, are other\r\ngood foreign sorts, but only when the mildew is successfully fought\r\noff.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00740",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA."
+    },
+    {
+      "text": "Gooseberries thrive in cool, airy locations with moist soil and can tolerate partial shade, but require extra care to prevent mildew in such conditions. Summer mulching is beneficial. Prune gooseberries to a few or even a single stem, keeping the head open for good air circulation. Heavy pruning promotes larger fruit, while drooping branches should be removed to prevent them from touching each other.\n\nThe currant-worm can be controlled using arsenate of lead, Paris green, or hellebore spraying. The primary challenge in growing gooseberries is powdery mildew, a whitish fungal growth that affects both fruit and leaves. This is particularly problematic for foreign varieties. To combat mildew, use a potassium sulfide spray (1 oz. per 2 gallons of water) mixed just before use, spraying thoroughly three or four times a month from bloom until the fruit ripens.\n\nFor native gooseberries, Downing and Houghton's Seedling are recommended for their hardiness. Industry is an English variety that performs well in various conditions. Golden Prolific, Champion, and Columbus are other good foreign varieties but require vigilant mildew control.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of Home Vegetable Gardening",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "mulching",
+      "notes": "Summer mulching is beneficial."
+    }
+  ],
+  "growth_habit": "spreading"
 }
