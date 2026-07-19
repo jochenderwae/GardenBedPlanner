@@ -1,6 +1,6 @@
 {
   "slug": "mapacho",
-  "common_name": "You Can Grow Anything",
+  "common_name": "Mapacho",
   "botanical_name": "Nicotiana rustica",
   "description": "Ceremonial Tabacco",
   "sun_level": "full_sun",
@@ -21,6 +21,11 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Nicotiana rustica is known to grow as an upright plant with a bushy habit."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Mapacho",
+      "attribution": "manual-research",
+      "notes": "common_name corrected from the bogus 'You Can Grow Anything' to 'Mapacho' - verified 2026-07-19: Wikipedia redirects 'Mapacho' straight to its 'Nicotiana rustica' article, confirming Mapacho (the plant's real common name in South American/Amazonian ceremonial-tobacco use, matching this record's own slug and 'Ceremonial Tabacco' description) is a recognized common name, not a typo or de-slugify guess. Same single-source root cause as phacelia/lemon/curly-dock/carrots - see phacelia.json's data_sources note for the full root-cause writeup (openfarm-crops-rescue's own cached crops.json has this literal string for exactly these 5 records)."
     }
   ],
   "growth_habit": "upright"

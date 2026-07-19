@@ -1,6 +1,6 @@
 {
   "slug": "lemon",
-  "common_name": "You Can Grow Anything",
+  "common_name": "Lemon",
   "botanical_name": "Citrus × limon",
   "description": "The lemon is a small evergreen citrus tree bearing tart, aromatic yellow fruit used for juice, zest, and preserving. In mild climates trees flower and fruit nearly year-round; in colder zones they grow well in containers brought indoors for winter. They want full sun, well-drained soil, and protection from frost.",
   "family": "Rutaceae",
@@ -19,6 +19,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree, Shrub' includes 'Tree'"
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "common_name corrected from the bogus 'You Can Grow Anything' to 'Lemon', matching botanical_name (Citrus x limon) and description unambiguously. Same single-source root cause as phacelia/mapacho/curly-dock/carrots - see phacelia.json's data_sources note for the full root-cause writeup (openfarm-crops-rescue's own cached crops.json has this literal string for exactly these 5 records)."
     }
   ],
   "growth_habit": "tree"

@@ -1,6 +1,6 @@
 {
   "slug": "carrots",
-  "common_name": "You Can Grow Anything",
+  "common_name": "Carrots",
   "botanical_name": "Daucus carota",
   "description": "Add this information",
   "sowing_method": "Direct Seed",
@@ -24,6 +24,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Daucus carota (carrot) is a root vegetable that grows from a central point at ground level."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "common_name corrected from the bogus 'You Can Grow Anything' to 'Carrots' (kept plural, matching this record's own slug, rather than renamed to 'Carrot' - see data/suggestions.md, this record is very likely a near-duplicate stub of the much more complete plants/carrot.json (same botanical_name/family/genus, but a placeholder description ('Add this information') and suspicious row_spacing_cm=1/height_cm=1) and merging/deleting either record is a human call, not made here). Same single-source root cause as phacelia/mapacho/lemon/curly-dock - see phacelia.json's data_sources note for the full root-cause writeup (openfarm-crops-rescue's own cached crops.json has this literal string for exactly these 5 records)."
     }
   ],
   "growth_habit": "rosette"

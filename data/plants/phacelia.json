@@ -1,6 +1,6 @@
 {
   "slug": "phacelia",
-  "common_name": "You Can Grow Anything",
+  "common_name": "Phacelia",
   "botanical_name": "Phacelia tanacetifolia",
   "description": "Plant for soil cultivation, in spring time it also have flowers loved by bees and important to pollen and nectar.",
   "sowing_method": "Just throw them on the soil and rake it a little down to the surface",
@@ -22,6 +22,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Phacelia tanacetifolia is known for its low, spreading growth habit and is often used as a ground cover."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "common_name corrected from the bogus 'You Can Grow Anything' (a gardening TV show title, not a plant name) to 'Phacelia'. Root cause (2026-07-19 investigation): openfarm-crops-rescue's own cached data/.cache/openfarm-crops-rescue/crops.json has name='You Can Grow Anything' verbatim for this record (and 4 others - mapacho, lemon, curly-dock, carrots) - a single-source scraping artifact in the archived OpenFarm.cc Wayback Machine capture, not an Ollama-mediated conflict (Trefle's map_record never populates common_name at all, so there was no competing candidate to lose against; this value flowed through merge as the sole, 'unambiguous' source). Confirmed via a full scan of crops.json's 340 entries that 'You Can Grow Anything' is the only name shared across multiple slugs (no other duplicate-name pattern found), and confirmed no other data/plants/*.json besides these exact 5 carries this string."
     }
   ],
   "growth_habit": "spreading"
