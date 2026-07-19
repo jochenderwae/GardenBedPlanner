@@ -55,3 +55,59 @@ def parse_spacing_to_cm(text: str | None) -> float | None:
     if m:
         return round(float(m.group(1)) * 2.54, 1)
     return None
+
+
+# Small connector words stay lowercase when not the first word (e.g. "Rose
+# of Sharon", not "Rose Of Sharon") - short list since garden-plant common
+# names rarely use more than these.
+_LOWERCASE_CONNECTORS = {"of", "and", "the", "in", "on", "de", "la"}
+_WORD_SPLIT_RE = re.compile(r"(\s+|-|/)")
+_FIRST_LETTER_RE = re.compile(r"[a-zA-Z]")
+
+
+def _capitalize_word(lowered: str) -> str:
+    """Capitalizes the first *letter* in the token, not literally index 0 -
+    a real bug hit running this against actual data: a token with leading
+    punctuation like "(tulsi)" (from "Holy Basil (Tulsi)") has '(' at index
+    0, and '('.upper() is a no-op, so the old `lowered[0].upper() +
+    lowered[1:]` silently left the real first letter lowercased -
+    "(tulsi)" instead of "(Tulsi)". Finding the first a-z/A-Z character and
+    capitalizing that one (leaving any leading punctuation untouched) fixes
+    this without changing behavior for the common case (no leading
+    punctuation), where the first letter IS at index 0."""
+    m = _FIRST_LETTER_RE.search(lowered)
+    if not m:
+        return lowered
+    i = m.start()
+    return lowered[:i] + lowered[i].upper() + lowered[i + 1:]
+
+
+def title_case_plant_name(name: str) -> str:
+    """Sources disagree wildly on common_name casing ('bitter orange',
+    'Adjuma pepper', 'Matariki Taewa Potato' all seen for real in the
+    exported data) - normalizes to Title Case consistently.
+
+    Not str.title(): it mis-capitalizes after apostrophes ("bishop's cap"
+    -> "Bishop'S Cap"). Splitting on whitespace/hyphen/slash and
+    capitalizing only the first letter of each part (leaving the rest
+    lowercased, apostrophes included) avoids that, while still capitalizing
+    after a hyphen the way a cultivar name like "wai-iti" -> "Wai-Iti"
+    needs (and after a slash - "honeydew/specialty" -> "Honeydew/Specialty" -
+    found needed against real data: "Melon (Honeydew/Specialty)" would
+    otherwise come out "...(Honeydew/specialty)")."""
+    if not name:
+        return name
+    parts = _WORD_SPLIT_RE.split(name.strip())
+    out = []
+    word_index = 0
+    for part in parts:
+        if part == "" or _WORD_SPLIT_RE.fullmatch(part):
+            out.append(part)
+            continue
+        lowered = part.lower()
+        if word_index > 0 and lowered in _LOWERCASE_CONNECTORS:
+            out.append(lowered)
+        else:
+            out.append(_capitalize_word(lowered))
+        word_index += 1
+    return "".join(out)

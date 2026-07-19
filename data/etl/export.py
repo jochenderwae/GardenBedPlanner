@@ -8,6 +8,7 @@ import jsonschema
 
 from etl.config import PLANT_SCHEMA_PATH, PLANTS_OUT_DIR
 from etl.merge import WorkingRecord
+from etl.normalize import title_case_plant_name
 from etl.ollama_resolve import (
     infer_botanical_name,
     resolve_companion_conflict,
@@ -56,6 +57,12 @@ def build_plant_json(wr: WorkingRecord) -> dict:
                 wr.slug, common_name, botanical_name, field_name, candidates.values
             )
             out[field_name] = resolved
+
+    # Sources disagree wildly on common_name casing ('bitter orange',
+    # 'Adjuma pepper', 'Matariki Taewa Potato' all seen for real) - normalize
+    # every export so this doesn't have to be a recurring manual cleanup.
+    if out.get("common_name"):
+        out["common_name"] = title_case_plant_name(out["common_name"])
 
     botanical_name_inferred = False
     botanical_name_manual = False
