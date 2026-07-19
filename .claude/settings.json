@@ -46,7 +46,21 @@
       "Skill(run-etl-module)",
       "Skill(run-etl-module:*)",
       "Skill(git)",
-      "Skill(git:*)"
+      "Skill(git:*)",
+      "Skill(backlog)",
+      "Skill(backlog:*)",
+      "Skill(build-frontend)",
+      "Skill(build-frontend:*)",
+      "Skill(test-frontend)",
+      "Skill(test-frontend:*)",
+      "Skill(deploy-frontend)",
+      "Skill(deploy-frontend:*)",
+      "Skill(generate-api)",
+      "Skill(generate-api:*)",
+      "Skill(dev-server)",
+      "Skill(dev-server:*)",
+      "Skill(render-schema)",
+      "Skill(render-schema:*)"
     ]
   }
 }

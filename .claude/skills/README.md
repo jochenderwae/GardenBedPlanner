@@ -40,6 +40,7 @@ See `../../docs/testing-plan.md` for the phased plan to close the frontend/data 
 | `/migrate-backend` | `backend_migrate.ps1` | apply migrations without a full deploy - e.g. against `garden_test` |
 | `/generate-api` | `frontend_generate_api.ps1` | regenerate the typed frontend client from the backend's live OpenAPI schema |
 | `/run-etl-module` | `data_run_module.ps1`, `data_run_script.ps1` | generic `etl.*` module invocation |
+| `/render-schema` | `render_schema_er.ps1` | re-renders `docs/schema-er.png` from `docs/schema.md`'s mermaid diagram - `mmdc` settings locked into the script so nobody re-derives them |
 
 ## garden-planner-dev inspection
 
@@ -55,6 +56,12 @@ See `../../docs/testing-plan.md` for the phased plan to close the frontend/data 
 | `/git` | (raw `git`) | add/commit/push conventions; not branch/history rewriting |
 | `/open-pr` | (raw `gh`) | opens a PR for the current branch against `main` |
 | `/release` | `dev_ssh_deploy_all.ps1` (deploy step only) | build → test → commit/push → (explicit-ask) deploy, all three areas; chains the other skills above for everything except the combined backend+frontend deploy, which uses its own script directly |
+
+## Backlog
+
+| Skill | Script(s) | Notes |
+|---|---|---|
+| `/backlog` | (none - Read/Edit conventions on `product-owner/BACKLOG.md`) | pick a task, change status, re-assign, flag a dependency, split a multi-responsible item, list a role's tasks - see `.claude/agents/product-owner.md`'s "Tracking fields" section for the schema itself. `status: ready-to-start` and `status: verified` are both user-only, no exceptions - agents may never act on a `status: new` item. |
 
 ## Why each script lives inside its skill's folder
 
