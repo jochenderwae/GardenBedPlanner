@@ -36,6 +36,11 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Yellow Cauliflower grows as an upright clump with a solid head sitting atop a stalk."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Brassica",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Brassica'"
     }
   ],
   "growing_information": [
@@ -94,5 +99,7 @@
       "notes": "preserve surface mulch and prevent moisture loss"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "genus": "Brassica",
+  "family": "Brassicaceae"
 }

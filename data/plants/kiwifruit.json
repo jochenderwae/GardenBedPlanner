@@ -16,7 +16,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The description explicitly states that the Kiwi is a 'woody, fruiting vine' and requires trellises or supports to grow."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Actinidia",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Actinidia'"
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "genus": "Actinidia",
+  "family": "Actinidiaceae"
 }

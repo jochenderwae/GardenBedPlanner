@@ -15,7 +15,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Kamokamo is a type of summer squash that grows low and wide, spreading outward from its base."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Cucurbita",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Cucurbita'"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "genus": "Cucurbita",
+  "family": "Cucurbitaceae"
 }

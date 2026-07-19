@@ -48,7 +48,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Daikon is a root vegetable that grows from the ground with leaves radiating outward."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Raphanus",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Raphanus'"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "genus": "Raphanus",
+  "family": "Brassicaceae"
 }

@@ -52,6 +52,11 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Icicle radishes have leaves that radiate from a central point at ground level and the harvestable part is an underground root."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Raphanus",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Raphanus'"
     }
   ],
   "growing_information": [
@@ -137,5 +142,7 @@
       "notes": "about 2 inches apart"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "genus": "Raphanus",
+  "family": "Brassicaceae"
 }

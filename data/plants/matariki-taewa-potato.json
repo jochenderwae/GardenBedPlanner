@@ -40,6 +40,11 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Matariki Taewa Potato grows as a low, wide plant that spreads outward from its base without a trunk or climbing structure."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Solanum",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Solanum'"
     }
   ],
   "growing_information": [
@@ -118,5 +123,7 @@
       "notes": "keep the soil well-worked and close to the roots"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "genus": "Solanum",
+  "family": "Solanaceae"
 }

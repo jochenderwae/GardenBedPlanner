@@ -42,6 +42,11 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Lettuce 'Drunken Woman' is a leaf lettuce type with dense center and grows in a flat rosette form."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Lactuca",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Lactuca'"
     }
   ],
   "growing_information": [
@@ -128,5 +133,7 @@
       "notes": "for an extra early crop"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "genus": "Lactuca",
+  "family": "Asteraceae"
 }

@@ -48,6 +48,11 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Carrots grow from a central point at ground level with leaves radiating outward and the harvestable part (the root) underground."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Daucus",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Daucus'"
     }
   ],
   "growing_information": [
@@ -117,5 +122,7 @@
       "notes": "3 to 5 inches within the row"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "genus": "Daucus",
+  "family": "Apiaceae"
 }

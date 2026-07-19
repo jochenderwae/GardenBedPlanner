@@ -52,6 +52,11 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Brandywine tomato plant is described as being trained to a single stem and tied to stakes, indicating an upright growth habit."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Solanum",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Solanum'"
     }
   ],
   "growing_information": [
@@ -127,5 +132,7 @@
       "notes": "Set plants deeply in a shallow trench if they are over a foot high, covering the stem with soil to encourage rooting along its length."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "genus": "Solanum",
+  "family": "Solanaceae"
 }

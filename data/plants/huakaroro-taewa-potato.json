@@ -40,6 +40,11 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The description does not mention a specific growth habit, but potatoes generally grow as low, spreading plants."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Solanum",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Solanum'"
     }
   ],
   "growing_information": [
@@ -113,5 +118,7 @@
       "notes": "plant seed potatoes deep (at least four inches)"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "genus": "Solanum",
+  "family": "Solanaceae"
 }

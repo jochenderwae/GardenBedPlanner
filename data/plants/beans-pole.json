@@ -64,7 +64,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Pole beans are known for their vining habit and require a trellis or support to grow upward."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Phaseolus",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Phaseolus'"
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "genus": "Phaseolus",
+  "family": "Fabaceae"
 }

@@ -18,6 +18,13 @@
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
       "attribution": "openfarm-crops-rescue"
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Stropharia",
+      "attribution": "wikipedia-taxonomy",
+      "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Stropharia'"
     }
-  ]
+  ],
+  "genus": "Stropharia",
+  "family": "Strophariaceae"
 }
