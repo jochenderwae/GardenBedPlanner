@@ -8,8 +8,8 @@ Run `C:\projects\GardenBedPlanner\.claude\skills\migrate-backend\scripts\backend
 
 Always call by absolute path, never `cd` first - the script resolves the repo root itself via `$PSScriptRoot`, and a `cd`-prefixed call has a different signature every time so it can't stay pre-approved.
 
-**Needs a reachable `DATABASE_URL`** (`backend/.env`, see `.env.example`). There is no local Postgres on this Windows checkout - this only works when `DATABASE_URL` points at a real instance: `garden-planner-dev`'s real Postgres (same one `/deploy-backend` migrates automatically as part of a full deploy), or - once available - the remote-accessible test Postgres account, via a `TEST_DATABASE_URL`/local `.env` override.
+**Needs a reachable `DATABASE_URL`** (`backend/.env`, see `.env.example`). There is no local Postgres on this Windows checkout - this only works when `DATABASE_URL` points at a real instance: `garden-planner-dev`'s real Postgres (same one `/deploy-backend` migrates automatically as part of a full deploy), or the `garden_test` database (reachable directly from this laptop now - see `docs/testing-plan.md`) via a temporary `DATABASE_URL` override pointed at `TEST_DATABASE_URL`'s value from `backend/.env`.
 
 **Before running this against a database with real rows** (not a brand-new empty table), confirm the actual row count first via `/db-query` rather than assuming from memory - see root `CLAUDE.md`'s note on why this matters (a migration correct against an empty table can still be wrong against real data).
 
-This is distinct from `/deploy-backend`, which also does this as one step of a full redeploy (git pull, `uv sync`, migrate, restart) - use this skill when you specifically want to apply migrations without a full redeploy, e.g. against the new test Postgres account for local iteration.
+This is distinct from `/deploy-backend`, which also does this as one step of a full redeploy (git pull, `uv sync`, migrate, restart) - use this skill when you specifically want to apply migrations without a full redeploy, e.g. against `garden_test` for local iteration.

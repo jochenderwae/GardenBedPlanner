@@ -4,6 +4,7 @@ Phased plan for adding real test coverage across all three areas of the monorepo
 
 ## Ground truth confirmed before planning
 
+- **Update, 2026-07-19 (later)**: the `garden_test` database + role now exist for real, on `garden-planner-dev`'s Postgres, created via the same `sudo -u postgres psql -c "CREATE ROLE/DATABASE ..."` pattern `infra/deploy/02-setup-database.sh` uses (a narrowly-scoped, password-free sudoers grant covers exactly those two command shapes). The user also opened `pg_hba.conf` to the LAN, so `TEST_DATABASE_URL` is reachable **directly from a dev laptop, no SSH needed** - confirmed working via `psycopg` from this Windows checkout. Value lives in `backend/.env` (see `.env.example`); `.claude/skills/db-query/scripts/dev_psql_test.ps1` + `run_sql_test.py` give a working direct-query path against it today, ahead of the full `conftest.py` fixture work below. This closes the "once available" uncertainty the rest of this doc was originally written around - the backend integration-test approach below can now actually be built, not just planned for.
 - No `.github/workflows/` exists anywhere in the repo — there is genuinely no CI. This plan targets local/agent-invoked runs via the `.claude/skills/*/scripts/*.ps1` PowerShell scripts + skills, structured so a CI workflow could wrap the same commands later without rework.
 - Backend: `pytest>=9.1.1`, `httpx` already dev deps in `backend/pyproject.toml`; one trivial test (`test_health.py`); `get_session()` (`app/core/db.py`) is a plain generator dependency reading `settings.database_url` — the natural FastAPI override point.
 - `app/api/deps.py`'s `commit_or_409` calls `session.commit()` inside route handlers — this matters directly for isolation-strategy choice (below): any rollback-based isolation must survive the app calling `commit()` itself, not just test code.
@@ -16,7 +17,7 @@ Phased plan for adding real test coverage across all three areas of the monorepo
 ### Backend
 
 - No new prod deps needed. Dev deps: `pytest` + stdlib `sqlalchemy`/`alembic` (already transitive via `sqlmodel`/`alembic`) suffice for the fixture pattern below.
-- New env var `TEST_DATABASE_URL` — document in `.env.example` and root `CLAUDE.md`'s Commands section. Points at a **separate database** on the new test Postgres account (e.g. `garden_test`), never the app's real `garden` database.
+- **Done**: `TEST_DATABASE_URL` env var exists, documented in `.env.example`, real value in `backend/.env`. Points at `garden_test`, a **separate database** on `garden-planner-dev`'s Postgres, never the app's real `garden` database.
 - `backend/pyproject.toml`: register a `pytest.ini_options` marker:
   ```toml
   [tool.pytest.ini_options]

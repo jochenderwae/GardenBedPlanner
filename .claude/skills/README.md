@@ -37,7 +37,7 @@ See `../../docs/testing-plan.md` for the phased plan to close the frontend/data 
 | Skill | Script(s) | Notes |
 |---|---|---|
 | `/dev-server` | `backend_dev_start.ps1`, `backend_dev_stop.ps1`, `frontend_dev_start.ps1`, `frontend_dev_stop.ps1` | start/stop local dev servers |
-| `/migrate-backend` | `backend_migrate.ps1` | apply migrations without a full deploy - e.g. against the test Postgres account |
+| `/migrate-backend` | `backend_migrate.ps1` | apply migrations without a full deploy - e.g. against `garden_test` |
 | `/generate-api` | `frontend_generate_api.ps1` | regenerate the typed frontend client from the backend's live OpenAPI schema |
 | `/run-etl-module` | `data_run_module.ps1`, `data_run_script.ps1` | generic `etl.*` module invocation |
 
@@ -46,7 +46,7 @@ See `../../docs/testing-plan.md` for the phased plan to close the frontend/data 
 | Skill | Script(s) | Notes |
 |---|---|---|
 | `/health-check` | `dev_ssh_health.ps1` | read-only, safe anytime |
-| `/db-query` | `dev_psql.ps1` | run a `.sql` file against the real Postgres - wrap anything destructive in `BEGIN`/`ROLLBACK` |
+| `/db-query` | `dev_psql_test.ps1` (garden_test, direct), `dev_psql.ps1` (garden, SSH) | `garden_test` is disposable, connect and mutate freely; `garden` is real data, wrap anything destructive in `BEGIN`/`ROLLBACK` |
 
 ## Git / release
 
