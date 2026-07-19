@@ -2,7 +2,7 @@
 
 PowerShell wrapper scripts for commands Claude runs often in this repo. The point: a raw `cd <dir>; <command>` has a different literal signature every time depending on the directory it's chained from, so the permission system can never learn to trust it - these scripts have a fixed path and can be pre-approved once (see `.claude/settings.local.json`'s allowlist) instead of prompting on every call.
 
-Run them from the repo root (`.\claudeTools\<script>.ps1 [args...]`) or by full path - each resolves its own working directory via `$PSScriptRoot`, so it doesn't matter where the caller's cwd currently is.
+**Always call by absolute path** (`C:\projects\GardenBedPlanner\claudeTools\<script>.ps1 [args...]`), never a relative path, and never with a `cd`/`Set-Location` first. Each script resolves its own working directory internally via `$PSScriptRoot`, so the caller's cwd is irrelevant - `cd`-ing first is not just unnecessary, it actively defeats the point of these wrappers: `cd <dir>; <command>` has a different literal signature every time depending on the directory, so it can never be pre-approved, which is exactly the problem this whole directory exists to avoid (see above). A relative path (`.\claudeTools\...`) only resolves if you happen to already be at the repo root, which isn't guaranteed - that's what tempts the unnecessary `cd` in the first place. The permission allowlist (`.claude/settings.local.json`) is keyed on the absolute-path form; a relative-path or `cd`-prefixed invocation won't match it and will prompt again.
 
 Windows PowerShell only (`.ps1`), not `.sh` - the `Bash` tool has no POSIX shell available in this environment ("No suitable shell found"); `PowerShell` is what actually works here. If you're extending this directory, keep new scripts `.ps1`.
 
@@ -24,6 +24,7 @@ Windows PowerShell only (`.ps1`), not `.sh` - the `Bash` tool has no POSIX shell
 - `data_lint.ps1` — ruff over `data/etl/`
 - `data_run_module.ps1 <module> [args...]` — `uv run python -m <module>` from `data/`, e.g. `data_run_module.ps1 etl.growing_info.run`, `data_run_module.ps1 etl.state_report`. One stable wrapper covers every `etl.*` entrypoint instead of a new script per module.
 - `data_run_script.ps1 <path> [args...]` — runs an arbitrary/scratch Python script with `data/` on `PYTHONPATH` (so `from etl...` imports resolve) regardless of where the script file lives
+- `data_verify_garden.ps1` — validates `data/example_garden.json` (schema shape, planting bounds, bed overlap, `plant_slug` references) via `etl.verify_garden`; exits non-zero on any problem, safe as a gate after regenerating it
 
 **garden-planner-dev** (see `infra/deploy/CLAUDE.md`)
 - `dev_ssh_deploy_backend.ps1` — redeploy just the backend (`03-deploy-backend.sh`)

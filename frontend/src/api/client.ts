@@ -11,6 +11,10 @@ export async function getHealth(): Promise<HealthResponse> {
   return res.json() as Promise<HealthResponse>;
 }
 
+export type Bed = components["schemas"]["Bed"];
+export type BedUpdate = components["schemas"]["BedUpdate"];
+export type BedType = components["schemas"]["BedType"];
+
 export type Plant = components["schemas"]["Plant"];
 export type PlantDetail = components["schemas"]["PlantDetail"];
 export type PlantCreate = components["schemas"]["PlantCreate"];
@@ -34,6 +38,28 @@ async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   }
   if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
+}
+
+export function listBeds(): Promise<Bed[]> {
+  return apiFetch(`/api/beds`);
+}
+
+export function createBed(bed: Omit<Bed, "id">): Promise<Bed> {
+  return apiFetch(`/api/beds`, {
+    method: "POST",
+    body: JSON.stringify(bed),
+  });
+}
+
+export function updateBed(id: number, patch: BedUpdate): Promise<Bed> {
+  return apiFetch(`/api/beds/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteBed(id: number): Promise<void> {
+  return apiFetch(`/api/beds/${id}`, { method: "DELETE" });
 }
 
 export function listPlants(limit = 500): Promise<Plant[]> {

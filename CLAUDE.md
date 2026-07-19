@@ -75,8 +75,9 @@ Frontend (`cd frontend`, npm-managed):
 
 Data/ETL (`cd data`, uv-managed, its own `pyproject.toml` — see `data/etl/CLAUDE.md`):
 - `uv run ruff check etl/` — lint — `claudeTools/data_lint.ps1`
-- `uv run python -m <module>` (e.g. `etl.run`, `etl.growing_info.run`, `etl.backfill_taxonomy`, `etl.state_report`) — `claudeTools/data_run_module.ps1 <module> [args...]`
+- `uv run python -m <module>` (e.g. `etl.run`, `etl.growing_info.run`, `etl.backfill_taxonomy`, `etl.state_report`, `etl.generate_example_garden`, `etl.verify_garden`) — `claudeTools/data_run_module.ps1 <module> [args...]`
 - an arbitrary/scratch script that needs `data/` on `PYTHONPATH` — `claudeTools/data_run_script.ps1 <path> [args...]`
+- validating `data/example_garden.json` after regenerating it — `claudeTools/data_verify_garden.ps1`
 
 `garden-planner-dev` (see `infra/deploy/CLAUDE.md`): `claudeTools/dev_ssh_deploy_backend.ps1`, `dev_ssh_deploy_all.ps1`, `dev_ssh_health.ps1`, `dev_psql.ps1 -File <path>` (run a local `.sql` file against its real Postgres).
 
