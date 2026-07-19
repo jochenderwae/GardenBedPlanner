@@ -1,15 +1,20 @@
 {
-  "_notes": "Invented layout/fixture - see data/etl/generate_example_garden.py's module docstring for the full reasoning (bed dimension interpretation, coordinate convention, plant/companion choices, placement algorithm). No real layout for this garden is recorded anywhere; root CLAUDE.md only gives bed counts/types/sizes and berry-row/tree species, not positions or exact per-bed plant assignments. Garden footprint is roughly 6.2m x 6.5m. Regenerate with `uv run python -m etl.generate_example_garden` if plant data changes meaningfully (e.g. spread_cm/row_spacing_cm backfilled for the plants noted below as falling back to a default spacing).",
+  "_notes": "Invented layout/fixture - see data/etl/generate_example_garden.py's module docstring for the full reasoning (bed dimension interpretation, coordinate convention, plant/companion choices, placement algorithm). No real layout for this garden is recorded anywhere; root CLAUDE.md only gives bed counts/types/sizes and berry-row/tree species, not positions or exact per-bed plant assignments. Garden footprint is roughly 6.2m x 6.5m. Bed shape matches the current Bed model (category/border_geometry, post Garden/Bed redesign) - regenerate with `uv run python -m etl.generate_example_garden` if plant data changes meaningfully (e.g. spread_cm/row_spacing_cm backfilled for the plants noted below as falling back to a default spacing).",
   "beds": [
     {
       "name": "Large Planter 1 (Greenhouse)",
-      "bed_type": "large_planter",
-      "width_cm": 70,
-      "length_cm": 200,
+      "category": "large_planter",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 70,
+        "height": 200,
+        "rotation": 0
+      },
       "height_cm": 70,
       "has_greenhouse": true,
-      "pos_x": 0,
-      "pos_y": 0,
+      "is_raised": true,
       "notes": "Heat-loving nightshades - the greenhouse gives tomatoes/peppers a real head start and season extension in Belgium's climate. (spacing defaulted to 40cm for: brandywine-tomato - no spread_cm/row_spacing_cm in their data yet)",
       "plantings": [
         {
@@ -96,13 +101,18 @@
     },
     {
       "name": "Large Planter 2",
-      "bed_type": "large_planter",
-      "width_cm": 70,
-      "length_cm": 200,
+      "category": "large_planter",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 130,
+        "y": 0,
+        "width": 70,
+        "height": 200,
+        "rotation": 0
+      },
       "height_cm": 70,
       "has_greenhouse": false,
-      "pos_x": 130,
-      "pos_y": 0,
+      "is_raised": true,
       "notes": "Cucumber trellised at one end, bush beans and dill filling the rest - beans+cucumber is a confirmed 'good' companion pairing in our data.",
       "plantings": [
         {
@@ -174,13 +184,18 @@
     },
     {
       "name": "Large Planter 3",
-      "bed_type": "large_planter",
-      "width_cm": 70,
-      "length_cm": 200,
+      "category": "large_planter",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 260,
+        "y": 0,
+        "width": 70,
+        "height": 200,
+        "rotation": 0
+      },
       "height_cm": 70,
       "has_greenhouse": false,
-      "pos_x": 260,
-      "pos_y": 0,
+      "is_raised": true,
       "notes": "Eggplant and zucchini with African marigold interplanted for pest deterrence.",
       "plantings": [
         {
@@ -257,13 +272,18 @@
     },
     {
       "name": "Large Planter 4",
-      "bed_type": "large_planter",
-      "width_cm": 70,
-      "length_cm": 200,
+      "category": "large_planter",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 390,
+        "y": 0,
+        "width": 70,
+        "height": 200,
+        "rotation": 0
+      },
       "height_cm": 70,
       "has_greenhouse": false,
-      "pos_x": 390,
-      "pos_y": 0,
+      "is_raised": true,
       "notes": "Acorn squash (a real ground-sprawling vine, spread_cm=150 - most of this bed on its own) with borage, a companion pairing confirmed directly in acorn-squash's own data.",
       "plantings": [
         {
@@ -310,13 +330,18 @@
     },
     {
       "name": "Small Planter 1",
-      "bed_type": "small_planter",
-      "width_cm": 30,
-      "length_cm": 70,
+      "category": "small_planter",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 300,
+        "width": 30,
+        "height": 70,
+        "rotation": 0
+      },
       "height_cm": 70,
       "has_greenhouse": false,
-      "pos_x": 0,
-      "pos_y": 300,
+      "is_raised": true,
       "notes": "Quick roots: carrot with a fast-maturing radish nurse crop and chives (a confirmed 'good' companion for carrot).",
       "plantings": [
         {
@@ -398,13 +423,18 @@
     },
     {
       "name": "Small Planter 2",
-      "bed_type": "small_planter",
-      "width_cm": 30,
-      "length_cm": 70,
+      "category": "small_planter",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 70,
+        "y": 300,
+        "width": 30,
+        "height": 70,
+        "rotation": 0
+      },
       "height_cm": 70,
       "has_greenhouse": false,
-      "pos_x": 70,
-      "pos_y": 300,
+      "is_raised": true,
       "notes": "Leafy greens - lettuce and spinach are a confirmed 'good' pairing; arugula fills the gaps.",
       "plantings": [
         {
@@ -471,13 +501,18 @@
     },
     {
       "name": "Small Planter 3",
-      "bed_type": "small_planter",
-      "width_cm": 30,
-      "length_cm": 70,
+      "category": "small_planter",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 140,
+        "y": 300,
+        "width": 30,
+        "height": 70,
+        "rotation": 0
+      },
       "height_cm": 70,
       "has_greenhouse": false,
-      "pos_x": 140,
-      "pos_y": 300,
+      "is_raised": true,
       "notes": "Beet, golden beet, and lambs lettuce (mache) - a cool-season mix popular in Belgian kitchen gardens.",
       "plantings": [
         {
@@ -544,35 +579,50 @@
     },
     {
       "name": "Compost Bin 1",
-      "bed_type": "compost_bin",
-      "width_cm": 100,
-      "length_cm": 100,
+      "category": "compost_bin",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 230,
+        "y": 300,
+        "width": 100,
+        "height": 100,
+        "rotation": 0
+      },
       "height_cm": 100,
       "has_greenhouse": false,
-      "pos_x": 230,
-      "pos_y": 300,
+      "is_raised": false,
       "notes": "1m3 bin - garden waste + kitchen scraps."
     },
     {
       "name": "Compost Bin 2",
-      "bed_type": "compost_bin",
-      "width_cm": 100,
-      "length_cm": 100,
+      "category": "compost_bin",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 370,
+        "y": 300,
+        "width": 100,
+        "height": 100,
+        "rotation": 0
+      },
       "height_cm": 100,
       "has_greenhouse": false,
-      "pos_x": 370,
-      "pos_y": 300,
+      "is_raised": false,
       "notes": "1m3 bin - second bin for turning/maturing while the first fills."
     },
     {
       "name": "Berry Row",
-      "bed_type": "berry_row",
-      "width_cm": 80,
-      "length_cm": 600,
+      "category": "berry_row",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 540,
+        "y": 0,
+        "width": 80,
+        "height": 600,
+        "rotation": 0
+      },
       "height_cm": 0,
       "has_greenhouse": false,
-      "pos_x": 540,
-      "pos_y": 0,
+      "is_raised": false,
       "notes": "Raspberry, blueberry, redcurrant, gooseberry, and a stand of sunflowers at the far end - no 'bad' companion pairings among any of these five in our data (checked pairwise).",
       "plantings": [
         {
@@ -679,13 +729,18 @@
     },
     {
       "name": "Sour Cherry Tree",
-      "bed_type": "fruit_tree",
-      "width_cm": 150,
-      "length_cm": 150,
+      "category": "fruit_tree",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 500,
+        "width": 150,
+        "height": 150,
+        "rotation": 0
+      },
       "height_cm": 0,
       "has_greenhouse": false,
-      "pos_x": 0,
-      "pos_y": 500,
+      "is_raised": false,
       "notes": "Sour cherry - no dedicated sour-cherry cultivar record exists yet; using data/plants/cherry.json (generic Prunus avium record whose own text also covers Prunus cerasus/sour varieties) as the closest real match. See suggestions.md. (spacing defaulted to 40cm for: cherry - no spread_cm/row_spacing_cm in their data yet)",
       "plantings": [
         {
@@ -697,13 +752,18 @@
     },
     {
       "name": "Pear Tree",
-      "bed_type": "fruit_tree",
-      "width_cm": 150,
-      "length_cm": 150,
+      "category": "fruit_tree",
+      "border_geometry": {
+        "type": "rectangle",
+        "x": 300,
+        "y": 500,
+        "width": 150,
+        "height": 150,
+        "rotation": 0
+      },
       "height_cm": 0,
       "has_greenhouse": false,
-      "pos_x": 300,
-      "pos_y": 500,
+      "is_raised": false,
       "notes": "Pear - data/plants/pear.json (Pyrus communis) is a direct match. (spacing defaulted to 40cm for: pear - no spread_cm/row_spacing_cm in their data yet)",
       "plantings": [
         {

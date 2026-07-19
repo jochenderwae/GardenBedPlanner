@@ -5,14 +5,40 @@ to have something real to render while it's being built, and later for the
 backlogged "load example data on install" feature (product-owner/BACKLOG.md
 's Plant database section).
 
-Not imported into Postgres by anything yet (no BedPlanting model exists) -
-a dev/demo fixture. Each bed's fields match backend/app/models/bed.py's
-Bed model exactly (name, bed_type, width_cm, length_cm, height_cm,
-has_greenhouse, pos_x, pos_y, notes - id omitted, server-assigned), plus a
-`plantings` array (not a real table yet - see docs/schema.md's aspirational
-BED_PLANTING for what that might look like eventually, but this task was
-scoped to the simpler point-based x_cm/y_cm-in-bed-local-coordinates format
-task_queue.md itself specified, not that richer geometry format).
+## New Bed shape (2026-07-19 update, task_queue.md item 9)
+
+Regenerated after the Garden/Bed model redesign (new Garden/Planting/
+BedEquipment tables, Bed.border_geometry replacing the old flat
+bed_type/pos_x/pos_y/width_cm/length_cm fields - see
+backend/app/models/bed.py). Each bed now emits:
+
+- `category` (free-text, was the closed bed_type enum - the same values
+  used before, e.g. "large_planter", are still perfectly good category
+  strings, there's just no enum validating them anymore)
+- `border_geometry` ({"type": "rectangle", "x", "y", "width", "height",
+  "rotation": 0} - garden-space cm, per docs/schema.md's "Geometry format".
+  Every bed this generator makes is axis-aligned, so rotation: 0 throughout
+  is correct, not a placeholder)
+- `height_cm`/`has_greenhouse`/`notes` unchanged
+- `orientation`/`soil_type`/`sun_level` left unset (null) - no well-founded
+  values for this invented layout, per the task's own instruction not to
+  force values that aren't confident
+- `is_raised` set where there's a reasonably confident answer: True for the
+  large/small planters (built raised-bed kits per root CLAUDE.md), False for
+  the ground-level compost bins, berry row, and fruit-tree beds (a mulched
+  root-zone bed, not a raised kit)
+
+`plantings[].{plant_slug, x_cm, y_cm}` is unchanged - the read-only
+`/api/example-garden` preview endpoint (backend/app/api/routes/
+example_garden.py) deliberately kept this flat bed-local shape rather than
+adopting the real Planting model's Geometry column, so there's nothing to
+convert here.
+
+Now imported into Postgres by backend/app/scripts/import_example_garden.py
+(the "future analogous importer" data-engineer's own CLAUDE.md anticipated) -
+that script converts each flat x_cm/y_cm point into a small centered
+rectangle Geometry for the real Planting.geometry column, since Geometry has
+no bare point/marker variant (see that script's own docstring).
 
 ## Bed dimension interpretation (no real layout is recorded anywhere)
 
@@ -24,9 +50,10 @@ axis and the *two matching* numbers are width and height - a 200cm-tall or
 30cm-tall raised bed isn't a real product, but a 200cm-long x 70cm-wide x
 70cm-tall bed is a completely standard raised-bed kit size (also matches
 common Belgian/EU raised-bed kit listings, e.g. "200x70x70cm Hochbeet").
-So: large planters = width_cm 70, length_cm 200, height_cm 70. Small
-planters = width_cm 30, length_cm 70, height_cm 70 (same height as the
-large planters, for a consistent build height across the garden).
+So: large planters = width 70, height (footprint depth) 200, height_cm 70.
+Small planters = width 30, height (footprint depth) 70, height_cm 70 (same
+build height as the large planters, for a consistent build height across
+the garden).
 
 Berry row and fruit tree bed footprints aren't described at all in root
 CLAUDE.md - invented from scratch: a berry row needs to be long enough to
@@ -38,10 +65,11 @@ tree needs a mulched root-zone bed, not the eventual mature canopy.
 
 A rectangular garden roughly 6.2m x 6.5m. Coordinate convention (not
 specified by the Bed model, chosen here and documented since the frontend
-will need to know it): pos_x/pos_y is each bed's top-left corner in
-garden-space cm; width_cm extends along +x, length_cm extends along +y.
-Within a bed, plantings' x_cm/y_cm use the same convention relative to the
-bed's own top-left corner, per task_queue.md's spec.
+needs to know it): border_geometry.x/y is each bed's top-left corner in
+garden-space cm; border_geometry.width extends along +x,
+border_geometry.height extends along +y. Within a bed, plantings' x_cm/y_cm
+use the same convention relative to the bed's own top-left corner, per
+task_queue.md's spec.
 
 - Row of 4 large planters along the top (y=0..200), 60cm paths between them
   for wheelbarrow/kneeling access. First one has the greenhouse.
@@ -101,7 +129,12 @@ _DEFAULT_SPACING_CM = 40.0
 _MAX_INSTANCES_PER_PLANT = 6
 _MARGIN_CM = 5.0
 
-# (name, bed_type, width_cm, length_cm, height_cm, has_greenhouse, pos_x, pos_y, notes, plant_slugs)
+# Categories confidently known to be built as raised-bed kits (root
+# CLAUDE.md describes both planter sizes as such). Everything else in this
+# fixture (compost bins, berry row, fruit trees) is ground-level.
+_RAISED_CATEGORIES = {"large_planter", "small_planter"}
+
+# (name, category, width_cm, length_cm, height_cm, has_greenhouse, pos_x, pos_y, notes, plant_slugs)
 _BEDS = [
     (
         "Large Planter 1 (Greenhouse)", "large_planter", 70, 200, 70, True, 0, 0,
@@ -183,7 +216,8 @@ _NOTES = (
     "No real layout for this garden is recorded anywhere; root CLAUDE.md "
     "only gives bed counts/types/sizes and berry-row/tree species, not "
     "positions or exact per-bed plant assignments. Garden footprint is "
-    "roughly 6.2m x 6.5m. Regenerate with "
+    "roughly 6.2m x 6.5m. Bed shape matches the current Bed model "
+    "(category/border_geometry, post Garden/Bed redesign) - regenerate with "
     "`uv run python -m etl.generate_example_garden` if plant data changes "
     "meaningfully (e.g. spread_cm/row_spacing_cm backfilled for the plants "
     "noted below as falling back to a default spacing)."
@@ -221,7 +255,7 @@ def _grid_positions(width_cm: float, length_cm: float, spacing: float, max_count
     return positions
 
 
-def _build_bed(name, bed_type, width_cm, length_cm, height_cm, has_greenhouse, pos_x, pos_y, notes, plant_slugs):
+def _build_bed(name, category, width_cm, length_cm, height_cm, has_greenhouse, pos_x, pos_y, notes, plant_slugs):
     plantings = []
     defaults_used = []
 
@@ -238,7 +272,7 @@ def _build_bed(name, bed_type, width_cm, length_cm, height_cm, has_greenhouse, p
                 defaults_used.append(slug)
 
             strip_y0 = i * strip_length
-            if n == 1 and bed_type == "fruit_tree":
+            if n == 1 and category == "fruit_tree":
                 # A lone tree: one point at the bed's center, no grid.
                 plantings.append({"plant_slug": slug, "x_cm": round(width_cm / 2, 1), "y_cm": round(length_cm / 2, 1)})
                 continue
@@ -252,13 +286,18 @@ def _build_bed(name, bed_type, width_cm, length_cm, height_cm, has_greenhouse, p
 
     bed = {
         "name": name,
-        "bed_type": bed_type,
-        "width_cm": width_cm,
-        "length_cm": length_cm,
+        "category": category,
+        "border_geometry": {
+            "type": "rectangle",
+            "x": pos_x,
+            "y": pos_y,
+            "width": width_cm,
+            "height": length_cm,
+            "rotation": 0,
+        },
         "height_cm": height_cm,
         "has_greenhouse": has_greenhouse,
-        "pos_x": pos_x,
-        "pos_y": pos_y,
+        "is_raised": category in _RAISED_CATEGORIES,
         "notes": bed_notes,
     }
     if plantings:
