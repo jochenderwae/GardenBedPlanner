@@ -25,6 +25,7 @@ from app.models.plant import (
     PlantBeddingNeed,
     PlantCompanion,
     PlantDataSource,
+    PlantGrowingInformation,
     PlantPeriod,
     PlantPestInteraction,
     SeedInfo,
@@ -108,6 +109,10 @@ def import_satellites(session: Session, data: dict, known_slugs: set[str]) -> No
     session.exec(delete(PlantPestInteraction).where(PlantPestInteraction.plant_slug == slug))
     for pi in data.get("pest_interactions", []):
         session.add(PlantPestInteraction(plant_slug=slug, **pi))
+
+    session.exec(delete(PlantGrowingInformation).where(PlantGrowingInformation.plant_slug == slug))
+    for gi in data.get("growing_information", []):
+        session.add(PlantGrowingInformation(plant_slug=slug, **gi))
 
     session.commit()
 
