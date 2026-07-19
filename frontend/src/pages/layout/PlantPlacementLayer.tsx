@@ -65,15 +65,26 @@ export function PlantPlacementLayer({
               height={rect.height}
               listening={active}
               onClick={(e) => {
+                // bed-local (cm) position for Planting.geometry - accounts
+                // for the full ancestor transform chain (this Group's
+                // offset + the Stage's pan/zoom) automatically.
                 const pos = e.target.getRelativePointerPosition();
-                const stageBox = e.target.getStage()?.container().getBoundingClientRect();
-                if (!pos || !stageBox || bed.id == null) return;
+                // Raw container-relative screen px for the HTML popover -
+                // deliberately NOT derived from `rect`/`pos` (those are
+                // world/cm coordinates): `getPointerPosition()` already
+                // gives the click's on-screen position regardless of the
+                // Stage's current pan/zoom, unlike `rect.x + pos.x` which
+                // only lined up with the screen when scale was always 1.
+                const stage = e.target.getStage();
+                const pointer = stage?.getPointerPosition();
+                const stageBox = stage?.container().getBoundingClientRect();
+                if (!pos || !pointer || !stageBox || bed.id == null) return;
                 onOpenPicker({
                   bedId: bed.id,
                   x: pos.x,
                   y: pos.y,
-                  screenX: stageBox.left + rect.x + pos.x,
-                  screenY: stageBox.top + rect.y + pos.y,
+                  screenX: stageBox.left + pointer.x,
+                  screenY: stageBox.top + pointer.y,
                 });
               }}
             />

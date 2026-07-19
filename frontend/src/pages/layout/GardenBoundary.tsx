@@ -4,6 +4,7 @@ import type Konva from "konva";
 import type { Geometry } from "@/api/client";
 import { snapToGrid } from "./geometry";
 import { PolygonEditor } from "./PolygonEditor";
+import { DEFAULT_VIEWPORT, screenToWorld, worldToScreen, type Viewport } from "./viewport";
 
 const MIN_SIZE_CM = 100;
 const GARDEN_COLORS = { fill: "transparent", stroke: "#166534" };
@@ -18,12 +19,23 @@ interface GardenBoundaryProps {
    * garden outline still renders on the Equipment/Plants tabs for spatial
    * context, just non-interactively. */
   interactive?: boolean;
+  /** See BedNode's identical prop doc - `dragBoundFunc` needs the current
+   * pan/zoom to snap correctly. */
+  viewport?: Viewport;
 }
 
 /** The overarching garden's own boundary - same rectangle-Transformer /
  * PolygonEditor split as BedNode, but drawn with no fill (beds sit inside
  * it and shouldn't be tinted by it). */
-export function GardenBoundary({ name, geometry, isSelected, onSelect, onChange, interactive = true }: GardenBoundaryProps) {
+export function GardenBoundary({
+  name,
+  geometry,
+  isSelected,
+  onSelect,
+  onChange,
+  interactive = true,
+  viewport = DEFAULT_VIEWPORT,
+}: GardenBoundaryProps) {
   const shapeRef = useRef<Konva.Rect>(null);
   const trRef = useRef<Konva.Transformer>(null);
 
@@ -66,7 +78,10 @@ export function GardenBoundary({ name, geometry, isSelected, onSelect, onChange,
         dash={[6, 4]}
         draggable={interactive}
         listening={interactive}
-        dragBoundFunc={(pos) => ({ x: snapToGrid(pos.x), y: snapToGrid(pos.y) })}
+        dragBoundFunc={(pos) => {
+          const world = screenToWorld(pos, viewport);
+          return worldToScreen({ x: snapToGrid(world.x), y: snapToGrid(world.y) }, viewport);
+        }}
         onClick={onSelect}
         onTap={onSelect}
         onDragEnd={(e) => onChange({ ...geometry, x: e.target.x(), y: e.target.y() })}

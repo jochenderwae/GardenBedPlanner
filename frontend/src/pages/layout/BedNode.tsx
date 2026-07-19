@@ -4,6 +4,7 @@ import type Konva from "konva";
 import type { Bed, Geometry } from "@/api/client";
 import { boundingRect, colorsForBedCategory, snapToGrid } from "./geometry";
 import { PolygonEditor } from "./PolygonEditor";
+import { DEFAULT_VIEWPORT, screenToWorld, worldToScreen, type Viewport } from "./viewport";
 
 const MIN_SIZE_CM = 20;
 
@@ -16,12 +17,18 @@ interface BedNodeProps {
    * selection so a bed on a non-active tab renders but can't be nudged by
    * accident while the user is placing plants/equipment. */
   interactive?: boolean;
+  /** Current `Stage` pan/zoom - needed because Konva's `dragBoundFunc`
+   * receives the drag position in *absolute* (stage-container-pixel)
+   * coordinates, not the node's local (world/cm) coordinates, so snapping
+   * to the cm grid has to convert through the viewport first. Defaults to
+   * the identity viewport for callers that don't pan/zoom. */
+  viewport?: Viewport;
 }
 
 /** Rectangle path: drag/resize/rotate via Konva's Transformer. Polygon
  * path: delegates to PolygonEditor (shared with the Garden boundary) for
  * vertex-drag editing. */
-export function BedNode({ bed, isSelected, onSelect, onChange, interactive = true }: BedNodeProps) {
+export function BedNode({ bed, isSelected, onSelect, onChange, interactive = true, viewport = DEFAULT_VIEWPORT }: BedNodeProps) {
   const shapeRef = useRef<Konva.Rect>(null);
   const trRef = useRef<Konva.Transformer>(null);
   const geometry = bed.border_geometry;
@@ -68,7 +75,10 @@ export function BedNode({ bed, isSelected, onSelect, onChange, interactive = tru
           strokeWidth={isSelected ? 2.5 : 1.5}
           draggable={interactive}
           listening={interactive}
-          dragBoundFunc={(pos) => ({ x: snapToGrid(pos.x), y: snapToGrid(pos.y) })}
+          dragBoundFunc={(pos) => {
+            const world = screenToWorld(pos, viewport);
+            return worldToScreen({ x: snapToGrid(world.x), y: snapToGrid(world.y) }, viewport);
+          }}
           onClick={onSelect}
           onTap={onSelect}
           onDragEnd={(e) =>

@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stage, Layer, Line } from "react-konva";
+import type Konva from "konva";
 import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, Maximize } from "lucide-react";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -38,7 +39,16 @@ import { EquipmentPanel } from "./layout/EquipmentPanel";
 import { PlantPlacementLayer, type PickerState } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { RulerLayer } from "./layout/RulerLayer";
-import { CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, DEFAULT_PLANTING_DIAMETER_CM, GRID_SPACING_CM } from "./layout/geometry";
+import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, DEFAULT_PLANTING_DIAMETER_CM, GRID_SPACING_CM } from "./layout/geometry";
+import {
+  clampScale,
+  DEFAULT_VIEWPORT,
+  fitViewport,
+  visibleWorldBounds,
+  zoomAtPoint,
+  type Size,
+  type Viewport,
+} from "./layout/viewport";
 
 type ViewMode = "mine" | "example";
 type PlacementTab = "planters" | "equipment" | "plants";
@@ -49,18 +59,38 @@ const TAB_LABELS: Record<PlacementTab, string> = {
   plants: "Plants",
 };
 
-function GridLines() {
+const CANVAS_SIZE: Size = { width: CANVAS_WIDTH_PX, height: CANVAS_HEIGHT_PX };
+/** Multiplicative step per wheel-zoom tick - matches the standard
+ * Figma/Konva pointer-relative wheel-zoom feel (small, smooth increments
+ * rather than jumping between fixed zoom levels). */
+const ZOOM_STEP = 1.05;
+
+/** Grid lines across whatever's currently visible (not a fixed world
+ * extent) - see RulerLayer's identical rationale. Stroke width compensates
+ * for the Stage's own scale so lines read as a constant ~1px regardless of
+ * zoom level. */
+function GridLines({ canvasSize, viewport }: { canvasSize: Size; viewport: Viewport }) {
+  const bounds = visibleWorldBounds(viewport, canvasSize);
+  const strokeWidth = 1 / viewport.scale;
   const lines = useMemo(() => {
+    const startX = Math.floor(bounds.x / GRID_SPACING_CM) * GRID_SPACING_CM;
+    const endX = bounds.x + bounds.width;
+    const startY = Math.floor(bounds.y / GRID_SPACING_CM) * GRID_SPACING_CM;
+    const endY = bounds.y + bounds.height;
     const vertical = [];
-    for (let x = 0; x <= CANVAS_WIDTH_PX; x += GRID_SPACING_CM) {
-      vertical.push(<Line key={`v${x}`} points={[x, 0, x, CANVAS_HEIGHT_PX]} stroke="#e5e7eb" strokeWidth={1} />);
+    for (let x = startX; x <= endX; x += GRID_SPACING_CM) {
+      vertical.push(
+        <Line key={`v${x}`} points={[x, bounds.y, x, bounds.y + bounds.height]} stroke="#e5e7eb" strokeWidth={strokeWidth} />,
+      );
     }
     const horizontal = [];
-    for (let y = 0; y <= CANVAS_HEIGHT_PX; y += GRID_SPACING_CM) {
-      horizontal.push(<Line key={`h${y}`} points={[0, y, CANVAS_WIDTH_PX, y]} stroke="#e5e7eb" strokeWidth={1} />);
+    for (let y = startY; y <= endY; y += GRID_SPACING_CM) {
+      horizontal.push(
+        <Line key={`h${y}`} points={[bounds.x, y, bounds.x + bounds.width, y]} stroke="#e5e7eb" strokeWidth={strokeWidth} />,
+      );
     }
     return [...vertical, ...horizontal];
-  }, []);
+  }, [bounds.x, bounds.y, bounds.width, bounds.height, strokeWidth]);
   return <>{lines}</>;
 }
 
@@ -81,6 +111,7 @@ export function Layout() {
   const [gardenPanelOpen, setGardenPanelOpen] = useState(false);
   const [picker, setPicker] = useState<PickerState | null>(null);
   const [tooltip, setTooltip] = useState<PlantingTooltipState | null>(null);
+  const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
 
   const { data, isPending, isError } = useQuery({
     queryKey: ["beds"],
@@ -165,6 +196,46 @@ export function Layout() {
     setSelectedId(null);
     setGardenPanelOpen(false);
     setPicker(null);
+  }
+
+  /** Ctrl/Cmd+scroll = pointer-relative zoom (matches Figma's convention,
+   * avoids plain scroll fighting with page/panel scroll); plain scroll =
+   * pan. `preventDefault` stops the browser page from scrolling/zooming
+   * underneath the canvas. */
+  function handleWheel(e: Konva.KonvaEventObject<WheelEvent>) {
+    e.evt.preventDefault();
+    const stage = e.target.getStage();
+    if (!stage) return;
+    if (e.evt.ctrlKey || e.evt.metaKey) {
+      const pointer = stage.getPointerPosition();
+      if (!pointer) return;
+      const direction = e.evt.deltaY > 0 ? -1 : 1;
+      const nextScale = direction > 0 ? viewport.scale * ZOOM_STEP : viewport.scale / ZOOM_STEP;
+      setViewport(zoomAtPoint(viewport, pointer, clampScale(nextScale)));
+    } else {
+      setViewport((v) => ({ ...v, x: v.x - e.evt.deltaX, y: v.y - e.evt.deltaY }));
+    }
+  }
+
+  /** Stage's own drag (empty-canvas drag-to-pan - beds/plantings/vertices
+   * each have their own `draggable` and capture the gesture before it
+   * bubbles to the Stage, so this only fires for panning). Konva owns the
+   * position during the gesture same as every other drag in this editor;
+   * mirror it into `viewport` state once the gesture ends. */
+  function handleStageDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
+    setViewport((v) => ({ ...v, x: e.target.x(), y: e.target.y() }));
+  }
+
+  /** "Fit to garden": frame the garden boundary + every bed (falling back
+   * to the example-garden beds in that mode) at the largest zoom that keeps
+   * it all on screen - replaces "hope the fixed canvas is big enough" with
+   * an actual answer. */
+  function handleFitView() {
+    const boxes =
+      mode === "mine"
+        ? [...(garden ? [boundingRect(garden.border_geometry)] : []), ...beds.map((b) => boundingRect(b.border_geometry))]
+        : exampleBeds.map((b) => boundingRect(b.border_geometry));
+    setViewport(fitViewport(boxes, CANVAS_SIZE));
   }
 
   function handleBedChange(bed: Bed, geometry: Geometry) {
@@ -259,19 +330,30 @@ export function Layout() {
             </div>
           )}
         </div>
-        {mode === "mine" && tab === "planters" && (
-          <div className="flex gap-2">
-            {gardenQuery.isSuccess && !garden && (
-              <Button size="sm" variant="outline" onClick={() => setGardenPanelOpen(true)}>
-                Set up garden
+        <div className="flex items-center gap-2">
+          <span className="w-10 text-right text-xs tabular-nums text-muted-foreground">
+            {Math.round(viewport.scale * 100)}%
+          </span>
+          <Button size="sm" variant="outline" onClick={handleFitView} title="Fit the whole garden in view">
+            <Maximize /> Fit view
+          </Button>
+          {mode === "mine" && tab === "planters" && (
+            <>
+              {gardenQuery.isSuccess && !garden && (
+                <Button size="sm" variant="outline" onClick={() => setGardenPanelOpen(true)}>
+                  Set up garden
+                </Button>
+              )}
+              <Button size="sm" onClick={() => setShowAddForm(true)}>
+                <Plus /> Add bed
               </Button>
-            )}
-            <Button size="sm" onClick={() => setShowAddForm(true)}>
-              <Plus /> Add bed
-            </Button>
-          </div>
-        )}
+            </>
+          )}
+        </div>
       </div>
+      <p className="text-xs text-muted-foreground">
+        Scroll to pan, Ctrl/Cmd+scroll to zoom, drag empty canvas to pan.
+      </p>
 
       {mode === "mine" && (
         <>
@@ -306,6 +388,13 @@ export function Layout() {
             <Stage
               width={CANVAS_WIDTH_PX}
               height={CANVAS_HEIGHT_PX}
+              x={viewport.x}
+              y={viewport.y}
+              scaleX={viewport.scale}
+              scaleY={viewport.scale}
+              draggable
+              onWheel={handleWheel}
+              onDragEnd={handleStageDragEnd}
               onMouseDown={(e) => {
                 if (e.target === e.target.getStage()) {
                   setSelectedId(null);
@@ -314,9 +403,9 @@ export function Layout() {
               }}
             >
               <Layer listening={false}>
-                <GridLines />
+                <GridLines canvasSize={CANVAS_SIZE} viewport={viewport} />
               </Layer>
-              <RulerLayer widthCm={CANVAS_WIDTH_PX} heightCm={CANVAS_HEIGHT_PX} />
+              <RulerLayer canvasSize={CANVAS_SIZE} viewport={viewport} />
               <Layer>
                 {garden && (
                   <GardenBoundary
@@ -329,6 +418,7 @@ export function Layout() {
                     }}
                     onChange={handleGardenGeometryChange}
                     interactive={tab === "planters"}
+                    viewport={viewport}
                   />
                 )}
                 {beds.map((bed) => (
@@ -342,6 +432,7 @@ export function Layout() {
                     }}
                     onChange={(geometry) => handleBedChange(bed, geometry)}
                     interactive={tab === "planters"}
+                    viewport={viewport}
                   />
                 ))}
               </Layer>
@@ -374,10 +465,21 @@ export function Layout() {
 
       {mode === "example" && exampleGardenQuery.data && (
         <div className="relative max-w-full overflow-auto rounded-md border">
-          <Stage width={CANVAS_WIDTH_PX} height={CANVAS_HEIGHT_PX}>
+          <Stage
+            width={CANVAS_WIDTH_PX}
+            height={CANVAS_HEIGHT_PX}
+            x={viewport.x}
+            y={viewport.y}
+            scaleX={viewport.scale}
+            scaleY={viewport.scale}
+            draggable
+            onWheel={handleWheel}
+            onDragEnd={handleStageDragEnd}
+          >
             <Layer listening={false}>
-              <GridLines />
+              <GridLines canvasSize={CANVAS_SIZE} viewport={viewport} />
             </Layer>
+            <RulerLayer canvasSize={CANVAS_SIZE} viewport={viewport} />
             <ExampleGardenLayer beds={exampleBeds} plantsBySlug={plantsBySlug} onHover={setTooltip} />
           </Stage>
           <PlantingTooltip tooltip={tooltip} />
