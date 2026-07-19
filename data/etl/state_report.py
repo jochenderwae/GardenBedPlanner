@@ -3,8 +3,8 @@ pipeline's progress.db and growing_info's own growing_info.db) - the
 recurring ad-hoc check that kept getting re-run by hand as inline
 `python -c "..."` one-liners. Promoted to a real, reusable module instead.
 
-Run with: uv run python -m etl.state_report (from data/), or via
-claudeTools/data_run_module.ps1 etl.state_report from the repo root.
+Run with: uv run python -m etl.state_report (from data/), or via the
+/run-etl-module skill (.claude/skills/run-etl-module/scripts/data_run_module.ps1 etl.state_report).
 """
 
 import sqlite3

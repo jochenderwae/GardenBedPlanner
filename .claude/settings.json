@@ -15,7 +15,7 @@
       "PowerShell(New-Item *)",
       "PowerShell(Stop-Process *)",
       "PowerShell(ssh garden-planner-dev \"*\")",
-      "PowerShell(C:\\\\projects\\\\GardenBedPlanner\\\\claudeTools\\\\*)",
+      "PowerShell(C:\\\\projects\\\\GardenBedPlanner\\\\.claude\\\\skills\\\\*)",
       "PowerShell(Test-NetConnection -ComputerName 192.168.0.26 *)",
       "Bash(where *)",
       "Bash(dir *)",
@@ -34,7 +34,19 @@
       "PowerShell(Invoke-WebRequest -Uri http://localhost:5173 *)",
       "Skill(run)",
       "Skill(run:*)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "Skill(build-data)",
+      "Skill(build-data:*)",
+      "Skill(build-backend)",
+      "Skill(build-backend:*)",
+      "Skill(test-data)",
+      "Skill(test-data:*)",
+      "Skill(test-backend)",
+      "Skill(test-backend:*)",
+      "Skill(run-etl-module)",
+      "Skill(run-etl-module:*)",
+      "Skill(git)",
+      "Skill(git:*)"
     ]
   }
 }

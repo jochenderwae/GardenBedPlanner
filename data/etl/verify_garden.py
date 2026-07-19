@@ -5,8 +5,8 @@ overlap (no two bed rectangles may overlap in garden-space), and that every
 the kind of check worth re-running after every regeneration
 (etl.generate_example_garden), not a one-off.
 
-Run with: uv run python -m etl.verify_garden (from data/), or via
-claudeTools/data_verify_garden.ps1 from the repo root.
+Run with: uv run python -m etl.verify_garden (from data/), or via the
+/test-data skill (.claude/skills/test-data/scripts/data_verify_garden.ps1).
 
 Exit code is non-zero if any check fails, so this is safe to use as a gate
 (e.g. before treating a regenerated example_garden.json as good to commit).
