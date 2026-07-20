@@ -48,7 +48,8 @@ interface ToolbarProps {
 }
 
 /** The canvas editor's single top-of-canvas control row - view mode
- * (My beds/Example garden), the Garden/Beds/Plants/Equipment tab switcher,
+ * (Edit your own beds / View the read-only example garden), the
+ * Garden/Beds/Plants/Equipment tab switcher,
  * zoom readout + "Fit view", and whichever tab-specific tools are active
  * (Add bed on the Beds tab; pick-a-plant + Point/Row/Area mode on the
  * Plants tab). Consolidated out of what used to be ad hoc JSX directly in
@@ -87,7 +88,7 @@ export function Toolbar({
             )}
             onClick={() => onModeChange("mine")}
           >
-            My beds
+            Edit
           </button>
           <button
             type="button"
@@ -97,7 +98,7 @@ export function Toolbar({
             )}
             onClick={() => onModeChange("example")}
           >
-            Example garden
+            View
           </button>
         </div>
         {mode === "mine" && (
