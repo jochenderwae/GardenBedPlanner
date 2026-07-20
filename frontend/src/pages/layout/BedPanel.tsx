@@ -3,6 +3,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogPopup,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 
@@ -18,6 +27,7 @@ interface BedPanelProps {
 export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState(bed);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   useEffect(() => setDraft(bed), [bed]);
 
@@ -222,16 +232,25 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
           />
         </label>
 
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => {
-            if (confirm(`Delete bed "${bed.name}"?`)) deleteMutation.mutate();
-          }}
-        >
+        <Button variant="destructive" size="sm" onClick={() => setConfirmDeleteOpen(true)}>
           <Trash2 /> Delete bed
         </Button>
       </div>
+
+      <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+        <AlertDialogPopup>
+          <AlertDialogTitle>Delete bed "{bed.name}"?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This removes the bed and its layout permanently - it can't be undone.
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={() => deleteMutation.mutate()}>
+              <Trash2 /> Delete bed
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogPopup>
+      </AlertDialog>
     </Card>
   );
 }
