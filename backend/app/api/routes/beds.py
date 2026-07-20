@@ -5,7 +5,9 @@ from sqlmodel import Session, select
 from app.api.deps import commit_or_409
 from app.core.db import get_session
 from app.models.bed import Bed as BedTable
+from app.models.bed_equipment import BedEquipment
 from app.models.geometry import Geometry, parse_geometry
+from app.models.planting import Planting
 
 router = APIRouter(prefix="/beds", tags=["beds"])
 
@@ -102,7 +104,23 @@ def update_bed(
 
 
 @router.delete("/{bed_id}", status_code=204)
-def delete_bed(bed_id: int, session: Session = Depends(get_session)) -> None:
+def delete_bed(
+    bed_id: int, cascade: bool = False, session: Session = Depends(get_session)
+) -> None:
     bed = _get_or_404(session, bed_id)
+    if cascade:
+        for planting in session.exec(select(Planting).where(Planting.bed_id == bed_id)).all():
+            session.delete(planting)
+        for equipment in session.exec(
+            select(BedEquipment).where(BedEquipment.bed_id == bed_id)
+        ).all():
+            session.delete(equipment)
+        # No SQLAlchemy `relationship()` links Bed to Planting/BedEquipment
+        # (plain FK columns only - see each model's own docstring), so the
+        # ORM's unit-of-work has no dependency info to order these deletes
+        # against the bed's own delete below; without an explicit flush here
+        # it can (and did, verified against garden_test) emit the bed's
+        # DELETE first and hit the FK constraint it's trying to avoid.
+        session.flush()
     session.delete(bed)
     commit_or_409(session)

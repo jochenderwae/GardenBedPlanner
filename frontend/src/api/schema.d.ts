@@ -1393,7 +1393,9 @@ export interface operations {
     };
     delete_bed_api_beds__bed_id__delete: {
         parameters: {
-            query?: never;
+            query?: {
+                cascade?: boolean;
+            };
             header?: never;
             path: {
                 bed_id: number;
