@@ -8,6 +8,7 @@ import {
   clampPointToBounds,
   clampRectPositionToBounds,
   colorsForBedCategory,
+  formatDistanceCm,
   rectanglesOverlap,
   snapToGrid,
 } from "./geometry";
@@ -85,6 +86,15 @@ export function BedNode({
   // rejected drag left its Konva nodes in) when a polygon-bed edit is
   // rejected for overlapping another bed - see handlePolygonChange below.
   const [polygonResetKey, setPolygonResetKey] = useState(0);
+  // Live width x height readout shown only while a drag or resize gesture is
+  // in progress (Konva's Transformer only reports the new size on
+  // onTransformEnd otherwise - the known gap this fixes). Toggled via React
+  // state on gesture start/end (fires once per gesture, cheap), but updated
+  // on every move/transform tick via an imperative Konva ref + batchDraw
+  // (same pattern PolygonEditor.tsx's handleVertexDragMove already uses for
+  // live vertex feedback) rather than a React re-render per tick.
+  const [showDimensions, setShowDimensions] = useState(false);
+  const dimensionTextRef = useRef<Konva.Text>(null);
   const geometry = bed.border_geometry;
 
   useEffect(() => {
@@ -147,6 +157,16 @@ export function BedNode({
           listening={interactive}
           onDragStart={() => {
             lastValidPosRef.current = { x: geometry.x, y: geometry.y };
+            setShowDimensions(true);
+          }}
+          onDragMove={(e) => {
+            const node = e.target;
+            dimensionTextRef.current?.position({ x: node.x(), y: node.y() - 16 / viewport.scale });
+            // Width/height don't change during a plain move - re-set the
+            // text anyway (cheap) so the label is consistent whichever
+            // gesture (drag or resize) is currently showing it.
+            dimensionTextRef.current?.text(`${formatDistanceCm(geometry.width)} × ${formatDistanceCm(geometry.height)}`);
+            dimensionTextRef.current?.getLayer()?.batchDraw();
           }}
           dragBoundFunc={(pos) => {
             const world = screenToWorld(pos, viewport);
@@ -168,10 +188,22 @@ export function BedNode({
           }}
           onClick={onSelect}
           onTap={onSelect}
-          onDragEnd={(e) =>
-            onChange({ ...geometry, x: e.target.x(), y: e.target.y() })
-          }
+          onDragEnd={(e) => {
+            setShowDimensions(false);
+            onChange({ ...geometry, x: e.target.x(), y: e.target.y() });
+          }}
+          onTransformStart={() => setShowDimensions(true)}
+          onTransform={() => {
+            const node = shapeRef.current;
+            if (!node) return;
+            const width = Math.max(MIN_SIZE_CM, Math.round(node.width() * node.scaleX()));
+            const height = Math.max(MIN_SIZE_CM, Math.round(node.height() * node.scaleY()));
+            dimensionTextRef.current?.position({ x: node.x(), y: node.y() - 16 / viewport.scale });
+            dimensionTextRef.current?.text(`${formatDistanceCm(width)} × ${formatDistanceCm(height)}`);
+            dimensionTextRef.current?.getLayer()?.batchDraw();
+          }}
           onTransformEnd={() => {
+            setShowDimensions(false);
             const node = shapeRef.current;
             if (!node) return;
             const scaleX = node.scaleX();
@@ -208,6 +240,17 @@ export function BedNode({
             fontSize={10}
             fill="#1f2937"
             opacity={0.7}
+            listening={false}
+          />
+        )}
+        {showDimensions && (
+          <Text
+            ref={dimensionTextRef}
+            x={geometry.x}
+            y={geometry.y - 16 / viewport.scale}
+            text={`${formatDistanceCm(geometry.width)} × ${formatDistanceCm(geometry.height)}`}
+            fontSize={12 / viewport.scale}
+            fill="#1d4ed8"
             listening={false}
           />
         )}

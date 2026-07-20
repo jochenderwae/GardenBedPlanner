@@ -185,6 +185,14 @@ export function formatDistanceCm(cm: number): string {
   return `${(cm / 100).toFixed(cm % 100 === 0 ? 0 : 1)}m`;
 }
 
+/** Straight-line distance (cm) between two points - used for the polygon
+ * vertex-drag dimension readout (distance to each neighboring vertex, see
+ * PolygonEditor.tsx) and generically available for any other point-distance
+ * need. */
+export function distanceBetweenPoints(a: { x: number; y: number }, b: { x: number; y: number }): number {
+  return Math.hypot(b.x - a.x, b.y - a.y);
+}
+
 export type Bounds = { x: number; y: number; width: number; height: number };
 
 function clamp(value: number, lo: number, hi: number): number {

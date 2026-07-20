@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type Konva from "konva";
-import { Circle, Group, Line } from "react-konva";
+import { Circle, Group, Line, Text } from "react-konva";
 import type { PolygonGeometry } from "@/api/client";
+import { distanceBetweenPoints, formatDistanceCm } from "./geometry";
 
 const MIN_POINTS = 3;
 const VERTEX_RADIUS = 5;
@@ -63,17 +64,55 @@ export function PolygonEditor({
   const points = geometry.points;
   const showHandles = interactive && isSelected;
 
+  // Live "distance to each neighboring vertex" readout while a vertex is
+  // being dragged (simpler than a full running-area readout - see the
+  // "Live dimension labels" backlog item's own note that precise per-edge
+  // polygon dimensioning is a nice-to-have, not baseline, for now). Which
+  // vertex is active is React state (set once per gesture, on start/end);
+  // the two label positions/text update every drag tick via the same
+  // imperative Konva ref + batchDraw pattern handleVertexDragMove already
+  // uses for the line itself, not a React re-render per tick.
+  const [activeVertexIndex, setActiveVertexIndex] = useState<number | null>(null);
+  const prevDistTextRef = useRef<Konva.Text>(null);
+  const nextDistTextRef = useRef<Konva.Text>(null);
+
   function handleVertexDragMove(index: number, e: Konva.KonvaEventObject<DragEvent>) {
     const node = e.target;
-    const newPoints = points.map((p, i) => (i === index ? { x: node.x(), y: node.y() } : p));
+    const current = { x: node.x(), y: node.y() };
+    const newPoints = points.map((p, i) => (i === index ? current : p));
     lineRef.current?.points(flatten(newPoints));
+
+    const prev = points[(index - 1 + points.length) % points.length];
+    const next = points[(index + 1) % points.length];
+    prevDistTextRef.current?.position({ x: (current.x + prev.x) / 2, y: (current.y + prev.y) / 2 });
+    prevDistTextRef.current?.text(formatDistanceCm(distanceBetweenPoints(current, prev)));
+    nextDistTextRef.current?.position({ x: (current.x + next.x) / 2, y: (current.y + next.y) / 2 });
+    nextDistTextRef.current?.text(formatDistanceCm(distanceBetweenPoints(current, next)));
+
     lineRef.current?.getLayer()?.batchDraw();
   }
 
   function handleVertexDragEnd(index: number, e: Konva.KonvaEventObject<DragEvent>) {
     const node = e.target;
+    setActiveVertexIndex(null);
     onChange({ ...geometry, points: points.map((p, i) => (i === index ? { x: node.x(), y: node.y() } : p)) });
   }
+
+  // Initial label position/text for the render that follows
+  // setActiveVertexIndex (before the first drag-move tick updates the refs
+  // imperatively) - null while no vertex is being dragged.
+  const activeVertexLabels =
+    activeVertexIndex != null
+      ? (() => {
+          const current = points[activeVertexIndex];
+          const prev = points[(activeVertexIndex - 1 + points.length) % points.length];
+          const next = points[(activeVertexIndex + 1) % points.length];
+          return {
+            prev: { x: (current.x + prev.x) / 2, y: (current.y + prev.y) / 2, text: formatDistanceCm(distanceBetweenPoints(current, prev)) },
+            next: { x: (current.x + next.x) / 2, y: (current.y + next.y) / 2, text: formatDistanceCm(distanceBetweenPoints(current, next)) },
+          };
+        })()
+      : null;
 
   function handleShapeDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
     const node = e.target;
@@ -132,11 +171,34 @@ export function PolygonEditor({
             stroke="#fff"
             strokeWidth={1}
             draggable
+            onDragStart={() => setActiveVertexIndex(i)}
             onDragMove={(e) => handleVertexDragMove(i, e)}
             onDragEnd={(e) => handleVertexDragEnd(i, e)}
             onDblClick={() => handleVertexRemove(i)}
           />
         ))}
+      {activeVertexLabels && (
+        <>
+          <Text
+            ref={prevDistTextRef}
+            x={activeVertexLabels.prev.x}
+            y={activeVertexLabels.prev.y}
+            text={activeVertexLabels.prev.text}
+            fontSize={11}
+            fill="#1d4ed8"
+            listening={false}
+          />
+          <Text
+            ref={nextDistTextRef}
+            x={activeVertexLabels.next.x}
+            y={activeVertexLabels.next.y}
+            text={activeVertexLabels.next.text}
+            fontSize={11}
+            fill="#1d4ed8"
+            listening={false}
+          />
+        </>
+      )}
     </Group>
   );
 }

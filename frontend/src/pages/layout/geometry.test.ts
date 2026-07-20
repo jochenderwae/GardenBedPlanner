@@ -6,6 +6,7 @@ import {
   clampRectPositionToBounds,
   colorForSlug,
   colorsForBedCategory,
+  distanceBetweenPoints,
   fieldGeometryFromDrag,
   formatDistanceCm,
   normalizedRect,
@@ -190,6 +191,16 @@ describe("formatDistanceCm", () => {
   it("formats partial meters with one decimal", () => {
     expect(formatDistanceCm(150)).toBe("1.5m");
     expect(formatDistanceCm(30)).toBe("0.3m");
+  });
+});
+
+describe("distanceBetweenPoints", () => {
+  it("computes the straight-line distance between two points", () => {
+    expect(distanceBetweenPoints({ x: 0, y: 0 }, { x: 3, y: 4 })).toBe(5);
+  });
+
+  it("returns 0 for coincident points", () => {
+    expect(distanceBetweenPoints({ x: 10, y: -5 }, { x: 10, y: -5 })).toBe(0);
   });
 });
 
