@@ -234,12 +234,30 @@ export function Layout() {
     }
   }
 
-  /** Stage's own drag (empty-canvas drag-to-pan - beds/plantings/vertices
-   * each have their own `draggable` and capture the gesture before it
-   * bubbles to the Stage, so this only fires for panning). Konva owns the
-   * position during the gesture same as every other drag in this editor;
-   * mirror it into `viewport` state once the gesture ends. */
+  /** Guards the Stage's own drag-to-pan against child nodes (beds, garden
+   * boundary, polygon vertices, plantings) that are themselves `draggable`.
+   * Konva's Stage-drag is triggered by any pointerdown inside the canvas
+   * container regardless of which child shape was actually hit - it is
+   * *not* stopped by a child node's own `draggable`/`dragBoundFunc` the way
+   * DOM event bubbling would suppress a parent handler. Without this guard,
+   * dragging a bed or a polygon vertex also pans the whole garden view at
+   * the same time. Konva's own documented fix: on `dragstart`, if the
+   * event's target isn't the Stage itself, immediately stop the Stage's
+   * drag so only the child node's own drag proceeds. */
+  function handleStageDragStart(e: Konva.KonvaEventObject<DragEvent>) {
+    const stage = e.target.getStage();
+    if (!stage) return;
+    if (e.target !== stage) {
+      stage.stopDrag();
+    }
+  }
+
+  /** Stage's own drag (empty-canvas drag-to-pan only, see the dragstart
+   * guard above). Konva owns the position during the gesture same as every
+   * other drag in this editor; mirror it into `viewport` state once the
+   * gesture ends. */
   function handleStageDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
+    if (e.target !== e.target.getStage()) return;
     setViewport((v) => ({ ...v, x: e.target.x(), y: e.target.y() }));
   }
 
@@ -275,6 +293,7 @@ export function Layout() {
       name: garden.name,
       climate_zone: garden.climate_zone,
       location: garden.location,
+      orientation_deg: garden.orientation_deg,
       notes: garden.notes,
       border_geometry: geometry,
     });
@@ -361,6 +380,7 @@ export function Layout() {
               scaleY={viewport.scale}
               draggable
               onWheel={handleWheel}
+              onDragStart={handleStageDragStart}
               onDragEnd={handleStageDragEnd}
               onMouseDown={(e) => {
                 if (e.target === e.target.getStage()) {
@@ -444,6 +464,7 @@ export function Layout() {
             scaleY={viewport.scale}
             draggable
             onWheel={handleWheel}
+            onDragStart={handleStageDragStart}
             onDragEnd={handleStageDragEnd}
           >
             <Layer listening={false}>

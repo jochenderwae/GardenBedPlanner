@@ -42,6 +42,7 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
       name: draft.name,
       climate_zone: draft.climate_zone,
       location: draft.location,
+      orientation_deg: draft.orientation_deg,
       notes: draft.notes,
       border_geometry: draft.border_geometry,
       ...patch,
@@ -76,6 +77,7 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
                 name,
                 climate_zone: null,
                 location: null,
+                orientation_deg: 0,
                 notes: "",
                 border_geometry: {
                   type: "rectangle",
