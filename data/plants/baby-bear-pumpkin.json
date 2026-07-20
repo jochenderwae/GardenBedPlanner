@@ -38,6 +38,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Baby bear pumpkins require large space and spread outward from their base without a trunk or climbing structure."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Pumpkins are typically grown as annuals in temperate climates like Belgium."
     }
   ],
   "growing_information": [
@@ -95,5 +99,6 @@
       "notes": "Space pumpkin hills about 4-5 feet apart within a row."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

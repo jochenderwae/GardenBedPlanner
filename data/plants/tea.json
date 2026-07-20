@@ -33,7 +33,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: The description mentions that tea plants can grow to 10m but are pruned to 2m or shorter in cultivation, indicating an upright growth habit."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Tea plants are evergreen shrubs that can live for many years and are typically grown as perennials in home gardens."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "perennial"
 }

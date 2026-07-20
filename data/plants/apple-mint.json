@@ -28,7 +28,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Apple Mint spreads by underground roots called rhizomes and can become invasive in a garden."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Apple Mint is typically grown as a perennial in home gardens in Belgium."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "perennial"
 }

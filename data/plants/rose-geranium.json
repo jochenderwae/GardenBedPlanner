@@ -23,7 +23,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Shrub, Forb/herb' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Rose Geranium is typically grown as an annual in temperate climates like Belgium because it is not cold-hardy and does not survive the winter outdoors."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

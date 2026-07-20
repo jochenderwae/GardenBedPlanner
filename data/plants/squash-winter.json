@@ -56,7 +56,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine', but squash-winter is a known ground-sprawling vine (curated override), not a trellised climber"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Winter squash is typically grown as an annual in Belgium because it is sensitive to frost and completes its life cycle within one growing season."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

@@ -22,7 +22,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='climbing' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Hairy vetch is typically grown as a cover crop and green manure in temperate climates like Belgium, where it is often planted in the fall and allowed to grow through the winter before being tilled into the soil in the spring."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "annual"
 }

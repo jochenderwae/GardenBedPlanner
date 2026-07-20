@@ -112,6 +112,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Shrub, Forb/herb' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Sage (Salvia officinalis) is described as an evergreen shrub that can be cut back and will regrow multiple times in a season, indicating it is typically grown as a perennial in a home garden."
     }
   ],
   "growing_information": [
@@ -129,5 +133,6 @@
       "notes": "roots can be taken up when the plowing is done, divided and reset"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "perennial"
 }

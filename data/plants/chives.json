@@ -101,6 +101,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Chives grow as dense clusters of slender bulbs and have flat, hollow leaves that emerge upright from the ground."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Chives are explicitly described as 'hardy perennial' and are grown for their tops throughout the season."
     }
   ],
   "growing_information": [
@@ -131,5 +135,6 @@
       "notes": "ensures healthy growth"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "perennial"
 }

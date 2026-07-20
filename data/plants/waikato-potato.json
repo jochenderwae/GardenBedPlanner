@@ -45,6 +45,10 @@
       "source_url": "https://en.wikipedia.org/wiki/Solanum",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Solanum'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Potatoes (Solanum tuberosum) are typically grown as annuals in temperate climates like Belgium, as they are harvested within one growing season."
     }
   ],
   "growing_information": [
@@ -123,5 +127,6 @@
   ],
   "growth_habit": "rosette",
   "genus": "Solanum",
-  "family": "Solanaceae"
+  "family": "Solanaceae",
+  "life_cycle": "annual"
 }

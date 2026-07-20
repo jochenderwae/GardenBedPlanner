@@ -52,6 +52,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: The description mentions training plants to a single stem and tying them to stakes 4-5 feet high, indicating an upright growth habit."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Tomatoes are typically grown as annuals in Belgium's temperate climate."
     }
   ],
   "growing_information": [
@@ -126,5 +130,6 @@
       "notes": "flaring frames or trellises for support"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

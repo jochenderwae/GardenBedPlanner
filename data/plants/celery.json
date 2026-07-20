@@ -107,6 +107,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Celery has long fibrous stalks that grow upright from the ground."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Celery is typically grown as a biennial in temperate climates like Belgium, where it is often started from seed in the first year and harvested in the second year for its stalks."
     }
   ],
   "growing_information": [
@@ -188,5 +192,6 @@
       "notes": "earthing up with loose, fine soil or using boards to shade the plants"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "biennial"
 }

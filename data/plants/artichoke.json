@@ -41,6 +41,10 @@
       "source_url": "https://en.wikipedia.org/wiki/Cynara",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Cynara'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Artichokes are typically grown as perennials in Belgium's temperate climate (Zone 7), producing edible flower-heads over multiple years."
     }
   ],
   "growing_information": [
@@ -93,5 +97,6 @@
   ],
   "growth_habit": "upright",
   "genus": "Cynara",
-  "family": "Asteraceae"
+  "family": "Asteraceae",
+  "life_cycle": "perennial"
 }

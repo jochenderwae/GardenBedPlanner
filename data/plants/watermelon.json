@@ -65,6 +65,10 @@
       "attribution": "project-gutenberg",
       "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
       "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Watermelons are typically grown as annuals in Belgium due to the need for a long, warm growing season and their sensitivity to frost."
     }
   ],
   "growing_information": [
@@ -110,5 +114,6 @@
       "need_type": "hilling",
       "notes": "mixing several shovelfuls of well-rotted manure with the soil and covering it with fine, soft earth"
     }
-  ]
+  ],
+  "life_cycle": "annual"
 }

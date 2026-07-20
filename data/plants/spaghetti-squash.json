@@ -55,6 +55,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Spaghetti squash grows on sprawling vines and can be either bush or running varieties."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Spaghetti squash is typically grown as an annual in temperate climates like Belgium, as it is sensitive to frost and completes its life cycle within one growing season."
     }
   ],
   "growing_information": [
@@ -112,5 +116,6 @@
       "notes": "spaced 4 to 5 feet apart for bush varieties, 8 to 16 feet for running varieties, similar to cucumbers and cantaloupes"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

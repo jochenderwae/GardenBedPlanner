@@ -51,6 +51,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Golden Beet has a taproot and leaves that radiate from the ground level."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Golden beets are typically grown as annuals in a temperate climate like Belgium, as they are harvested within one growing season."
     }
   ],
   "growing_information": [
@@ -128,5 +132,6 @@
       "notes": "Thin seedlings to 4 to 5 inches apart in the row"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "annual"
 }

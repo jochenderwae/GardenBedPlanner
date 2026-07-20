@@ -52,6 +52,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Cherry tomatoes grow as upright plants that require staking for support and do not spread out widely or form a rosette."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Cherry tomatoes are typically grown as annuals in Belgium's temperate climate, as they are sensitive to frost and do not survive the winter outdoors."
     }
   ],
   "growing_information": [
@@ -123,5 +127,6 @@
       "notes": "spacing them 18-24 inches apart in rows that are 3.5-4 feet apart"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

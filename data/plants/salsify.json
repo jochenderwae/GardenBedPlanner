@@ -44,6 +44,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Salsify grows with leaves radiating from a central point at ground level and has an edible root."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Salsify is typically grown as an annual in home gardens for its edible root and leaves."
     }
   ],
   "growing_information": [
@@ -89,5 +93,6 @@
       "notes": "prefers deep, rich soil"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "annual"
 }

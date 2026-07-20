@@ -20,9 +20,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Poncirus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Poncirus'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: The trifoliate orange is known for its cold-hardiness and is typically grown as a perennial in temperate climates like Belgium."
     }
   ],
   "growth_habit": "tree",
   "genus": "Poncirus",
-  "family": "Rutaceae"
+  "family": "Rutaceae",
+  "life_cycle": "perennial"
 }

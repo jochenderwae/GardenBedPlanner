@@ -25,7 +25,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Mizuna's leaves radiate from a central point and grow close to the ground."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Mizuna is typically grown as an annual in temperate climates like Belgium, as it is harvested before it can flower and set seed."
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "annual"
 }

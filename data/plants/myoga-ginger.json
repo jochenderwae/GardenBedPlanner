@@ -23,7 +23,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Myoga Ginger spreads through rhizomes and grows low to the ground."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Myoga Ginger is typically grown as a perennial in temperate climates like Belgium due to its cold hardiness and ability to spread through rhizomes."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "perennial"
 }

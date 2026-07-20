@@ -46,6 +46,10 @@
       "source_url": "https://en.wikipedia.org/wiki/Daucus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Daucus'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Carrots are typically grown as biennials in home gardens because they are usually harvested in the first year for their roots but can be left to flower and produce seed in the second year."
     }
   ],
   "growing_information": [
@@ -113,5 +117,6 @@
   ],
   "growth_habit": "rosette",
   "genus": "Daucus",
-  "family": "Apiaceae"
+  "family": "Apiaceae",
+  "life_cycle": "biennial"
 }

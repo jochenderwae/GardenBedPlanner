@@ -26,7 +26,12 @@
       "source_url": "https://en.wikipedia.org/wiki/Mapacho",
       "attribution": "manual-research",
       "notes": "common_name corrected from the bogus 'You Can Grow Anything' to 'Mapacho' - verified 2026-07-19: Wikipedia redirects 'Mapacho' straight to its 'Nicotiana rustica' article, confirming Mapacho (the plant's real common name in South American/Amazonian ceremonial-tobacco use, matching this record's own slug and 'Ceremonial Tabacco' description) is a recognized common name, not a typo or de-slugify guess. Same single-source root cause as phacelia/lemon/curly-dock/carrots - see phacelia.json's data_sources note for the full root-cause writeup (openfarm-crops-rescue's own cached crops.json has this literal string for exactly these 5 records)."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Mapacho (Nicotiana rustica) is typically grown as an annual in temperate climates like Belgium because it is sensitive to frost and is usually started from seed each year."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

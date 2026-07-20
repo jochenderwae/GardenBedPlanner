@@ -95,6 +95,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Carrots have leaves that radiate from a central point at ground level and the harvestable part is an underground taproot."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Carrots are typically grown for their root in the first year and then allowed to flower and go to seed in the second year when grown for seed production."
     }
   ],
   "growing_information": [
@@ -158,5 +162,6 @@
       "notes": "rows 12 to 18 inches apart and thinned out to 3 to 5 inches within the row"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "biennial"
 }

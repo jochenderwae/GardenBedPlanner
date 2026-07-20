@@ -39,6 +39,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Celeriac develops a large root at soil level topped with curly leaves radiating from the center."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Celeriac is typically grown as a biennial in home gardens because it produces its edible root in the first year and flowers/seeds in the second year."
     }
   ],
   "growing_information": [
@@ -69,5 +73,6 @@
       "notes": "sow seeds in a seed-bed rather than directly where they are to stand"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "biennial"
 }

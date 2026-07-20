@@ -89,6 +89,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Kohlrabi grows as an upright clump with a swollen stem and leaves sprouting from the top."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Kohlrabi is typically grown as an annual in temperate climates like Belgium, as it is harvested within a single growing season for its tender stems."
     }
   ],
   "growing_information": [
@@ -126,5 +130,6 @@
       "notes": "8 inches apart in rows spaced 18 to 36 inches apart"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

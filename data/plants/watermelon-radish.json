@@ -57,6 +57,10 @@
       "source_url": "https://en.wikipedia.org/wiki/Raphanus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Raphanus'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Watermelon radishes are typically grown for their edible roots in a single growing season and are not allowed to go to seed."
     }
   ],
   "growing_information": [
@@ -146,5 +150,6 @@
   ],
   "growth_habit": "rosette",
   "genus": "Raphanus",
-  "family": "Brassicaceae"
+  "family": "Brassicaceae",
+  "life_cycle": "annual"
 }

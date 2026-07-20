@@ -167,6 +167,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Cabbage grows as an upright clump with dense heads on stalks, fitting the 'upright' category."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Cabbage is typically grown as an annual in temperate climates like Belgium, harvested within a single growing season."
     }
   ],
   "growing_information": [
@@ -247,5 +251,6 @@
       "notes": "for autumn planting"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

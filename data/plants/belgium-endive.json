@@ -34,7 +34,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Belgian Endive forms a head of leaves that radiate from a central point, similar to other rosette-forming leafy greens."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Belgian Endive is typically grown as a biennial in home gardens because it requires two growing seasons to produce its characteristic heads."
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "biennial"
 }

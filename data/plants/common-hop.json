@@ -26,7 +26,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='climbing' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: The common hop is described as a vigorous perennial climbing vine that dies back to the crown each winter but regrows from the same root system in temperate climates."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "perennial"
 }

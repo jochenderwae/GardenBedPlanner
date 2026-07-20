@@ -43,6 +43,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Fuji Apple trees are typically grown as perennials in home gardens in Belgium."
     }
   ],
   "growing_information": [
@@ -106,5 +110,6 @@
       "notes": "4-6 foot wide space around each tree, loosening the soil every spring and keeping it stirred until August"
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "life_cycle": "perennial"
 }

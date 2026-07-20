@@ -111,7 +111,17 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Thyme is typically grown as a perennial in Belgium's temperate climate."
+    },
+    {
+      "attribution": "ollama-life-cycle-years-inference",
+      "notes": "life_cycle_years=3 inferred by Ollama; reasoning: The description mentions that thyme needs to be divided or replaced after 3-4 years."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "perennial",
+  "life_cycle_years": 3
 }

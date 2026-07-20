@@ -37,7 +37,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Banana plants have a single trunk and grow to significant heights."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Bananas are not typically grown outdoors in Belgium due to the temperate climate and cold temperatures."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "life_cycle": "annual"
 }

@@ -143,6 +143,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Forb/herb, Subshrub' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Potatoes are typically grown as annuals in Belgium, harvested within a single growing season."
     }
   ],
   "growing_information": [
@@ -212,5 +216,6 @@
       "notes": "keep the soil well-worked and close to the roots"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

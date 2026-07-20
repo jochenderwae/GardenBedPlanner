@@ -324,6 +324,130 @@ def infer_growth_habit(
     return resolved, reasoning
 
 
+_LIFE_CYCLE_VALUES = ["annual", "biennial", "perennial"]
+
+
+def infer_life_cycle(
+    slug: str,
+    common_name: str,
+    botanical_name: str | None,
+    family: str | None,
+    description: str | None,
+    growing_info_excerpt: str | None,
+) -> tuple[str | None, str]:
+    """Infers life_cycle (annual/biennial/perennial) - see
+    populate_life_cycle.py. No structured source in this pipeline carries
+    this field at all: Trefle's top-level `duration` key (the obvious
+    candidate) is confirmed null in every one of the 298 cached responses
+    checked (2026-07-20), and its `growth`/`specifications` sub-objects have
+    no duration-type field either. So this leans on Ollama's own general
+    botanical knowledge, informed by whatever description/growing_information
+    text is available (per the task's own instruction to check both) -
+    same shape as infer_botanical_name's "no structured candidate at all"
+    case, not a multi-source conflict resolution.
+
+    Deliberately asks for how the plant is typically GROWN in a home garden
+    in a temperate climate, not strict botanical taxonomy - many familiar
+    "annual" vegetables (tomato, pepper) are botanically tender perennials
+    but are grown/replanted as annuals here, and that's the answer a garden
+    planner needs. Conservative like infer_botanical_name/infer_growth_habit:
+    null rather than a guess when not confident."""
+    context_lines = [f"Common name: {common_name}"]
+    if botanical_name:
+        context_lines.append(f"Botanical name: {botanical_name}")
+    if family:
+        context_lines.append(f"Family: {family}")
+    if description:
+        context_lines.append(f"Description: {description[:500]}")
+    if growing_info_excerpt:
+        context_lines.append(f"Growing information excerpt: {growing_info_excerpt}")
+
+    prompt = (
+        "You are classifying a garden plant's life cycle for a home-garden "
+        "planning tool used in a temperate climate (Belgium). Choose exactly "
+        "one of: annual, biennial, perennial - based on how the plant is "
+        "typically GROWN in a home vegetable/fruit garden there, not just its "
+        "strict botanical classification (e.g. tomato and pepper are "
+        "botanically tender perennials but are grown as annuals in this "
+        "climate and should be classified 'annual'; a crop explicitly grown "
+        "for its second-year flowering/seed, like carrot-for-seed, is still "
+        "'biennial').\n\n"
+        + "\n".join(context_lines)
+        + "\n\nIf you are not reasonably confident, respond with null rather "
+        'than guessing. Respond with JSON only: {"resolved_value": "annual" '
+        'or "biennial" or "perennial" or null, "reasoning": "<one sentence>"}.'
+    )
+    value_type = {"enum": [*_LIFE_CYCLE_VALUES, None]}
+    try:
+        resolved, reasoning = _call_ollama(prompt, _response_schema(value_type))
+        if resolved is not None and resolved not in _LIFE_CYCLE_VALUES:
+            resolved, reasoning = (
+                None,
+                f"Ollama returned {resolved!r}, not a valid life_cycle value - treated as unmatched",
+            )
+    except Exception as exc:  # noqa: BLE001 - never let an LLM hiccup abort the run
+        resolved, reasoning = None, f"Ollama call failed ({exc!r})"
+
+    _log_conflict(slug, "life_cycle (inferred)", [], resolved, reasoning)
+    return resolved, reasoning
+
+
+def infer_life_cycle_years(
+    slug: str,
+    common_name: str,
+    botanical_name: str | None,
+    description: str | None,
+    growing_info_excerpt: str | None,
+) -> tuple[int | None, str]:
+    """Only called for plants already classified perennial - a typical
+    productive lifespan in years before a planting/patch is customarily
+    renewed (e.g. raspberry canes ~7 years, a strawberry bed ~3-4 years, an
+    asparagus bed ~15-20 years). Per plant.schema.json's own field
+    description, most perennials leave this null (a fruit tree or a
+    perennial herb like rosemary has no such customary renewal interval) -
+    only populate when there's a genuinely well-known, specific figure
+    backed by common garden practice, not a vague "long-lived" answer.
+    Deliberately conservative, same reasoning as the other infer_* helpers
+    here."""
+    context_lines = [f"Common name: {common_name}"]
+    if botanical_name:
+        context_lines.append(f"Botanical name: {botanical_name}")
+    if description:
+        context_lines.append(f"Description: {description[:500]}")
+    if growing_info_excerpt:
+        context_lines.append(f"Growing information excerpt: {growing_info_excerpt}")
+
+    prompt = (
+        "For the perennial garden plant below, is there a well-known, "
+        "specific TYPICAL PRODUCTIVE LIFESPAN in years, after which a home "
+        "gardener customarily renews/replaces the planting (e.g. raspberry "
+        "canes ~7 years, a strawberry bed ~3-4 years, an asparagus bed "
+        "~15-20 years)? This does NOT mean how long the plant can survive or "
+        "how old it can get overall - most perennials (fruit trees, "
+        "perennial herbs like rosemary or thyme, most berry bushes) have no "
+        "such customary renewal interval and should get null.\n\n"
+        + "\n".join(context_lines)
+        + "\n\nIf there is a well-known typical figure, respond with the "
+        "single integer number of years. If you are not confident there is "
+        'a specific, well-known figure, respond with null. Respond with '
+        'JSON only: {"resolved_value": <integer> or null, "reasoning": '
+        '"<one sentence>"}.'
+    )
+    value_type = {"type": ["integer", "null"]}
+    try:
+        resolved, reasoning = _call_ollama(prompt, _response_schema(value_type))
+        if resolved is not None and (not isinstance(resolved, int) or resolved <= 0):
+            resolved, reasoning = (
+                None,
+                f"Ollama returned {resolved!r}, not a valid positive integer - treated as unmatched",
+            )
+    except Exception as exc:  # noqa: BLE001 - never let an LLM hiccup abort the run
+        resolved, reasoning = None, f"Ollama call failed ({exc!r})"
+
+    _log_conflict(slug, "life_cycle_years (inferred)", [], resolved, reasoning)
+    return resolved, reasoning
+
+
 def _call_ollama(prompt: str, response_schema: dict) -> tuple:
     resp = httpx.post(
         f"{settings.ollama_host}/api/generate",

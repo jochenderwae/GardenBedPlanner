@@ -26,7 +26,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Chestnuts (Castanea sativa) are described as deciduous trees."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Chestnut trees are typically grown as long-lived perennials in a home garden setting."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "life_cycle": "perennial"
 }

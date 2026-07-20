@@ -26,7 +26,12 @@
     {
       "attribution": "manual-research",
       "notes": "common_name corrected from the bogus 'You Can Grow Anything' (a gardening TV show title, not a plant name) to 'Phacelia'. Root cause (2026-07-19 investigation): openfarm-crops-rescue's own cached data/.cache/openfarm-crops-rescue/crops.json has name='You Can Grow Anything' verbatim for this record (and 4 others - mapacho, lemon, curly-dock, carrots) - a single-source scraping artifact in the archived OpenFarm.cc Wayback Machine capture, not an Ollama-mediated conflict (Trefle's map_record never populates common_name at all, so there was no competing candidate to lose against; this value flowed through merge as the sole, 'unambiguous' source). Confirmed via a full scan of crops.json's 340 entries that 'You Can Grow Anything' is the only name shared across multiple slugs (no other duplicate-name pattern found), and confirmed no other data/plants/*.json besides these exact 5 carries this string."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Phacelia tanacetifolia is typically grown as an annual in temperate climates like Belgium, as it completes its life cycle within one growing season."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

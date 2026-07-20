@@ -51,6 +51,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Forb/herb' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Bell peppers are typically grown as annuals in Belgium because they are sensitive to frost and do not survive the winter."
     }
   ],
   "growing_information": [
@@ -89,5 +93,6 @@
       "notes": "plant two pepper plants between each hill of cantaloupes"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

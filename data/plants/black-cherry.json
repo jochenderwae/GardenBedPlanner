@@ -33,7 +33,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree, Shrub' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Black Cherry (Prunus serotina) is a tree that is typically grown as a perennial in temperate climates like Belgium."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "life_cycle": "perennial"
 }

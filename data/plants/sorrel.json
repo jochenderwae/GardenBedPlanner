@@ -34,6 +34,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Sorrel grows as an upright clump with long, wide leaves and a juicy stem."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Sorrel is described as a hardy perennial herb that produces greens in both spring and fall, indicating it is typically grown as a perennial in home gardens."
     }
   ],
   "growing_information": [
@@ -45,5 +49,6 @@
       "copyright_status": "Public domain in the USA."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "perennial"
 }

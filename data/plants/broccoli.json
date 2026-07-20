@@ -89,6 +89,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Broccoli grows as an upright clump with a thick stem and large flower heads atop it."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Broccoli is typically grown as an annual in temperate climates like Belgium, harvested within a single growing season."
     }
   ],
   "growing_information": [
@@ -108,5 +112,6 @@
       "notes": "The outer leaves turned over the head to protect it from frost"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

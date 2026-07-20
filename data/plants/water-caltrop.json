@@ -16,8 +16,13 @@
       "source_url": "https://en.wikipedia.org/wiki/Trapa",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Trapa'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Water Caltrop is typically grown as an annual in temperate climates like Belgium because it completes its life cycle within one growing season."
     }
   ],
   "genus": "Trapa",
-  "family": "Trapaceae"
+  "family": "Trapaceae",
+  "life_cycle": "annual"
 }

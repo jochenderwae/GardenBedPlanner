@@ -93,6 +93,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Bush beans grow as upright bushes from the ground and are typically planted in hills or drills with specific spacing."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Bush beans are typically grown as annuals in a temperate climate like Belgium, as they are sensitive to frost and are planted anew each growing season."
     }
   ],
   "growing_information": [
@@ -164,5 +168,6 @@
       "notes": "plants three inches apart"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

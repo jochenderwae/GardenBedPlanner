@@ -35,6 +35,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='climbing' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Green beans are typically grown as annuals in a temperate climate like Belgium because they are sensitive to cold and are planted anew each year."
     }
   ],
   "growing_information": [
@@ -58,5 +62,6 @@
       "notes": "two feet apart, and about four inches apart in the row"
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "annual"
 }

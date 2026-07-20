@@ -30,7 +30,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='upright' - Trefle growth_habit='Graminoid' is graminoid (grass-like), rendered as upright"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Water Chestnut is not cold-hardy and requires 7 frost-free months to produce ripe corms, making it impractical to grow as a perennial in the temperate climate of Belgium."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

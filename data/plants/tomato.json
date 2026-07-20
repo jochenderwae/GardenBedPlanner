@@ -82,6 +82,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Tomatoes grow as a compact bush and can be trained to a single stem using stakes or frames."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Tomatoes are typically grown as annuals in Belgium because they are not cold-hardy and are usually started from seed indoors and transplanted outdoors after the last frost."
     }
   ],
   "growing_information": [
@@ -147,5 +151,6 @@
       "notes": "18-24 inches apart in rows that are 3.5-4 feet apart for small gardens and 4 feet apart each way for commercial settings"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

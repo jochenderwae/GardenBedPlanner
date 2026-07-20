@@ -138,6 +138,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Dill is typically grown as an upright herb with slender green stems and feathery leaves."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Dill is typically grown as an annual in temperate climates like Belgium because it is sensitive to cold and does not survive winter temperatures."
     }
   ],
   "growing_information": [
@@ -149,5 +153,6 @@
       "copyright_status": "Public domain in the USA."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

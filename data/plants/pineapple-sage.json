@@ -69,7 +69,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Pineapple Sage is described as a shrub and grows in an upright manner."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Pineapple Sage is a tender perennial in its native climate but is typically grown as an annual in the temperate climate of Belgium due to its sensitivity to cold."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

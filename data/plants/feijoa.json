@@ -26,7 +26,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Feijoa is described as a sprawling shrub if not pruned."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Feijoa is typically grown as a perennial shrub in temperate climates like Belgium."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "perennial"
 }

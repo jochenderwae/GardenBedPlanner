@@ -45,6 +45,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Garlic grows as an upright clump from the ground with a tall stalk and branching leaves."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Garlic is typically grown as a perennial in temperate climates like Belgium, as it can remain in the ground for multiple years if left undisturbed."
     }
   ],
   "growing_information": [
@@ -81,5 +85,6 @@
       "notes": "prefers full sun"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "perennial"
 }

@@ -23,7 +23,12 @@
     {
       "attribution": "manual-research",
       "notes": "common_name corrected from the bogus 'You Can Grow Anything' to 'Lemon', matching botanical_name (Citrus x limon) and description unambiguously. Same single-source root cause as phacelia/mapacho/curly-dock/carrots - see phacelia.json's data_sources note for the full root-cause writeup (openfarm-crops-rescue's own cached crops.json has this literal string for exactly these 5 records)."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Lemons are typically grown as perennials in home gardens in Belgium, even though they may need to be brought indoors during winter."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "life_cycle": "perennial"
 }

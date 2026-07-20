@@ -70,6 +70,14 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Raspberries are typically grown as perennials in home gardens in Belgium, as they produce fruit year after year from the same plant."
+    },
+    {
+      "attribution": "ollama-life-cycle-years-inference",
+      "notes": "life_cycle_years=7 inferred by Ollama; reasoning: Raspberry canes typically have a productive lifespan of about 7 years after which they are customarily renewed."
     }
   ],
   "growing_information": [
@@ -116,5 +124,7 @@
       "notes": "Stake plants using durable materials like old fence rails or large limbs."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "perennial",
+  "life_cycle_years": 7
 }

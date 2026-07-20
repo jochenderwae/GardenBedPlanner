@@ -23,8 +23,13 @@
       "source_url": "https://en.wikipedia.org/wiki/Stropharia",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Stropharia'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Wine Cap Mushrooms are known to fruit repeatedly over multiple years when grown in suitable conditions."
     }
   ],
   "genus": "Stropharia",
-  "family": "Strophariaceae"
+  "family": "Strophariaceae",
+  "life_cycle": "perennial"
 }

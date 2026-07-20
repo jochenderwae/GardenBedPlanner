@@ -21,9 +21,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Capsicum",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Capsicum'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Black Olive Chilli is typically grown as an annual in Belgium due to its preference for warm conditions and sensitivity to frost."
     }
   ],
   "growth_habit": "upright",
   "genus": "Capsicum",
-  "family": "Solanaceae"
+  "family": "Solanaceae",
+  "life_cycle": "annual"
 }

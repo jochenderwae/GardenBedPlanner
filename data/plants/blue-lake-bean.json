@@ -37,7 +37,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='climbing' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Blue Lake Bean is typically grown as an annual in temperate climates like Belgium, completing its life cycle within one growing season."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "annual"
 }

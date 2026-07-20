@@ -21,9 +21,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Brassica",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Brassica'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Komatsuna is typically grown as an annual in temperate climates like Belgium because it is harvested for its leaves within a single growing season."
     }
   ],
   "growth_habit": "rosette",
   "genus": "Brassica",
-  "family": "Brassicaceae"
+  "family": "Brassicaceae",
+  "life_cycle": "annual"
 }

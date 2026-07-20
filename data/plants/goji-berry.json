@@ -26,7 +26,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='climbing' - Trefle growth_habit='Shrub, Vine' includes 'Vine'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Goji Berry is typically grown as a perennial in temperate climates like Belgium."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "perennial"
 }

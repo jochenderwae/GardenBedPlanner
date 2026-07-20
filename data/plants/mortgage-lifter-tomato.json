@@ -45,6 +45,10 @@
       "source_url": "https://en.wikipedia.org/wiki/Solanum",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Solanum'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: The Mortgage Lifter Tomato is grown as an annual in temperate climates like Belgium, as it is typically started from seed each year and does not survive the winter."
     }
   ],
   "growing_information": [
@@ -117,5 +121,6 @@
   ],
   "growth_habit": "upright",
   "genus": "Solanum",
-  "family": "Solanaceae"
+  "family": "Solanaceae",
+  "life_cycle": "annual"
 }

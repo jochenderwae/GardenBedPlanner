@@ -34,6 +34,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Purslane spreads outward from its base to create a mat of foliage."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Purslane is typically grown as an annual in temperate climates like Belgium because it matures quickly and is sown early in the spring."
     }
   ],
   "growing_information": [
@@ -51,5 +55,6 @@
       "notes": "grows easily in any good garden soil"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

@@ -53,6 +53,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Leeks grow as an upright clump from the ground and develop a uniformly thick stem."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Leeks are typically grown as biennials in a home garden, as they are often sown in early spring and harvested the following year."
     }
   ],
   "growing_information": [
@@ -83,5 +87,6 @@
       "notes": "earth should be drawn around them to a height of 6 or 8 inches to blanch the fleshy stem"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "biennial"
 }

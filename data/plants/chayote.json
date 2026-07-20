@@ -30,6 +30,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Chayote is described as a vigorous plant that climbs widely by means of numerous branched tendrils."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Chayote is typically grown as an annual in temperate climates like Belgium because it requires 120-150 frost-free days to reach harvest and is not cold-hardy."
     }
   ],
   "growing_information": [
@@ -53,5 +57,6 @@
       "notes": "it does not seem to take kindly to creeping upon the ground"
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "annual"
 }

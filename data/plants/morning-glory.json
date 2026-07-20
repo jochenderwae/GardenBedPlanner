@@ -34,7 +34,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Morning Glory is known for its vining habit and requires support to grow upward."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Morning Glory is typically grown as an annual in temperate climates like Belgium because it is sensitive to frost and does not survive cold winters."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "annual"
 }

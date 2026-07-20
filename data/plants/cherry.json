@@ -28,6 +28,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Cherry trees are typically grown as perennials in a home garden setting."
     }
   ],
   "growing_information": [
@@ -58,5 +62,6 @@
       "notes": "around and beneath the tree to shake off and collect beetles"
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "life_cycle": "perennial"
 }

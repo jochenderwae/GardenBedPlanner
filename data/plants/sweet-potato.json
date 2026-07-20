@@ -74,6 +74,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Forb/herb, Vine' includes 'Vine', but sweet-potato is a known ground-sprawling vine (curated override), not a trellised climber"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Sweet potatoes are typically grown as annuals in Belgium due to the climate's short growing season and frost."
     }
   ],
   "growing_information": [
@@ -124,5 +128,6 @@
       "notes": "to prevent vines from rooting along their length"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

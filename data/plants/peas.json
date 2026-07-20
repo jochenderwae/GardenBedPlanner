@@ -147,6 +147,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='climbing' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Peas are typically grown as annuals in temperate climates like Belgium, as they complete their life cycle within one growing season."
     }
   ],
   "growing_information": [
@@ -210,5 +214,6 @@
       "notes": "Tall varieties require support such as brush or chicken wire"
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "annual"
 }

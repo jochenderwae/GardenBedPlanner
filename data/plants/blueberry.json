@@ -56,7 +56,17 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Blueberry plants are described as erect shrubs that grow taller than wide."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Blueberries are typically grown as perennial shrubs in home gardens in Belgium."
+    },
+    {
+      "attribution": "ollama-life-cycle-years-inference",
+      "notes": "life_cycle_years=15 inferred by Ollama; reasoning: Blueberry bushes typically start to decline in productivity after about 10-20 years."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "perennial",
+  "life_cycle_years": 15
 }

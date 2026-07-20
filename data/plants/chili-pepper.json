@@ -25,6 +25,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Forb/herb' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Chili peppers are typically grown as annuals in Belgium's temperate climate because they do not tolerate frost and are usually started from seed each year."
     }
   ],
   "growing_information": [
@@ -60,5 +64,6 @@
       "notes": "rows 3 feet apart with 15 to 18 inches between plants"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

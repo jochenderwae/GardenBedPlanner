@@ -25,9 +25,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Capsicum",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Capsicum'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Peperoncini are typically grown as annuals in temperate climates like Belgium because they are sensitive to frost and do not survive cold winters."
     }
   ],
   "growth_habit": "upright",
   "genus": "Capsicum",
-  "family": "Solanaceae"
+  "family": "Solanaceae",
+  "life_cycle": "annual"
 }

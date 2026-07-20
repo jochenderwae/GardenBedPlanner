@@ -69,9 +69,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Phaseolus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Phaseolus'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Pole beans are typically grown as annuals in temperate climates like Belgium, as they complete their life cycle within one growing season."
     }
   ],
   "growth_habit": "climbing",
   "genus": "Phaseolus",
-  "family": "Fabaceae"
+  "family": "Fabaceae",
+  "life_cycle": "annual"
 }

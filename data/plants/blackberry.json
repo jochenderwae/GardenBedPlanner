@@ -58,6 +58,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Blackberries typically require a trellis or support to grow upward and produce fruit."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Blackberries are typically grown as perennials in a home garden in Belgium, as they produce fruit on biennial canes but the plant itself lives for multiple years."
+    },
+    {
+      "attribution": "ollama-life-cycle-years-inference",
+      "notes": "life_cycle_years=15 inferred by Ollama; reasoning: Blackberry plants typically have a productive lifespan of about 15 years before they start to decline in productivity."
     }
   ],
   "growing_information": [
@@ -93,5 +101,7 @@
       "notes": "Thin out to four or five canes and pinch these off at about three feet; cut them when tied up the following spring. Cut canes back to four or five feet and laterals to no more than eighteen inches."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "perennial",
+  "life_cycle_years": 15
 }

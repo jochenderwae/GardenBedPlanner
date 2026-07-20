@@ -50,6 +50,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Acorn squash is described as having both bush and running varieties, indicating a low, wide growth habit that spreads outward."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Acorn squash is typically grown as an annual in temperate climates like Belgium, as it completes its life cycle within one growing season."
     }
   ],
   "growing_information": [
@@ -107,5 +111,6 @@
       "notes": "4 to 5 feet apart for bush varieties, 8 to 16 feet for running varieties"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

@@ -32,7 +32,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree, Shrub' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: The sugar maple is a long-lived hardwood tree that is typically grown for its sap, timber, and fall color, making it a perennial in a home garden setting."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "life_cycle": "perennial"
 }

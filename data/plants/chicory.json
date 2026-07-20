@@ -37,6 +37,14 @@
       "attribution": "project-gutenberg",
       "source_url": "https://www.gutenberg.org/cache/epub/77032/pg77032-images.html",
       "notes": "growing_information text sourced from 'The garden yard'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: The text explicitly states that chicory is a perennial but is often grown as an annual for practical reasons."
+    },
+    {
+      "attribution": "ollama-life-cycle-years-inference",
+      "notes": "life_cycle_years=1 inferred by Ollama; reasoning: The provided information suggests that chicory is typically grown as an annual under cultivation."
     }
   ],
   "growing_information": [
@@ -68,5 +76,7 @@
       "need_type": "hilling",
       "notes": "Cover the plants with about two feet of manure to develop heads resembling lettuce."
     }
-  ]
+  ],
+  "life_cycle": "perennial",
+  "life_cycle_years": 1
 }

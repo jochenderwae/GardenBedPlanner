@@ -77,6 +77,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Radishes have a taproot and grow from the ground in a rosette pattern."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Radishes are typically grown as annuals in Belgium because they are fast-growing and harvested within a single growing season."
     }
   ],
   "growing_information": [
@@ -154,5 +158,6 @@
       "notes": "1/2 inch to 1 inch deep"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "annual"
 }

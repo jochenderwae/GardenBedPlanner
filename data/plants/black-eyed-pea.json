@@ -28,9 +28,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Vigna",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Vigna'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Black-eyed peas are typically grown as annuals in temperate climates like Belgium, as they are sensitive to frost and are harvested within a single growing season."
     }
   ],
   "growth_habit": "upright",
   "genus": "Vigna",
-  "family": "Fabaceae"
+  "family": "Fabaceae",
+  "life_cycle": "annual"
 }

@@ -94,6 +94,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Parsnips have a central taproot and foliage that grows from the base of the plant in a rosette pattern."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Parsnips are typically grown for their root in the first year and allowed to flower and set seed in the second year."
     }
   ],
   "growing_information": [
@@ -165,5 +169,6 @@
       "notes": "18 inches to 3 feet apart in rows"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "biennial"
 }

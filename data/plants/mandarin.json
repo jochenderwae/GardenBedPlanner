@@ -31,9 +31,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Citrus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Citrus'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Mandarin trees are typically grown as perennials in temperate climates like Belgium, although they may require protection during harsh winters."
     }
   ],
   "growth_habit": "tree",
   "genus": "Citrus",
-  "family": "Rutaceae"
+  "family": "Rutaceae",
+  "life_cycle": "perennial"
 }

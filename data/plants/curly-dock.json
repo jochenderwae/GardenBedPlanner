@@ -25,7 +25,12 @@
     {
       "attribution": "manual-research",
       "notes": "common_name corrected from the bogus 'You Can Grow Anything' to 'Curly Dock', matching botanical_name (Rumex crispus), slug, and the record's own description text (which already says 'Curly dock is a hardy perennial...'). Same single-source root cause as phacelia/mapacho/lemon/carrots - see phacelia.json's data_sources note for the full root-cause writeup (openfarm-crops-rescue's own cached crops.json has this literal string for exactly these 5 records)."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Curly dock is known for its hardiness and ability to survive multiple growing seasons in temperate climates like Belgium."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "perennial"
 }

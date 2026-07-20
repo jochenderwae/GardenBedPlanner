@@ -102,6 +102,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Kale grows as an upright clump with multiple stems and does not form a flat rosette or spread widely across the ground."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Kale is typically grown as an annual in temperate climates like Belgium, even though it can technically be perennial."
     }
   ],
   "growing_information": [
@@ -140,5 +144,6 @@
       "notes": "For early spring harvests in the North"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

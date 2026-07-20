@@ -35,7 +35,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Fenugreek is described as an herbaceous plant with a maple scent and is grown for its leaves and seeds, which suggests it grows as an upright clump rather than spreading or forming a rosette."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Fenugreek is typically grown as an annual in temperate climates like Belgium, as it completes its life cycle within one growing season."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

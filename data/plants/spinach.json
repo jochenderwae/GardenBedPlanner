@@ -93,6 +93,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Spinach leaves radiate from a central point at ground level and form a flat rosette."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Spinach is typically grown as an annual in Belgium, as it thrives in cooler weather and is best sown in the autumn and winter months."
     }
   ],
   "growing_information": [
@@ -153,5 +157,6 @@
       "notes": "with straw or leaves for winter protection"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "annual"
 }

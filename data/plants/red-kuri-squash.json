@@ -24,7 +24,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Vine, Forb/herb' includes 'Vine', but red-kuri-squash is a known ground-sprawling vine (curated override), not a trellised climber"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Red Kuri Squash is typically grown as an annual in temperate climates like Belgium, as it is not cold-hardy and is usually started from seed each year."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

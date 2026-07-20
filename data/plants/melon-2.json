@@ -62,6 +62,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Melons grow on sprawling vines that spread across the soil."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Melons are typically grown as annuals in temperate climates like Belgium because they are sensitive to frost and require warm growing conditions."
     }
   ],
   "growing_information": [
@@ -133,5 +137,6 @@
       "notes": "generous amount of manure worked well into the soil before planting"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

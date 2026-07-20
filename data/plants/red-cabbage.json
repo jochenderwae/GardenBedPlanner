@@ -67,6 +67,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Red Cabbage forms round, dense heads on top of short stalks, which fits the description of an upright clump."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Red Cabbage is typically grown as an annual in temperate climates like Belgium, as it is harvested within one growing season."
     }
   ],
   "growing_information": [
@@ -160,5 +164,6 @@
       "notes": "rich, warm soil for quick maturation for early varieties"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

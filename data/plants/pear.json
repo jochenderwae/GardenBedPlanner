@@ -49,6 +49,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Pears are typically grown as long-lived fruiting trees in home gardens and are not replanted annually."
     }
   ],
   "growing_information": [
@@ -81,5 +85,6 @@
     }
   ],
   "fertilizer_needs": "good fertilization",
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "life_cycle": "perennial"
 }

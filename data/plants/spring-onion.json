@@ -48,6 +48,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Spring onions grow as an upright clump from the ground and are harvested for their bulbs and greens."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Spring onions are typically grown and harvested within a single growing season in Belgium."
     }
   ],
   "growing_information": [
@@ -135,5 +139,6 @@
       "notes": "until the soil is smooth and mellow to a depth of 4-5 inches"
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "annual"
 }

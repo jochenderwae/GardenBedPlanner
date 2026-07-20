@@ -52,6 +52,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='upright' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Lacinato Kale grows as an upright clump of leaves from the ground."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Lacinato Kale is typically grown as a biennial in temperate climates like Belgium, as it can be left in the field over winter and harvested in its second year."
     }
   ],
   "growing_information": [
@@ -93,5 +97,6 @@
       "notes": "10 to 20 inches apart and rows 12 to 18 inches apart for wheel-hoe work; in large areas, horse-cultivation is best."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "life_cycle": "biennial"
 }

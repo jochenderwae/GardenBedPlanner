@@ -47,6 +47,10 @@
       "source_url": "https://en.wikipedia.org/wiki/Lactuca",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Lactuca'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Lettuce 'Drunken Woman' is typically grown as an annual in a home garden because it is harvested within one growing season."
     }
   ],
   "growing_information": [
@@ -135,5 +139,6 @@
   ],
   "growth_habit": "rosette",
   "genus": "Lactuca",
-  "family": "Asteraceae"
+  "family": "Asteraceae",
+  "life_cycle": "annual"
 }

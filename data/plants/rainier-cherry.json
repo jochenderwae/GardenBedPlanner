@@ -26,6 +26,10 @@
       "source_url": "https://en.wikipedia.org/wiki/Prunus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Prunus'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Cherry trees, including the Rainier variety, are typically grown as perennial plants in home gardens."
     }
   ],
   "growing_information": [
@@ -60,5 +64,6 @@
   ],
   "growth_habit": "tree",
   "genus": "Prunus",
-  "family": "Rosaceae"
+  "family": "Rosaceae",
+  "life_cycle": "perennial"
 }

@@ -33,6 +33,10 @@
       "source_url": "https://en.wikipedia.org/wiki/Pyrus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Pyrus'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Green Bartlett Pear trees are typically grown as long-lived fruit trees in home gardens."
     }
   ],
   "growing_information": [
@@ -76,5 +80,6 @@
   ],
   "growth_habit": "tree",
   "genus": "Pyrus",
-  "family": "Rosaceae"
+  "family": "Rosaceae",
+  "life_cycle": "perennial"
 }

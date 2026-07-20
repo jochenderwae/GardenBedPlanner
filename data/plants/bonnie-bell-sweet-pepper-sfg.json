@@ -46,6 +46,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Subshrub, Forb/herb' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Bell peppers are typically grown as annuals in Belgium because they are sensitive to frost and need warm temperatures for fruit production."
     }
   ],
   "growing_information": [
@@ -87,5 +91,6 @@
       "notes": "approximately two feet apart"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "annual"
 }

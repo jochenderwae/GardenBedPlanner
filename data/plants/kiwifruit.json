@@ -21,9 +21,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Actinidia",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Actinidia'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Kiwifruit is typically grown as a perennial in home gardens in Belgium."
     }
   ],
   "growth_habit": "climbing",
   "genus": "Actinidia",
-  "family": "Actinidiaceae"
+  "family": "Actinidiaceae",
+  "life_cycle": "perennial"
 }

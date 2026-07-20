@@ -103,6 +103,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: Beets have a central taproot and leaves that radiate from the ground level."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Beets are typically grown as annuals in Belgium because they are harvested within one growing season for their edible taproot and leaves."
     }
   ],
   "growing_information": [
@@ -168,5 +172,6 @@
       "notes": "4 to 5 inches apart in the row"
     }
   ],
-  "growth_habit": "rosette"
+  "growth_habit": "rosette",
+  "life_cycle": "annual"
 }

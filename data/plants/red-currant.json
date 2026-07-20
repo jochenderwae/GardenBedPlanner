@@ -35,6 +35,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Shrub' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Red Currants are typically grown as perennial shrubs in home gardens in Belgium."
     }
   ],
   "growing_information": [
@@ -81,5 +85,6 @@
       "notes": "during hot, dry weather to retain moisture"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "life_cycle": "perennial"
 }

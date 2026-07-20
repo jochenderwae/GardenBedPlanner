@@ -54,6 +54,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Honeydew melons grow on vines and typically require support to grow upward."
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='annual' inferred by Ollama; reasoning: Honeydew melons are typically grown as annuals in temperate climates like Belgium, as they are sensitive to frost and are usually started from seed each year."
     }
   ],
   "growing_information": [
@@ -121,5 +125,6 @@
       "notes": "Hills can be planted four to six feet apart each way, depending on soil richness."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "life_cycle": "annual"
 }

@@ -20,9 +20,14 @@
       "source_url": "https://en.wikipedia.org/wiki/Mentha",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Mentha'"
+    },
+    {
+      "attribution": "ollama-life-cycle-inference",
+      "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Chocolate mint is a cultivar of peppermint and typically spreads by rhizomes, making it a perennial in home gardens."
     }
   ],
   "growth_habit": "spreading",
   "genus": "Mentha",
-  "family": "Lamiaceae"
+  "family": "Lamiaceae",
+  "life_cycle": "perennial"
 }
