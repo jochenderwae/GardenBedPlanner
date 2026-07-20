@@ -20,10 +20,12 @@ class Bed(SQLModel, table=True):
     border_geometry: dict = Field(sa_column=Column(JSONB, nullable=False))
     height_cm: float = 0  # "raised" is derived as height_cm > 0, not its own column (removed is_raised)
     has_greenhouse: bool = False
-    # North-facing-edge compass label (e.g. "N", "SE") - coarse, not derived
-    # from border_geometry's rotation; used for shade-casting reasoning per
-    # root CLAUDE.md's domain notes, not for anything geometric.
-    orientation: str | None = None
+    # orientation (free-text N/SE/etc. compass label) removed 2026-07-20 (#75):
+    # superseded once bed rotation became garden-relative (#68) off of the
+    # garden's own Garden.orientation_deg (#69) - a separate free-text field
+    # on Bed was redundant once that landed. Shade-casting reasoning per root
+    # CLAUDE.md's domain notes should derive orientation from border_geometry's
+    # rotation relative to the garden instead, not from this field.
     soil_type: str | None = None
     sun_level: SunLevel | None = None
     notes: str = ""

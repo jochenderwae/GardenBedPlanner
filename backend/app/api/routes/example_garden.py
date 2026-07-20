@@ -38,7 +38,6 @@ class ExampleBed(BaseModel):
     border_geometry: Geometry
     height_cm: float = 0
     has_greenhouse: bool = False
-    orientation: str | None = None
     soil_type: str | None = None
     sun_level: SunLevel | None = None
     notes: str = ""

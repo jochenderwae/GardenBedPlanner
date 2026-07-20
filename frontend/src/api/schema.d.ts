@@ -530,8 +530,6 @@ export interface components {
              * @default false
              */
             has_greenhouse: boolean;
-            /** Orientation */
-            orientation?: string | null;
             /** Soil Type */
             soil_type?: string | null;
             sun_level?: components["schemas"]["SunLevel"] | null;
@@ -559,8 +557,6 @@ export interface components {
              * @default false
              */
             has_greenhouse: boolean;
-            /** Orientation */
-            orientation?: string | null;
             /** Soil Type */
             soil_type?: string | null;
             sun_level?: components["schemas"]["SunLevel"] | null;
@@ -623,8 +619,6 @@ export interface components {
             height_cm?: number | null;
             /** Has Greenhouse */
             has_greenhouse?: boolean | null;
-            /** Orientation */
-            orientation?: string | null;
             /** Soil Type */
             soil_type?: string | null;
             sun_level?: components["schemas"]["SunLevel"] | null;
@@ -666,8 +660,6 @@ export interface components {
              * @default false
              */
             has_greenhouse: boolean;
-            /** Orientation */
-            orientation?: string | null;
             /** Soil Type */
             soil_type?: string | null;
             sun_level?: components["schemas"]["SunLevel"] | null;
