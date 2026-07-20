@@ -12,11 +12,23 @@ import {
   AlertDialogPopup,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { cn } from "@/lib/utils";
 import { deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 
 const inputClass =
   "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
+
+/** The width/length/rotation trio below is 3-up in a 20rem panel - real
+ * tight on horizontal room, and the native number-input spinner arrows
+ * alone were eating enough of it to clip a 3-digit cm value or a negative
+ * rotation. Drops the spinner (`[appearance:textfield]` + hiding the
+ * WebKit spin buttons) and trims the side padding a bit to give the digits
+ * themselves back the room the browser chrome was taking. */
+const numberInputClass = cn(
+  inputClass,
+  "px-1.5 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
+);
 
 interface BedPanelProps {
   bed: Bed;
@@ -68,7 +80,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
   const originalRect = bed.border_geometry.type === "rectangle" ? bed.border_geometry : null;
 
   return (
-    <Card className="w-72 p-4">
+    <Card className="w-80 p-4">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-medium">Edit bed</h2>
         <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={onClose}>
@@ -109,7 +121,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
               <span className="text-xs font-medium text-muted-foreground">Width (cm)</span>
               <input
                 type="number"
-                className={inputClass}
+                className={numberInputClass}
                 value={draft.border_geometry.width}
                 onChange={(e) => setRectField("width", Number(e.target.value))}
                 onBlur={() => {
@@ -123,7 +135,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
               <span className="text-xs font-medium text-muted-foreground">Length (cm)</span>
               <input
                 type="number"
-                className={inputClass}
+                className={numberInputClass}
                 value={draft.border_geometry.height}
                 onChange={(e) => setRectField("height", Number(e.target.value))}
                 onBlur={() => {
@@ -137,7 +149,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
               <span className="text-xs font-medium text-muted-foreground">Rotation (°)</span>
               <input
                 type="number"
-                className={inputClass}
+                className={numberInputClass}
                 value={draft.border_geometry.rotation}
                 onChange={(e) => setRectField("rotation", Number(e.target.value))}
                 onBlur={() => {
