@@ -10,7 +10,23 @@ class Garden(SQLModel, table=True):
     naturally overarching, singleton-ish concerns). Not DB-enforced as a
     hard singleton (no unique constraint forcing exactly one row) - the API
     (app/api/routes/garden.py) exposes it as GET/PUT /api/garden, singular,
-    which is what actually keeps it to one in practice."""
+    which is what actually keeps it to one in practice.
+
+    Multi-garden support (backlog: "Prepare the data model for eventually
+    supporting multiple gardens") is explicitly *not* built here - this is
+    a design note for whenever it is, not a schema change now. The table
+    itself would tolerate more than one row today (no DB constraint stops
+    it), but nothing downstream is ready to use that: (1) the API is
+    GET/PUT singular with get-or-create semantics, not list-style CRUD, and
+    has no notion of a "currently selected" garden; (2) Bed/Planting/
+    BedEquipment have no garden_id FK at all - today there's no way to say
+    which garden a bed belongs to, because there's only ever one; (3) the
+    auto-created ground-level Bed this route creates on first Garden
+    creation (see put_garden's docstring) is a one-time global default,
+    not scoped per-garden - a real multi-garden version would need one
+    ground bed per garden, tied to that garden's own id. Frontend would
+    need a garden-switcher UI on top of all that. None of this is planned
+    work yet, just the shape of what "yet" would require."""
 
     id: int | None = Field(default=None, primary_key=True)
     name: str = "My Garden"
