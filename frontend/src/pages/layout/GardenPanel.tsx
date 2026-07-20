@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { putGarden, type Garden, type GardenPut } from "@/api/client";
@@ -12,7 +11,6 @@ const DEFAULT_GARDEN_SIZE_CM = 500;
 
 interface GardenPanelProps {
   garden: Garden | null;
-  onClose: () => void;
 }
 
 /** Metadata editor for the Garden singleton, plus its own empty-state
@@ -20,8 +18,10 @@ interface GardenPanelProps {
  * auto-creates a matching ground Bed server-side (see
  * app/api/routes/garden.py) - the default "plant directly in the garden"
  * surface - which is why this panel doesn't need its own "add a ground bed"
- * affordance. */
-export function GardenPanel({ garden, onClose }: GardenPanelProps) {
+ * affordance. No close ("X") button - unlike BedPanel/EquipmentPanel/
+ * PlantingPanel (which close back to a list/tab), the garden is reached via
+ * its own always-present "Garden" tab, so there's nothing to close back to. */
+export function GardenPanel({ garden }: GardenPanelProps) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState<Garden | null>(garden);
   const [name, setName] = useState("My Garden");
@@ -54,12 +54,7 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
   if (!draft) {
     return (
       <Card className="w-72 p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-sm font-medium">Set up garden</h2>
-          <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={onClose}>
-            <X />
-          </Button>
-        </div>
+        <h2 className="mb-3 text-sm font-medium">Set up garden</h2>
         <p className="mb-3 text-xs text-muted-foreground">
           Draws a {DEFAULT_GARDEN_SIZE_CM}×{DEFAULT_GARDEN_SIZE_CM}cm starting boundary - drag/resize/rotate it into
           shape afterward. Also creates a ground-level bed you can plant directly into.
@@ -99,12 +94,7 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
 
   return (
     <Card className="w-72 p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="text-sm font-medium">Edit garden</h2>
-        <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={onClose}>
-          <X />
-        </Button>
-      </div>
+      <h2 className="mb-3 text-sm font-medium">Edit garden</h2>
 
       <div className="flex flex-col gap-3">
         <label className="flex flex-col gap-1" title="Your garden's display name.">

@@ -435,7 +435,7 @@ export function Layout() {
             </Stage>
           </div>
 
-          {tab === "garden" && <GardenPanel garden={garden} onClose={() => switchTab("planters")} />}
+          {tab === "garden" && <GardenPanel garden={garden} />}
           {tab === "planters" && selectedBed && (
             <BedPanel bed={selectedBed} onClose={() => setSelectedId(null)} onDeleted={() => setSelectedId(null)} />
           )}
