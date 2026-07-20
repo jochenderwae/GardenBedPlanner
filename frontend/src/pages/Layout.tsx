@@ -51,12 +51,21 @@ import {
 } from "./layout/viewport";
 
 type ViewMode = "mine" | "example";
-type PlacementTab = "planters" | "equipment" | "plants";
+/** Order here doubles as the intended workflow progression (shape the
+ * garden, then place beds within it, then plants, then equipment last) and
+ * the tab-implied-locking sequence: each tab makes only its own object type
+ * interactive (`GardenBoundary`/`BedNode`/`PlantPlacementLayer`/
+ * `EquipmentLayer` each gate on exactly one tab), which - since only one
+ * tab can be active at a time - automatically locks every *other* step,
+ * not just the immediately-preceding one. The user can always switch back
+ * to an earlier tab to edit it again; nothing here prevents that. */
+type PlacementTab = "garden" | "planters" | "plants" | "equipment";
 
 const TAB_LABELS: Record<PlacementTab, string> = {
-  planters: "Planters",
-  equipment: "Equipment",
+  garden: "Garden",
+  planters: "Beds",
   plants: "Plants",
+  equipment: "Equipment",
 };
 
 const PLACEMENT_MODE_LABELS: Record<PlacementMode, string> = {
@@ -113,8 +122,7 @@ export function Layout() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [mode, setMode] = useState<ViewMode>("mine");
-  const [tab, setTab] = useState<PlacementTab>("planters");
-  const [gardenPanelOpen, setGardenPanelOpen] = useState(false);
+  const [tab, setTab] = useState<PlacementTab>("garden");
   // "Arm" a plant, then draw where it goes (point/row/area) - see
   // PlantPlacementLayer's own doc. plantPickerOpen/plantPickerPos are for
   // the popover that picks *which* plant gets armed (anchored under the
@@ -219,7 +227,6 @@ export function Layout() {
   function switchTab(next: PlacementTab) {
     setTab(next);
     setSelectedId(null);
-    setGardenPanelOpen(false);
     setPlantPickerOpen(false);
     setSelectedPlantingId(null);
   }
@@ -369,16 +376,9 @@ export function Layout() {
             <Maximize /> Fit view
           </Button>
           {mode === "mine" && tab === "planters" && (
-            <>
-              {gardenQuery.isSuccess && !garden && (
-                <Button size="sm" variant="outline" onClick={() => setGardenPanelOpen(true)}>
-                  Set up garden
-                </Button>
-              )}
-              <Button size="sm" onClick={() => setShowAddForm(true)}>
-                <Plus /> Add bed
-              </Button>
-            </>
+            <Button size="sm" onClick={() => setShowAddForm(true)}>
+              <Plus /> Add bed
+            </Button>
           )}
           {mode === "mine" && tab === "plants" && (
             <>
@@ -466,7 +466,6 @@ export function Layout() {
               onMouseDown={(e) => {
                 if (e.target === e.target.getStage()) {
                   setSelectedId(null);
-                  setGardenPanelOpen(false);
                 }
               }}
             >
@@ -479,13 +478,10 @@ export function Layout() {
                   <GardenBoundary
                     name={garden.name}
                     geometry={garden.border_geometry}
-                    isSelected={gardenPanelOpen}
-                    onSelect={() => {
-                      setSelectedId(null);
-                      setGardenPanelOpen(true);
-                    }}
+                    isSelected={tab === "garden"}
+                    onSelect={() => setSelectedId(null)}
                     onChange={handleGardenGeometryChange}
-                    interactive={tab === "planters"}
+                    interactive={tab === "garden"}
                     viewport={viewport}
                   />
                 )}
@@ -494,10 +490,7 @@ export function Layout() {
                     key={bed.id}
                     bed={bed}
                     isSelected={tab === "planters" && bed.id === selectedId}
-                    onSelect={() => {
-                      setGardenPanelOpen(false);
-                      setSelectedId(bed.id ?? null);
-                    }}
+                    onSelect={() => setSelectedId(bed.id ?? null)}
                     onChange={(geometry) => handleBedChange(bed, geometry)}
                     interactive={tab === "planters"}
                     viewport={viewport}
@@ -523,11 +516,9 @@ export function Layout() {
             </Stage>
           </div>
 
+          {tab === "garden" && <GardenPanel garden={garden} onClose={() => switchTab("planters")} />}
           {tab === "planters" && selectedBed && (
             <BedPanel bed={selectedBed} onClose={() => setSelectedId(null)} onDeleted={() => setSelectedId(null)} />
-          )}
-          {tab === "planters" && !selectedBed && gardenPanelOpen && (
-            <GardenPanel garden={garden} onClose={() => setGardenPanelOpen(false)} />
           )}
           {tab === "equipment" && (
             <EquipmentPanel beds={beds} equipment={equipmentList} onClose={() => switchTab("planters")} />
