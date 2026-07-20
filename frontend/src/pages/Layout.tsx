@@ -26,6 +26,7 @@ import {
 import { BedNode } from "./layout/BedNode";
 import { BedPanel } from "./layout/BedPanel";
 import { AddBedForm } from "./layout/AddBedForm";
+import { CompassWidget, COMPASS_MARGIN_CM } from "./layout/CompassWidget";
 import { ExampleGardenLayer, PlantingTooltip, type PlantingTooltipState } from "./layout/ExampleGardenView";
 import { GardenBoundary } from "./layout/GardenBoundary";
 import { GardenPanel } from "./layout/GardenPanel";
@@ -299,6 +300,19 @@ export function Layout() {
     });
   }
 
+  function handleGardenOrientationChange(orientationDeg: number) {
+    if (!garden) return;
+    queryClient.setQueryData<Garden>(["garden"], (old) => (old ? { ...old, orientation_deg: orientationDeg } : old));
+    gardenGeometryMutation.mutate({
+      name: garden.name,
+      climate_zone: garden.climate_zone,
+      location: garden.location,
+      orientation_deg: orientationDeg,
+      notes: garden.notes,
+      border_geometry: garden.border_geometry,
+    });
+  }
+
   function handlePlantingMove(planting: Planting, geometry: Geometry) {
     if (planting.id == null) return;
     queryClient.setQueryData<Planting[]>(["plantings"], (old) =>
@@ -400,6 +414,15 @@ export function Layout() {
                     isSelected={tab === "garden"}
                     onSelect={() => setSelectedId(null)}
                     onChange={handleGardenGeometryChange}
+                    interactive={tab === "garden"}
+                    viewport={viewport}
+                  />
+                )}
+                {garden && gardenBounds && (
+                  <CompassWidget
+                    center={{ x: gardenBounds.x + gardenBounds.width + COMPASS_MARGIN_CM, y: gardenBounds.y }}
+                    orientationDeg={garden.orientation_deg}
+                    onChange={handleGardenOrientationChange}
                     interactive={tab === "garden"}
                     viewport={viewport}
                   />
