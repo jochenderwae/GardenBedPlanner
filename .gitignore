@@ -37,3 +37,6 @@ TODO.md
 
 # Per-agent recovery scratchpads (local run state, never shared/tracked)
 .agent-scratch.md
+
+# Short-lived GraphQL response cache for the /backlog skill's scripts
+.claude/skills/backlog/scripts/.cache/
