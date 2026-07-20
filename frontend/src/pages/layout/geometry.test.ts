@@ -1,0 +1,240 @@
+import { describe, expect, it } from "vitest";
+import type { PolygonGeometry, RectangleGeometry } from "@/api/client";
+import {
+  boundingRect,
+  clampPointToBounds,
+  clampRectPositionToBounds,
+  colorForSlug,
+  colorsForBedCategory,
+  fieldGeometryFromDrag,
+  formatDistanceCm,
+  normalizeDegrees,
+  polygonToRectangle,
+  rectangleToPolygon,
+  rectanglesOverlap,
+  rectRenderProps,
+  rotationFromGardenRelative,
+  rotationRelativeToGarden,
+  rowGeometryFromDrag,
+  snapToGrid,
+} from "./geometry";
+
+describe("snapToGrid", () => {
+  it("rounds to the nearest multiple of the default snap size", () => {
+    expect(snapToGrid(4)).toBe(0);
+    expect(snapToGrid(6)).toBe(10);
+    expect(snapToGrid(15)).toBe(20);
+  });
+
+  it("accepts a custom grid size", () => {
+    expect(snapToGrid(24, 50)).toBe(0);
+    expect(snapToGrid(26, 50)).toBe(50);
+  });
+
+  it("handles negative values", () => {
+    expect(snapToGrid(-6)).toBe(-10);
+  });
+});
+
+describe("normalizeDegrees", () => {
+  it("leaves in-range angles untouched", () => {
+    expect(normalizeDegrees(45)).toBe(45);
+    expect(normalizeDegrees(0)).toBe(0);
+  });
+
+  it("wraps angles >= 360", () => {
+    expect(normalizeDegrees(360)).toBe(0);
+    expect(normalizeDegrees(725)).toBe(5);
+  });
+
+  it("wraps negative angles into [0, 360)", () => {
+    expect(normalizeDegrees(-10)).toBe(350);
+    expect(normalizeDegrees(-360)).toBe(0);
+  });
+});
+
+describe("rotationRelativeToGarden / rotationFromGardenRelative", () => {
+  it("round-trips through both conversions", () => {
+    const absolute = 200;
+    const gardenOrientation = 30;
+    const relative = rotationRelativeToGarden(absolute, gardenOrientation);
+    expect(relative).toBe(170);
+    expect(rotationFromGardenRelative(relative, gardenOrientation)).toBe(absolute);
+  });
+
+  it("normalizes results into [0, 360)", () => {
+    expect(rotationRelativeToGarden(10, 350)).toBe(20);
+    expect(rotationFromGardenRelative(350, 30)).toBe(20);
+  });
+});
+
+describe("colorForSlug / colorsForBedCategory", () => {
+  it("is deterministic for the same input", () => {
+    expect(colorForSlug("tomato")).toBe(colorForSlug("tomato"));
+    expect(colorsForBedCategory("berries")).toEqual(colorsForBedCategory("berries"));
+  });
+
+  it("falls back to the default colors when category is missing", () => {
+    expect(colorsForBedCategory(null)).toEqual({ fill: "#d7e4d5", stroke: "#5b8c5a" });
+    expect(colorsForBedCategory(undefined)).toEqual({ fill: "#d7e4d5", stroke: "#5b8c5a" });
+    expect(colorsForBedCategory("")).toEqual({ fill: "#d7e4d5", stroke: "#5b8c5a" });
+  });
+
+  it("produces different colors for different categories (no accidental collision for these inputs)", () => {
+    expect(colorsForBedCategory("berries")).not.toEqual(colorsForBedCategory("compost"));
+  });
+});
+
+describe("rowGeometryFromDrag", () => {
+  it("returns null for a drag shorter than the minimum row length", () => {
+    expect(rowGeometryFromDrag({ x: 0, y: 0 }, { x: 5, y: 0 }, 20)).toBeNull();
+  });
+
+  it("builds a rectangle centered on the drag line for a horizontal drag", () => {
+    const geometry = rowGeometryFromDrag({ x: 0, y: 0 }, { x: 100, y: 0 }, 20);
+    expect(geometry).toEqual({ type: "rectangle", x: 0, y: -10, width: 100, height: 20, rotation: 0 });
+  });
+
+  it("derives rotation from the drag angle", () => {
+    const geometry = rowGeometryFromDrag({ x: 0, y: 0 }, { x: 0, y: 100 }, 20);
+    expect(geometry?.rotation).toBeCloseTo(90);
+    expect(geometry?.width).toBeCloseTo(100);
+  });
+});
+
+describe("fieldGeometryFromDrag", () => {
+  it("returns null when either axis is below the minimum field size", () => {
+    expect(fieldGeometryFromDrag({ x: 0, y: 0 }, { x: 5, y: 100 })).toBeNull();
+  });
+
+  it("normalizes corner order regardless of drag direction", () => {
+    const geometry = fieldGeometryFromDrag({ x: 100, y: 100 }, { x: 0, y: 0 });
+    expect(geometry).toEqual({ type: "rectangle", x: 0, y: 0, width: 100, height: 100, rotation: 0 });
+  });
+});
+
+describe("rectRenderProps", () => {
+  it("passes rectangles through unchanged", () => {
+    const rect: RectangleGeometry = { type: "rectangle", x: 1, y: 2, width: 3, height: 4, rotation: 45 };
+    expect(rectRenderProps(rect)).toEqual(rect);
+  });
+
+  it("falls back to the bounding box (rotation 0) for polygons", () => {
+    const polygon: PolygonGeometry = {
+      type: "polygon",
+      points: [
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+      ],
+    };
+    expect(rectRenderProps(polygon)).toEqual({ x: 0, y: 0, width: 10, height: 10, rotation: 0 });
+  });
+});
+
+describe("boundingRect", () => {
+  it("returns the rectangle itself as x/y/width/height", () => {
+    const rect: RectangleGeometry = { type: "rectangle", x: 5, y: 6, width: 7, height: 8, rotation: 90 };
+    expect(boundingRect(rect)).toEqual({ x: 5, y: 6, width: 7, height: 8 });
+  });
+
+  it("computes the axis-aligned bounding box of a polygon", () => {
+    const polygon: PolygonGeometry = {
+      type: "polygon",
+      points: [
+        { x: -5, y: 2 },
+        { x: 15, y: -3 },
+        { x: 8, y: 20 },
+      ],
+    };
+    expect(boundingRect(polygon)).toEqual({ x: -5, y: -3, width: 20, height: 23 });
+  });
+});
+
+describe("rectangleToPolygon / polygonToRectangle", () => {
+  it("converts an unrotated rectangle to its 4 corners", () => {
+    const rect: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 10, height: 20, rotation: 0 };
+    const polygon = rectangleToPolygon(rect);
+    expect(polygon.points).toEqual([
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 20 },
+      { x: 0, y: 20 },
+    ]);
+  });
+
+  it("bakes rotation into the resulting corner positions", () => {
+    const rect: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 10, height: 0, rotation: 90 };
+    const polygon = rectangleToPolygon(rect);
+    // Rotating a purely-horizontal edge 90deg should make it purely vertical.
+    expect(polygon.points[1].x).toBeCloseTo(0);
+    expect(polygon.points[1].y).toBeCloseTo(10);
+  });
+
+  it("round-trips an axis-aligned rectangle through polygonToRectangle", () => {
+    const rect: RectangleGeometry = { type: "rectangle", x: 3, y: 4, width: 12, height: 6, rotation: 0 };
+    const polygon = rectangleToPolygon(rect);
+    expect(polygonToRectangle(polygon)).toEqual({ type: "rectangle", x: 3, y: 4, width: 12, height: 6, rotation: 0 });
+  });
+});
+
+describe("formatDistanceCm", () => {
+  it("formats whole meters without a decimal", () => {
+    expect(formatDistanceCm(100)).toBe("1m");
+    expect(formatDistanceCm(200)).toBe("2m");
+  });
+
+  it("formats partial meters with one decimal", () => {
+    expect(formatDistanceCm(150)).toBe("1.5m");
+    expect(formatDistanceCm(30)).toBe("0.3m");
+  });
+});
+
+describe("clampPointToBounds", () => {
+  const bounds = { x: 0, y: 0, width: 100, height: 50 };
+
+  it("leaves a point inside bounds unchanged", () => {
+    expect(clampPointToBounds({ x: 10, y: 10 }, bounds)).toEqual({ x: 10, y: 10 });
+  });
+
+  it("clamps a point outside bounds to the nearest edge", () => {
+    expect(clampPointToBounds({ x: -5, y: 60 }, bounds)).toEqual({ x: 0, y: 50 });
+    expect(clampPointToBounds({ x: 200, y: -5 }, bounds)).toEqual({ x: 100, y: 0 });
+  });
+});
+
+describe("clampRectPositionToBounds", () => {
+  const bounds = { x: 0, y: 0, width: 100, height: 100 };
+
+  it("leaves a rectangle fully inside bounds unchanged", () => {
+    expect(clampRectPositionToBounds(10, 10, 20, 20, bounds)).toEqual({ x: 10, y: 10 });
+  });
+
+  it("clamps position so the rectangle's footprint stays within bounds", () => {
+    expect(clampRectPositionToBounds(95, 95, 20, 20, bounds)).toEqual({ x: 80, y: 80 });
+    expect(clampRectPositionToBounds(-10, -10, 20, 20, bounds)).toEqual({ x: 0, y: 0 });
+  });
+
+  it("pins to the bounds origin when the rectangle is larger than the bounds", () => {
+    expect(clampRectPositionToBounds(-10, -10, 200, 200, bounds)).toEqual({ x: 0, y: 0 });
+  });
+});
+
+describe("rectanglesOverlap", () => {
+  it("detects overlapping rectangles", () => {
+    expect(rectanglesOverlap({ x: 0, y: 0, width: 10, height: 10 }, { x: 5, y: 5, width: 10, height: 10 })).toBe(true);
+  });
+
+  it("returns false for non-overlapping rectangles", () => {
+    expect(rectanglesOverlap({ x: 0, y: 0, width: 10, height: 10 }, { x: 20, y: 20, width: 10, height: 10 })).toBe(
+      false,
+    );
+  });
+
+  it("treats merely-touching edges as not overlapping", () => {
+    expect(rectanglesOverlap({ x: 0, y: 0, width: 10, height: 10 }, { x: 10, y: 0, width: 10, height: 10 })).toBe(
+      false,
+    );
+  });
+});
