@@ -106,3 +106,41 @@ export function polygonToRectangle(polygon: PolygonGeometry): RectangleGeometry 
 export function formatDistanceCm(cm: number): string {
   return `${(cm / 100).toFixed(cm % 100 === 0 ? 0 : 1)}m`;
 }
+
+export type Bounds = { x: number; y: number; width: number; height: number };
+
+function clamp(value: number, lo: number, hi: number): number {
+  return Math.min(Math.max(value, lo), hi);
+}
+
+/** Clamps a single point (e.g. a polygon vertex) to lie within `bounds` -
+ * used for bed-within-garden containment. Approximates the garden's own
+ * shape by its axis-aligned bounding box rather than exact polygon-in-
+ * polygon containment (garden boundaries are typically close to
+ * axis-aligned rectangles in practice, and true polygon clipping is out of
+ * scope for a frontend-only drag/resize-time constraint - see the "Bed
+ * placement must stay within the garden's boundary" backlog item). */
+export function clampPointToBounds(point: { x: number; y: number }, bounds: Bounds): { x: number; y: number } {
+  return {
+    x: clamp(point.x, bounds.x, bounds.x + bounds.width),
+    y: clamp(point.y, bounds.y, bounds.y + bounds.height),
+  };
+}
+
+/** Clamps a rectangle's top-left position (rotation ignored, same
+ * simplification `boundingRect` already makes for rectangles) so its
+ * unrotated width/height footprint stays within `bounds`. If the rectangle
+ * is larger than `bounds` on an axis, pins to the bounds' own origin on
+ * that axis rather than distorting size - a drag shouldn't also resize the
+ * shape, only a transform/resize gesture should ever change width/height. */
+export function clampRectPositionToBounds(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  bounds: Bounds,
+): { x: number; y: number } {
+  const maxX = Math.max(bounds.x, bounds.x + bounds.width - width);
+  const maxY = Math.max(bounds.y, bounds.y + bounds.height - height);
+  return { x: clamp(x, bounds.x, maxX), y: clamp(y, bounds.y, maxY) };
+}

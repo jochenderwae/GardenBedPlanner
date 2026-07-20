@@ -1,6 +1,68 @@
 # GardenBedPlanner Backlog
 
 Run log (most recent first):
+- 2026-07-19 (garden tab, follow-up): filled in `priority: high` / `responsible: frontend-developer` on the
+  "Add a dedicated 'Garden' tab..." item below (`status` left untouched, already correctly `ready-to-start`
+  from the user's own direct add). Re-read `frontend/src/pages/Layout.tsx` in full first to check the item's
+  description against current code, since several other frontend-developer items had since moved - still
+  accurate: `PlacementTab` is still exactly `planters`/`equipment`/`plants` in that order, garden boundary
+  still only reachable/interactive via the "planters" tab, nothing about the tab system changed since the
+  item was written. Confirmed (didn't just take the item's own "frontend-only, no backend change" claim at
+  face value) that no split is needed: all three parts of the work live in `Layout.tsx`'s existing tab state,
+  and `GardenPanel`/`GardenBoundary` already call the full `Garden` PUT API, so there's no backend piece to
+  carve out. Priority `high` per the standing "editor first" rule - it's core editor navigation/discoverability,
+  not general UI polish. 0 items added/removed, 1 item completed.
+- 2026-07-19 (garden tab): added one new item, `status: ready-to-start`, main session added directly on the
+  user's behalf - **`product-owner`: please complete this one too** (`priority`/`responsible` missing).
+  User discovered they couldn't find how to draw the garden as a polygon (a capability that already exists)
+  because there's no dedicated tab for it - garden-boundary editing is currently only reachable by clicking
+  its outline while on the "planters" tab. Fix: a new "Garden" tab, tabs reordered to the user's stated
+  intended workflow (Garden → Beds → Plants → Equipment), and the existing tab-implied-locking pattern
+  extended so each tab locks every earlier step, not just its own type. See the item itself in "Bed & crop
+  planning" for the full breakdown - frontend-only, no backend change needed.
+- 2026-07-19 (live-testing batch triage): completed `priority`/`responsible` on the 21 `ready-to-start`
+  items the user added directly during the live-testing pass below (`status` untouched throughout - not
+  this agent's call, and it was already correctly set). Priority skewed high/medium per the standing
+  "editor first" rule (all 21 are `/layout`-editor-related), differentiated within the batch: boundary
+  containment, bed/bed overlap prevention, the plant-placement row/area drawing tool, and click-to-edit-a-
+  planting landed `high` (foundational/blocking or core usability gaps); the `Garden.orientation` field
+  landed `high` too since it's a hard dependency for two other items (added `depends-on` links to both:
+  "Bed rotation should be relative to the garden's own orientation..." and "Compass widget..."); most
+  UI-polish items (tooltips, input sizing, button renaming, category dropdown, field-removal cleanups)
+  landed `low`-`medium`. Two items needed splitting into single-responsible pairs after finding (via grep)
+  that `BedPanel.tsx` actively reads/writes both `Bed.orientation` and `Bed.is_raised` in the UI, so
+  removing either is genuinely full-stack (backend column/migration/API + frontend input removal) even
+  though each was written as one user remark - "Remove `Bed.orientation` field" and "Remove `Bed.is_raised`
+  field" are now `[~]` pointers to 2 split items each (4 new items total). By contrast, "Bed rotation should
+  be relative to the garden's own orientation" and "Compass widget" turned out **not** to need splitting on
+  closer reading - both are frontend-only once `Garden.orientation` exists (no further backend work), so
+  just given a `depends-on` link to that item instead of a split. Two items got the special handling the
+  task called for: "Equipment model/UX needs significantly more design thought..." was left unassigned to
+  an implementer role and given `responsible: product-owner` instead (a scoping-conversation placeholder,
+  not a ready requirement), `priority: low`; "Toolbar across the top of the canvas editor" - actually
+  grepped both `product-owner/research/wysiwyg-bed-editor.md` and `canvas-editor-cad-lessons.md` for
+  "toolbar" and related terms (tool selection, mode switch, button row, top bar, control panel) and found
+  **zero** matches in either - genuinely a new idea, not something already proposed and missed; noted this
+  finding directly in the item's own context text, not just here. Net: 0 items added/removed from scope,
+  4 new items created via the 2 splits (21 + 4 = 25 items now carry full tracking lines that didn't before
+  this run), every other tracking field left as the main session set it.
+- 2026-07-19 (live-testing batch): user tested the `/layout` editor and gave a batch of ~20 remarks, added
+  here directly by the main session as `status: ready-to-start` (no `priority`/`responsible` set -
+  **`product-owner`: please complete these**, per your own "item origin determines starting status" note).
+  Mostly new items across "Bed & crop planning" (garden bounds/overlap constraints, garden-relative bed
+  rotation + a new `Garden.orientation` field + compass widget, a shape-switch confirmation dialog, several
+  small UI fixes, a real plant-placement drawing tool using the already-existing `Planting.placement_type`,
+  click-to-edit on placed plants) and "Bed equipment" (equipment should come from inventory/stock, not be
+  authored ad hoc in the layout editor - plus an explicit user note that equipment needs more design
+  thought before building further, not yet a scoped task). Also: released the existing "Canvas pan/zoom"
+  item to `ready-to-start` (the user's zoom remark confirmed it rather than being a new ask - scroll wheel
+  is confirmed the right mechanism, per that item's own existing plan) and corrected "Example-garden
+  Postgres importer script" to `status: tested` (main session ran it for real this session: 14 beds, 112
+  plantings landed on `garden-planner-dev`) while adding a new item for the gap that run surfaced (no
+  `Garden` row gets created). Two remarks turned out to already be correctly implemented, no backlog
+  action taken: `Garden.border_geometry` already supports polygon (not just rectangle), and
+  `Planting.bed_id` is already required (open-ground planting without a bed was never actually possible,
+  despite an earlier remark suggesting otherwise).
 - 2026-07-19 (later still): added a `ready-to-start` status between `new` and `assigned` per user request -
   it's the gate the user explicitly wanted: no agent may move an item into `ready-to-start` (or `verified`),
   only the user can, and no agent may act on a `status: new` item even if `responsible` is already set. Items
@@ -83,8 +145,8 @@ Run log (most recent first):
 - [~] Installation-time choice to load example/demo garden data (split into: example-garden fixture generator; example-garden Postgres importer script; example-garden read-only preview; onboarding UI to trigger seeding - see the four items below) - old single-line description was stale: this had progressed unevenly across data-engineer/backend/frontend since it was last written, found while retrofitting tracking fields this run.
 - [ ] Example-garden fixture generator + JSON output - invents a realistic garden layout (beds + plant placements) matching the current `Bed`/`Planting` shape, since no real layout is recorded anywhere in the domain notes (implemented: `data/etl/generate_example_garden.py`, `data/example_garden.json`).
   - `priority: medium` · `status: tested` · `responsible: data-engineer`
-- [ ] Example-garden Postgres importer script - idempotent get-or-create-by-name importer of the fixture above into the real `Bed`/`Planting` tables, mirroring `import_plants.py`'s pattern (implemented: `backend/app/scripts/import_example_garden.py`). Built, but no evidence yet it's been run against real Postgres on `garden-planner-dev` - confirm a run before raising past `ready-for-testing`.
-  - `priority: low` · `status: ready-for-testing` · `responsible: backend-developer`
+- [ ] Example-garden Postgres importer script - idempotent get-or-create-by-name importer of the fixture above into the real `Bed`/`Planting` tables, mirroring `import_plants.py`'s pattern (implemented: `backend/app/scripts/import_example_garden.py`). **Confirmed run 2026-07-19**: executed against real Postgres on `garden-planner-dev`, verified 14 beds (2 pre-existing + 12 from the fixture) and 112 plantings landed correctly. Known gap found by the same testing pass: doesn't create a `Garden` row (see the new item above) - real, but doesn't block calling the `Bed`/`Planting` half of this done.
+  - `priority: low` · `status: tested` · `responsible: backend-developer`
 - [ ] Example-garden read-only preview in the WYSIWYG editor - `GET /api/example-garden` serves the fixture as-is (no DB writes), rendered as a non-interactive overlay layer with hover tooltips (implemented: `backend/app/api/routes/example_garden.py`, `frontend/src/pages/layout/ExampleGardenView.tsx`, wired into `frontend/src/pages/Layout.tsx`).
   - `priority: medium` · `status: tested` · `responsible: backend-developer, frontend-developer`
 - [ ] Onboarding UI: ask at first install whether to seed the example garden, wire the answer to the importer script above - not started; needs both a "first install" detection point (backend) and the actual prompt (frontend), genuinely undecided which comes first.
@@ -108,6 +170,10 @@ Run log (most recent first):
   - `priority: medium` · `status: tested` · `responsible: backend-developer, frontend-developer`
 - [ ] Equipment inventory view (unplaced equipment, `bed_id IS NULL`) - `EquipmentPanel.tsx`'s list shows every equipment item including unassigned ones (labeled "Inventory (unassigned)"); not a separate dedicated view, but the same list covers both cases.
   - `priority: low` · `status: tested` · `responsible: frontend-developer`
+- [ ] Equipment should be "retrieved from stock," not authored directly in the bed layout editor - user request (2026-07-19): rework the flow so equipment exists in inventory first, then gets assigned/placed from there, rather than `EquipmentPanel.tsx`'s current pattern of creating a new equipment record ad hoc while editing a bed's layout. No schema change needed - `bed_id` is already nullable and the inventory list already exists; this is purely a frontend flow change (create-in-inventory, then a separate place-from-inventory action).
+  - `priority: medium` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Equipment model/UX needs significantly more design thought before building further on it - **user's own explicit note (2026-07-19), not yet a scoped task**: flagged as unresolved and wants it called out clearly rather than scoped/built prematurely. Don't implement against this line as-is - it's a placeholder for a design conversation with the user, not a ready requirement. See also the "retrieved from stock" item directly above, which is the one piece of that rethink already concrete enough to act on.
+  - `priority: low` · `status: ready-to-start` · `responsible: product-owner` (needs scoping via a conversation with the user before this can go to an implementer - not an implementation task)
 
 ## Irrigation
 
@@ -188,6 +254,57 @@ Run log (most recent first):
   - `priority: high` · `status: new` · `responsible: backend-developer`
 - [ ] Cultivar entity below Plant (species) - user request (2026-07-18): when planning a bed, specify a named cultivar (e.g. "Coeur de Boeuf") instead of just the generic species ("Tomato"). Open design question the user raised, unresolved: does cultivar-specific data live on `Plant`, on a new `Cultivar` entity, or does `Cultivar` override `Plant` fields only where set (inheritance/fallback model)? Relevant prior art already in the codebase: `data/etl/CLAUDE.md`'s "cultivar-merge bug fix" already treats cultivars as separate `Plant` records rather than merging them into their species (the Cucurbita pepo squash-family bug) - a real `Cultivar` entity would be a structural change from that, not an extension of it, so needs to reconcile with why that decision was made. Also interacts with `family`/`genus` now being normalized tables (`backend/app/models/plant.py`'s `Family`/`Genus`) and the family→genus tree-table grouping (`frontend/src/pages/PlantsDatabase.tsx`) - a third "cultivar" tier could extend that same UI pattern. Blocks/relates to `Planting` (above), which is where a cultivar would actually get selected during bed planning.
   - `priority: low` · `status: new` · `responsible: product-owner`
+- [ ] Example-garden importer should also create a `Garden` row - user request (2026-07-19), found while testing: `backend/app/scripts/import_example_garden.py` upserts `Bed`/`Planting` rows but never creates a `Garden` row (confirmed live: `garden` table has 0 rows after a real run against `garden-planner-dev`) - "test data" should include a garden, not just beds.
+  - `priority: low` · `status: ready-to-start` · `responsible: backend-developer`
+- [ ] Bed placement must stay within the garden's boundary - user request (2026-07-19): no bed's geometry may extend outside `Garden.border_geometry`, currently unenforced (a bed can be dragged/resized fully or partially outside the garden with no validation). No backend change needed to be usable - `Bed.border_geometry` is already free-form jsonb, this is a drag/resize-time constraint in the canvas (comparable to the existing alignment-snapping item), so scoped frontend-only for now; backend-side validation as defense-in-depth can follow later if it turns out to matter. (frontend-developer: implemented in `frontend/src/pages/layout/geometry.ts` (`clampPointToBounds`/`clampRectPositionToBounds`, bounding-box approximation of the garden's own shape), `frontend/src/pages/layout/BedNode.tsx` (garden bounds clamp applied live in the rectangle path's `dragBoundFunc`, at `onTransformEnd` for resize, and via a wrapped `onChange` for the polygon path's vertex/whole-shape drag), `frontend/src/pages/Layout.tsx` (computes `gardenBounds` from `Garden.border_geometry` and passes it to every `BedNode`). Verified via `/build-frontend` (oxlint + tsc + vite build, all clean) only - no browser-automation available to click-test the drag/resize interactions, and the frontend still has no test runner (separate backlog item).)
+  - `priority: high` · `status: ready-for-testing` · `responsible: frontend-developer`
+- [ ] Beds must not intersect each other - user request (2026-07-19): no overlap validation exists on bed placement/resize; two beds can currently be dragged on top of each other. Related to (but distinct from) the alignment-snapping item above - that's a soft drag assist, this is a hard constraint. Same frontend-only scoping rationale as the boundary-containment item directly above.
+  - `priority: high` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Bed rotation should be relative to the garden's own orientation, not an independent absolute angle - user request (2026-07-19): a bed's rotation angle should be constrained/expressed relative to the garden's orientation. No `Bed` schema change needed - this is UI logic consuming the existing `Bed` rotation plus the new `Garden.orientation` field below, so frontend-only.
+  - `priority: medium` · `status: ready-to-start` · `responsible: frontend-developer` · `depends-on: Add a Garden.orientation field`
+- [ ] Add a `Garden.orientation` field (compass bearing relative to true north) - user request (2026-07-19): `Garden` currently has no orientation/bearing concept at all (`backend/app/models/garden.py`: id, name, border_geometry, climate_zone, location, notes). New backend field + migration + API, feeding the garden-relative bed rotation item above and the compass widget below - genuinely backend-only (both dependents consume it through the frontend work they already own).
+  - `priority: high` · `status: ready-to-start` · `responsible: backend-developer`
+- [ ] Compass widget in the canvas editor to set the garden's orientation - user request (2026-07-19): a compass element, positioned at a fixed offset just outside the garden boundary's edge, that sets `Garden.orientation` (see above) - depends on that field existing first. Frontend-only once the field exists - `PUT /api/garden` already accepts the full `Garden` payload, no further backend change needed.
+  - `priority: medium` · `status: ready-to-start` · `responsible: frontend-developer` · `depends-on: Add a Garden.orientation field`
+- [ ] Verify/improve the bed-rotation interaction in the canvas editor - user request (2026-07-19), found while testing: a rotate handle already exists (Konva `Transformer`'s `rotateEnabled`, plus a numeric rotation input in `BedPanel.tsx`), but the user's testing note suggests it isn't working or isn't discoverable enough in practice - investigate current behavior, and revisit once rotation becomes garden-relative (two items above) rather than an absolute angle, since the UI (and the numeric input's meaning) changes either way.
+  - `priority: medium` · `status: ready-to-start` · `responsible: frontend-developer` · `depends-on: Bed rotation should be relative to the garden's own orientation, not an independent absolute angle`
+- [ ] Warn before a rectangle↔polygon shape switch discards points - user request (2026-07-19): `ShapeTypeToggle.tsx`'s polygon→rectangle conversion (`polygonToRectangle`) silently collapses every vertex down to a bounding box with no confirmation - add a native-to-the-frontend-toolkit (not browser `confirm()`) dialog: "Do you want to continue? [Yes - delete points] [No - keep polygon]". Same dialog component as the delete-bed-popup item below - don't build two different confirmation patterns.
+  - `priority: medium` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Category field in "Edit bed" as a dropdown - user request (2026-07-19), user's own hedge: "not really sure this is necessary... to be reviewed later." Flagged for review, not a clear requirement - if pursued, needs a defined category list first; `Bed.category` is deliberately free text (the original closed 5-value `bed_type` enum was explicitly removed this session for being too restrictive - see `backend/app/models/bed.py`'s own comment), so a dropdown would need to reconcile with why that changed before reintroducing a fixed list.
+  - `priority: low` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Width/length/rotation number inputs in the bed panel are too small - user request (2026-07-19), found while testing: text gets clipped in `frontend/src/pages/layout/BedPanel.tsx`'s geometry inputs.
+  - `priority: low` · `status: ready-to-start` · `responsible: frontend-developer`
+- [~] Remove `Bed.orientation` field (split into: remove `Bed.orientation` field - backend; remove the `Bed.orientation` input from the bed editing panel - frontend - see the two items below) - user request (2026-07-19): superseded once bed rotation is garden-relative and the garden has its own orientation (see the items above) - a separate free-text N/SE/etc. field on `Bed` becomes redundant. Note: the existing "Companion planting / shade-casting checks" backlog item (above) currently names `Bed.orientation` as its planned data source for shade logic - reconcile that item with whatever replaces this field. Split because `frontend/src/pages/layout/BedPanel.tsx` (lines ~165-167) actively reads/writes `draft.orientation`, so a backend-only column drop would break the frontend build - genuinely full-stack.
+- [ ] Remove `Bed.orientation` field - backend (column, migration, API schema) - see the split item above for why this is being removed.
+  - `priority: low` · `status: ready-to-start` · `responsible: backend-developer` · `depends-on: Bed rotation should be relative to the garden's own orientation, not an independent absolute angle`
+- [ ] Remove the `Bed.orientation` input from the bed editing panel - frontend (`BedPanel.tsx`) - see the split item above for why this is being removed.
+  - `priority: low` · `status: ready-to-start` · `responsible: frontend-developer` · `depends-on: Bed rotation should be relative to the garden's own orientation, not an independent absolute angle`
+- [~] Remove `Bed.is_raised` field (split into: remove `Bed.is_raised` field - backend; remove the `Bed.is_raised` checkbox and derive from `height_cm` - frontend - see the two items below) - user request (2026-07-19): derive "raised" from `height_cm > 0` (or a similar threshold) instead of storing it as a separate boolean. Split because `BedPanel.tsx` (lines ~207-208) actively reads/writes `draft.is_raised` as a checkbox - genuinely full-stack.
+- [ ] Remove `Bed.is_raised` field - backend (column, migration, API schema) - see the split item above.
+  - `priority: low` · `status: ready-to-start` · `responsible: backend-developer`
+- [ ] Remove the `Bed.is_raised` checkbox and derive "raised" from `height_cm` - frontend (`BedPanel.tsx`) - see the split item above.
+  - `priority: low` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Tooltips on every input field in the bed/garden/equipment editing panels - user request (2026-07-19) - `BedPanel.tsx`, `GardenPanel.tsx`, `AddBedForm.tsx`, `EquipmentPanel.tsx` currently have none.
+  - `priority: low` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Replace the "delete bed" browser `confirm()` popup with the frontend toolkit's own dialog component - user request (2026-07-19): `BedPanel.tsx` currently uses a bare browser-native `confirm()`; needs a shadcn/ui-native equivalent. Same dialog component as the rectangle/polygon-switch warning above - build one reusable confirmation dialog, not two.
+  - `priority: medium` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Plant-placement tool: pick a plant, then draw it as a point, a row, or an area - user request (2026-07-19): `Planting.placement_type` (`individual`/`row`/`field`) already exists on the backend (`backend/app/models/planting.py`) but the frontend (`PlantPlacementLayer.tsx`/`PlantPicker.tsx`) only ever creates `individual` placements via a single click - build real row/area drawing tools that use the field that's already there, tracking placement based on the plant's own spacing data (`row_spacing_cm`/`spread_cm`) rather than a fixed size. No backend change needed (the field/API already support all three placement types) - frontend-only.
+  - `priority: high` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Clicking a placed plant should open a details/edit popup, not act as delete - user request (2026-07-19): `PlantPlacementLayer.tsx`'s marker currently only supports double-click-to-delete; needs a click-to-edit flow matching how clicking a bed opens `BedPanel` - edits the `Planting` (placement type, planted/removed dates, etc.), with delete moved inside that popup instead of being the primary gesture. Directly related to the plant-placement-tool item above - likely the same piece of work; frontend-only, `Planting`'s full CRUD API already exists.
+  - `priority: high` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Fix copy that implies open-ground planting exists outside of a bed - user request (2026-07-19): `Planting.bed_id` is already required (confirmed - see the "Bed placement must stay within the garden's boundary" item's own related note above), so open-ground planting without a bed was never actually possible, but `frontend/src/pages/Layout.tsx`'s help text ("Click inside any bed (including open ground) to place a plant...") still reads as if "open ground" is something separate from "a bed," not just a bed with `category: "Ground"`. Reword so the copy doesn't contradict the actual model - e.g. drop the "(including open ground)" aside entirely, since every garden already has a ground-category bed covering it.
+  - `priority: low` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Rename the mode-toggle buttons: "My beds" → "Edit", "Example Garden" → "View" - user request (2026-07-19) - `frontend/src/pages/Layout.tsx`.
+  - `priority: low` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Add a dedicated "Garden" tab to the canvas editor, reorder tabs to Garden → Beds → Plants → Equipment, and make each tab lock every earlier step (not just the immediately-preceding one) - user request (2026-07-19), found because the user genuinely couldn't discover how to draw the garden as a polygon even though that capability already exists (`GardenBoundary.tsx` + `GardenPanel.tsx` support the same rectangle/polygon editing as beds). Root cause: there's no dedicated tab for it - today the garden boundary is only reachable by clicking its outline while already on the "planters" tab (`Layout.tsx`: `interactive={tab === "planters"}` on `GardenBoundary`, `GardenPanel` only rendered when `gardenPanelOpen && tab === "planters"`), which isn't discoverable. Three parts, all frontend-only (no backend change - `Garden`'s API already supports everything needed):
+  1. Add `"garden"` as a new `PlacementTab` value with its own always-reachable sidebar (`GardenPanel` as the tab's primary panel, not conditionally shown behind a click).
+  2. Reorder the tab list to `garden`, `planters` ("Beds"), `plants`, `equipment` - the user's stated intended workflow progression (shape the garden first, place beds within it, then plants, then equipment last).
+  3. Extend the existing tab-implied-locking pattern (already used for beds - `interactive={tab === "planters"}`) so a tab locks *every* earlier step in the sequence, not just its own type: on "Beds," the garden is locked but beds aren't; on "Plants," garden and beds are both locked; on "Equipment," garden/beds/plants are all locked. The user can still freely switch back to an earlier tab to edit it again - already true of the current mechanism (switching tabs has no restriction), just needs to keep holding once "garden" is added as a step.
+  - `priority: high` · `status: ready-to-start` · `responsible: frontend-developer` (verified 2026-07-19: re-read `frontend/src/pages/Layout.tsx` in full before finalizing - description still accurate as of this run, no drift from other frontend-developer work landing since. `PlacementTab` is still exactly `"planters" | "equipment" | "plants"` with `TAB_LABELS` in that order; the garden boundary is still only interactive/reachable via `interactive={tab === "planters"}` + `gardenPanelOpen && tab === "planters"` gating `GardenPanel`, no dedicated garden tab exists yet. Confirmed genuinely frontend-only and not needing a split: all three parts (new tab, reorder, extend locking) live entirely in `Layout.tsx`'s existing tab-switching state/JSX, `GardenPanel`/`GardenBoundary` already exist and already call `putGarden` via the full `Garden` payload - no new API surface needed. Priority `high` per the standing "editor first" rule - this is core canvas-editor navigation/discoverability (the user could not find an existing capability because of it), on par with the other high-priority editor-UX items above rather than the general UI-polish tier.)
+- [ ] Toolbar across the top of the canvas editor - user request (2026-07-19): "I think the product owner made a similar suggestion" - checked both `product-owner/research/wysiwyg-bed-editor.md` and `canvas-editor-cad-lessons.md` (grepped for "toolbar" and related terms - tool selection, mode switch, button row, top bar, control panel) this run: **neither document mentions a toolbar anywhere** - this is a genuinely new idea, not something already proposed and missed. What exists today (`Layout.tsx`) is an ad hoc header row (mode toggle, Planters/Equipment/Plants tab switcher, "Add bed" button) rather than a unified toolbar; worth considering as a future home for tool-mode selection (draw row/area, pan, select) as those land. Frontend-only.
+  - `priority: medium` · `status: ready-to-start` · `responsible: frontend-developer`
+- [ ] Prepare the data model for eventually supporting multiple gardens (not implemented now) - user request (2026-07-19), explicitly forward-looking design prep only, not a build task yet: `Garden` is currently a hard singleton (`GET`/`PUT /api/garden`, get-or-create semantics, no list endpoint - `backend/app/api/routes/garden.py`). Note the design tension (would need a list-style API, a garden-switcher UI, and reconsidering the auto-created-ground-bed-per-garden pattern) for whenever this actually gets built.
+  - `priority: low` · `status: ready-to-start` · `responsible: backend-developer`
 
 ## Infra & deploy
 
@@ -218,3 +335,5 @@ Run log (most recent first):
   - `priority: low` · `status: new`
 - [ ] Import garden shape/position/size from Google Maps (or similar) instead of drawing the boundary by hand - `docs/wishlist.md`; user request (2026-07-19) during the Garden/Bed redesign, explicitly deferred rather than built alongside that redesign's manual rectangle/polygon `Garden.border_geometry` editor.
   - `priority: low` · `status: new`
+- [ ] 3D render of the garden - user request (2026-07-19), explicitly "very low priority wishlist item." Also added to `docs/wishlist.md`.
+  - `priority: low` · `status: ready-to-start` · `responsible: frontend-developer`

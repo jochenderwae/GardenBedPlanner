@@ -187,6 +187,11 @@ export function Layout() {
 
   const beds = data ?? [];
   const garden = gardenQuery.data ?? null;
+  // Garden's own bounding box, in world/cm space - passed to every BedNode so
+  // drag/resize/vertex-drag can be clamped to stay inside the garden's
+  // boundary (see the "Bed placement must stay within the garden's
+  // boundary" backlog item). Undefined when there's no garden set up yet.
+  const gardenBounds = garden ? boundingRect(garden.border_geometry) : undefined;
   const plantings = plantingsQuery.data ?? [];
   const equipmentList = equipmentQuery.data ?? [];
   const selectedBed = beds.find((b) => b.id === selectedId) ?? null;
@@ -433,6 +438,7 @@ export function Layout() {
                     onChange={(geometry) => handleBedChange(bed, geometry)}
                     interactive={tab === "planters"}
                     viewport={viewport}
+                    bounds={gardenBounds}
                   />
                 ))}
               </Layer>

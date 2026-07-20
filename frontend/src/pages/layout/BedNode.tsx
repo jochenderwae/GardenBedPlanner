@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Group, Rect, Text, Transformer } from "react-konva";
 import type Konva from "konva";
-import type { Bed, Geometry } from "@/api/client";
-import { boundingRect, colorsForBedCategory, snapToGrid } from "./geometry";
+import type { Bed, Geometry, PolygonGeometry } from "@/api/client";
+import { boundingRect, type Bounds, clampPointToBounds, clampRectPositionToBounds, colorsForBedCategory, snapToGrid } from "./geometry";
 import { PolygonEditor } from "./PolygonEditor";
 import { DEFAULT_VIEWPORT, screenToWorld, worldToScreen, type Viewport } from "./viewport";
 
@@ -23,12 +23,18 @@ interface BedNodeProps {
    * to the cm grid has to convert through the viewport first. Defaults to
    * the identity viewport for callers that don't pan/zoom. */
   viewport?: Viewport;
+  /** The garden's own bounding box (world/cm space) - when set, every
+   * drag/resize/vertex-drag on this bed is clamped so it stays inside the
+   * garden's boundary. Undefined when there's no garden set up yet (nothing
+   * to contain within). See `clampPointToBounds`/`clampRectPositionToBounds`
+   * for the bounding-box-approximation tradeoff this makes. */
+  bounds?: Bounds;
 }
 
 /** Rectangle path: drag/resize/rotate via Konva's Transformer. Polygon
  * path: delegates to PolygonEditor (shared with the Garden boundary) for
  * vertex-drag editing. */
-export function BedNode({ bed, isSelected, onSelect, onChange, interactive = true, viewport = DEFAULT_VIEWPORT }: BedNodeProps) {
+export function BedNode({ bed, isSelected, onSelect, onChange, interactive = true, viewport = DEFAULT_VIEWPORT, bounds }: BedNodeProps) {
   const shapeRef = useRef<Konva.Rect>(null);
   const trRef = useRef<Konva.Transformer>(null);
   const geometry = bed.border_geometry;
@@ -44,13 +50,20 @@ export function BedNode({ bed, isSelected, onSelect, onChange, interactive = tru
 
   if (geometry.type !== "rectangle") {
     const rect = boundingRect(geometry);
+    function handlePolygonChange(next: PolygonGeometry) {
+      if (!bounds) {
+        onChange(next);
+        return;
+      }
+      onChange({ ...next, points: next.points.map((p) => clampPointToBounds(p, bounds)) });
+    }
     return (
       <>
         <PolygonEditor
           geometry={geometry}
           isSelected={isSelected}
           onSelect={onSelect}
-          onChange={onChange}
+          onChange={handlePolygonChange}
           fill={colors.fill}
           stroke={colors.stroke}
           interactive={interactive}
@@ -77,7 +90,11 @@ export function BedNode({ bed, isSelected, onSelect, onChange, interactive = tru
           listening={interactive}
           dragBoundFunc={(pos) => {
             const world = screenToWorld(pos, viewport);
-            return worldToScreen({ x: snapToGrid(world.x), y: snapToGrid(world.y) }, viewport);
+            let snapped = { x: snapToGrid(world.x), y: snapToGrid(world.y) };
+            if (bounds) {
+              snapped = clampRectPositionToBounds(snapped.x, snapped.y, geometry.width, geometry.height, bounds);
+            }
+            return worldToScreen(snapped, viewport);
           }}
           onClick={onSelect}
           onTap={onSelect}
@@ -91,14 +108,16 @@ export function BedNode({ bed, isSelected, onSelect, onChange, interactive = tru
             const scaleY = node.scaleY();
             node.scaleX(1);
             node.scaleY(1);
-            onChange({
-              type: "rectangle",
-              x: node.x(),
-              y: node.y(),
-              width: Math.max(MIN_SIZE_CM, Math.round(node.width() * scaleX)),
-              height: Math.max(MIN_SIZE_CM, Math.round(node.height() * scaleY)),
-              rotation: node.rotation(),
-            });
+            let width = Math.max(MIN_SIZE_CM, Math.round(node.width() * scaleX));
+            let height = Math.max(MIN_SIZE_CM, Math.round(node.height() * scaleY));
+            let x = node.x();
+            let y = node.y();
+            if (bounds) {
+              width = Math.min(width, Math.max(MIN_SIZE_CM, bounds.width));
+              height = Math.min(height, Math.max(MIN_SIZE_CM, bounds.height));
+              ({ x, y } = clampRectPositionToBounds(x, y, width, height, bounds));
+            }
+            onChange({ type: "rectangle", x, y, width, height, rotation: node.rotation() });
           }}
         />
         <Text x={geometry.x + 4} y={geometry.y + 4} text={bed.name} fontSize={12} fill="#1f2937" listening={false} />
