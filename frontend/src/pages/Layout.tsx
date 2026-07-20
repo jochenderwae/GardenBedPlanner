@@ -324,8 +324,8 @@ export function Layout() {
             <p className="text-xs text-muted-foreground">
               {armedPlant
                 ? placementMode === "individual"
-                  ? `Click inside any bed (including open ground) to place ${armedPlant.common_name}.`
-                  : `Drag inside any bed (including open ground) to draw where the ${armedPlant.common_name} ${
+                  ? `Click inside any bed to place ${armedPlant.common_name}.`
+                  : `Drag inside any bed to draw where the ${armedPlant.common_name} ${
                       placementMode === "row" ? "row" : "area"
                     } goes.`
                 : "Pick a plant above, then draw where it goes: click for a single plant, drag for a row or area."}{" "}
