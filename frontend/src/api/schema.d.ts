@@ -385,6 +385,31 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/example-garden/seed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Seed Example Garden Route
+         * @description Runs the same idempotent import as
+         *     `uv run python -m app.scripts.import_example_garden`, but against the
+         *     live DB session - lets a running frontend seed the real database over
+         *     HTTP instead of needing someone to SSH in and run the script by hand.
+         *     Get-or-create by bed name, same as the script (see that module's own
+         *     docstring for the full idempotency contract).
+         */
+        post: operations["seed_example_garden_route_api_example_garden_seed_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/garden": {
         parameters: {
             query?: never;
@@ -1257,6 +1282,15 @@ export interface components {
             produces_viable_seeds?: boolean | null;
             /** Is F1 Hybrid */
             is_f1_hybrid?: boolean | null;
+        };
+        /** SeedResultResponse */
+        SeedResultResponse: {
+            /** Beds Imported */
+            beds_imported: number;
+            /** Beds Failed */
+            beds_failed: number;
+            /** Failures */
+            failures: string[];
         };
         /**
          * SunLevel
@@ -2452,6 +2486,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ExampleGarden"];
+                };
+            };
+        };
+    };
+    seed_example_garden_route_api_example_garden_seed_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeedResultResponse"];
                 };
             };
         };

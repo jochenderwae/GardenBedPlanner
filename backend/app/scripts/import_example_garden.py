@@ -39,10 +39,17 @@ the frontend's own DEFAULT_PLANTING_DIAMETER_CM fallback
 spread_cm/row_spacing_cm to size a marker off of.
 
 Run from backend/: uv run python -m app.scripts.import_example_garden
+
+`seed_example_garden()` is the importable core (used by both `main()` below
+and `POST /api/example-garden/seed` in app/api/routes/example_garden.py, so
+a running frontend can trigger the same idempotent import over HTTP rather
+than needing someone to SSH in and run this script directly).
 """
 
 import json
 import math
+from dataclasses import dataclass
+from dataclasses import field as dc_field
 from pathlib import Path
 
 from sqlmodel import Session, delete, select
@@ -157,27 +164,50 @@ def import_plantings(session: Session, bed: Bed, plantings: list[dict]) -> None:
     session.commit()
 
 
-def main() -> None:
-    if not EXAMPLE_GARDEN_PATH.exists():
-        raise SystemExit(f"No example garden fixture at {EXAMPLE_GARDEN_PATH} - run etl.generate_example_garden first")
-    data = json.loads(EXAMPLE_GARDEN_PATH.read_text(encoding="utf-8"))
+@dataclass
+class SeedResult:
+    beds_imported: int = 0
+    beds_failed: int = 0
+    failures: list[str] = dc_field(default_factory=list)
+
+
+def seed_example_garden(session: Session, path: Path = EXAMPLE_GARDEN_PATH) -> SeedResult:
+    """Importable core of the import: given an open Session, get-or-create
+    the Garden and every fixture Bed (replacing each bed's Plantings
+    wholesale), same idempotent behaviour whether called from main() below
+    or from the HTTP route. Raises FileNotFoundError if the fixture hasn't
+    been generated yet (see etl.generate_example_garden) - callers decide
+    how to surface that (SystemExit for the CLI, HTTP 404 for the route)."""
+    if not path.exists():
+        raise FileNotFoundError(f"No example garden fixture at {path} - run etl.generate_example_garden first")
+    data = json.loads(path.read_text(encoding="utf-8"))
     beds_data = data["beds"]
-    print(f"Importing {len(beds_data)} beds from {EXAMPLE_GARDEN_PATH}")
 
-    ok, failed = 0, 0
+    result = SeedResult()
+    import_garden(session, beds_data)
+    for bed_data in beds_data:
+        try:
+            bed = upsert_bed(session, bed_data)
+            import_plantings(session, bed, bed_data.get("plantings", []))
+            result.beds_imported += 1
+        except Exception as exc:  # noqa: BLE001 - one bad bed must not abort the batch
+            session.rollback()
+            result.failures.append(f"{bed_data.get('name')!r}: {exc!r}")
+            result.beds_failed += 1
+    return result
+
+
+def main() -> None:
+    print(f"Importing beds from {EXAMPLE_GARDEN_PATH}")
     with Session(engine) as session:
-        import_garden(session, beds_data)
-        for bed_data in beds_data:
-            try:
-                bed = upsert_bed(session, bed_data)
-                import_plantings(session, bed, bed_data.get("plantings", []))
-                ok += 1
-            except Exception as exc:  # noqa: BLE001 - one bad bed must not abort the batch
-                session.rollback()
-                print(f"[{bed_data.get('name')!r}] FAILED: {exc!r}")
-                failed += 1
+        try:
+            result = seed_example_garden(session)
+        except FileNotFoundError as exc:
+            raise SystemExit(str(exc)) from exc
 
-    print(f"Done. {ok} beds imported, {failed} failed.")
+    for failure in result.failures:
+        print(f"FAILED: {failure}")
+    print(f"Done. {result.beds_imported} beds imported, {result.beds_failed} failed.")
 
 
 if __name__ == "__main__":
