@@ -15,6 +15,26 @@ export function snapToGrid(value: number, gridSizeCm: number = DRAG_SNAP_CM): nu
   return Math.round(value / gridSizeCm) * gridSizeCm;
 }
 
+/** Normalizes an angle in degrees to the [0, 360) range. */
+export function normalizeDegrees(deg: number): number {
+  return ((deg % 360) + 360) % 360;
+}
+
+/** A bed's `border_geometry.rotation` is stored (and rendered by Konva) as
+ * an absolute canvas-space angle, unrelated to which way the garden itself
+ * faces. These two pure conversions let the UI show/edit that angle
+ * *relative* to `Garden.orientation_deg` (0 = "aligned with the garden's own
+ * orientation") without changing what's actually stored/rendered - the
+ * garden-relative value is purely a display/input transform on top of the
+ * same absolute rotation. */
+export function rotationRelativeToGarden(absoluteDeg: number, gardenOrientationDeg: number): number {
+  return normalizeDegrees(absoluteDeg - gardenOrientationDeg);
+}
+
+export function rotationFromGardenRelative(relativeDeg: number, gardenOrientationDeg: number): number {
+  return normalizeDegrees(relativeDeg + gardenOrientationDeg);
+}
+
 /** Default footprint (cm) for a plant placement when the plant has no
  * spread_cm/row_spacing_cm on file - keeps a planting visible instead of
  * collapsing to a near-invisible dot. */

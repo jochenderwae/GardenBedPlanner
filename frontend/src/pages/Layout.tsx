@@ -437,7 +437,12 @@ export function Layout() {
 
           {tab === "garden" && <GardenPanel garden={garden} />}
           {tab === "planters" && selectedBed && (
-            <BedPanel bed={selectedBed} onClose={() => setSelectedId(null)} onDeleted={() => setSelectedId(null)} />
+            <BedPanel
+              bed={selectedBed}
+              gardenOrientationDeg={garden?.orientation_deg}
+              onClose={() => setSelectedId(null)}
+              onDeleted={() => setSelectedId(null)}
+            />
           )}
           {tab === "equipment" && (
             <EquipmentPanel beds={beds} equipment={equipmentList} onClose={() => switchTab("planters")} />

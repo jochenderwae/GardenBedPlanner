@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import { deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
+import { rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
 
 const inputClass =
   "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
@@ -32,11 +33,17 @@ const numberInputClass = cn(
 
 interface BedPanelProps {
   bed: Bed;
+  /** The garden's own compass bearing (`Garden.orientation_deg`) - lets the
+   * Rotation input below be expressed relative to the garden's orientation
+   * (0 = "aligned with the garden") instead of an independent absolute
+   * angle. Defaults to 0 (north-up) when there's no garden yet, matching
+   * `Garden.orientation_deg`'s own default. */
+  gardenOrientationDeg?: number;
   onClose: () => void;
   onDeleted: () => void;
 }
 
-export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
+export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: BedPanelProps) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState(bed);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
@@ -148,13 +155,18 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
                 }}
               />
             </label>
-            <label className="flex flex-col gap-1" title="Rotation angle in degrees, clockwise from unrotated.">
+            <label
+              className="flex flex-col gap-1"
+              title="Rotation in degrees, clockwise, relative to the garden's own orientation - 0 means aligned with the garden, not with the canvas."
+            >
               <span className="text-xs font-medium text-muted-foreground">Rotation (°)</span>
               <input
                 type="number"
                 className={numberInputClass}
-                value={draft.border_geometry.rotation}
-                onChange={(e) => setRectField("rotation", Number(e.target.value))}
+                value={Math.round(rotationRelativeToGarden(draft.border_geometry.rotation, gardenOrientationDeg))}
+                onChange={(e) =>
+                  setRectField("rotation", rotationFromGardenRelative(Number(e.target.value), gardenOrientationDeg))
+                }
                 onBlur={() => {
                   if (
                     draft.border_geometry.type === "rectangle" &&
