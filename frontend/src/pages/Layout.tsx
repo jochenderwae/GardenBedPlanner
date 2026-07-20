@@ -2,10 +2,6 @@ import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stage, Layer, Line } from "react-konva";
 import type Konva from "konva";
-import { Link } from "react-router-dom";
-import { Plus, Maximize } from "lucide-react";
-import { buttonVariants, Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import {
   createPlanting,
   getExampleGarden,
@@ -39,6 +35,7 @@ import { PlantPlacementLayer, type PlacementMode } from "./layout/PlantPlacement
 import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel } from "./layout/PlantingPanel";
 import { RulerLayer } from "./layout/RulerLayer";
+import { Toolbar, type PlacementTab, type ViewMode } from "./layout/Toolbar";
 import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, GRID_SPACING_CM } from "./layout/geometry";
 import {
   clampScale,
@@ -49,30 +46,6 @@ import {
   type Size,
   type Viewport,
 } from "./layout/viewport";
-
-type ViewMode = "mine" | "example";
-/** Order here doubles as the intended workflow progression (shape the
- * garden, then place beds within it, then plants, then equipment last) and
- * the tab-implied-locking sequence: each tab makes only its own object type
- * interactive (`GardenBoundary`/`BedNode`/`PlantPlacementLayer`/
- * `EquipmentLayer` each gate on exactly one tab), which - since only one
- * tab can be active at a time - automatically locks every *other* step,
- * not just the immediately-preceding one. The user can always switch back
- * to an earlier tab to edit it again; nothing here prevents that. */
-type PlacementTab = "garden" | "planters" | "plants" | "equipment";
-
-const TAB_LABELS: Record<PlacementTab, string> = {
-  garden: "Garden",
-  planters: "Beds",
-  plants: "Plants",
-  equipment: "Equipment",
-};
-
-const PLACEMENT_MODE_LABELS: Record<PlacementMode, string> = {
-  individual: "Point",
-  row: "Row",
-  field: "Area",
-};
 
 const CANVAS_SIZE: Size = { width: CANVAS_WIDTH_PX, height: CANVAS_HEIGHT_PX };
 /** Multiplicative step per wheel-zoom tick - matches the standard
@@ -317,102 +290,28 @@ export function Layout() {
 
   const exampleBeds = exampleGardenQuery.data?.beds ?? [];
 
+  function handleModeChange(next: ViewMode) {
+    if (next === "example") setSelectedId(null);
+    setMode(next);
+  }
+
   return (
     <div className="flex min-h-svh flex-col gap-4 p-6">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex flex-wrap items-center gap-4">
-          <Link to="/" className={buttonVariants({ variant: "outline" })}>
-            Back
-          </Link>
-          <h1 className="text-xl font-medium">Bed layout</h1>
-          <div className="flex rounded-md border p-0.5">
-            <button
-              type="button"
-              className={cn(
-                "rounded px-2.5 py-1 text-xs font-medium",
-                mode === "mine" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-              )}
-              onClick={() => setMode("mine")}
-            >
-              My beds
-            </button>
-            <button
-              type="button"
-              className={cn(
-                "rounded px-2.5 py-1 text-xs font-medium",
-                mode === "example" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-              )}
-              onClick={() => {
-                setSelectedId(null);
-                setMode("example");
-              }}
-            >
-              Example garden
-            </button>
-          </div>
-          {mode === "mine" && (
-            <div className="flex rounded-md border p-0.5">
-              {(Object.keys(TAB_LABELS) as PlacementTab[]).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  className={cn(
-                    "rounded px-2.5 py-1 text-xs font-medium",
-                    tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-                  )}
-                  onClick={() => switchTab(t)}
-                >
-                  {TAB_LABELS[t]}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-10 text-right text-xs tabular-nums text-muted-foreground">
-            {Math.round(viewport.scale * 100)}%
-          </span>
-          <Button size="sm" variant="outline" onClick={handleFitView} title="Fit the whole garden in view">
-            <Maximize /> Fit view
-          </Button>
-          {mode === "mine" && tab === "planters" && (
-            <Button size="sm" onClick={() => setShowAddForm(true)}>
-              <Plus /> Add bed
-            </Button>
-          )}
-          {mode === "mine" && tab === "plants" && (
-            <>
-              <div ref={plantPickerAnchorRef}>
-                <Button size="sm" variant={armedPlant ? "outline" : "default"} onClick={openPlantPicker}>
-                  {armedPlant ? armedPlant.common_name : "Pick a plant"}
-                </Button>
-              </div>
-              {armedPlant && (
-                <>
-                  <div className="flex rounded-md border p-0.5">
-                    {(Object.keys(PLACEMENT_MODE_LABELS) as PlacementMode[]).map((m) => (
-                      <button
-                        key={m}
-                        type="button"
-                        className={cn(
-                          "rounded px-2.5 py-1 text-xs font-medium",
-                          placementMode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-                        )}
-                        onClick={() => setPlacementMode(m)}
-                      >
-                        {PLACEMENT_MODE_LABELS[m]}
-                      </button>
-                    ))}
-                  </div>
-                  <Button size="sm" variant="ghost" onClick={() => setArmedPlant(null)}>
-                    Clear
-                  </Button>
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </div>
+      <Toolbar
+        mode={mode}
+        onModeChange={handleModeChange}
+        tab={tab}
+        onTabChange={switchTab}
+        zoomPercent={viewport.scale * 100}
+        onFitView={handleFitView}
+        onAddBed={() => setShowAddForm(true)}
+        armedPlant={armedPlant}
+        onClearArmedPlant={() => setArmedPlant(null)}
+        plantPickerAnchorRef={plantPickerAnchorRef}
+        onOpenPlantPicker={openPlantPicker}
+        placementMode={placementMode}
+        onPlacementModeChange={setPlacementMode}
+      />
       <p className="text-xs text-muted-foreground">
         Scroll to pan, Ctrl/Cmd+scroll to zoom, drag empty canvas to pan.
       </p>
