@@ -196,34 +196,19 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
           />
         </label>
 
-        <div className="grid grid-cols-2 gap-2">
-          <label
-            className="flex flex-col gap-1"
-            title="Free-text compass note for which way the bed faces, e.g. N, SE."
+        <label className="flex flex-col gap-1" title="How much direct sun this bed gets.">
+          <span className="text-xs font-medium text-muted-foreground">Sun level</span>
+          <select
+            className={inputClass}
+            value={draft.sun_level ?? ""}
+            onChange={(e) => commit({ sun_level: (e.target.value || null) as Bed["sun_level"] })}
           >
-            <span className="text-xs font-medium text-muted-foreground">Orientation</span>
-            <input
-              className={inputClass}
-              placeholder="e.g. N, SE"
-              value={draft.orientation ?? ""}
-              onChange={(e) => setDraft((prev) => ({ ...prev, orientation: e.target.value || null }))}
-              onBlur={() => draft.orientation !== bed.orientation && commit({ orientation: draft.orientation })}
-            />
-          </label>
-          <label className="flex flex-col gap-1" title="How much direct sun this bed gets.">
-            <span className="text-xs font-medium text-muted-foreground">Sun level</span>
-            <select
-              className={inputClass}
-              value={draft.sun_level ?? ""}
-              onChange={(e) => commit({ sun_level: (e.target.value || null) as Bed["sun_level"] })}
-            >
-              <option value="">—</option>
-              <option value="full_sun">Full sun</option>
-              <option value="half_sun">Half sun</option>
-              <option value="shadow">Shadow</option>
-            </select>
-          </label>
-        </div>
+            <option value="">—</option>
+            <option value="full_sun">Full sun</option>
+            <option value="half_sun">Half sun</option>
+            <option value="shadow">Shadow</option>
+          </select>
+        </label>
 
         <label className="flex flex-col gap-1" title="Free-text soil description, e.g. loam, sandy, compost-amended.">
           <span className="text-xs font-medium text-muted-foreground">Soil type</span>
