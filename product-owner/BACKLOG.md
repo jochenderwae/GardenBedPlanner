@@ -1,5 +1,13 @@
 # GardenBedPlanner Backlog
 
+**Deprecated 2026-07-20.** This file is no longer the ground truth for planning - it's been fully migrated to
+the GitHub Project at https://github.com/users/jochenderwae/projects/1 (every item below now exists there as
+a real Issue, with `priority`/`status` as custom Project fields, `responsible` as `role:*` labels, section as
+`area:*` labels, `depends-on` as a body backlink, and `[~]` split/dropped items as real sub-issue relationships
+or closed-not-planned issues). Kept here, unmodified, as the historical record of how this project's planning
+worked before the migration - not to be edited further by any agent or the `/backlog` skill. Agent/skill
+instructions that read/write this file are a separate, not-yet-done follow-up.
+
 Run log (most recent first):
 - 2026-07-20 (delete-bed-fails-silently bug, follow-up): filled in `priority`/`responsible` on the two split
   children below (`status` left untouched, already correctly `ready-to-start` from the main session's direct
