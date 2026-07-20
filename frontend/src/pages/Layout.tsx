@@ -8,7 +8,6 @@ import { buttonVariants, Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   createPlanting,
-  deletePlanting,
   getExampleGarden,
   getGarden,
   listBedEquipment,
@@ -38,6 +37,7 @@ import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { EquipmentPanel } from "./layout/EquipmentPanel";
 import { PlantPlacementLayer, type PlacementMode } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
+import { PlantingPanel } from "./layout/PlantingPanel";
 import { RulerLayer } from "./layout/RulerLayer";
 import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, GRID_SPACING_CM } from "./layout/geometry";
 import {
@@ -125,6 +125,9 @@ export function Layout() {
   const [plantPickerOpen, setPlantPickerOpen] = useState(false);
   const [plantPickerPos, setPlantPickerPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const plantPickerAnchorRef = useRef<HTMLDivElement>(null);
+  // Clicking a placed plant marker opens its edit/details popup
+  // (PlantingPanel), matching how clicking a bed opens BedPanel.
+  const [selectedPlantingId, setSelectedPlantingId] = useState<number | null>(null);
   const [tooltip, setTooltip] = useState<PlantingTooltipState | null>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
 
@@ -193,12 +196,6 @@ export function Layout() {
       );
     },
   });
-  const plantingDeleteMutation = useMutation({
-    mutationFn: (id: number) => deletePlanting(id),
-    onSuccess: (_void, id) => {
-      queryClient.setQueryData<Planting[]>(["plantings"], (old) => old?.filter((p) => p.id !== id));
-    },
-  });
 
   const beds = data ?? [];
   const garden = gardenQuery.data ?? null;
@@ -210,6 +207,7 @@ export function Layout() {
   const plantings = plantingsQuery.data ?? [];
   const equipmentList = equipmentQuery.data ?? [];
   const selectedBed = beds.find((b) => b.id === selectedId) ?? null;
+  const selectedPlanting = plantings.find((p) => p.id === selectedPlantingId) ?? null;
   // Every bed's bounding box, in world/cm space, keyed by id - so each
   // BedNode can be given every *other* bed's box for the "beds must not
   // intersect" hard constraint. Not memoized - the bed count here is a
@@ -223,6 +221,7 @@ export function Layout() {
     setSelectedId(null);
     setGardenPanelOpen(false);
     setPlantPickerOpen(false);
+    setSelectedPlantingId(null);
   }
 
   function openPlantPicker() {
@@ -307,12 +306,6 @@ export function Layout() {
       old ? old.map((p) => (p.id === planting.id ? { ...p, geometry } : p)) : old,
     );
     plantingUpdateMutation.mutate({ id: planting.id, patch: { geometry } });
-  }
-
-  function handlePlantingDelete(planting: Planting) {
-    if (planting.id == null) return;
-    const label = plantsBySlug.get(planting.plant_slug)?.common_name ?? planting.plant_slug;
-    if (confirm(`Remove ${label}?`)) plantingDeleteMutation.mutate(planting.id);
   }
 
   const exampleBeds = exampleGardenQuery.data?.beds ?? [];
@@ -437,7 +430,7 @@ export function Layout() {
                       placementMode === "row" ? "row" : "area"
                     } goes.`
                 : "Pick a plant above, then draw where it goes: click for a single plant, drag for a row or area."}{" "}
-              Drag a placed plant to move it, double-click to remove it.
+              Click a placed plant to edit or remove it, drag it to move it.
             </p>
           )}
         </>
@@ -524,7 +517,7 @@ export function Layout() {
                   placementMode={placementMode}
                   onPlace={handlePlantPlace}
                   onMove={handlePlantingMove}
-                  onDelete={handlePlantingDelete}
+                  onSelect={(planting) => setSelectedPlantingId(planting.id ?? null)}
                 />
               )}
             </Stage>
@@ -538,6 +531,14 @@ export function Layout() {
           )}
           {tab === "equipment" && (
             <EquipmentPanel beds={beds} equipment={equipmentList} onClose={() => switchTab("planters")} />
+          )}
+          {tab === "plants" && selectedPlanting && (
+            <PlantingPanel
+              planting={selectedPlanting}
+              plant={plantsBySlug.get(selectedPlanting.plant_slug)}
+              onClose={() => setSelectedPlantingId(null)}
+              onDeleted={() => setSelectedPlantingId(null)}
+            />
           )}
         </div>
       )}

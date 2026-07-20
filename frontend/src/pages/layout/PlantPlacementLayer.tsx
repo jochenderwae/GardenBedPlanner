@@ -28,18 +28,22 @@ interface PlantPlacementLayerProps {
   placementMode: PlacementMode;
   onPlace: (bedId: number, geometry: Geometry, placementType: PlacementType) => void;
   onMove: (planting: Planting, geometry: Geometry) => void;
-  onDelete: (planting: Planting) => void;
+  /** Clicking an existing marker opens its edit/details popup (PlantingPanel,
+   * owned by Layout.tsx) rather than deleting it - delete lives inside that
+   * popup now, not as a canvas gesture. */
+  onSelect: (planting: Planting) => void;
 }
 
 /** Pick a plant first (Layout.tsx's toolbar), then draw where it goes:
  * single-click for a point placement, click-drag-release for a row (thin
  * rectangle along the drag line) or a field/area (the drawn rectangle
  * itself) - the three `Planting.placement_type` values the backend already
- * supports. Existing plantings render as draggable, double-click-to-delete
- * markers, shaped by their own placement type; drawing/dragging/deleting
- * only responds while the Plants tab is active (the `active` prop - see
- * Layout.tsx's tab switcher, the same "locked while on another tab"
- * mechanism used for beds). */
+ * supports. Existing plantings render as draggable, click-to-edit markers
+ * (matching how clicking a bed opens BedPanel - see `onSelect`), shaped by
+ * their own placement type; drawing/dragging/selecting only responds while
+ * the Plants tab is active (the `active` prop - see Layout.tsx's tab
+ * switcher, the same "locked while on another tab" mechanism used for
+ * beds). */
 export function PlantPlacementLayer({
   beds,
   plantings,
@@ -49,7 +53,7 @@ export function PlantPlacementLayer({
   placementMode,
   onPlace,
   onMove,
-  onDelete,
+  onSelect,
 }: PlantPlacementLayerProps) {
   const [draw, setDraw] = useState<{ bedId: number; start: { x: number; y: number }; current: { x: number; y: number } } | null>(
     null,
@@ -155,7 +159,7 @@ export function PlantPlacementLayer({
                 plant={plantsBySlug.get(planting.plant_slug)}
                 active={active}
                 onMove={(geometry) => onMove(planting, geometry)}
-                onDelete={() => onDelete(planting)}
+                onSelect={() => onSelect(planting)}
               />
             ))}
           </Group>
@@ -170,13 +174,13 @@ function PlantingMarker({
   plant,
   active,
   onMove,
-  onDelete,
+  onSelect,
 }: {
   planting: Planting;
   plant: Plant | undefined;
   active: boolean;
   onMove: (geometry: Geometry) => void;
-  onDelete: () => void;
+  onSelect: () => void;
 }) {
   const label = plant?.common_name ?? planting.plant_slug;
   const color = colorForSlug(planting.plant_slug);
@@ -204,8 +208,8 @@ function PlantingMarker({
           draggable={active}
           listening={active}
           onDragEnd={handleDragEnd}
-          onDblClick={onDelete}
-          onDblTap={onDelete}
+          onClick={onSelect}
+          onTap={onSelect}
         />
         {active && (
           <Text x={props.x + 4} y={props.y - 14} text={label} fontSize={10} fill="#1f2937" listening={false} />
@@ -244,8 +248,8 @@ function PlantingMarker({
         draggable={active}
         listening={active}
         onDragEnd={handleDragEnd}
-        onDblClick={onDelete}
-        onDblTap={onDelete}
+        onClick={onSelect}
+        onTap={onSelect}
       />
       {active && (
         <Text x={centerX + radius + 3} y={centerY - 5} text={label} fontSize={10} fill="#1f2937" listening={false} />
