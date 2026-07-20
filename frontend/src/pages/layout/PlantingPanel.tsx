@@ -3,6 +3,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogPopup,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { deletePlanting, updatePlanting, type PlacementType, type Plant, type Planting, type PlantingUpdate } from "@/api/client";
 
 const inputClass =
@@ -32,6 +41,7 @@ interface PlantingPanelProps {
 export function PlantingPanel({ planting, plant, onClose, onDeleted }: PlantingPanelProps) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState(planting);
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   useEffect(() => setDraft(planting), [planting]);
 
@@ -108,16 +118,23 @@ export function PlantingPanel({ planting, plant, onClose, onDeleted }: PlantingP
           />
         </label>
 
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => {
-            if (confirm(`Remove ${label}?`)) deleteMutation.mutate();
-          }}
-        >
+        <Button variant="destructive" size="sm" onClick={() => setConfirmDeleteOpen(true)}>
           <Trash2 /> Remove planting
         </Button>
       </div>
+
+      <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
+        <AlertDialogPopup>
+          <AlertDialogTitle>Remove {label}?</AlertDialogTitle>
+          <AlertDialogDescription>This removes the planting permanently - it can't be undone.</AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={() => deleteMutation.mutate()}>
+              <Trash2 /> Remove planting
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogPopup>
+      </AlertDialog>
     </Card>
   );
 }
