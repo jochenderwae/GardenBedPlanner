@@ -49,6 +49,59 @@ export function colorsForBedCategory(category: string | null | undefined): { fil
   return { fill: `hsl(${hue}, 45%, 88%)`, stroke: `hsl(${hue}, 45%, 45%)` };
 }
 
+/** Minimum drag distance (cm) before a row/area drag commits a planting -
+ * below this it's treated as an accidental tiny drag (or a click that
+ * barely moved) rather than a deliberate row/area, mirroring `MIN_SIZE_CM`
+ * style minimums used elsewhere for beds/the garden boundary. */
+export const MIN_ROW_LENGTH_CM = 20;
+export const MIN_FIELD_SIZE_CM = 20;
+
+/** A `row` planting's geometry: a thin rectangle running from `start` to
+ * `end`, `thicknessCm` wide (typically the plant's own `spread_cm`),
+ * centered on the drag line. Rotation pivots on the rectangle's own x/y
+ * corner (same Konva `Rect` semantics `BedNode`/`GardenBoundary` already
+ * rely on), so `x`/`y` is `start` itself and the unrotated rectangle runs
+ * along local +x before rotating to match the drag's actual angle. Returns
+ * `null` for a drag shorter than `MIN_ROW_LENGTH_CM` (not a deliberate row). */
+export function rowGeometryFromDrag(
+  start: { x: number; y: number },
+  end: { x: number; y: number },
+  thicknessCm: number,
+): RectangleGeometry | null {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const length = Math.hypot(dx, dy);
+  if (length < MIN_ROW_LENGTH_CM) return null;
+  const rotation = (Math.atan2(dy, dx) * 180) / Math.PI;
+  return { type: "rectangle", x: start.x, y: start.y - thicknessCm / 2, width: length, height: thicknessCm, rotation };
+}
+
+/** A `field` planting's geometry: the axis-aligned rectangle spanning
+ * `start` and `end` (whichever corner order the drag happened in) - unlike
+ * a row, the drawn extent itself *is* the planted area, not derived from
+ * plant spacing. Returns `null` for a drag smaller than
+ * `MIN_FIELD_SIZE_CM` on either axis. */
+export function fieldGeometryFromDrag(
+  start: { x: number; y: number },
+  end: { x: number; y: number },
+): RectangleGeometry | null {
+  const width = Math.abs(end.x - start.x);
+  const height = Math.abs(end.y - start.y);
+  if (width < MIN_FIELD_SIZE_CM || height < MIN_FIELD_SIZE_CM) return null;
+  return { type: "rectangle", x: Math.min(start.x, end.x), y: Math.min(start.y, end.y), width, height, rotation: 0 };
+}
+
+/** Flattens either geometry variant to renderable `Rect` props (x/y/width/
+ * height/rotation) - rectangles pass through as-is, polygons fall back to
+ * their unrotated bounding box (same simplification `boundingRect` already
+ * makes). Used for `row`/`field` planting markers, which need the actual
+ * rotated rectangle (not just its bounding box) to render as the shape
+ * that was actually drawn. */
+export function rectRenderProps(geometry: Geometry): { x: number; y: number; width: number; height: number; rotation: number } {
+  if (geometry.type === "rectangle") return geometry;
+  return { ...boundingRect(geometry), rotation: 0 };
+}
+
 /** Axis-aligned bounding box for either geometry variant, in garden-space
  * (or bed-local, if that's the space the geometry itself is already in) -
  * used wherever a shape needs a flat x/y/width/height regardless of

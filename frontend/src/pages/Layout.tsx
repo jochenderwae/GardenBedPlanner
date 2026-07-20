@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stage, Layer, Line } from "react-konva";
 import type Konva from "konva";
@@ -23,9 +23,9 @@ import {
   type Garden,
   type GardenPut,
   type Geometry,
+  type PlacementType,
   type Plant,
   type Planting,
-  type PlantingCreate,
   type PlantingUpdate,
 } from "@/api/client";
 import { BedNode } from "./layout/BedNode";
@@ -36,10 +36,10 @@ import { GardenBoundary } from "./layout/GardenBoundary";
 import { GardenPanel } from "./layout/GardenPanel";
 import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { EquipmentPanel } from "./layout/EquipmentPanel";
-import { PlantPlacementLayer, type PickerState } from "./layout/PlantPlacementLayer";
+import { PlantPlacementLayer, type PlacementMode } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { RulerLayer } from "./layout/RulerLayer";
-import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, DEFAULT_PLANTING_DIAMETER_CM, GRID_SPACING_CM } from "./layout/geometry";
+import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, GRID_SPACING_CM } from "./layout/geometry";
 import {
   clampScale,
   DEFAULT_VIEWPORT,
@@ -57,6 +57,12 @@ const TAB_LABELS: Record<PlacementTab, string> = {
   planters: "Planters",
   equipment: "Equipment",
   plants: "Plants",
+};
+
+const PLACEMENT_MODE_LABELS: Record<PlacementMode, string> = {
+  individual: "Point",
+  row: "Row",
+  field: "Area",
 };
 
 const CANVAS_SIZE: Size = { width: CANVAS_WIDTH_PX, height: CANVAS_HEIGHT_PX };
@@ -109,7 +115,16 @@ export function Layout() {
   const [mode, setMode] = useState<ViewMode>("mine");
   const [tab, setTab] = useState<PlacementTab>("planters");
   const [gardenPanelOpen, setGardenPanelOpen] = useState(false);
-  const [picker, setPicker] = useState<PickerState | null>(null);
+  // "Arm" a plant, then draw where it goes (point/row/area) - see
+  // PlantPlacementLayer's own doc. plantPickerOpen/plantPickerPos are for
+  // the popover that picks *which* plant gets armed (anchored under the
+  // toolbar button below, not tied to a canvas click position the way the
+  // old click-first flow's picker was).
+  const [armedPlant, setArmedPlant] = useState<Plant | null>(null);
+  const [placementMode, setPlacementMode] = useState<PlacementMode>("individual");
+  const [plantPickerOpen, setPlantPickerOpen] = useState(false);
+  const [plantPickerPos, setPlantPickerPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const plantPickerAnchorRef = useRef<HTMLDivElement>(null);
   const [tooltip, setTooltip] = useState<PlantingTooltipState | null>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
 
@@ -164,10 +179,10 @@ export function Layout() {
   });
 
   const plantingCreateMutation = useMutation({
-    mutationFn: (payload: PlantingCreate) => createPlanting(payload),
+    mutationFn: (payload: { bed_id: number; plant_slug: string; placement_type: PlacementType; geometry: Geometry }) =>
+      createPlanting({ ...payload, planted_date: null, removed_date: null }),
     onSuccess: (created) => {
       queryClient.setQueryData<Planting[]>(["plantings"], (old) => (old ? [...old, created] : [created]));
-      setPicker(null);
     },
   });
   const plantingUpdateMutation = useMutation({
@@ -207,7 +222,18 @@ export function Layout() {
     setTab(next);
     setSelectedId(null);
     setGardenPanelOpen(false);
-    setPicker(null);
+    setPlantPickerOpen(false);
+  }
+
+  function openPlantPicker() {
+    const rect = plantPickerAnchorRef.current?.getBoundingClientRect();
+    if (rect) setPlantPickerPos({ x: rect.left, y: rect.bottom + 4 });
+    setPlantPickerOpen(true);
+  }
+
+  function handlePlantPlace(bedId: number, geometry: Geometry, placementType: PlacementType) {
+    if (!armedPlant) return;
+    plantingCreateMutation.mutate({ bed_id: bedId, plant_slug: armedPlant.slug, placement_type: placementType, geometry });
   }
 
   /** Ctrl/Cmd+scroll = pointer-relative zoom (matches Figma's convention,
@@ -361,6 +387,37 @@ export function Layout() {
               </Button>
             </>
           )}
+          {mode === "mine" && tab === "plants" && (
+            <>
+              <div ref={plantPickerAnchorRef}>
+                <Button size="sm" variant={armedPlant ? "outline" : "default"} onClick={openPlantPicker}>
+                  {armedPlant ? armedPlant.common_name : "Pick a plant"}
+                </Button>
+              </div>
+              {armedPlant && (
+                <>
+                  <div className="flex rounded-md border p-0.5">
+                    {(Object.keys(PLACEMENT_MODE_LABELS) as PlacementMode[]).map((m) => (
+                      <button
+                        key={m}
+                        type="button"
+                        className={cn(
+                          "rounded px-2.5 py-1 text-xs font-medium",
+                          placementMode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                        )}
+                        onClick={() => setPlacementMode(m)}
+                      >
+                        {PLACEMENT_MODE_LABELS[m]}
+                      </button>
+                    ))}
+                  </div>
+                  <Button size="sm" variant="ghost" onClick={() => setArmedPlant(null)}>
+                    Clear
+                  </Button>
+                </>
+              )}
+            </>
+          )}
         </div>
       </div>
       <p className="text-xs text-muted-foreground">
@@ -373,8 +430,14 @@ export function Layout() {
           {isError && <p className="text-sm text-destructive">Failed to load beds.</p>}
           {tab === "plants" && (
             <p className="text-xs text-muted-foreground">
-              Click inside any bed (including open ground) to place a plant. Drag a placed plant to move it,
-              double-click to remove it.
+              {armedPlant
+                ? placementMode === "individual"
+                  ? `Click inside any bed (including open ground) to place ${armedPlant.common_name}.`
+                  : `Drag inside any bed (including open ground) to draw where the ${armedPlant.common_name} ${
+                      placementMode === "row" ? "row" : "area"
+                    } goes.`
+                : "Pick a plant above, then draw where it goes: click for a single plant, drag for a row or area."}{" "}
+              Drag a placed plant to move it, double-click to remove it.
             </p>
           )}
         </>
@@ -457,7 +520,9 @@ export function Layout() {
                   plantings={plantings}
                   plantsBySlug={plantsBySlug}
                   active
-                  onOpenPicker={setPicker}
+                  armedPlant={armedPlant}
+                  placementMode={placementMode}
+                  onPlace={handlePlantPlace}
                   onMove={handlePlantingMove}
                   onDelete={handlePlantingDelete}
                 />
@@ -500,29 +565,16 @@ export function Layout() {
         </div>
       )}
 
-      {picker && (
+      {plantPickerOpen && (
         <PlantPicker
-          x={picker.screenX}
-          y={picker.screenY}
+          x={plantPickerPos.x}
+          y={plantPickerPos.y}
           plants={plantsQuery.data ?? []}
-          onPick={(slug) =>
-            plantingCreateMutation.mutate({
-              bed_id: picker.bedId,
-              plant_slug: slug,
-              placement_type: "individual",
-              geometry: {
-                type: "rectangle",
-                x: picker.x - DEFAULT_PLANTING_DIAMETER_CM / 2,
-                y: picker.y - DEFAULT_PLANTING_DIAMETER_CM / 2,
-                width: DEFAULT_PLANTING_DIAMETER_CM,
-                height: DEFAULT_PLANTING_DIAMETER_CM,
-                rotation: 0,
-              },
-              planted_date: null,
-              removed_date: null,
-            })
-          }
-          onClose={() => setPicker(null)}
+          onPick={(slug) => {
+            setArmedPlant(plantsBySlug.get(slug) ?? null);
+            setPlantPickerOpen(false);
+          }}
+          onClose={() => setPlantPickerOpen(false)}
         />
       )}
 

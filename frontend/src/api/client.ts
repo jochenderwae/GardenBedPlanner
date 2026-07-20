@@ -26,6 +26,7 @@ export type ExamplePlanting = components["schemas"]["ExamplePlanting"];
 export type Planting = components["schemas"]["Planting"];
 export type PlantingCreate = components["schemas"]["PlantingCreate"];
 export type PlantingUpdate = components["schemas"]["PlantingUpdate"];
+export type PlacementType = components["schemas"]["PlacementType"];
 export type BedEquipment = components["schemas"]["BedEquipment"];
 export type BedEquipmentCreate = components["schemas"]["BedEquipmentCreate"];
 export type BedEquipmentUpdate = components["schemas"]["BedEquipmentUpdate"];
