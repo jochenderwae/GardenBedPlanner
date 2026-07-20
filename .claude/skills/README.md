@@ -61,7 +61,7 @@ See `../../docs/testing-plan.md` for the phased plan to close the frontend/data 
 
 | Skill | Script(s) | Notes |
 |---|---|---|
-| `/backlog` | (none - Read/Edit conventions on `product-owner/BACKLOG.md`) | pick a task, change status, re-assign, flag a dependency, split a multi-responsible item, list a role's tasks - see `.claude/agents/product-owner.md`'s "Tracking fields" section for the schema itself. `status: ready-to-start` and `status: verified` are both user-only, no exceptions - agents may never act on a `status: new` item. |
+| `/backlog` | `_config.ps1` (shared constants/helpers, not called directly), `pick_top_task.ps1`, `set_status.ps1`, `reassign.ps1`, `flag_dependency.ps1`, `list_tasks.ps1`, `add_item.ps1`, `mark_ready_to_start.ps1`, `mark_verified.ps1` | GitHub Project-backed (as of 2026-07-20 - `product-owner/BACKLOG.md` is deprecated, see its own header note). Pick a task, change status, re-assign, flag a dependency, split a multi-responsible item (via `add_item.ps1 -ParentNumber`), list a role's tasks, add a new item. `mark_ready_to_start.ps1`/`mark_verified.ps1` are user-only, no exceptions - agents may never act on a `status: new` item. |
 
 ## Why each script lives inside its skill's folder
 

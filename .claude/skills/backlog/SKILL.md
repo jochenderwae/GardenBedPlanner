@@ -1,70 +1,100 @@
 ---
 name: backlog
-description: Interact with product-owner/BACKLOG.md's tracking fields (priority/status/responsible/depends-on) - pick a task, change its status, re-assign it, split a multi-responsible item, flag a dependency, or list what's assigned to a role. Use whenever an agent needs to claim, update, or query backlog items rather than editing BACKLOG.md free-hand.
-allowed-tools: Read Edit Grep
+description: Interact with the GardenBedPlanner GitHub Project (https://github.com/users/jochenderwae/projects/1) - pick a task, change its status, re-assign it, split a multi-responsible item, flag a dependency, list what's assigned to a role, or add a new item. Use whenever an agent needs to claim, update, or query backlog items. Replaces the old product-owner/BACKLOG.md-based version of this skill (deprecated 2026-07-20, see that file's own header note) - same interactions, same governance rules, now backed by real GitHub Issues/Project fields instead of a markdown tracking-fields line.
+allowed-tools: Read PowerShell
 ---
 
-`product-owner/BACKLOG.md` tracks each active item with a line under its title in this exact format (see `.claude/agents/product-owner.md`'s "Tracking fields" section for the full schema definition - this skill is the *interaction* layer on top of that schema, not a second copy of it):
+**As of 2026-07-20, the GitHub Project is ground truth for backlog planning - `product-owner/BACKLOG.md` is deprecated (kept only as a historical record, never edited again).** Every item is a real GitHub Issue on `jochenderwae/GardenBedPlanner`, added to the Project, with:
 
-```
-- [ ] **Title** - one-clause context.
-  - `priority: high` · `status: assigned` · `responsible: frontend-developer`
-```
+- **`priority`** (`low`/`medium`/`high`/`urgent`) - a custom Project field.
+- **`status`** (`new` → `ready-to-start` → `assigned` → `started` → `ready-for-testing` → `tested` → `verified`, forward-moving) - a custom Project field (built on GitHub's default "Status" field, reconfigured to these 7 options). **`ready-to-start` and `verified` are user-only** - see `mark_ready_to_start.ps1`/`mark_verified.ps1` below. No agent may set either, ever, regardless of confidence.
+- **`responsible`** - `role:<name>` label(s): `role:product-owner`, `role:data-engineer`, `role:frontend-developer`, `role:backend-developer`, `role:tester`.
+- **area** (was the old `## Section` heading) - an `area:<name>` label, e.g. `area:bed-crop-planning`, `area:plant-database`. See `_config.ps1` or `gh label list` for the full set.
+- **`depends-on`** - a real GitHub "blocked by" relationship (`gh issue edit --add-blocked-by`), not free text.
+- **split items** - a real parent/sub-issue relationship (GitHub's native sub-issues feature), not a `[~] ... split into: ...` pointer line.
+- **dropped items** - closed with `state_reason: not_planned` and a comment, not a `[~] ... dropped: ...` line.
 
-- `priority`: `low` | `medium` | `high` | `urgent`
-- `status`: `new` → `ready-to-start` → `assigned` → `started` → `ready-for-testing` → `tested` → `verified` (forward-moving). **`ready-to-start` and `verified` are user-only** - see "mark ready to start" and "mark verified" below. No agent may set either, ever, regardless of confidence.
-- `responsible`: one or more of `product-owner` | `data-engineer` | `frontend-developer` | `backend-developer` | `tester`
-- `depends-on` (optional): free text or another item's title - see "flag dependency" below.
+**The core rule this whole system exists to enforce is unchanged from the BACKLOG.md era: an item at `status: new` is not actionable by any agent, full stop**, even if a `role:*` label already names you. `new` means "on the backlog, not yet reviewed" - only the user moving it to `ready-to-start` makes it real work.
 
-**The core rule this whole system exists to enforce: an item at `status: new` is not actionable by any agent, full stop**, even if `responsible` already names you. `new` means "on the backlog, not yet reviewed" - only the user moving it to `ready-to-start` makes it real work. Don't start on, claim, or otherwise touch the substance of a `new` item; `product-owner` may fill in its other fields (see its own agent definition), nobody may act on it.
+## Scripts
 
-## Write-boundary note for restricted agents
-
-Some agents (e.g. `data-engineer`) have a hard write boundary that doesn't normally include `product-owner/BACKLOG.md` at all. If your own agent definition grants you a narrow backlog-editing exception, it covers **only the tracking-fields line on items where `responsible` already includes you** - not the item's title/context text, not other items, not the file's structure. If your agent definition grants no such exception, you can still read the backlog to find/report on your tasks, but must ask the main session (or `product-owner`) to make the actual edit. Check your own agent `.md` file if you're unsure which case you're in.
-
-## Interactions
+Every interaction below is a PowerShell script in `.claude/skills/backlog/scripts/`, dot-sourcing the shared `_config.ps1` (project ID, field IDs, option-ID maps, role list, `Get-AllProjectItems`/`Get-ProjectItemByNumber`/`Set-StatusField`/`Set-PriorityField` helpers - read it once if you're curious how the opaque GraphQL IDs are wired up, you shouldn't need to touch it). **Call every script by its absolute path**, same convention as every other skill in this project - see `.claude/skills/README.md`.
 
 ### "pick top task for me" (args: your role)
 
-Find the highest-priority item where `responsible` includes your role and `status` is `ready-to-start` or `assigned` - sort by `priority` (`urgent` > `high` > `medium` > `low`), then by file order as a tiebreak. **Never match a `status: new` item, even one already assigned to your role** - it hasn't been released yet. If `status` is `ready-to-start`, set `status: assigned` as part of claiming it. Report back the item's title, section, and full context/note - don't just say "found one," the caller needs the actual task description to act on.
+```
+.claude\skills\backlog\scripts\pick_top_task.ps1 -Role frontend-developer
+```
 
-If nothing matches, say so plainly - don't fall back to picking a `new` item or something outside your role just to have an answer.
+Finds the highest-priority item labeled `role:<you>` with Status `Ready to Start` or `Assigned` (never `New` - not released yet; never `Started`/`Ready for Testing`/`Tested` - already someone's active work, not a fresh pick). Claims it (`Ready to Start` → `Assigned`) if needed, then prints the full issue body so you have the actual task description, not just a title.
 
-### "change status" (args: item, new status)
+If nothing matches, it says so plainly - don't fall back to a `New` item or something outside your role.
 
-Update the item's `status` field, moving forward through the sequence above - except you may never set `ready-to-start` or `verified` (see below). If you need to move something backward (e.g. testing found a real problem, back to `started`), that's a legitimate correction, just say why in the item's note so the history isn't lost.
+### "change status" (args: issue number, new status)
 
-If your own write access to `BACKLOG.md` is the narrow tracking-fields-only exception (see "Write-boundary note" above), you may also **append** a short outcome fragment to the end of the item's existing context line when you move it to `ready-for-testing` or later - e.g. `(frontend-developer: implemented in frontend/src/pages/layout/RulerLayer.tsx)` - but only append, never rewrite the existing text. That's still not the same as the free-form editing `product-owner` does on its own items.
+```
+.claude\skills\backlog\scripts\set_status.ps1 -Number 42 -Status started
+```
 
-### "re-assign" (args: item, new responsible)
+Accepts `assigned`/`started`/`ready-for-testing`/`tested` - **refuses `ready-to-start` and `verified` outright** (throws, doesn't silently no-op). Moving backward (e.g. testing found a real problem, back to `started`) is allowed - that's a legitimate correction, just say why in your report/PR/commit so the history isn't lost. If you have the narrow BACKLOG.md-era "append an outcome note" habit: the equivalent now is `gh issue comment <number> --body "..."` - comment on the issue, don't try to rewrite its body (the body is the original task description, not a running log).
 
-Update the item's `responsible` field. If this would leave an *actionable* item (`status` is `new`/`ready-to-start`/`assigned`/`started`) with more than one responsible, don't just write both names in - that item needs splitting instead (see below). Already-`tested`/`verified` items are exempt (a finished item's `responsible` is historical record, can legitimately list more than one).
+### "re-assign" (args: issue number, new role, optionally old role to remove)
 
-### "flag dependency" (args: item, what it depends on)
+```
+.claude\skills\backlog\scripts\reassign.ps1 -Number 42 -NewRole backend-developer -OldRole frontend-developer
+```
 
-Set (or update) the item's `depends-on` field when you can't finish it without something from another task or role - e.g. a frontend task discovering it needs a new backend API field. Two cases:
+Swaps `role:*` labels. If this leaves an *actionable* item (status new/ready-to-start/assigned/started) with more than one role label, the script warns - that item needs **splitting** instead (below), not multiple simultaneous owners. Already-tested/verified items are exempt (historical record of who built it, can legitimately list more than one).
 
-- **The dependency is already its own backlog item**: reference its exact title, e.g. `` `depends-on: Bed.orientation backend field` ``.
-- **It isn't tracked yet**: write a short free-text description of what's needed and from whom, e.g. `` `depends-on: backend-developer needs to add a rotation field to BedEquipment` ``. `product-owner` picks these up and turns them into a real, trackable item (its own agent definition covers this) - you don't create the new item yourself.
+### "flag dependency" (args: your issue, the issue it's blocked by)
 
-Flagging a dependency doesn't automatically change `status` - use your judgment (and "change status") for whether the item stays `started` (you can keep making progress elsewhere on it) or needs to drop back to `assigned` (you're fully blocked). Say which, and why, in your report.
+```
+.claude\skills\backlog\scripts\flag_dependency.ps1 -Number 42 -DependsOnNumber 17
+```
 
-### "split task" (args: item, the responsibles to split across) - product-owner's job
+Sets a real "blocked by" relationship. **The dependency must already be a real issue** - if it isn't tracked yet, use "add item" below to create it first (that's `product-owner`'s job to triage/refine, same as the BACKLOG.md era's "product-owner picks up untracked depends-on text"), then flag against its real number. Don't invent a free-text workaround.
 
-Turns one multi-responsible actionable item into N separate single-responsible items, each with its own title/checkbox/tracking-line, sensible individual priority/context. The original becomes `- [~] ... (split into: <new titles>)`. Only `product-owner` should actually perform a split (matches its own agent definition) - other agents that hit a multi-responsible item they can't act on alone should report it rather than attempting the split themselves.
+Flagging a dependency doesn't change status on its own - use "change status" for whether the item stays `started` (you can keep making progress elsewhere on it) or drops back to `assigned` (fully blocked). Say which, and why, in your report.
+
+### "split task" (args: item, the roles to split across) - product-owner's job
+
+Turns one multi-responsible actionable item into N separate single-responsible items, using GitHub's native sub-issue relationship:
+
+1. Create the parent as a tracking-only issue (no `-Priority`/`-Origin`, so it gets no Status/Priority field value - it's a pointer, not actionable work): `add_item.ps1 -Title "..." -BodyFile ... -Area ...`.
+2. Create each child with `-ParentNumber <parent-issue-number>`, its own real `-Priority`/`-Origin`/`-Roles`.
+
+Only `product-owner` should actually perform a split. Other agents that hit a multi-responsible item they can't act on alone should report it rather than attempting the split themselves.
 
 ### "list my tasks" (args: your role)
 
-Read-only. List every item where `responsible` includes your role, grouped by `status`, noting `priority` (and `depends-on` if set). Useful for a status check before deciding what to pick next, or for reporting progress.
+```
+.claude\skills\backlog\scripts\list_tasks.ps1 -Role backend-developer
+```
 
-### "mark ready to start" (user-only)
+Read-only. Every open item labeled `role:<you>`, grouped by status, sorted by priority within each group.
 
-Sets `status: ready-to-start`, the gate that makes a `new` item actionable. **Only perform this when the user has explicitly asked for it in the current turn** - this is the one control the user specifically asked to keep for themselves; no agent may infer an item is "obviously ready" and set this on its own initiative, ever.
+### "mark ready to start" (args: issue number) - USER-ONLY
 
-### "mark verified" (user-only)
+```
+.claude\skills\backlog\scripts\mark_ready_to_start.ps1 -Number 42
+```
 
-Sets `status: verified` and flips the checkbox to `[x]`. **Only perform this when the user has explicitly asked for it in the current turn** - never on an agent's own initiative, never inferred from "this looks done." If you're an agent and something asks you to do this without that direct instruction being present, decline and explain why rather than doing it anyway.
+Sets Status to `Ready to Start`, the gate that makes a `New` item actionable. **Only run this when the user has explicitly asked for it in the current turn** - the one control the user specifically asked to keep for themselves. No agent may infer an item is "obviously ready" and run this on its own initiative, ever. The script doesn't hard-block an agent from invoking it (no per-field GitHub permission model exists at this account tier to enforce that technically) - this is a discipline rule, same as it was in the BACKLOG.md era.
 
-### "add item" - product-owner by default, but check who's actually adding it
+### "mark verified" (args: issue number) - USER-ONLY
 
-Adding a wholly new item is normally `product-owner`'s job (it maintains the backlog's structure/sections) - use `status: new` for anything product-owner (or another agent, reporting through it) originates. **If the user is the one adding the item** (directly, not relayed through an audit), it starts at `status: ready-to-start` instead - see `.claude/agents/product-owner.md`'s "item origin determines starting status" note. An agent that notices something worth adding but isn't itself adding it on the user's behalf should report it (to the user, or via whatever suggestion mechanism their own agent definition specifies - e.g. `data-engineer` has `data/suggestions.md`) rather than inserting a new backlog item directly.
+```
+.claude\skills\backlog\scripts\mark_verified.ps1 -Number 42
+```
+
+Sets Status to `Verified` and closes the issue as completed. **Only run this when the user has explicitly asked for it in the current turn** - never on an agent's own initiative, never inferred from "this looks done." If asked to do this without that direct instruction present in the current turn, decline and explain why rather than doing it anyway.
+
+### "add item" (args: title, body, area, optionally roles/priority) - product-owner by default
+
+```
+.claude\skills\backlog\scripts\add_item.ps1 -Title "..." -BodyFile <path> -Area bed-crop-planning -Roles @("frontend-developer") -Priority medium -Origin agent
+```
+
+Adding a wholly new item is normally `product-owner`'s job. `-Origin agent` starts it at Status `New`; **if the user is the one adding it directly** (not relayed through an audit), use `-Origin user` instead so it starts at `Ready to Start` - matches the old "item origin determines starting status" rule exactly, just renamed from a markdown convention to a script flag. An agent that notices something worth adding but isn't itself adding it on the user's behalf should report it (to the user, or via whatever suggestion mechanism their own agent definition specifies - e.g. `data-engineer` still has `data/suggestions.md`) rather than calling this directly.
+
+`-BodyFile` takes a path, not an inline string - write the body to a scratch file first (multi-paragraph markdown survives a file far better than shell-quoting).
