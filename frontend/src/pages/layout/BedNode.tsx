@@ -95,6 +95,11 @@ export function BedNode({
   }, [interactive, isSelected]);
 
   const colors = colorsForBedCategory(bed.category);
+  // A raised bed (height_cm > 0) is drawn with roughly double the outline
+  // strokeWidth instead of a derived "Raised"/"Not raised" text label (see
+  // BedPanel.tsx, which dropped that label in favor of this) - a visual
+  // difference in how the bed itself is drawn on the canvas.
+  const isRaised = bed.height_cm > 0;
 
   if (geometry.type !== "rectangle") {
     const rect = boundingRect(geometry);
@@ -118,6 +123,7 @@ export function BedNode({
           fill={colors.fill}
           stroke={colors.stroke}
           interactive={interactive}
+          raised={isRaised}
         />
         <Text x={rect.x + 4} y={rect.y + 4} text={bed.name} fontSize={12} fill="#1f2937" listening={false} />
       </>
@@ -136,7 +142,7 @@ export function BedNode({
           rotation={geometry.rotation}
           fill={colors.fill}
           stroke={isSelected ? "#1d4ed8" : colors.stroke}
-          strokeWidth={isSelected ? 2.5 : 1.5}
+          strokeWidth={(isSelected ? 2.5 : 1.5) * (isRaised ? 2 : 1)}
           draggable={interactive}
           listening={interactive}
           onDragStart={() => {

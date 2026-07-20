@@ -20,6 +20,12 @@ interface PolygonEditorProps {
    * a bed/garden boundary on a non-active tab renders but doesn't respond
    * to pointer input. Defaults true for callers that don't need locking. */
   interactive?: boolean;
+  /** Doubles the shape's own outline strokeWidth - BedNode passes this for
+   * a raised bed (height_cm > 0) as a visual difference in how the bed
+   * itself is drawn, replacing a derived "Raised"/"Not raised" text label.
+   * Not applicable to the Garden boundary (no height concept), so it's not
+   * wired up by GardenBoundary and defaults false. */
+  raised?: boolean;
 }
 
 function flatten(points: Point[]): number[] {
@@ -51,6 +57,7 @@ export function PolygonEditor({
   fill,
   stroke,
   interactive = true,
+  raised = false,
 }: PolygonEditorProps) {
   const lineRef = useRef<Konva.Line>(null);
   const points = geometry.points;
@@ -106,7 +113,7 @@ export function PolygonEditor({
         closed
         fill={fill}
         stroke={isSelected ? "#1d4ed8" : stroke}
-        strokeWidth={isSelected ? 2.5 : 1.5}
+        strokeWidth={(isSelected ? 2.5 : 1.5) * (raised ? 2 : 1)}
         draggable={interactive}
         listening={interactive}
         onClick={onSelect}

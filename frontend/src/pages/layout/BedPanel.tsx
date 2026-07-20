@@ -184,7 +184,7 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
 
         <label
           className="flex flex-col gap-1"
-          title="Height above ground, in centimeters - 0 for a flat/ground-level bed. Drives the derived Raised/Not raised indicator below."
+          title="Height above ground, in centimeters - 0 for a flat/ground-level bed. Any height above ground draws the bed with a thicker outline on the canvas."
         >
           <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
           <input
@@ -220,22 +220,14 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
           />
         </label>
 
-        <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2" title="Whether this bed is inside/covered by a greenhouse.">
-            <input
-              type="checkbox"
-              checked={draft.has_greenhouse}
-              onChange={(e) => commit({ has_greenhouse: e.target.checked })}
-            />
-            <span className="text-sm">Greenhouse</span>
-          </label>
-          <span
-            className="text-sm text-muted-foreground"
-            title="Derived from height (cm), not a separate field - a bed with any height above ground counts as raised"
-          >
-            {draft.height_cm > 0 ? "Raised" : "Not raised"}
-          </span>
-        </div>
+        <label className="flex items-center gap-2" title="Whether this bed is inside/covered by a greenhouse.">
+          <input
+            type="checkbox"
+            checked={draft.has_greenhouse}
+            onChange={(e) => commit({ has_greenhouse: e.target.checked })}
+          />
+          <span className="text-sm">Greenhouse</span>
+        </label>
 
         <label className="flex flex-col gap-1" title="Any other notes about this bed.">
           <span className="text-xs font-medium text-muted-foreground">Notes</span>
