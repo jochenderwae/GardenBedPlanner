@@ -22,6 +22,7 @@ export type GardenPut = components["schemas"]["GardenPut"];
 export type ExampleGarden = components["schemas"]["ExampleGarden"];
 export type ExampleBed = components["schemas"]["ExampleBed"];
 export type ExamplePlanting = components["schemas"]["ExamplePlanting"];
+export type SeedResultResponse = components["schemas"]["SeedResultResponse"];
 
 export type Planting = components["schemas"]["Planting"];
 export type PlantingCreate = components["schemas"]["PlantingCreate"];
@@ -111,6 +112,15 @@ export function putGarden(garden: GardenPut): Promise<Garden> {
 
 export function getExampleGarden(): Promise<ExampleGarden> {
   return apiFetch(`/api/example-garden`);
+}
+
+/** Seeds the real database from the same fixture `getExampleGarden` only
+ * previews - see the "Onboarding UI" backlog item's OnboardingPrompt.tsx,
+ * the frontend half of a pair split from #25 (backend half: #108's new
+ * POST /api/example-garden/seed route). Idempotent get-or-create by bed
+ * name, same as the standalone import script it wraps. */
+export function seedExampleGarden(): Promise<SeedResultResponse> {
+  return apiFetch(`/api/example-garden/seed`, { method: "POST" });
 }
 
 export function listPlantings(): Promise<Planting[]> {

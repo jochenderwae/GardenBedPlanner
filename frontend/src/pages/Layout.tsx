@@ -37,6 +37,7 @@ import { GardenBoundary } from "./layout/GardenBoundary";
 import { GardenPanel } from "./layout/GardenPanel";
 import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPanel";
+import { OnboardingPrompt } from "./layout/OnboardingPrompt";
 import { PlantPlacementLayer, type PlacementMode } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel, type PlantingPanelHandle } from "./layout/PlantingPanel";
@@ -114,6 +115,11 @@ export function Layout() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [mode, setMode] = useState<ViewMode>("mine");
   const [tab, setTab] = useState<PlacementTab>("garden");
+  // First-run "seed the example garden?" prompt (see OnboardingPrompt.tsx) -
+  // dismissing (either "start from scratch" or a successful seed) hides it
+  // for the rest of this page load; no persisted flag, so a later reload
+  // with beds still empty prompts again (see that component's own doc).
+  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
   // "Arm" a plant, then draw where it goes (point/row/area) - see
   // PlantPlacementLayer's own doc. plantPickerOpen/plantPickerPos are for
   // the popover that picks *which* plant gets armed (anchored under the
@@ -715,6 +721,17 @@ export function Layout() {
         <>
           {isPending && <p className="text-sm text-muted-foreground">Loading beds…</p>}
           {isError && <p className="text-sm text-destructive">Failed to load beds.</p>}
+          <OnboardingPrompt
+            open={!isPending && !isError && beds.length === 0 && !onboardingDismissed}
+            onDismiss={() => setOnboardingDismissed(true)}
+            onSeeded={() => {
+              setOnboardingDismissed(true);
+              queryClient.invalidateQueries({ queryKey: ["beds"] });
+              queryClient.invalidateQueries({ queryKey: ["garden"] });
+              queryClient.invalidateQueries({ queryKey: ["plantings"] });
+              queryClient.invalidateQueries({ queryKey: ["bed-equipment"] });
+            }}
+          />
           {tab === "plants" && (
             <p className="text-xs text-muted-foreground">
               {armedPlant
