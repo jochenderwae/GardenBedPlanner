@@ -8,10 +8,13 @@ are user-only, see mark_ready_to_start.ps1 / mark_verified.ps1. Backs the
 Issue number.
 
 .PARAMETER Status
-One of: assigned | started | ready-for-testing | tested (lowercase-hyphenated).
-Moving backward (e.g. tested -> started because testing found a real
-problem) is allowed - that's a legitimate correction, not a mistake to
-block. Just say why in your report so the history isn't silently lost.
+One of: analyzed | assigned | started | ready-for-testing | tested
+(lowercase-hyphenated). `analyzed` is product-owner's own step (see
+product-owner.md's "Analyst workflow") - other roles have no real reason to
+set it but it isn't hard-blocked, same soft-governance model as the rest of
+this system. Moving backward (e.g. tested -> started because testing found
+a real problem) is allowed - that's a legitimate correction, not a mistake
+to block. Just say why in your report so the history isn't silently lost.
 #>
 param(
   [Parameter(Mandatory = $true)][int]$Number,
@@ -27,7 +30,7 @@ if ($key -eq "new") {
   throw "Setting status back to 'new' isn't a real transition in this system - 'new' means never-released. If this item shouldn't have been actionable, flag it to product-owner instead of forcing this."
 }
 if (-not $StatusOptionIds.ContainsKey($key)) {
-  throw "Unknown status '$Status' - expected one of: assigned, started, ready-for-testing, tested."
+  throw "Unknown status '$Status' - expected one of: analyzed, assigned, started, ready-for-testing, tested."
 }
 
 $item = Get-ProjectItemByNumber -Number $Number

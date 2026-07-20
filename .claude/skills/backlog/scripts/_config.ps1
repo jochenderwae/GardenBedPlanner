@@ -22,13 +22,16 @@ $PriorityFieldId = "PVTSSF_lAHOAB1Tz84Bd4yRzhYYfIU"
 # Keys are the lowercase-hyphenated status/priority values used throughout
 # this skill's scripts and SKILL.md - matches the old BACKLOG.md vocabulary
 # so the migration didn't change how agents talk about status/priority,
-# only how it's stored.
+# only how it's stored. "analyzed" added 2026-07-21 - product-owner-only,
+# sits between new and ready-to-start (see product-owner.md's "analyst"
+# workflow: it restructures an issue into the Functional requirements /
+# Technical analysis / How to test template before moving it here).
 $StatusOptionIds = @{
-  "new" = "361989db"; "ready-to-start" = "7e83748b"; "assigned" = "ae9f1b25"
+  "new" = "361989db"; "analyzed" = "f54a05fd"; "ready-to-start" = "7e83748b"; "assigned" = "ae9f1b25"
   "started" = "59edb4eb"; "ready-for-testing" = "175a6116"; "tested" = "c5266748"; "verified" = "8f39a210"
 }
 $StatusDisplayNames = @{
-  "new" = "New"; "ready-to-start" = "Ready to Start"; "assigned" = "Assigned"
+  "new" = "New"; "analyzed" = "Analyzed"; "ready-to-start" = "Ready to Start"; "assigned" = "Assigned"
   "started" = "Started"; "ready-for-testing" = "Ready for Testing"; "tested" = "Tested"; "verified" = "Verified"
 }
 $PriorityOptionIds = @{ "low" = "2e934b0c"; "medium" = "8e1a4713"; "high" = "56f5f31e"; "urgent" = "f97fc1bb" }

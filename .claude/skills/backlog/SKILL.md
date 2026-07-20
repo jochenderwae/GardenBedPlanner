@@ -7,14 +7,14 @@ allowed-tools: Read PowerShell
 **As of 2026-07-20, the GitHub Project is ground truth for backlog planning - `product-owner/BACKLOG.md` is deprecated (kept only as a historical record, never edited again).** Every item is a real GitHub Issue on `jochenderwae/GardenBedPlanner`, added to the Project, with:
 
 - **`priority`** (`low`/`medium`/`high`/`urgent`) - a custom Project field.
-- **`status`** (`new` → `ready-to-start` → `assigned` → `started` → `ready-for-testing` → `tested` → `verified`, forward-moving) - a custom Project field (built on GitHub's default "Status" field, reconfigured to these 7 options). **`ready-to-start` and `verified` are user-only** - see `mark_ready_to_start.ps1`/`mark_verified.ps1` below. No agent may set either, ever, regardless of confidence.
+- **`status`** (`new` → `analyzed` → `ready-to-start` → `assigned` → `started` → `ready-for-testing` → `tested` → `verified`, forward-moving) - a custom Project field (built on GitHub's default "Status" field, reconfigured to these 8 options). **`ready-to-start` and `verified` are user-only** - see `mark_ready_to_start.ps1`/`mark_verified.ps1` below. No agent may set either, ever, regardless of confidence. `analyzed` (added 2026-07-21) is `product-owner`'s own step - see `.claude/agents/product-owner.md`'s "Analyst workflow" section for what has to be true about an issue before it moves there.
 - **`responsible`** - `role:<name>` label(s): `role:product-owner`, `role:data-engineer`, `role:frontend-developer`, `role:backend-developer`, `role:tester`.
 - **area** (was the old `## Section` heading) - an `area:<name>` label, e.g. `area:bed-crop-planning`, `area:plant-database`. See `_config.ps1` or `gh label list` for the full set.
 - **`depends-on`** - a real GitHub "blocked by" relationship (`gh issue edit --add-blocked-by`), not free text.
 - **split items** - a real parent/sub-issue relationship (GitHub's native sub-issues feature), not a `[~] ... split into: ...` pointer line.
 - **dropped items** - closed with `state_reason: not_planned` and a comment, not a `[~] ... dropped: ...` line.
 
-**The core rule this whole system exists to enforce is unchanged from the BACKLOG.md era: an item at `status: new` is not actionable by any agent, full stop**, even if a `role:*` label already names you. `new` means "on the backlog, not yet reviewed" - only the user moving it to `ready-to-start` makes it real work.
+**The core rule this whole system exists to enforce is unchanged from the BACKLOG.md era: an item at `status: new` or `status: analyzed` is not actionable by any dev role, full stop**, even if a `role:*` label already names you. Neither has been released by the user yet - only the user moving it to `ready-to-start` makes it real work.
 
 ## Scripts
 
@@ -26,9 +26,9 @@ Every interaction below is a PowerShell script in `.claude/skills/backlog/script
 .claude\skills\backlog\scripts\pick_top_task.ps1 -Role frontend-developer
 ```
 
-Finds the highest-priority item labeled `role:<you>` with Status `Ready to Start` or `Assigned` (never `New` - not released yet; never `Started`/`Ready for Testing`/`Tested` - already someone's active work, not a fresh pick). Claims it (`Ready to Start` → `Assigned`) if needed, then prints the full issue body so you have the actual task description, not just a title.
+Finds the highest-priority item labeled `role:<you>` with Status `Ready to Start` or `Assigned` (never `New`/`Analyzed` - neither is released yet; never `Started`/`Ready for Testing`/`Tested` - already someone's active work, not a fresh pick). Claims it (`Ready to Start` → `Assigned`) if needed, then prints the full issue body so you have the actual task description, not just a title.
 
-If nothing matches, it says so plainly - don't fall back to a `New` item or something outside your role.
+If nothing matches, it says so plainly - don't fall back to a `New`/`Analyzed` item or something outside your role.
 
 ### "change status" (args: issue number, new status)
 
@@ -36,7 +36,7 @@ If nothing matches, it says so plainly - don't fall back to a `New` item or some
 .claude\skills\backlog\scripts\set_status.ps1 -Number 42 -Status started
 ```
 
-Accepts `assigned`/`started`/`ready-for-testing`/`tested` - **refuses `ready-to-start` and `verified` outright** (throws, doesn't silently no-op). Moving backward (e.g. testing found a real problem, back to `started`) is allowed - that's a legitimate correction, just say why in your report/PR/commit so the history isn't lost. If you have the narrow BACKLOG.md-era "append an outcome note" habit: the equivalent now is `gh issue comment <number> --body "..."` - comment on the issue, don't try to rewrite its body (the body is the original task description, not a running log).
+Accepts `analyzed`/`assigned`/`started`/`ready-for-testing`/`tested` - **refuses `ready-to-start` and `verified` outright** (throws, doesn't silently no-op). `analyzed` is product-owner's own step, see `.claude/agents/product-owner.md`'s "Analyst workflow". Moving backward (e.g. testing found a real problem, back to `started`) is allowed - that's a legitimate correction, just say why in your report/PR/commit so the history isn't lost. If you have the narrow BACKLOG.md-era "append an outcome note" habit: the equivalent now is `gh issue comment <number> --body "..."` - comment on the issue, don't try to rewrite its body (the body is the original task description, not a running log).
 
 ### "re-assign" (args: issue number, new role, optionally old role to remove)
 
