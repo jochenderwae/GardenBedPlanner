@@ -34,3 +34,6 @@ TODO.md
 
 # Claude Code local config (personal permission overrides, not team-shared)
 .claude/settings.local.json
+
+# Per-agent recovery scratchpads (local run state, never shared/tracked)
+.agent-scratch.md

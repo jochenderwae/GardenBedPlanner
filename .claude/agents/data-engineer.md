@@ -24,6 +24,35 @@ You may run shell commands, but scope them the same way: run from `data/` (or us
 
 See "Committing work to git" below for the one, narrowly-scoped exception to not touching git otherwise (never `checkout`/`merge`/`rebase`/`reset`/force-push/create-or-switch-branches - none of that is yours to do).
 
+## Recovering from an interrupted run
+
+You increasingly run unattended, roughly hourly, and can be cut off mid-task at any point (a session usage limit, the CLI closing, a background-job timeout) with no chance to finish your last step or hand back a summary - the next run has to notice and recover on its own. This is on top of, not a replacement for, the ETL scripts' own SQLite-backed resumability described in "Working style" below - this notepad is about *which* queue item/task you were on and how far you'd gotten in wrapping it up (commit, `task_queue.md` checkbox), not about re-deriving ETL script state, which the scripts already handle themselves.
+
+**`data/.agent-scratch.md`** is your own recovery notepad - gitignored local state, never commit it, never stage it, never let it show up in a diff you send to `/git`. Shape:
+
+```
+## Status: idle
+```
+
+or, while working:
+
+```
+## Status: in-progress
+- item: <task_queue.md item, or "BACKLOG.md: <item title>", or "domain-model/schema audit">
+- phase: <started|running|verifying|committing|updating-tracking>
+- since: <ISO timestamp>
+- notes: <which script/module is running, files touched, anything the next run needs to know to pick this up cold>
+```
+
+**First thing every run, before anything else in this file** (before "The queue" below): read this notepad.
+- Missing, or `## Status: idle` → nothing left over, proceed normally.
+- `## Status: in-progress` → unfinished work from an interrupted prior run. **Do not pick a new queue item.** Finish this one first:
+  1. `git status`/`git diff` against what the note says, plus the relevant ETL script's own state/checkpoint (SQLite state, `*_unmatched.jsonl`, etc. - see "Working style") - these are ground truth for what actually happened, the note is only your past intent.
+  2. If the underlying script is resumable (most are), just re-run it per its own convention rather than treating the interruption as a failure.
+  3. Once the item is genuinely finished (checkbox/note updated in `task_queue.md` or `BACKLOG.md`, committed if that applies), clear the scratchpad back to `## Status: idle` before doing anything else.
+
+**Before starting any new task** (once you've confirmed nothing's left over): write `## Status: in-progress` with the item/phase/timestamp to the scratchpad *first*, before touching any other file. Update `phase` as you move through the work. Clear it back to `## Status: idle` the moment the task is fully finished - an idle scratchpad is what tells the next run it's safe to pick something new.
+
 ## The queue
 
 `data/task_queue.md` is your work order, maintained by the user (or the main session on their behalf). **You may check items off and add progress/outcome notes, but you may not add new items to the queue.** Work through unchecked items top to bottom, in order, unless a task's own notes say otherwise. Each item names the script to run; if finishing a task requires a small code fix in `data/etl/` (a bug you hit, a missing edge case), make the minimal fix and note what you changed and why - this is maintenance of an established pipeline, not a rewrite.

@@ -17,6 +17,37 @@ Do not touch `frontend/` beyond that one generated file, `data/`, `infra/`, `.cl
 
 **On this machine the `Bash` tool does not work at all** ("No suitable shell found") - use `PowerShell` for every command.
 
+## Recovering from an interrupted run
+
+You run unattended, roughly hourly, and can be cut off mid-task at any point (a session usage limit, the CLI closing, a background-job timeout) with no chance to finish your last step or hand back a summary - the next run has to notice and recover on its own, without the user or main Claude session stepping in to clean up after you. This matters more for you than for most agents here: an interruption mid-migration or mid-deploy leaves real, stateful changes (a partially-applied migration, an uncommitted route change) that the next run must account for, not just abandon.
+
+**`backend/.agent-scratch.md`** is your own recovery notepad - gitignored local state, never commit it, never stage it, never let it show up in a diff you send to `/git`. Shape:
+
+```
+## Status: idle
+```
+
+or, while working:
+
+```
+## Status: in-progress
+- item: <backlog item title, verbatim>
+- phase: <started|implementing|migrating|verifying|committing|deploying|updating-backlog>
+- since: <ISO timestamp>
+- notes: <files touched, whether the migration has been run against garden_test and/or the real garden DB yet, anything the next run needs to know to pick this up cold>
+```
+
+**First thing every run, before anything else in this file** (before "Finding work" below): read this notepad.
+- Missing, or `## Status: idle` → nothing left over, proceed normally.
+- `## Status: in-progress` → unfinished work from an interrupted prior run. **Do not pick a new task.** Finish this one first:
+  1. `git status`/`git diff` against what the note says - the working tree is ground truth for what actually happened; the note is only your past intent, and may be stale or incomplete relative to it. Cross-reference the item's own current `status` in `product-owner/BACKLOG.md` too.
+  2. If a migration was involved, check whether it was actually applied - `alembic_version` on `garden_test` and/or the real `garden` database (via `/db-query`/`/migrate-backend`) tells you the truth here, not the note. Don't re-run an already-applied migration blind, and don't assume an unrun one is safe to skip.
+  3. If the change looks complete and correct, resume from wherever `phase` left off (verify → commit → push → deploy → update backlog status) rather than re-implementing from scratch.
+  4. If it looks incomplete or broken, use judgment: finish it if it's close, or back the backlog item's status down to `assigned` with a note explaining what's unresolved rather than shipping something half-working just to clear the note.
+  5. Once the item is genuinely finished (or explicitly backed off with a note), clear the scratchpad back to `## Status: idle` before doing anything else.
+
+**Before starting any new task** (once you've confirmed nothing's left over): write `## Status: in-progress` with the item/phase/timestamp to the scratchpad *first*, before touching any other file - if you get cut off one line into implementation, the next run still needs to find this. Update `phase` as you move through the workflow below, especially right before and right after running a migration (this is the step most worth being able to reconstruct exactly). Clear it back to `## Status: idle` the moment the task is fully finished or backed off - an idle scratchpad is what tells the next run it's safe to pick something new.
+
 ## Finding work
 
 Use `/backlog`'s "pick top task for me" interaction (role `backend-developer`) to find your next item - it already sorts by priority and claims the item (`status: ready-to-start`→`assigned`) for you. **Never act on a `status: new` item, even one already assigned to `backend-developer`** - `new` means the user hasn't released it yet; only they can move it to `ready-to-start`, and until they do it isn't yours to touch. If an item has a `depends-on` value, check that target's current `status` directly in the file before starting - skip it (don't start it, don't force it) if the dependency isn't actually done yet, and move to the next unblocked item instead. Work top-to-bottom by priority among what's actually unblocked; don't cherry-pick a lower-priority item because it looks easier. If nothing is currently `ready-to-start`/`assigned` for `backend-developer`, stop and report - don't invent work, don't start on a `new` item anyway, and don't wander into a different role's items.

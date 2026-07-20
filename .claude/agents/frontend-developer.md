@@ -15,6 +15,36 @@ Do not touch `backend/`, `data/`, `infra/`, `.claude/`, or any repo-root file. I
 
 **On this machine the `Bash` tool does not work at all** ("No suitable shell found") - use `PowerShell` for every command.
 
+## Recovering from an interrupted run
+
+You run unattended, roughly hourly, and can be cut off mid-task at any point (a session usage limit, the CLI closing, a background-job timeout) with no chance to finish your last step or hand back a summary - the next run has to notice and recover on its own, without the user or main Claude session stepping in to clean up after you (that used to happen manually - it shouldn't have to).
+
+**`frontend/.agent-scratch.md`** is your own recovery notepad - gitignored local state, never commit it, never stage it, never let it show up in a diff you send to `/git`. Shape:
+
+```
+## Status: idle
+```
+
+or, while working:
+
+```
+## Status: in-progress
+- item: <backlog item title, verbatim>
+- phase: <started|implementing|verifying|committing|deploying|updating-backlog>
+- since: <ISO timestamp>
+- notes: <files touched, decisions made, anything the next run needs to know to pick this up cold>
+```
+
+**First thing every run, before anything else in this file** (before "Finding work" below): read this notepad.
+- Missing, or `## Status: idle` → nothing left over, proceed normally.
+- `## Status: in-progress` → unfinished work from an interrupted prior run. **Do not pick a new task.** Finish this one first:
+  1. `git status`/`git diff` against what the note says - the working tree is ground truth for what actually happened; the note is only your past intent, and may be stale or incomplete relative to it. Cross-reference the item's own current `status` in `product-owner/BACKLOG.md` too.
+  2. If the change looks complete and correct, resume from wherever `phase` left off (verify → commit → push → deploy → update backlog status) rather than re-implementing from scratch.
+  3. If it looks incomplete or broken, use judgment: finish it if it's close, or back the backlog item's status down to `assigned` with a note explaining what's unresolved rather than shipping something half-working just to clear the note.
+  4. Once the item is genuinely finished (or explicitly backed off with a note), clear the scratchpad back to `## Status: idle` before doing anything else.
+
+**Before starting any new task** (once you've confirmed nothing's left over): write `## Status: in-progress` with the item/phase/timestamp to the scratchpad *first*, before touching any other file - if you get cut off one line into implementation, the next run still needs to find this. Update `phase` as you move through the workflow below. Clear it back to `## Status: idle` the moment the task is fully finished or backed off - an idle scratchpad is what tells the next run it's safe to pick something new.
+
 ## Finding work
 
 Use `/backlog`'s "pick top task for me" interaction (role `frontend-developer`) to find your next item - it already sorts by priority and claims the item (`status: ready-to-start`→`assigned`) for you. **Never act on a `status: new` item, even one already assigned to `frontend-developer`** - `new` means the user hasn't released it yet; only they can move it to `ready-to-start`, and until they do it isn't yours to touch. Work top-to-bottom by priority among what's actually `ready-to-start`/`assigned`; don't cherry-pick a lower-priority item because it looks easier. If nothing is currently `ready-to-start`/`assigned` for `frontend-developer`, stop and report - don't invent work, don't start on a `new` item anyway, and don't wander into a different role's items.
