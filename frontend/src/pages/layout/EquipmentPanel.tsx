@@ -6,22 +6,26 @@ import { Card } from "@/components/ui/card";
 import {
   createBedEquipment,
   deleteBedEquipment,
-  updateBedEquipment,
   type Bed,
   type BedEquipment,
   type BedEquipmentCreate,
-  type BedEquipmentUpdate,
 } from "@/api/client";
 
 const inputClass =
   "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
-const DEFAULT_EQUIPMENT_SIZE_CM = 20;
+export const DEFAULT_EQUIPMENT_SIZE_CM = 20;
 
 interface EquipmentPanelProps {
   beds: Bed[];
   equipment: BedEquipment[];
   onClose: () => void;
+  /** Place an inventory item onto a bed - lifted up to Layout.tsx (rather
+   * than owning the geometry PATCH here) so the undo/redo history stack can
+   * record it as one of its four tracked geometry-mutation sites. */
+  onPlace: (item: BedEquipment, bed: Bed) => void;
+  /** Unplace a placed item back to inventory - same reasoning as onPlace. */
+  onReturnToInventory: (item: BedEquipment) => void;
 }
 
 /** Trellises/drip lines/stakes/etc - equipment is "retrieved from stock,"
@@ -34,7 +38,7 @@ interface EquipmentPanelProps {
  * of the placement tabs. Geometry, when placed, is bed-local (same
  * coordinate convention as Planting.geometry), auto-positioned the same
  * cascading way AddBedForm/the old inline form did. */
-export function EquipmentPanel({ beds, equipment, onClose }: EquipmentPanelProps) {
+export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToInventory }: EquipmentPanelProps) {
   const queryClient = useQueryClient();
   const [equipmentType, setEquipmentType] = useState("");
   const [heightCm, setHeightCm] = useState("");
@@ -50,15 +54,6 @@ export function EquipmentPanel({ beds, equipment, onClose }: EquipmentPanelProps
       setWaterDeliveryLph("");
     },
     onError: (err: unknown) => setError(err instanceof Error ? err.message : "Failed to add equipment"),
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: ({ id, patch }: { id: number; patch: BedEquipmentUpdate }) => updateBedEquipment(id, patch),
-    onSuccess: (updated) => {
-      queryClient.setQueryData<BedEquipment[]>(["bed-equipment"], (old) =>
-        old ? old.map((e) => (e.id === updated.id ? updated : e)) : old,
-      );
-    },
   });
 
   const deleteMutation = useMutation({
@@ -88,31 +83,7 @@ export function EquipmentPanel({ beds, equipment, onClose }: EquipmentPanelProps
     if (item.id == null || !bedIdStr) return;
     const bed = beds.find((b) => String(b.id) === bedIdStr);
     if (!bed || bed.id == null) return;
-    // Cascading default position (same idea as AddBedForm's nextBedPosition)
-    // so repeated placements into the same bed don't stack exactly on top
-    // of each other - still just a starting point, no drag/resize in this
-    // tab.
-    const existingInBed = equipment.filter((e) => e.bed_id === bed.id).length;
-    const offset = (existingInBed % 5) * (DEFAULT_EQUIPMENT_SIZE_CM + 5);
-    updateMutation.mutate({
-      id: item.id,
-      patch: {
-        bed_id: bed.id,
-        geometry: {
-          type: "rectangle",
-          x: 10 + offset,
-          y: 10 + offset,
-          width: DEFAULT_EQUIPMENT_SIZE_CM,
-          height: DEFAULT_EQUIPMENT_SIZE_CM,
-          rotation: 0,
-        },
-      },
-    });
-  }
-
-  function handleReturnToInventory(item: BedEquipment) {
-    if (item.id == null) return;
-    updateMutation.mutate({ id: item.id, patch: { bed_id: null, geometry: null } });
+    onPlace(item, bed);
   }
 
   function bedName(id: number | null | undefined): string {
@@ -225,7 +196,7 @@ export function EquipmentPanel({ beds, equipment, onClose }: EquipmentPanelProps
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => handleReturnToInventory(item)}
+                    onClick={() => onReturnToInventory(item)}
                     title="Return to inventory"
                   >
                     Unplace

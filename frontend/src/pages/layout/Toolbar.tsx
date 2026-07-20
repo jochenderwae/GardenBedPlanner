@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
 import { Link } from "react-router-dom";
-import { Maximize, Plus } from "lucide-react";
+import { Maximize, Plus, Redo2, Undo2 } from "lucide-react";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Plant } from "@/api/client";
@@ -45,6 +45,10 @@ interface ToolbarProps {
   onOpenPlantPicker: () => void;
   placementMode: PlacementMode;
   onPlacementModeChange: (mode: PlacementMode) => void;
+  canUndo: boolean;
+  canRedo: boolean;
+  onUndo: () => void;
+  onRedo: () => void;
 }
 
 /** The canvas editor's top-of-canvas control area, split into two always-
@@ -81,6 +85,10 @@ export function Toolbar({
   onOpenPlantPicker,
   placementMode,
   onPlacementModeChange,
+  canUndo,
+  canRedo,
+  onUndo,
+  onRedo,
 }: ToolbarProps) {
   return (
     <div className="flex flex-col gap-2">
@@ -131,6 +139,30 @@ export function Toolbar({
           )}
         </div>
         <div className="flex items-center gap-2">
+          {mode === "mine" && (
+            <>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onUndo}
+                disabled={!canUndo}
+                title="Undo last move/resize (Ctrl+Z)"
+                aria-label="Undo"
+              >
+                <Undo2 />
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onRedo}
+                disabled={!canRedo}
+                title="Redo (Ctrl+Shift+Z)"
+                aria-label="Redo"
+              >
+                <Redo2 />
+              </Button>
+            </>
+          )}
           <span className="w-10 text-right text-xs tabular-nums text-muted-foreground">{Math.round(zoomPercent)}%</span>
           <Button size="sm" variant="outline" onClick={onFitView} title="Fit the whole garden in view">
             <Maximize /> Fit view

@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stage, Layer, Line } from "react-konva";
 import type Konva from "konva";
@@ -12,8 +12,11 @@ import {
   listPlants,
   putGarden,
   updateBed,
+  updateBedEquipment,
   updatePlanting,
   type Bed,
+  type BedEquipment,
+  type BedEquipmentUpdate,
   type BedUpdate,
   type Garden,
   type GardenPut,
@@ -31,13 +34,14 @@ import { ExampleGardenLayer, PlantingTooltip, type PlantingTooltipState } from "
 import { GardenBoundary } from "./layout/GardenBoundary";
 import { GardenPanel } from "./layout/GardenPanel";
 import { EquipmentLayer } from "./layout/EquipmentLayer";
-import { EquipmentPanel } from "./layout/EquipmentPanel";
+import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPanel";
 import { PlantPlacementLayer, type PlacementMode } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel } from "./layout/PlantingPanel";
 import { RulerLayer } from "./layout/RulerLayer";
 import { Toolbar, type PlacementTab, type ViewMode } from "./layout/Toolbar";
 import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, GRID_SPACING_CM } from "./layout/geometry";
+import { useUndoHistory } from "./layout/history";
 import {
   clampScale,
   DEFAULT_VIEWPORT,
@@ -112,6 +116,10 @@ export function Layout() {
   const [selectedPlantingId, setSelectedPlantingId] = useState<number | null>(null);
   const [tooltip, setTooltip] = useState<PlantingTooltipState | null>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
+  // Undo/redo over the four geometry-mutation call sites below (bed, garden
+  // boundary, planting, equipment) - see history.ts's own doc for why this
+  // is a small linear stack rather than a full command-pattern engine.
+  const history = useUndoHistory();
 
   const { data, isPending, isError } = useQuery({
     queryKey: ["beds"],
@@ -175,6 +183,14 @@ export function Layout() {
     onSuccess: (updated) => {
       queryClient.setQueryData<Planting[]>(["plantings"], (old) =>
         old ? old.map((p) => (p.id === updated.id ? updated : p)) : old,
+      );
+    },
+  });
+  const equipmentGeometryMutation = useMutation({
+    mutationFn: ({ id, patch }: { id: number; patch: BedEquipmentUpdate }) => updateBedEquipment(id, patch),
+    onSuccess: (updated) => {
+      queryClient.setQueryData<BedEquipment[]>(["bed-equipment"], (old) =>
+        old ? old.map((e) => (e.id === updated.id ? updated : e)) : old,
       );
     },
   });
@@ -274,32 +290,65 @@ export function Layout() {
     setViewport(fitViewport(boxes, CANVAS_SIZE));
   }
 
-  function handleBedChange(bed: Bed, geometry: Geometry) {
-    if (bed.id == null) return;
+  /** Applies (and PATCHes) a bed's geometry - factored out of
+   * handleBedChange so both the live drag/resize and undo/redo can share the
+   * exact same optimistic-cache-then-mutate path. */
+  function applyBedGeometry(bedId: number, geometry: Geometry) {
     // Optimistic: the Konva node already reflects the drag/resize/rotate
     // visually (Konva owns it during the gesture) - mirror that into the
     // query cache immediately so a re-render before the PATCH resolves
     // doesn't snap it back to the stale shape, then reconcile with the
     // server response.
     queryClient.setQueryData<Bed[]>(["beds"], (old) =>
-      old ? old.map((b) => (b.id === bed.id ? { ...b, border_geometry: geometry } : b)) : old,
+      old ? old.map((b) => (b.id === bedId ? { ...b, border_geometry: geometry } : b)) : old,
     );
-    geometryMutation.mutate({ id: bed.id, patch: { border_geometry: geometry } });
+    geometryMutation.mutate({ id: bedId, patch: { border_geometry: geometry } });
   }
 
-  function handleGardenGeometryChange(geometry: Geometry) {
-    if (!garden) return;
-    queryClient.setQueryData<Garden>(["garden"], (old) => (old ? { ...old, border_geometry: geometry } : old));
+  function handleBedChange(bed: Bed, geometry: Geometry) {
+    if (bed.id == null) return;
+    const bedId = bed.id;
+    const previousGeometry = bed.border_geometry;
+    applyBedGeometry(bedId, geometry);
+    history.push({
+      undo: () => applyBedGeometry(bedId, previousGeometry),
+      redo: () => applyBedGeometry(bedId, geometry),
+    });
+  }
+
+  /** Applies (and PUTs) the garden's geometry. Reads the *current* cached
+   * garden at call time (not a closed-over `garden` from whenever the undo
+   * entry was created) so an undo/redo firing after some other, untracked
+   * garden edit (e.g. the compass's orientation change) doesn't clobber that
+   * later edit by resending a stale snapshot of it - `putGarden` is a full
+   * PUT, unlike the PATCH-based bed/planting/equipment mutations. */
+  function applyGardenGeometry(geometry: Geometry) {
+    const current = queryClient.getQueryData<Garden>(["garden"]);
+    if (!current) return;
+    queryClient.setQueryData<Garden>(["garden"], { ...current, border_geometry: geometry });
     gardenGeometryMutation.mutate({
-      name: garden.name,
-      climate_zone: garden.climate_zone,
-      location: garden.location,
-      orientation_deg: garden.orientation_deg,
-      notes: garden.notes,
+      name: current.name,
+      climate_zone: current.climate_zone,
+      location: current.location,
+      orientation_deg: current.orientation_deg,
+      notes: current.notes,
       border_geometry: geometry,
     });
   }
 
+  function handleGardenGeometryChange(geometry: Geometry) {
+    if (!garden) return;
+    const previousGeometry = garden.border_geometry;
+    applyGardenGeometry(geometry);
+    history.push({
+      undo: () => applyGardenGeometry(previousGeometry),
+      redo: () => applyGardenGeometry(geometry),
+    });
+  }
+
+  // Orientation (compass rotation) isn't one of undo/redo's four tracked
+  // geometry-mutation sites (bed, garden boundary, planting, equipment) -
+  // scoped out deliberately, see the backlog item this was built for.
   function handleGardenOrientationChange(orientationDeg: number) {
     if (!garden) return;
     queryClient.setQueryData<Garden>(["garden"], (old) => (old ? { ...old, orientation_deg: orientationDeg } : old));
@@ -313,12 +362,69 @@ export function Layout() {
     });
   }
 
+  function applyPlantingGeometry(plantingId: number, geometry: Geometry) {
+    queryClient.setQueryData<Planting[]>(["plantings"], (old) =>
+      old ? old.map((p) => (p.id === plantingId ? { ...p, geometry } : p)) : old,
+    );
+    plantingUpdateMutation.mutate({ id: plantingId, patch: { geometry } });
+  }
+
   function handlePlantingMove(planting: Planting, geometry: Geometry) {
     if (planting.id == null) return;
-    queryClient.setQueryData<Planting[]>(["plantings"], (old) =>
-      old ? old.map((p) => (p.id === planting.id ? { ...p, geometry } : p)) : old,
+    const plantingId = planting.id;
+    const previousGeometry = planting.geometry;
+    applyPlantingGeometry(plantingId, geometry);
+    history.push({
+      undo: () => applyPlantingGeometry(plantingId, previousGeometry),
+      redo: () => applyPlantingGeometry(plantingId, geometry),
+    });
+  }
+
+  function applyEquipmentPatch(equipmentId: number, patch: BedEquipmentUpdate) {
+    queryClient.setQueryData<BedEquipment[]>(["bed-equipment"], (old) =>
+      old ? old.map((e) => (e.id === equipmentId ? { ...e, ...patch } : e)) : old,
     );
-    plantingUpdateMutation.mutate({ id: planting.id, patch: { geometry } });
+    equipmentGeometryMutation.mutate({ id: equipmentId, patch });
+  }
+
+  /** Placing an inventory item onto a bed - same cascading default position
+   * as the old inline handler this replaced (AddBedForm's nextBedPosition
+   * follows the same idea), just lifted up here so it's one of undo/redo's
+   * four tracked geometry-mutation sites. */
+  function handleEquipmentPlace(item: BedEquipment, bed: Bed) {
+    if (item.id == null || bed.id == null) return;
+    const itemId = item.id;
+    const existingInBed = equipmentList.filter((e) => e.bed_id === bed.id).length;
+    const offset = (existingInBed % 5) * (DEFAULT_EQUIPMENT_SIZE_CM + 5);
+    const previousPatch: BedEquipmentUpdate = { bed_id: item.bed_id, geometry: item.geometry };
+    const nextPatch: BedEquipmentUpdate = {
+      bed_id: bed.id,
+      geometry: {
+        type: "rectangle",
+        x: 10 + offset,
+        y: 10 + offset,
+        width: DEFAULT_EQUIPMENT_SIZE_CM,
+        height: DEFAULT_EQUIPMENT_SIZE_CM,
+        rotation: 0,
+      },
+    };
+    applyEquipmentPatch(itemId, nextPatch);
+    history.push({
+      undo: () => applyEquipmentPatch(itemId, previousPatch),
+      redo: () => applyEquipmentPatch(itemId, nextPatch),
+    });
+  }
+
+  function handleEquipmentReturnToInventory(item: BedEquipment) {
+    if (item.id == null) return;
+    const itemId = item.id;
+    const previousPatch: BedEquipmentUpdate = { bed_id: item.bed_id, geometry: item.geometry };
+    const nextPatch: BedEquipmentUpdate = { bed_id: null, geometry: null };
+    applyEquipmentPatch(itemId, nextPatch);
+    history.push({
+      undo: () => applyEquipmentPatch(itemId, previousPatch),
+      redo: () => applyEquipmentPatch(itemId, nextPatch),
+    });
   }
 
   const exampleBeds = exampleGardenQuery.data?.beds ?? [];
@@ -327,6 +433,32 @@ export function Layout() {
     if (next === "example") setSelectedId(null);
     setMode(next);
   }
+
+  // Ctrl/Cmd+Z = undo, Ctrl/Cmd+Shift+Z (and the Windows-conventional
+  // Ctrl+Y) = redo - only active in "mine" mode, matching the four tracked
+  // mutation sites which only exist there (the example garden is read-only).
+  // Ignores the shortcut while focus is in a text input/textarea so it
+  // doesn't fight the browser's own undo inside a form field.
+  const { undo: historyUndo, redo: historyRedo } = history;
+  useEffect(() => {
+    if (mode !== "mine") return;
+    function handleKeyDown(e: KeyboardEvent) {
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
+      const modifierPressed = e.ctrlKey || e.metaKey;
+      if (!modifierPressed) return;
+      if (e.key === "z" || e.key === "Z") {
+        e.preventDefault();
+        if (e.shiftKey) historyRedo();
+        else historyUndo();
+      } else if (e.key === "y" || e.key === "Y") {
+        e.preventDefault();
+        historyRedo();
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [mode, historyUndo, historyRedo]);
 
   return (
     <div className="flex min-h-svh flex-col gap-4 p-6">
@@ -344,6 +476,10 @@ export function Layout() {
         onOpenPlantPicker={openPlantPicker}
         placementMode={placementMode}
         onPlacementModeChange={setPlacementMode}
+        canUndo={history.canUndo}
+        canRedo={history.canRedo}
+        onUndo={history.undo}
+        onRedo={history.redo}
       />
       <p className="text-xs text-muted-foreground">
         Scroll to pan, Ctrl/Cmd+scroll to zoom, drag empty canvas to pan.
@@ -468,7 +604,13 @@ export function Layout() {
             />
           )}
           {tab === "equipment" && (
-            <EquipmentPanel beds={beds} equipment={equipmentList} onClose={() => switchTab("planters")} />
+            <EquipmentPanel
+              beds={beds}
+              equipment={equipmentList}
+              onClose={() => switchTab("planters")}
+              onPlace={handleEquipmentPlace}
+              onReturnToInventory={handleEquipmentReturnToInventory}
+            />
           )}
           {tab === "plants" && selectedPlanting && (
             <PlantingPanel
