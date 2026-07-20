@@ -18,13 +18,12 @@ class Bed(SQLModel, table=True):
     # validated into Geometry at the API boundary (routes/beds.py), same
     # split every other jsonb geometry column in this app uses.
     border_geometry: dict = Field(sa_column=Column(JSONB, nullable=False))
-    height_cm: float = 0
+    height_cm: float = 0  # "raised" is derived as height_cm > 0, not its own column (removed is_raised)
     has_greenhouse: bool = False
     # North-facing-edge compass label (e.g. "N", "SE") - coarse, not derived
     # from border_geometry's rotation; used for shade-casting reasoning per
     # root CLAUDE.md's domain notes, not for anything geometric.
     orientation: str | None = None
-    is_raised: bool | None = None
     soil_type: str | None = None
     sun_level: SunLevel | None = None
     notes: str = ""

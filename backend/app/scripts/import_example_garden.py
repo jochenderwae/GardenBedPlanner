@@ -71,7 +71,7 @@ def _planting_geometry(x_cm: float, y_cm: float) -> dict:
     }
 
 
-_BED_SCALAR_FIELDS = ["category", "border_geometry", "height_cm", "has_greenhouse", "orientation", "is_raised", "soil_type", "sun_level", "notes"]
+_BED_SCALAR_FIELDS = ["category", "border_geometry", "height_cm", "has_greenhouse", "orientation", "soil_type", "sun_level", "notes"]
 
 
 def upsert_bed(session: Session, bed_data: dict) -> Bed:

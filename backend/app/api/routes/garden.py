@@ -87,7 +87,6 @@ def put_garden(payload: _GardenPut, session: Session = Depends(get_session)) -> 
             name="Ground",
             category="Ground",
             border_geometry=row.border_geometry,
-            is_raised=False,
         )
         session.add(ground_bed)
         commit_or_409(session)
