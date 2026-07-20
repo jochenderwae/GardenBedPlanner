@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,18 @@ interface BedPanelProps {
   onDeleted: () => void;
 }
 
-export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: BedPanelProps) {
+/** Exposed so Layout.tsx's global Delete-key handler (see the "Keyboard
+ * shortcuts" backlog item) can trigger exactly the same confirm-dialog-open
+ * action the trash button below already does, rather than duplicating or
+ * bypassing that confirmation step. */
+export interface BedPanelHandle {
+  requestDelete: () => void;
+}
+
+export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPanel(
+  { bed, gardenOrientationDeg = 0, onClose, onDeleted },
+  ref,
+) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState(bed);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
@@ -55,6 +66,13 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => setDraft(bed), [bed]);
+
+  useImperativeHandle(ref, () => ({
+    requestDelete: () => {
+      setDeleteError(null);
+      setConfirmDeleteOpen(true);
+    },
+  }));
 
   const mutation = useMutation({
     mutationFn: (patch: BedUpdate) => updateBed(bed.id!, patch),
@@ -299,4 +317,4 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
       </AlertDialog>
     </Card>
   );
-}
+});

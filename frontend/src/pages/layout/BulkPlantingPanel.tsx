@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { forwardRef, useImperativeHandle, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,18 +22,37 @@ interface BulkPlantingPanelProps {
   onDeleted: () => void;
 }
 
+/** Exposed so Layout.tsx's global Delete-key handler (see the "Keyboard
+ * shortcuts" backlog item) can trigger exactly the same confirm-dialog-open
+ * action the trash button below already does, rather than duplicating or
+ * bypassing that confirmation step. */
+export interface BulkPlantingPanelHandle {
+  requestDelete: () => void;
+}
+
 /** Shown instead of PlantingPanel while a multi-selection is active - a
  * lightweight "N selected" bar with bulk delete, not the full single-
  * planting edit form (placement type / planted-removed dates don't make
  * sense to bulk-edit at once). Moving a multi-selection is a canvas drag
  * gesture instead (drag any selected marker - see Layout.tsx's
  * handlePlantingMove), not a control here. */
-export function BulkPlantingPanel({ plantings, onClose, onDeleted }: BulkPlantingPanelProps) {
+export const BulkPlantingPanel = forwardRef<BulkPlantingPanelHandle, BulkPlantingPanelProps>(function BulkPlantingPanel(
+  { plantings, onClose, onDeleted },
+  ref,
+) {
   const queryClient = useQueryClient();
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
   const ids = plantings.map((p) => p.id).filter((id): id is number => id != null);
+
+  useImperativeHandle(ref, () => ({
+    requestDelete: () => {
+      if (ids.length === 0) return;
+      setDeleteError(null);
+      setConfirmDeleteOpen(true);
+    },
+  }));
 
   const deleteMutation = useMutation({
     mutationFn: async (targetIds: number[]) => {
@@ -92,4 +111,4 @@ export function BulkPlantingPanel({ plantings, onClose, onDeleted }: BulkPlantin
       </AlertDialog>
     </Card>
   );
-}
+});

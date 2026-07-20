@@ -25,11 +25,12 @@ import {
   type Plant,
   type Planting,
   type PlantingUpdate,
+  type PolygonGeometry,
 } from "@/api/client";
 import { BedNode } from "./layout/BedNode";
-import { BedPanel } from "./layout/BedPanel";
+import { BedPanel, type BedPanelHandle } from "./layout/BedPanel";
 import { AddBedForm } from "./layout/AddBedForm";
-import { BulkPlantingPanel } from "./layout/BulkPlantingPanel";
+import { BulkPlantingPanel, type BulkPlantingPanelHandle } from "./layout/BulkPlantingPanel";
 import { CompassWidget, COMPASS_MARGIN_CM } from "./layout/CompassWidget";
 import { ExampleGardenLayer, PlantingTooltip, type PlantingTooltipState } from "./layout/ExampleGardenView";
 import { GardenBoundary } from "./layout/GardenBoundary";
@@ -38,10 +39,21 @@ import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPanel";
 import { PlantPlacementLayer, type PlacementMode } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
-import { PlantingPanel } from "./layout/PlantingPanel";
+import { PlantingPanel, type PlantingPanelHandle } from "./layout/PlantingPanel";
 import { RulerLayer } from "./layout/RulerLayer";
 import { Toolbar, type PlacementTab, type ViewMode } from "./layout/Toolbar";
-import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, GRID_SPACING_CM, translateGeometry } from "./layout/geometry";
+import {
+  boundingRect,
+  CANVAS_HEIGHT_PX,
+  CANVAS_WIDTH_PX,
+  clampPointToBounds,
+  clampRectPositionToBounds,
+  DRAG_SNAP_CM,
+  GRID_SPACING_CM,
+  NUDGE_STEP_CM,
+  rectanglesOverlap,
+  translateGeometry,
+} from "./layout/geometry";
 import { useUndoHistory } from "./layout/history";
 import {
   clampScale,
@@ -120,6 +132,13 @@ export function Layout() {
   // Non-empty whenever BulkPlantingPanel is showing instead of PlantingPanel.
   const [selectedPlantingIds, setSelectedPlantingIds] = useState<Set<number>>(new Set());
   const [tooltip, setTooltip] = useState<PlantingTooltipState | null>(null);
+  // Imperative handles onto the currently-open panel so the global
+  // Delete-key handler below can trigger the exact same confirm-dialog-open
+  // action as that panel's own trash button - see the "Keyboard shortcuts"
+  // backlog item.
+  const bedPanelRef = useRef<BedPanelHandle>(null);
+  const plantingPanelRef = useRef<PlantingPanelHandle>(null);
+  const bulkPlantingPanelRef = useRef<BulkPlantingPanelHandle>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
   // Undo/redo over the four geometry-mutation call sites below (bed, garden
   // boundary, planting, equipment) - see history.ts's own doc for why this
@@ -322,6 +341,39 @@ export function Layout() {
     });
   }
 
+  /** Arrow-key nudge for the currently-selected bed - see the "Keyboard
+   * shortcuts" backlog item. Applies the same garden-boundary clamp and
+   * other-bed-overlap hard constraint `BedNode`'s own drag handling enforces
+   * (see geometry.ts's `clampRectPositionToBounds`/`clampPointToBounds`/
+   * `rectanglesOverlap`), silently no-op-ing a nudge that would push the bed
+   * outside the garden or into another bed rather than partially applying
+   * it. Routes through `handleBedChange` so the move is PATCHed and pushed
+   * onto the same undo/redo stack a drag would be. */
+  function nudgeSelectedBed(dx: number, dy: number) {
+    if (!selectedBed || selectedBed.id == null) return;
+    const bedId = selectedBed.id;
+    const geometry = selectedBed.border_geometry;
+    const otherRects = [...bedRectsById.entries()].filter(([id]) => id !== bedId).map(([, rect]) => rect);
+
+    if (geometry.type === "rectangle") {
+      let x = geometry.x + dx;
+      let y = geometry.y + dy;
+      if (gardenBounds) ({ x, y } = clampRectPositionToBounds(x, y, geometry.width, geometry.height, gardenBounds));
+      const candidateRect = { x, y, width: geometry.width, height: geometry.height };
+      if (otherRects.some((r) => rectanglesOverlap(candidateRect, r))) return;
+      handleBedChange(selectedBed, { ...geometry, x, y });
+      return;
+    }
+
+    let translated = translateGeometry(geometry, dx, dy) as PolygonGeometry;
+    if (gardenBounds) {
+      translated = { ...translated, points: translated.points.map((p) => clampPointToBounds(p, gardenBounds)) };
+    }
+    const candidateRect = boundingRect(translated);
+    if (otherRects.some((r) => rectanglesOverlap(candidateRect, r))) return;
+    handleBedChange(selectedBed, translated);
+  }
+
   /** Applies (and PUTs) the garden's geometry. Reads the *current* cached
    * garden at call time (not a closed-over `garden` from whenever the undo
    * entry was created) so an undo/redo firing after some other, untracked
@@ -410,6 +462,29 @@ export function Layout() {
       changes.push({ id: otherId, previous: other.geometry, next: translateGeometry(other.geometry, dx, dy) });
     }
 
+    for (const change of changes) applyPlantingGeometry(change.id, change.next);
+    history.push({
+      undo: () => {
+        for (const change of changes) applyPlantingGeometry(change.id, change.previous);
+      },
+      redo: () => {
+        for (const change of changes) applyPlantingGeometry(change.id, change.next);
+      },
+    });
+  }
+
+  /** Arrow-key nudge for the currently-selected planting(s) (single select
+   * or the multi-selection) - see the "Keyboard shortcuts" backlog item.
+   * Mirrors `handlePlantingMove`'s group-translate-by-delta approach for a
+   * multi-selection, but the delta here comes directly from the keypress
+   * rather than being derived from a drag's old/new geometry. */
+  function nudgeSelectedPlantings(dx: number, dy: number) {
+    const ids = selectedPlantingIds.size > 0 ? [...selectedPlantingIds] : selectedPlantingId != null ? [selectedPlantingId] : [];
+    const changes = ids
+      .map((id) => plantings.find((p) => p.id === id))
+      .filter((p): p is Planting => p != null && p.id != null)
+      .map((p) => ({ id: p.id as number, previous: p.geometry, next: translateGeometry(p.geometry, dx, dy) }));
+    if (changes.length === 0) return;
     for (const change of changes) applyPlantingGeometry(change.id, change.next);
     history.push({
       undo: () => {
@@ -515,31 +590,101 @@ export function Layout() {
     setMode(next);
   }
 
-  // Ctrl/Cmd+Z = undo, Ctrl/Cmd+Shift+Z (and the Windows-conventional
-  // Ctrl+Y) = redo - only active in "mine" mode, matching the four tracked
-  // mutation sites which only exist there (the example garden is read-only).
-  // Ignores the shortcut while focus is in a text input/textarea so it
-  // doesn't fight the browser's own undo inside a form field.
+  // Global keyboard shortcuts - only active in "mine" mode, matching the
+  // four tracked undo/redo mutation sites which only exist there (the
+  // example garden is read-only). Ignores every shortcut below while focus
+  // is in a text input/textarea/contenteditable so none of them fight the
+  // browser's/field's own native key handling.
+  //
+  // - Ctrl/Cmd+Z = undo, Ctrl/Cmd+Shift+Z (and the Windows-conventional
+  //   Ctrl+Y) = redo.
+  // - Arrow keys nudge the currently-selected bed (planters tab) or
+  //   planting/multi-selection (plants tab) by NUDGE_STEP_CM, or the
+  //   coarser DRAG_SNAP_CM with Shift held - see nudgeSelectedBed/
+  //   nudgeSelectedPlantings above.
+  // - Delete/Backspace opens the same delete-confirm dialog the currently-
+  //   open panel's own trash button does (via the panels' requestDelete
+  //   imperative handles).
+  // - Escape clears the armed plant first if one is armed, else clears
+  //   whichever tab's own selection is currently active. Equipment/garden
+  //   tabs are deliberately out of scope - neither has a per-item
+  //   selection/delete concept the way planters/plants do.
   const { undo: historyUndo, redo: historyRedo } = history;
+  // nudgeSelectedBed/nudgeSelectedPlantings close over selectedBed/
+  // bedRectsById/gardenBounds/plantings, all recreated every render, so - to
+  // avoid re-subscribing the window listener on every render just to keep a
+  // fresh closure (the same "wrap in useCallback" fix isn't practical here,
+  // since it'd cascade into memoizing handleBedChange/applyPlantingGeometry/
+  // history too) - stash the latest closure in a ref and call through it
+  // instead of listing the functions themselves in the effect's deps below.
+  const nudgeSelectedBedRef = useRef(nudgeSelectedBed);
+  nudgeSelectedBedRef.current = nudgeSelectedBed;
+  const nudgeSelectedPlantingsRef = useRef(nudgeSelectedPlantings);
+  nudgeSelectedPlantingsRef.current = nudgeSelectedPlantings;
   useEffect(() => {
     if (mode !== "mine") return;
     function handleKeyDown(e: KeyboardEvent) {
       const target = e.target as HTMLElement | null;
       if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)) return;
-      const modifierPressed = e.ctrlKey || e.metaKey;
-      if (!modifierPressed) return;
-      if (e.key === "z" || e.key === "Z") {
+
+      if (e.ctrlKey || e.metaKey) {
+        if (e.key === "z" || e.key === "Z") {
+          e.preventDefault();
+          if (e.shiftKey) historyRedo();
+          else historyUndo();
+        } else if (e.key === "y" || e.key === "Y") {
+          e.preventDefault();
+          historyRedo();
+        }
+        return;
+      }
+
+      if (e.key === "Escape") {
+        if (armedPlant) {
+          setArmedPlant(null);
+        } else if (tab === "planters") {
+          setSelectedId(null);
+        } else if (tab === "plants") {
+          setSelectedPlantingId(null);
+          setSelectedPlantingIds(new Set());
+        }
+        return;
+      }
+
+      if (e.key === "Delete" || e.key === "Backspace") {
+        if (tab === "planters" && selectedId != null) {
+          e.preventDefault();
+          bedPanelRef.current?.requestDelete();
+        } else if (tab === "plants" && selectedPlantingIds.size > 0) {
+          e.preventDefault();
+          bulkPlantingPanelRef.current?.requestDelete();
+        } else if (tab === "plants" && selectedPlantingId != null) {
+          e.preventDefault();
+          plantingPanelRef.current?.requestDelete();
+        }
+        return;
+      }
+
+      const arrowDeltas: Record<string, { dx: number; dy: number }> = {
+        ArrowUp: { dx: 0, dy: -1 },
+        ArrowDown: { dx: 0, dy: 1 },
+        ArrowLeft: { dx: -1, dy: 0 },
+        ArrowRight: { dx: 1, dy: 0 },
+      };
+      const delta = arrowDeltas[e.key];
+      if (!delta) return;
+      const step = e.shiftKey ? DRAG_SNAP_CM : NUDGE_STEP_CM;
+      if (tab === "planters" && selectedId != null) {
         e.preventDefault();
-        if (e.shiftKey) historyRedo();
-        else historyUndo();
-      } else if (e.key === "y" || e.key === "Y") {
+        nudgeSelectedBedRef.current(delta.dx * step, delta.dy * step);
+      } else if (tab === "plants" && (selectedPlantingId != null || selectedPlantingIds.size > 0)) {
         e.preventDefault();
-        historyRedo();
+        nudgeSelectedPlantingsRef.current(delta.dx * step, delta.dy * step);
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [mode, historyUndo, historyRedo]);
+  }, [mode, tab, armedPlant, selectedId, selectedPlantingId, selectedPlantingIds, historyUndo, historyRedo]);
 
   return (
     <div className="flex min-h-svh flex-col gap-4 p-6">
@@ -681,6 +826,7 @@ export function Layout() {
           {tab === "garden" && <GardenPanel garden={garden} />}
           {tab === "planters" && selectedBed && (
             <BedPanel
+              ref={bedPanelRef}
               bed={selectedBed}
               gardenOrientationDeg={garden?.orientation_deg}
               onClose={() => setSelectedId(null)}
@@ -698,6 +844,7 @@ export function Layout() {
           )}
           {tab === "plants" && selectedPlantingIds.size > 0 && (
             <BulkPlantingPanel
+              ref={bulkPlantingPanelRef}
               plantings={plantings.filter((p) => p.id != null && selectedPlantingIds.has(p.id))}
               onClose={() => setSelectedPlantingIds(new Set())}
               onDeleted={() => setSelectedPlantingIds(new Set())}
@@ -705,6 +852,7 @@ export function Layout() {
           )}
           {tab === "plants" && selectedPlantingIds.size === 0 && selectedPlanting && (
             <PlantingPanel
+              ref={plantingPanelRef}
               planting={selectedPlanting}
               plant={plantsBySlug.get(selectedPlanting.plant_slug)}
               onClose={() => setSelectedPlantingId(null)}

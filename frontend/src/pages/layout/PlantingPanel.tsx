@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,14 @@ interface PlantingPanelProps {
   onDeleted: () => void;
 }
 
+/** Exposed so Layout.tsx's global Delete-key handler (see the "Keyboard
+ * shortcuts" backlog item) can trigger exactly the same confirm-dialog-open
+ * action the trash button below already does, rather than duplicating or
+ * bypassing that confirmation step. */
+export interface PlantingPanelHandle {
+  requestDelete: () => void;
+}
+
 /** Edits a placed plant's own record (placement type, planted/removed
  * dates) - opened by clicking a planting marker on the canvas, matching how
  * clicking a bed opens `BedPanel`. Owns its own mutations rather than
@@ -38,12 +46,19 @@ interface PlantingPanelProps {
  * used while dragging a marker), but panel-driven field edits and delete
  * are local to the panel. Delete lives here (with a confirmation), not as
  * the marker's primary click/double-click gesture anymore. */
-export function PlantingPanel({ planting, plant, onClose, onDeleted }: PlantingPanelProps) {
+export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>(function PlantingPanel(
+  { planting, plant, onClose, onDeleted },
+  ref,
+) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState(planting);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 
   useEffect(() => setDraft(planting), [planting]);
+
+  useImperativeHandle(ref, () => ({
+    requestDelete: () => setConfirmDeleteOpen(true),
+  }));
 
   const mutation = useMutation({
     mutationFn: (patch: PlantingUpdate) => updatePlanting(planting.id!, patch),
@@ -137,4 +152,4 @@ export function PlantingPanel({ planting, plant, onClose, onDeleted }: PlantingP
       </AlertDialog>
     </Card>
   );
-}
+});

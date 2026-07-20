@@ -10,6 +10,11 @@ export const CANVAS_WIDTH_PX = 1400;
 export const CANVAS_HEIGHT_PX = 900;
 export const GRID_SPACING_CM = 50;
 export const DRAG_SNAP_CM = 10;
+/** Arrow-key nudge step (cm) for the currently-selected bed/planting - a
+ * plain arrow press moves this far; a shift+arrow press moves the coarser
+ * `DRAG_SNAP_CM` instead, matching the fine/coarse convention most design
+ * tools (Figma etc.) use for arrow-key nudging. */
+export const NUDGE_STEP_CM = 1;
 
 export function snapToGrid(value: number, gridSizeCm: number = DRAG_SNAP_CM): number {
   return Math.round(value / gridSizeCm) * gridSizeCm;
