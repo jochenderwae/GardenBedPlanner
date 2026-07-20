@@ -90,5 +90,17 @@ def put_garden(payload: _GardenPut, session: Session = Depends(get_session)) -> 
         )
         session.add(ground_bed)
         commit_or_409(session)
+        # The ground-Bed commit above expires every object still attached to
+        # the session (SQLAlchemy's default expire_on_commit=True), `row`
+        # included - and SQLModel's/Pydantic's `model_dump()` (used by
+        # `_to_api_garden` below) reads straight from the instance's
+        # __dict__, not through SQLAlchemy's attribute descriptors, so it
+        # doesn't lazy-reload expired attributes the way plain `row.x`
+        # attribute access would. Without this second refresh, the response
+        # would silently fall back to each field's Pydantic default (e.g.
+        # `orientation_deg=0.0`) instead of what was actually just written -
+        # the row in the database itself was always correct, only this
+        # response serialization was affected.
+        session.refresh(row)
 
     return _to_api_garden(row)
