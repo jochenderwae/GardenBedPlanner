@@ -223,14 +223,12 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
             />
             <span className="text-sm">Greenhouse</span>
           </label>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={draft.is_raised ?? false}
-              onChange={(e) => commit({ is_raised: e.target.checked })}
-            />
-            <span className="text-sm">Raised</span>
-          </label>
+          <span
+            className="text-sm text-muted-foreground"
+            title="Derived from height (cm), not a separate field - a bed with any height above ground counts as raised"
+          >
+            {draft.height_cm > 0 ? "Raised" : "Not raised"}
+          </span>
         </div>
 
         <label className="flex flex-col gap-1">
