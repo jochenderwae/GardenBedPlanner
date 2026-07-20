@@ -13,7 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
-import { deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
+import { ApiError, deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 import { rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
 
@@ -47,6 +47,12 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState(bed);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
+  // Opened from deleteMutation's onError below when the first delete 409s
+  // because the bed still has plantings/equipment attached - the user's own
+  // requested fix (see the backlog item) rather than the 409 being silently
+  // swallowed, which is what happened before this.
+  const [confirmCascadeOpen, setConfirmCascadeOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   useEffect(() => setDraft(bed), [bed]);
 
@@ -60,10 +66,18 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
   });
 
   const deleteMutation = useMutation({
-    mutationFn: () => deleteBed(bed.id!),
+    mutationFn: (cascade: boolean) => deleteBed(bed.id!, cascade),
     onSuccess: () => {
       queryClient.setQueryData<Bed[]>(["beds"], (old) => old?.filter((b) => b.id !== bed.id));
       onDeleted();
+    },
+    onError: (err: unknown) => {
+      if (err instanceof ApiError && err.status === 409) {
+        setDeleteError(null);
+        setConfirmCascadeOpen(true);
+      } else {
+        setDeleteError(err instanceof Error ? err.message : "Failed to delete bed");
+      }
     },
   });
 
@@ -240,9 +254,17 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
           />
         </label>
 
-        <Button variant="destructive" size="sm" onClick={() => setConfirmDeleteOpen(true)}>
+        <Button
+          variant="destructive"
+          size="sm"
+          onClick={() => {
+            setDeleteError(null);
+            setConfirmDeleteOpen(true);
+          }}
+        >
           <Trash2 /> Delete bed
         </Button>
+        {deleteError && <p className="text-xs text-destructive">{deleteError}</p>}
       </div>
 
       <AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
@@ -253,8 +275,24 @@ export function BedPanel({ bed, gardenOrientationDeg = 0, onClose, onDeleted }: 
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={() => deleteMutation.mutate()}>
+            <AlertDialogAction variant="destructive" onClick={() => deleteMutation.mutate(false)}>
               <Trash2 /> Delete bed
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogPopup>
+      </AlertDialog>
+
+      <AlertDialog open={confirmCascadeOpen} onOpenChange={setConfirmCascadeOpen}>
+        <AlertDialogPopup>
+          <AlertDialogTitle>"{bed.name}" still has plantings or equipment</AlertDialogTitle>
+          <AlertDialogDescription>
+            Delete the bed and everything placed in it (plantings, equipment) too? If not, the bed can't be deleted
+            either.
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={() => deleteMutation.mutate(true)}>
+              <Trash2 /> Delete bed and its plantings/equipment
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogPopup>

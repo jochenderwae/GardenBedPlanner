@@ -44,13 +44,28 @@ export type PlantGrowingInformation = components["schemas"]["PlantGrowingInforma
 export type SeedInfo = components["schemas"]["SeedInfo"];
 export type PeriodType = components["schemas"]["PeriodType"];
 
+/** Thrown by `apiFetch` on a non-ok response - carries the HTTP status so
+ * callers can branch on a specific code (e.g. `BedPanel.tsx`'s delete flow
+ * distinguishing a 409-dependents-exist response from any other failure)
+ * instead of string-matching the message. Still an `Error`, so existing
+ * `err instanceof Error ? err.message : ...` call sites keep working
+ * unchanged. */
+export class ApiError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(path, {
     ...init,
     headers: { "Content-Type": "application/json", ...init?.headers },
   });
   if (!res.ok) {
-    throw new Error(`${init?.method ?? "GET"} ${path} failed: ${res.status}`);
+    throw new ApiError(`${init?.method ?? "GET"} ${path} failed: ${res.status}`, res.status);
   }
   if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
@@ -74,8 +89,8 @@ export function updateBed(id: number, patch: BedUpdate): Promise<Bed> {
   });
 }
 
-export function deleteBed(id: number): Promise<void> {
-  return apiFetch(`/api/beds/${id}`, { method: "DELETE" });
+export function deleteBed(id: number, cascade = false): Promise<void> {
+  return apiFetch(`/api/beds/${id}${cascade ? "?cascade=true" : ""}`, { method: "DELETE" });
 }
 
 /** null means "not created yet" (backend 404s until the first PUT) - not an
