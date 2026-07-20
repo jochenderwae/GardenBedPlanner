@@ -7,6 +7,8 @@ import {
   colorForSlug,
   DEFAULT_PLANTING_DIAMETER_CM,
   fieldGeometryFromDrag,
+  normalizedRect,
+  rectanglesOverlap,
   rectRenderProps,
   rowGeometryFromDrag,
 } from "./geometry";
@@ -28,10 +30,25 @@ interface PlantPlacementLayerProps {
   placementMode: PlacementMode;
   onPlace: (bedId: number, geometry: Geometry, placementType: PlacementType) => void;
   onMove: (planting: Planting, geometry: Geometry) => void;
-  /** Clicking an existing marker opens its edit/details popup (PlantingPanel,
-   * owned by Layout.tsx) rather than deleting it - delete lives inside that
-   * popup now, not as a canvas gesture. */
-  onSelect: (planting: Planting) => void;
+  /** Plain click on an existing marker opens its edit/details popup
+   * (PlantingPanel, owned by Layout.tsx); shift-click (`additive: true`)
+   * instead toggles that marker into/out of the multi-selection (see
+   * `selectedIds`/`onMarqueeSelect` below) without opening anything - delete
+   * lives inside PlantingPanel for a single planting, or BulkPlantingPanel
+   * for a multi-selection. */
+  onSelect: (planting: Planting, additive: boolean) => void;
+  /** Ids of the plantings currently in the multi-selection (marquee-drag or
+   * shift-click) - drawn with a highlighted stroke; dragging any one of them
+   * while the selection has 2+ members moves the whole group together (see
+   * Layout.tsx's handlePlantingMove). */
+  selectedIds: Set<number>;
+  /** Fired when a marquee (click-drag over empty bed space while no plant is
+   * armed - see `canSelect` below) completes: every planting in that bed
+   * whose bounding box intersects the drawn rectangle, plus whether it
+   * should add to the existing selection (drag started with shift held) or
+   * replace it outright (plain drag, including an empty/same-point drag -
+   * the "click empty space to clear the selection" case). */
+  onMarqueeSelect: (ids: number[], additive: boolean) => void;
 }
 
 /** Pick a plant first (Layout.tsx's toolbar), then draw where it goes:
@@ -54,10 +71,15 @@ export function PlantPlacementLayer({
   onPlace,
   onMove,
   onSelect,
+  selectedIds,
+  onMarqueeSelect,
 }: PlantPlacementLayerProps) {
   const [draw, setDraw] = useState<{ bedId: number; start: { x: number; y: number }; current: { x: number; y: number } } | null>(
     null,
   );
+  const [marquee, setMarquee] = useState<
+    { bedId: number; start: { x: number; y: number }; current: { x: number; y: number }; additive: boolean } | null
+  >(null);
 
   const plantingsByBed = useMemo(() => {
     const map = new Map<number, Planting[]>();
@@ -70,6 +92,9 @@ export function PlantPlacementLayer({
   }, [plantings]);
 
   const canDraw = active && armedPlant != null;
+  // No plant armed = selection mode: click-drag over empty bed space draws a
+  // marquee instead of a placement (see handleMouseDown/Up below).
+  const canSelect = active && armedPlant == null;
   const thicknessCm = armedPlant?.spread_cm ?? DEFAULT_PLANTING_DIAMETER_CM;
 
   function localPoint(e: Konva.KonvaEventObject<MouseEvent>): { x: number; y: number } | null {
@@ -95,28 +120,51 @@ export function PlantPlacementLayer({
   }
 
   function handleMouseDown(bedId: number, e: Konva.KonvaEventObject<MouseEvent>) {
-    if (!canDraw || placementMode === "individual") return;
     const pos = localPoint(e);
     if (!pos) return;
-    setDraw({ bedId, start: pos, current: pos });
+    if (canDraw) {
+      if (placementMode === "individual") return;
+      setDraw({ bedId, start: pos, current: pos });
+      return;
+    }
+    if (canSelect) {
+      setMarquee({ bedId, start: pos, current: pos, additive: e.evt.shiftKey });
+    }
   }
 
   function handleMouseMove(bedId: number, e: Konva.KonvaEventObject<MouseEvent>) {
-    if (!draw || draw.bedId !== bedId) return;
     const pos = localPoint(e);
-    if (pos) setDraw({ ...draw, current: pos });
+    if (!pos) return;
+    if (draw && draw.bedId === bedId) {
+      setDraw({ ...draw, current: pos });
+      return;
+    }
+    if (marquee && marquee.bedId === bedId) setMarquee({ ...marquee, current: pos });
   }
 
   function handleMouseUp(bedId: number, e: Konva.KonvaEventObject<MouseEvent>) {
-    if (!draw || draw.bedId !== bedId || !armedPlant) {
+    if (draw && draw.bedId === bedId) {
+      if (armedPlant) {
+        const pos = localPoint(e) ?? draw.current;
+        const geometry =
+          placementMode === "row"
+            ? rowGeometryFromDrag(draw.start, pos, thicknessCm)
+            : fieldGeometryFromDrag(draw.start, pos);
+        if (geometry) onPlace(bedId, geometry, placementMode);
+      }
       setDraw(null);
       return;
     }
-    const pos = localPoint(e) ?? draw.current;
-    const geometry =
-      placementMode === "row" ? rowGeometryFromDrag(draw.start, pos, thicknessCm) : fieldGeometryFromDrag(draw.start, pos);
-    if (geometry) onPlace(bedId, geometry, placementMode);
-    setDraw(null);
+    if (marquee && marquee.bedId === bedId) {
+      const pos = localPoint(e) ?? marquee.current;
+      const marqueeRect = normalizedRect(marquee.start, pos);
+      const bedPlantings = plantingsByBed.get(bedId) ?? [];
+      const hitIds = bedPlantings
+        .filter((p) => p.id != null && rectanglesOverlap(marqueeRect, boundingRect(p.geometry)))
+        .map((p) => p.id as number);
+      onMarqueeSelect(hitIds, marquee.additive);
+      setMarquee(null);
+    }
   }
 
   return (
@@ -131,12 +179,13 @@ export function PlantPlacementLayer({
               ? rowGeometryFromDrag(draw.start, draw.current, thicknessCm)
               : fieldGeometryFromDrag(draw.start, draw.current)
             : null;
+        const marqueeRect = marquee && marquee.bedId === bed.id ? normalizedRect(marquee.start, marquee.current) : null;
         return (
           <Group key={bed.id} x={rect.x} y={rect.y}>
             <Rect
               width={rect.width}
               height={rect.height}
-              listening={canDraw}
+              listening={canDraw || canSelect}
               onClick={(e) => handleClick(bed.id as number, e)}
               onMouseDown={(e) => handleMouseDown(bed.id as number, e)}
               onMouseMove={(e) => handleMouseMove(bed.id as number, e)}
@@ -152,14 +201,25 @@ export function PlantPlacementLayer({
                 listening={false}
               />
             )}
+            {marqueeRect && (
+              <Rect
+                {...marqueeRect}
+                fill="#2563eb1a"
+                stroke="#2563eb"
+                strokeWidth={1}
+                dash={[4, 4]}
+                listening={false}
+              />
+            )}
             {bedPlantings.map((planting) => (
               <PlantingMarker
                 key={planting.id}
                 planting={planting}
                 plant={plantsBySlug.get(planting.plant_slug)}
                 active={active}
+                selected={planting.id != null && selectedIds.has(planting.id)}
                 onMove={(geometry) => onMove(planting, geometry)}
-                onSelect={() => onSelect(planting)}
+                onSelect={(additive) => onSelect(planting, additive)}
               />
             ))}
           </Group>
@@ -169,18 +229,29 @@ export function PlantPlacementLayer({
   );
 }
 
+// Multi-selection highlight - same blue BedNode/GardenBoundary already use
+// for their own single-selection state.
+const SELECTION_HIGHLIGHT_COLOR = "#1d4ed8";
+
 function PlantingMarker({
   planting,
   plant,
   active,
+  selected,
   onMove,
   onSelect,
 }: {
   planting: Planting;
   plant: Plant | undefined;
   active: boolean;
+  /** Whether this marker is part of the current multi-selection (marquee-
+   * drag or shift-click) - see PlantPlacementLayerProps.selectedIds. */
+  selected: boolean;
   onMove: (geometry: Geometry) => void;
-  onSelect: () => void;
+  /** `additive` is true for a shift-click (toggle membership in the
+   * multi-selection) and false for a plain click (open the single-planting
+   * edit panel instead) - see PlantPlacementLayerProps.onSelect. */
+  onSelect: (additive: boolean) => void;
 }) {
   const label = plant?.common_name ?? planting.plant_slug;
   const color = colorForSlug(planting.plant_slug);
@@ -203,13 +274,13 @@ function PlantingMarker({
           rotation={props.rotation}
           fill={color}
           opacity={0.5}
-          stroke={color}
-          strokeWidth={1.5}
+          stroke={selected ? SELECTION_HIGHLIGHT_COLOR : color}
+          strokeWidth={selected ? 3 : 1.5}
           draggable={active}
           listening={active}
           onDragEnd={handleDragEnd}
-          onClick={onSelect}
-          onTap={onSelect}
+          onClick={(e) => onSelect(e.evt.shiftKey)}
+          onTap={() => onSelect(false)}
         />
         {active && (
           <Text x={props.x + 4} y={props.y - 14} text={label} fontSize={10} fill="#1f2937" listening={false} />
@@ -243,13 +314,13 @@ function PlantingMarker({
         radius={radius}
         fill={color}
         opacity={0.85}
-        stroke="#00000040"
-        strokeWidth={1}
+        stroke={selected ? SELECTION_HIGHLIGHT_COLOR : "#00000040"}
+        strokeWidth={selected ? 2.5 : 1}
         draggable={active}
         listening={active}
         onDragEnd={handleDragEnd}
-        onClick={onSelect}
-        onTap={onSelect}
+        onClick={(e) => onSelect(e.evt.shiftKey)}
+        onTap={() => onSelect(false)}
       />
       {active && (
         <Text x={centerX + radius + 3} y={centerY - 5} text={label} fontSize={10} fill="#1f2937" listening={false} />

@@ -29,6 +29,7 @@ import {
 import { BedNode } from "./layout/BedNode";
 import { BedPanel } from "./layout/BedPanel";
 import { AddBedForm } from "./layout/AddBedForm";
+import { BulkPlantingPanel } from "./layout/BulkPlantingPanel";
 import { CompassWidget, COMPASS_MARGIN_CM } from "./layout/CompassWidget";
 import { ExampleGardenLayer, PlantingTooltip, type PlantingTooltipState } from "./layout/ExampleGardenView";
 import { GardenBoundary } from "./layout/GardenBoundary";
@@ -40,7 +41,7 @@ import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel } from "./layout/PlantingPanel";
 import { RulerLayer } from "./layout/RulerLayer";
 import { Toolbar, type PlacementTab, type ViewMode } from "./layout/Toolbar";
-import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, GRID_SPACING_CM } from "./layout/geometry";
+import { boundingRect, CANVAS_HEIGHT_PX, CANVAS_WIDTH_PX, GRID_SPACING_CM, translateGeometry } from "./layout/geometry";
 import { useUndoHistory } from "./layout/history";
 import {
   clampScale,
@@ -114,6 +115,10 @@ export function Layout() {
   // Clicking a placed plant marker opens its edit/details popup
   // (PlantingPanel), matching how clicking a bed opens BedPanel.
   const [selectedPlantingId, setSelectedPlantingId] = useState<number | null>(null);
+  // Multi-selection (marquee-drag or shift-click, see PlantPlacementLayer) -
+  // separate from the single-select-and-edit `selectedPlantingId` above.
+  // Non-empty whenever BulkPlantingPanel is showing instead of PlantingPanel.
+  const [selectedPlantingIds, setSelectedPlantingIds] = useState<Set<number>>(new Set());
   const [tooltip, setTooltip] = useState<PlantingTooltipState | null>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
   // Undo/redo over the four geometry-mutation call sites below (bed, garden
@@ -219,6 +224,7 @@ export function Layout() {
     setSelectedId(null);
     setPlantPickerOpen(false);
     setSelectedPlantingId(null);
+    setSelectedPlantingIds(new Set());
   }
 
   function openPlantPicker() {
@@ -369,14 +375,86 @@ export function Layout() {
     plantingUpdateMutation.mutate({ id: plantingId, patch: { geometry } });
   }
 
+  /** Dragging a planting marker - if it's part of a multi-selection with
+   * 2+ members (see PlantPlacementLayer's marquee/shift-click selection),
+   * every *other* selected planting is translated by the same delta the
+   * dragged one moved (see geometry.ts's translateGeometry), and the whole
+   * group's move is recorded as a single combined undo/redo entry so one
+   * Ctrl+Z reverts the group move together, not one planting at a time. */
   function handlePlantingMove(planting: Planting, geometry: Geometry) {
     if (planting.id == null) return;
     const plantingId = planting.id;
     const previousGeometry = planting.geometry;
-    applyPlantingGeometry(plantingId, geometry);
+
+    if (selectedPlantingIds.size <= 1 || !selectedPlantingIds.has(plantingId)) {
+      applyPlantingGeometry(plantingId, geometry);
+      history.push({
+        undo: () => applyPlantingGeometry(plantingId, previousGeometry),
+        redo: () => applyPlantingGeometry(plantingId, geometry),
+      });
+      return;
+    }
+
+    const oldRect = boundingRect(previousGeometry);
+    const newRect = boundingRect(geometry);
+    const dx = newRect.x - oldRect.x;
+    const dy = newRect.y - oldRect.y;
+
+    const changes: { id: number; previous: Geometry; next: Geometry }[] = [
+      { id: plantingId, previous: previousGeometry, next: geometry },
+    ];
+    for (const otherId of selectedPlantingIds) {
+      if (otherId === plantingId) continue;
+      const other = plantings.find((p) => p.id === otherId);
+      if (!other) continue;
+      changes.push({ id: otherId, previous: other.geometry, next: translateGeometry(other.geometry, dx, dy) });
+    }
+
+    for (const change of changes) applyPlantingGeometry(change.id, change.next);
     history.push({
-      undo: () => applyPlantingGeometry(plantingId, previousGeometry),
-      redo: () => applyPlantingGeometry(plantingId, geometry),
+      undo: () => {
+        for (const change of changes) applyPlantingGeometry(change.id, change.previous);
+      },
+      redo: () => {
+        for (const change of changes) applyPlantingGeometry(change.id, change.next);
+      },
+    });
+  }
+
+  /** Plain click on a marker opens the single-planting edit panel (clearing
+   * any active multi-selection first); shift-click toggles that marker's
+   * membership in the multi-selection instead (closing the single-edit
+   * panel, since only one of the two panels shows at a time - see the JSX
+   * below). */
+  function handlePlantingSelect(planting: Planting, additive: boolean) {
+    if (planting.id == null) return;
+    const plantingId = planting.id;
+    if (additive) {
+      setSelectedPlantingId(null);
+      setSelectedPlantingIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(plantingId)) next.delete(plantingId);
+        else next.add(plantingId);
+        return next;
+      });
+      return;
+    }
+    setSelectedPlantingIds(new Set());
+    setSelectedPlantingId(plantingId);
+  }
+
+  /** A completed marquee drag (see PlantPlacementLayer) - `additive` mirrors
+   * whether shift was held when the drag started: adds the hit plantings to
+   * the existing selection, or replaces it outright (including replacing
+   * with an empty set for a same-point/empty drag - "click empty space to
+   * clear the selection"). */
+  function handleMarqueeSelect(ids: number[], additive: boolean) {
+    setSelectedPlantingId(null);
+    setSelectedPlantingIds((prev) => {
+      if (!additive) return new Set(ids);
+      const next = new Set(prev);
+      for (const id of ids) next.add(id);
+      return next;
     });
   }
 
@@ -430,7 +508,10 @@ export function Layout() {
   const exampleBeds = exampleGardenQuery.data?.beds ?? [];
 
   function handleModeChange(next: ViewMode) {
-    if (next === "example") setSelectedId(null);
+    if (next === "example") {
+      setSelectedId(null);
+      setSelectedPlantingIds(new Set());
+    }
     setMode(next);
   }
 
@@ -498,7 +579,8 @@ export function Layout() {
                       placementMode === "row" ? "row" : "area"
                     } goes.`
                 : "Pick a plant above, then draw where it goes: click for a single plant, drag for a row or area."}{" "}
-              Click a placed plant to edit or remove it, drag it to move it.
+              Click a placed plant to edit or remove it, drag it to move it. With no plant picked, shift-click or drag
+              a selection box over multiple plants to select them together for a bulk move or delete.
             </p>
           )}
         </>
@@ -588,7 +670,9 @@ export function Layout() {
                   placementMode={placementMode}
                   onPlace={handlePlantPlace}
                   onMove={handlePlantingMove}
-                  onSelect={(planting) => setSelectedPlantingId(planting.id ?? null)}
+                  onSelect={handlePlantingSelect}
+                  selectedIds={selectedPlantingIds}
+                  onMarqueeSelect={handleMarqueeSelect}
                 />
               )}
             </Stage>
@@ -612,7 +696,14 @@ export function Layout() {
               onReturnToInventory={handleEquipmentReturnToInventory}
             />
           )}
-          {tab === "plants" && selectedPlanting && (
+          {tab === "plants" && selectedPlantingIds.size > 0 && (
+            <BulkPlantingPanel
+              plantings={plantings.filter((p) => p.id != null && selectedPlantingIds.has(p.id))}
+              onClose={() => setSelectedPlantingIds(new Set())}
+              onDeleted={() => setSelectedPlantingIds(new Set())}
+            />
+          )}
+          {tab === "plants" && selectedPlantingIds.size === 0 && selectedPlanting && (
             <PlantingPanel
               planting={selectedPlanting}
               plant={plantsBySlug.get(selectedPlanting.plant_slug)}

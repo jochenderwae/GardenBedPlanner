@@ -8,6 +8,7 @@ import {
   colorsForBedCategory,
   fieldGeometryFromDrag,
   formatDistanceCm,
+  normalizedRect,
   normalizeDegrees,
   polygonToRectangle,
   rectangleToPolygon,
@@ -17,6 +18,7 @@ import {
   rotationRelativeToGarden,
   rowGeometryFromDrag,
   snapToGrid,
+  translateGeometry,
 } from "./geometry";
 
 describe("snapToGrid", () => {
@@ -236,5 +238,45 @@ describe("rectanglesOverlap", () => {
     expect(rectanglesOverlap({ x: 0, y: 0, width: 10, height: 10 }, { x: 10, y: 0, width: 10, height: 10 })).toBe(
       false,
     );
+  });
+});
+
+describe("normalizedRect", () => {
+  it("normalizes a drag that went top-left to bottom-right", () => {
+    expect(normalizedRect({ x: 0, y: 0 }, { x: 10, y: 20 })).toEqual({ x: 0, y: 0, width: 10, height: 20 });
+  });
+
+  it("normalizes a drag that went the opposite direction (bottom-right to top-left)", () => {
+    expect(normalizedRect({ x: 10, y: 20 }, { x: 0, y: 0 })).toEqual({ x: 0, y: 0, width: 10, height: 20 });
+  });
+
+  it("returns a zero-size rect for a same-point drag", () => {
+    expect(normalizedRect({ x: 5, y: 5 }, { x: 5, y: 5 })).toEqual({ x: 5, y: 5, width: 0, height: 0 });
+  });
+});
+
+describe("translateGeometry", () => {
+  it("shifts a rectangle's x/y, leaving width/height/rotation untouched", () => {
+    const rect: RectangleGeometry = { type: "rectangle", x: 10, y: 20, width: 5, height: 8, rotation: 15 };
+    expect(translateGeometry(rect, 3, -4)).toEqual({ type: "rectangle", x: 13, y: 16, width: 5, height: 8, rotation: 15 });
+  });
+
+  it("shifts every point of a polygon", () => {
+    const polygon: PolygonGeometry = {
+      type: "polygon",
+      points: [
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 10, y: 10 },
+      ],
+    };
+    expect(translateGeometry(polygon, 2, 3)).toEqual({
+      type: "polygon",
+      points: [
+        { x: 2, y: 3 },
+        { x: 12, y: 3 },
+        { x: 12, y: 13 },
+      ],
+    });
   });
 });

@@ -228,3 +228,31 @@ export function clampRectPositionToBounds(
 export function rectanglesOverlap(a: Bounds, b: Bounds): boolean {
   return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 }
+
+/** Normalizes two arbitrary drag corners into an axis-aligned rect (x/y is
+ * always the top-left corner) regardless of which direction the drag went -
+ * used for marquee/rubber-band selection, where (unlike a field placement,
+ * see `fieldGeometryFromDrag`) there's no minimum-size floor: even a
+ * same-point down/up is a valid (empty) marquee, treated as "click on empty
+ * space to clear the selection" by the caller. */
+export function normalizedRect(start: { x: number; y: number }, end: { x: number; y: number }): Bounds {
+  return {
+    x: Math.min(start.x, end.x),
+    y: Math.min(start.y, end.y),
+    width: Math.abs(end.x - start.x),
+    height: Math.abs(end.y - start.y),
+  };
+}
+
+/** Shifts either geometry variant by a fixed (dx, dy) offset - used for
+ * multi-select group moves (see PlantPlacementLayer/Layout.tsx's bulk
+ * planting move): the dragged marker's own new geometry comes from Konva as
+ * usual, and every *other* selected planting is translated by the same
+ * delta rather than independently re-derived from a drag gesture of its
+ * own. */
+export function translateGeometry(geometry: Geometry, dx: number, dy: number): Geometry {
+  if (geometry.type === "rectangle") {
+    return { ...geometry, x: geometry.x + dx, y: geometry.y + dy };
+  }
+  return { ...geometry, points: geometry.points.map((p) => ({ x: p.x + dx, y: p.y + dy })) };
+}
