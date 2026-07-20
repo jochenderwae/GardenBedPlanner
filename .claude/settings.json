@@ -60,7 +60,13 @@
       "Skill(dev-server)",
       "Skill(dev-server:*)",
       "Skill(render-schema)",
-      "Skill(render-schema:*)"
+      "Skill(render-schema:*)",
+      "Skill(migrate-backend)",
+      "Skill(migrate-backend:*)",
+      "Skill(deploy-backend)",
+      "Skill(deploy-backend:*)",
+      "Skill(db-query)",
+      "Skill(db-query:*)"
     ]
   }
 }

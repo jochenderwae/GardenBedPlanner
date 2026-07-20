@@ -19,4 +19,11 @@ class Garden(SQLModel, table=True):
     border_geometry: dict = Field(sa_column=Column(JSONB, nullable=False))
     climate_zone: str | None = None
     location: str | None = None
+    # Compass bearing in degrees clockwise from true north (0-360), set via
+    # the canvas editor's compass widget. Distinct from Bed.orientation
+    # (a coarse free-text N/SE/etc. label for shade reasoning, not a
+    # bearing) - this is the numeric value garden-relative bed rotation is
+    # computed against. Defaults to 0.0 (north-up) rather than nullable, so
+    # consumers never have to special-case "unset".
+    orientation_deg: float = 0.0
     notes: str = ""

@@ -700,6 +700,11 @@ export interface components {
             /** Location */
             location?: string | null;
             /**
+             * Orientation Deg
+             * @default 0
+             */
+            orientation_deg: number;
+            /**
              * Notes
              * @default
              */
@@ -718,6 +723,11 @@ export interface components {
             climate_zone?: string | null;
             /** Location */
             location?: string | null;
+            /**
+             * Orientation Deg
+             * @default 0
+             */
+            orientation_deg: number;
             /**
              * Notes
              * @default
