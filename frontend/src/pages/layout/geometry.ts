@@ -144,3 +144,14 @@ export function clampRectPositionToBounds(
   const maxY = Math.max(bounds.y, bounds.y + bounds.height - height);
   return { x: clamp(x, bounds.x, maxX), y: clamp(y, bounds.y, maxY) };
 }
+
+/** Axis-aligned bounding-box overlap test - used for the "beds must not
+ * intersect each other" constraint. Same bounding-box approximation as the
+ * garden-boundary-containment helpers above (rotation ignored, polygon beds
+ * reduced to their bounding box) rather than exact rotated-rectangle/
+ * polygon collision (SAT etc.) - out of scope for a frontend-only
+ * drag/resize-time hard constraint. Touching edges (no area overlap) don't
+ * count as intersecting. */
+export function rectanglesOverlap(a: Bounds, b: Bounds): boolean {
+  return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
+}

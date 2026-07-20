@@ -1,8 +1,16 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Group, Rect, Text, Transformer } from "react-konva";
 import type Konva from "konva";
 import type { Bed, Geometry, PolygonGeometry } from "@/api/client";
-import { boundingRect, type Bounds, clampPointToBounds, clampRectPositionToBounds, colorsForBedCategory, snapToGrid } from "./geometry";
+import {
+  boundingRect,
+  type Bounds,
+  clampPointToBounds,
+  clampRectPositionToBounds,
+  colorsForBedCategory,
+  rectanglesOverlap,
+  snapToGrid,
+} from "./geometry";
 import { PolygonEditor } from "./PolygonEditor";
 import { DEFAULT_VIEWPORT, screenToWorld, worldToScreen, type Viewport } from "./viewport";
 
@@ -29,14 +37,35 @@ interface BedNodeProps {
    * to contain within). See `clampPointToBounds`/`clampRectPositionToBounds`
    * for the bounding-box-approximation tradeoff this makes. */
   bounds?: Bounds;
+  /** Every *other* bed's bounding box (world/cm space) - when set, drag/
+   * resize/vertex-drag on this bed is blocked from ending up overlapping
+   * any of them (hard constraint, not a soft snap). Rectangle drag blocks
+   * live (freezes at the last non-overlapping position); resize and the
+   * polygon path reject the whole gesture and revert on overlap, since a
+   * live partial-resize/partial-reshape push-out is out of scope here. */
+  otherBedRects?: Bounds[];
 }
 
 /** Rectangle path: drag/resize/rotate via Konva's Transformer. Polygon
  * path: delegates to PolygonEditor (shared with the Garden boundary) for
  * vertex-drag editing. */
-export function BedNode({ bed, isSelected, onSelect, onChange, interactive = true, viewport = DEFAULT_VIEWPORT, bounds }: BedNodeProps) {
+export function BedNode({
+  bed,
+  isSelected,
+  onSelect,
+  onChange,
+  interactive = true,
+  viewport = DEFAULT_VIEWPORT,
+  bounds,
+  otherBedRects,
+}: BedNodeProps) {
   const shapeRef = useRef<Konva.Rect>(null);
   const trRef = useRef<Konva.Transformer>(null);
+  const lastValidPosRef = useRef<{ x: number; y: number } | null>(null);
+  // Bumped to force PolygonEditor to remount (discarding whatever position a
+  // rejected drag left its Konva nodes in) when a polygon-bed edit is
+  // rejected for overlapping another bed - see handlePolygonChange below.
+  const [polygonResetKey, setPolygonResetKey] = useState(0);
   const geometry = bed.border_geometry;
 
   useEffect(() => {
@@ -51,15 +80,18 @@ export function BedNode({ bed, isSelected, onSelect, onChange, interactive = tru
   if (geometry.type !== "rectangle") {
     const rect = boundingRect(geometry);
     function handlePolygonChange(next: PolygonGeometry) {
-      if (!bounds) {
-        onChange(next);
+      const clamped = bounds ? { ...next, points: next.points.map((p) => clampPointToBounds(p, bounds)) } : next;
+      const clampedRect = boundingRect(clamped);
+      if (otherBedRects?.some((r) => rectanglesOverlap(clampedRect, r))) {
+        setPolygonResetKey((k) => k + 1);
         return;
       }
-      onChange({ ...next, points: next.points.map((p) => clampPointToBounds(p, bounds)) });
+      onChange(clamped);
     }
     return (
       <>
         <PolygonEditor
+          key={polygonResetKey}
           geometry={geometry}
           isSelected={isSelected}
           onSelect={onSelect}
@@ -88,12 +120,25 @@ export function BedNode({ bed, isSelected, onSelect, onChange, interactive = tru
           strokeWidth={isSelected ? 2.5 : 1.5}
           draggable={interactive}
           listening={interactive}
+          onDragStart={() => {
+            lastValidPosRef.current = { x: geometry.x, y: geometry.y };
+          }}
           dragBoundFunc={(pos) => {
             const world = screenToWorld(pos, viewport);
             let snapped = { x: snapToGrid(world.x), y: snapToGrid(world.y) };
             if (bounds) {
               snapped = clampRectPositionToBounds(snapped.x, snapped.y, geometry.width, geometry.height, bounds);
             }
+            const candidateRect = { x: snapped.x, y: snapped.y, width: geometry.width, height: geometry.height };
+            const overlaps = otherBedRects?.some((r) => rectanglesOverlap(candidateRect, r)) ?? false;
+            if (overlaps) {
+              // Freeze at the last non-overlapping position instead of
+              // following the pointer further into another bed - a hard
+              // constraint, not a soft snap. Falls back to the bed's own
+              // current position if a gesture somehow starts overlapping.
+              return worldToScreen(lastValidPosRef.current ?? { x: geometry.x, y: geometry.y }, viewport);
+            }
+            lastValidPosRef.current = snapped;
             return worldToScreen(snapped, viewport);
           }}
           onClick={onSelect}
@@ -116,6 +161,15 @@ export function BedNode({ bed, isSelected, onSelect, onChange, interactive = tru
               width = Math.min(width, Math.max(MIN_SIZE_CM, bounds.width));
               height = Math.min(height, Math.max(MIN_SIZE_CM, bounds.height));
               ({ x, y } = clampRectPositionToBounds(x, y, width, height, bounds));
+            }
+            const candidateRect = { x, y, width, height };
+            if (otherBedRects?.some((r) => rectanglesOverlap(candidateRect, r))) {
+              // Reject the resize entirely and snap the visible shape back
+              // to its last known-good geometry - a live partial-resize
+              // push-out isn't worth the complexity for a hard constraint.
+              node.setAttrs({ x: geometry.x, y: geometry.y, width: geometry.width, height: geometry.height, rotation: geometry.rotation });
+              node.getLayer()?.batchDraw();
+              return;
             }
             onChange({ type: "rectangle", x, y, width, height, rotation: node.rotation() });
           }}

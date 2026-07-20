@@ -195,6 +195,13 @@ export function Layout() {
   const plantings = plantingsQuery.data ?? [];
   const equipmentList = equipmentQuery.data ?? [];
   const selectedBed = beds.find((b) => b.id === selectedId) ?? null;
+  // Every bed's bounding box, in world/cm space, keyed by id - so each
+  // BedNode can be given every *other* bed's box for the "beds must not
+  // intersect" hard constraint. Not memoized - the bed count here is a
+  // small, fixed physical garden's worth, cheap to recompute per render.
+  const bedRectsById = new Map(
+    beds.filter((b) => b.id != null).map((b) => [b.id as number, boundingRect(b.border_geometry)]),
+  );
 
   function switchTab(next: PlacementTab) {
     setTab(next);
@@ -439,6 +446,7 @@ export function Layout() {
                     interactive={tab === "planters"}
                     viewport={viewport}
                     bounds={gardenBounds}
+                    otherBedRects={[...bedRectsById.entries()].filter(([id]) => id !== bed.id).map(([, rect]) => rect)}
                   />
                 ))}
               </Layer>
