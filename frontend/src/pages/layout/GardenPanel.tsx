@@ -64,7 +64,7 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
           shape afterward. Also creates a ground-level bed you can plant directly into.
         </p>
         <div className="flex flex-col gap-3">
-          <label className="flex flex-col gap-1">
+          <label className="flex flex-col gap-1" title="Your garden's display name.">
             <span className="text-xs font-medium text-muted-foreground">Name</span>
             <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} autoFocus />
           </label>
@@ -105,7 +105,7 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
       </div>
 
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" title="Your garden's display name.">
           <span className="text-xs font-medium text-muted-foreground">Name</span>
           <input
             className={inputClass}
@@ -115,7 +115,10 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label
+          className="flex flex-col gap-1"
+          title="Free-text climate zone, e.g. a Köppen or USDA hardiness zone code, if you track one."
+        >
           <span className="text-xs font-medium text-muted-foreground">Climate zone</span>
           <input
             className={inputClass}
@@ -125,7 +128,7 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" title="Free-text location, e.g. a city or address.">
           <span className="text-xs font-medium text-muted-foreground">Location</span>
           <input
             className={inputClass}
@@ -135,7 +138,7 @@ export function GardenPanel({ garden, onClose }: GardenPanelProps) {
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" title="Any other notes about the garden.">
           <span className="text-xs font-medium text-muted-foreground">Notes</span>
           <textarea
             className={inputClass}

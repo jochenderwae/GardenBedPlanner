@@ -89,7 +89,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
       </div>
 
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" title="The bed's display name, e.g. 'North planter'.">
           <span className="text-xs font-medium text-muted-foreground">Name</span>
           <input
             className={inputClass}
@@ -99,7 +99,10 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label
+          className="flex flex-col gap-1"
+          title="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list."
+        >
           <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
           <input
             className={inputClass}
@@ -117,7 +120,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
 
         {draft.border_geometry.type === "rectangle" ? (
           <div className="grid grid-cols-3 gap-2">
-            <label className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1" title="Bed width in centimeters.">
               <span className="text-xs font-medium text-muted-foreground">Width (cm)</span>
               <input
                 type="number"
@@ -131,7 +134,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
                 }}
               />
             </label>
-            <label className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1" title="Bed length in centimeters.">
               <span className="text-xs font-medium text-muted-foreground">Length (cm)</span>
               <input
                 type="number"
@@ -145,7 +148,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
                 }}
               />
             </label>
-            <label className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1" title="Rotation angle in degrees, clockwise from unrotated.">
               <span className="text-xs font-medium text-muted-foreground">Rotation (°)</span>
               <input
                 type="number"
@@ -167,7 +170,10 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
           <p className="text-xs text-muted-foreground">Polygon shape - edit vertices directly on the canvas.</p>
         )}
 
-        <label className="flex flex-col gap-1">
+        <label
+          className="flex flex-col gap-1"
+          title="Height above ground, in centimeters - 0 for a flat/ground-level bed. Drives the derived Raised/Not raised indicator below."
+        >
           <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
           <input
             type="number"
@@ -179,7 +185,10 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
         </label>
 
         <div className="grid grid-cols-2 gap-2">
-          <label className="flex flex-col gap-1">
+          <label
+            className="flex flex-col gap-1"
+            title="Free-text compass note for which way the bed faces, e.g. N, SE."
+          >
             <span className="text-xs font-medium text-muted-foreground">Orientation</span>
             <input
               className={inputClass}
@@ -189,7 +198,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
               onBlur={() => draft.orientation !== bed.orientation && commit({ orientation: draft.orientation })}
             />
           </label>
-          <label className="flex flex-col gap-1">
+          <label className="flex flex-col gap-1" title="How much direct sun this bed gets.">
             <span className="text-xs font-medium text-muted-foreground">Sun level</span>
             <select
               className={inputClass}
@@ -204,7 +213,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
           </label>
         </div>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" title="Free-text soil description, e.g. loam, sandy, compost-amended.">
           <span className="text-xs font-medium text-muted-foreground">Soil type</span>
           <input
             className={inputClass}
@@ -215,7 +224,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
         </label>
 
         <div className="flex items-center gap-4">
-          <label className="flex items-center gap-2">
+          <label className="flex items-center gap-2" title="Whether this bed is inside/covered by a greenhouse.">
             <input
               type="checkbox"
               checked={draft.has_greenhouse}
@@ -231,7 +240,7 @@ export function BedPanel({ bed, onClose, onDeleted }: BedPanelProps) {
           </span>
         </div>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" title="Any other notes about this bed.">
           <span className="text-xs font-medium text-muted-foreground">Notes</span>
           <textarea
             className={inputClass}

@@ -75,12 +75,15 @@ export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps
             </Button>
           </div>
 
-          <label className="flex flex-col gap-1">
+          <label className="flex flex-col gap-1" title="The bed's display name, e.g. 'North planter'.">
             <span className="text-xs font-medium text-muted-foreground">Name</span>
             <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} autoFocus />
           </label>
 
-          <label className="flex flex-col gap-1">
+          <label
+            className="flex flex-col gap-1"
+            title="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list."
+          >
             <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
             <input
               className={inputClass}
@@ -90,7 +93,10 @@ export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps
             />
           </label>
 
-          <label className="flex flex-col gap-1">
+          <label
+            className="flex flex-col gap-1"
+            title="Rectangle is the default and works for most beds; switch to Polygon for an irregular shape."
+          >
             <span className="text-xs font-medium text-muted-foreground">Shape</span>
             <ShapeTypeToggle geometry={geometry} onChange={setGeometry} />
           </label>

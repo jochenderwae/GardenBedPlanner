@@ -134,7 +134,7 @@ export function EquipmentPanel({ beds, equipment, onClose }: EquipmentPanelProps
 
       <form className="mb-4 flex flex-col gap-2 border-b pb-4" onSubmit={submit}>
         <p className="text-xs text-muted-foreground">Add to inventory - place it on a bed afterward.</p>
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" title="Free-text equipment type, e.g. trellis, drip line, stake.">
           <span className="text-xs font-medium text-muted-foreground">Type</span>
           <input
             className={inputClass}
@@ -144,7 +144,7 @@ export function EquipmentPanel({ beds, equipment, onClose }: EquipmentPanelProps
           />
         </label>
         <div className="grid grid-cols-2 gap-2">
-          <label className="flex flex-col gap-1">
+          <label className="flex flex-col gap-1" title="How tall this equipment stands, in centimeters.">
             <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
             <input
               type="number"
@@ -153,7 +153,10 @@ export function EquipmentPanel({ beds, equipment, onClose }: EquipmentPanelProps
               onChange={(e) => setHeightCm(e.target.value)}
             />
           </label>
-          <label className="flex flex-col gap-1">
+          <label
+            className="flex flex-col gap-1"
+            title="Water delivery rate in liters per hour, for irrigation equipment."
+          >
             <span className="text-xs font-medium text-muted-foreground">Water (L/h)</span>
             <input
               type="number"
