@@ -598,10 +598,138 @@ export interface paths {
         patch: operations["update_garden_plan_entry_api_garden_plans__plan_id__entries__entry_id__patch"];
         trace?: never;
     };
+    "/api/actions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Actions */
+        get: operations["list_actions_api_actions_get"];
+        put?: never;
+        /** Create Action */
+        post: operations["create_action_api_actions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/actions/{action_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Action */
+        get: operations["get_action_api_actions__action_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Action */
+        delete: operations["delete_action_api_actions__action_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Action */
+        patch: operations["update_action_api_actions__action_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * Action
+         * @description A generic garden work item - fertilize, compost, sow, plant, harvest,
+         *     etc. - so work can be tracked/reminded about regardless of which area it
+         *     belongs to. Foundational for the reminder/agenda scheduled job (#48,
+         *     checks due_date) and the future calendar view (#29).
+         *
+         *     Four nullable FKs (garden_plan_entry/bed/plant/equipment) rather than a
+         *     polymorphic target_type/target_id pair - matches docs/schema.md's own
+         *     "Modeling decisions worth revisiting" note on this table: simplest for
+         *     SQLModel/Alembic, at the cost of getting sparse; a generic pair is the
+         *     documented alternative if nullable-FK sprawl becomes a real problem.
+         *     None of them are mutually exclusive or required - a general compost turn
+         *     with no bed/plant/equipment reference at all is a legitimate action.
+         */
+        Action: {
+            /** Id */
+            id?: number | null;
+            action_type: components["schemas"]["ActionType"];
+            /** Due Date */
+            due_date?: string | null;
+            /** Completed Date */
+            completed_date?: string | null;
+            /** @default pending */
+            status: components["schemas"]["ActionStatus"];
+            /** Garden Plan Entry Id */
+            garden_plan_entry_id?: number | null;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Plant Slug */
+            plant_slug?: string | null;
+            /** Equipment Id */
+            equipment_id?: number | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** ActionCreate */
+        ActionCreate: {
+            action_type: components["schemas"]["ActionType"];
+            /** Due Date */
+            due_date?: string | null;
+            /** Completed Date */
+            completed_date?: string | null;
+            /** @default pending */
+            status: components["schemas"]["ActionStatus"];
+            /** Garden Plan Entry Id */
+            garden_plan_entry_id?: number | null;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Plant Slug */
+            plant_slug?: string | null;
+            /** Equipment Id */
+            equipment_id?: number | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /**
+         * ActionStatus
+         * @enum {string}
+         */
+        ActionStatus: "pending" | "completed" | "skipped";
+        /**
+         * ActionType
+         * @enum {string}
+         */
+        ActionType: "fertilize" | "compost" | "prepare_bed" | "sow" | "plant" | "install_equipment" | "remove_equipment" | "harvest" | "clear" | "collect_seeds";
+        /** ActionUpdate */
+        ActionUpdate: {
+            action_type?: components["schemas"]["ActionType"] | null;
+            /** Due Date */
+            due_date?: string | null;
+            /** Completed Date */
+            completed_date?: string | null;
+            status?: components["schemas"]["ActionStatus"] | null;
+            /** Garden Plan Entry Id */
+            garden_plan_entry_id?: number | null;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Plant Slug */
+            plant_slug?: string | null;
+            /** Equipment Id */
+            equipment_id?: number | null;
+            /** Notes */
+            notes?: string | null;
+        };
         /** Bed */
         Bed: {
             /** Id */
@@ -3382,6 +3510,170 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GardenPlanEntry"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_actions_api_actions_get: {
+        parameters: {
+            query?: {
+                /** @description Only actions due on/after this date */
+                due_from?: string | null;
+                /** @description Only actions due on/before this date */
+                due_to?: string | null;
+                status?: components["schemas"]["ActionStatus"] | null;
+                action_type?: components["schemas"]["ActionType"] | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Action"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_action_api_actions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Action"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_action_api_actions__action_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                action_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Action"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_action_api_actions__action_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                action_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_action_api_actions__action_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                action_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ActionUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Action"];
                 };
             };
             /** @description Validation Error */

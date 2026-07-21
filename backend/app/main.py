@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import (
+    actions,
     bed_equipment,
     beds,
     example_garden,
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(bed_equipment.router, prefix="/api")
     app.include_router(rotation.router, prefix="/api")
     app.include_router(garden_plans.router, prefix="/api")
+    app.include_router(actions.router, prefix="/api")
 
     return app
 
