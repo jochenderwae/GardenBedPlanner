@@ -17,6 +17,7 @@ from app.api.routes import (
     plants,
     push_subscriptions,
     rotation,
+    seed_inventory_items,
 )
 from app.core.config import settings
 from app.core.scheduler import scheduler
@@ -53,6 +54,7 @@ def create_app() -> FastAPI:
     app.include_router(actions.router, prefix="/api")
     app.include_router(harvest_logs.router, prefix="/api")
     app.include_router(push_subscriptions.router, prefix="/api")
+    app.include_router(seed_inventory_items.router, prefix="/api")
 
     return app
 

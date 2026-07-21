@@ -750,6 +750,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/seed-inventory-items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Seed Inventory Items */
+        get: operations["list_seed_inventory_items_api_seed_inventory_items_get"];
+        put?: never;
+        /** Create Seed Inventory Item */
+        post: operations["create_seed_inventory_item_api_seed_inventory_items_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/seed-inventory-items/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Seed Inventory Item */
+        get: operations["get_seed_inventory_item_api_seed_inventory_items__item_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Seed Inventory Item */
+        delete: operations["delete_seed_inventory_item_api_seed_inventory_items__item_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Seed Inventory Item */
+        patch: operations["update_seed_inventory_item_api_seed_inventory_items__item_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1874,6 +1911,61 @@ export interface components {
             produces_viable_seeds?: boolean | null;
             /** Is F1 Hybrid */
             is_f1_hybrid?: boolean | null;
+        };
+        /**
+         * SeedInventoryItem
+         * @description Seed stock on hand for a plant - matches docs/schema.md's
+         *     SEED_INVENTORY_ITEM sketch. quantity_seeds/weight_grams are both
+         *     nullable (rather than one required column) since seed packets are sold
+         *     both by count and by weight - a given item records whichever the
+         *     packet/purchase actually specifies, not both. Foundational for the
+         *     seed buying guide/agenda view (#41).
+         */
+        SeedInventoryItem: {
+            /** Id */
+            id?: number | null;
+            /** Plant Slug */
+            plant_slug: string;
+            /** Quantity Seeds */
+            quantity_seeds?: number | null;
+            /** Weight Grams */
+            weight_grams?: number | null;
+            /** Acquired Date */
+            acquired_date?: string | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** SeedInventoryItemCreate */
+        SeedInventoryItemCreate: {
+            /** Plant Slug */
+            plant_slug: string;
+            /** Quantity Seeds */
+            quantity_seeds?: number | null;
+            /** Weight Grams */
+            weight_grams?: number | null;
+            /** Acquired Date */
+            acquired_date?: string | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** SeedInventoryItemUpdate */
+        SeedInventoryItemUpdate: {
+            /** Plant Slug */
+            plant_slug?: string | null;
+            /** Quantity Seeds */
+            quantity_seeds?: number | null;
+            /** Weight Grams */
+            weight_grams?: number | null;
+            /** Acquired Date */
+            acquired_date?: string | null;
+            /** Notes */
+            notes?: string | null;
         };
         /** SeedResultResponse */
         SeedResultResponse: {
@@ -4233,6 +4325,166 @@ export interface operations {
                     "application/json": {
                         [key: string]: unknown;
                     };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_seed_inventory_items_api_seed_inventory_items_get: {
+        parameters: {
+            query?: {
+                /** @description Only items for this plant */
+                plant_slug?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeedInventoryItem"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_seed_inventory_item_api_seed_inventory_items_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeedInventoryItemCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeedInventoryItem"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_seed_inventory_item_api_seed_inventory_items__item_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeedInventoryItem"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_seed_inventory_item_api_seed_inventory_items__item_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_seed_inventory_item_api_seed_inventory_items__item_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                item_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SeedInventoryItemUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeedInventoryItem"];
                 };
             };
             /** @description Validation Error */
