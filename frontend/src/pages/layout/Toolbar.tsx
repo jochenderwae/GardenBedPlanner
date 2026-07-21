@@ -1,7 +1,6 @@
 import type { RefObject } from "react";
-import { Link } from "react-router-dom";
 import { Maximize, Plus, Redo2, Undo2 } from "lucide-react";
-import { buttonVariants, Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { Plant } from "@/api/client";
 import type { PlacementMode } from "./PlantPlacementLayer";
@@ -94,10 +93,6 @@ export function Toolbar({
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-4">
-          <Link to="/" className={buttonVariants({ variant: "outline" })}>
-            Back
-          </Link>
-          <h1 className="text-xl font-medium">Bed layout</h1>
           <div className="flex rounded-md border p-0.5">
             <button
               type="button"

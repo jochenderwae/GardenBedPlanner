@@ -793,7 +793,7 @@ export function Layout() {
   }, [mode, tab, armedPlant, selectedId, selectedPlantingId, selectedPlantingIds, historyUndo, historyRedo]);
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-4 overflow-hidden p-6">
+    <div className="flex h-full min-h-0 flex-col gap-2 overflow-hidden p-3">
       <Toolbar
         mode={mode}
         onModeChange={handleModeChange}
