@@ -2,6 +2,13 @@ import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogFooter,
+  AlertDialogPopup,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useSnackbar } from "@/components/Snackbar";
 import { PlantSearchList } from "@/components/PlantSearchList";
 import {
@@ -10,7 +17,6 @@ import {
   dataSourceApi,
   deleteCompanion,
   deleteSeedInfo,
-  growingInfoApi,
   listPeriodTypes,
   periodApi,
   pestInteractionApi,
@@ -543,36 +549,93 @@ export function CompanionsSection({
   );
 }
 
-/** View + delete only, deliberately - the backend's growing_information
- * route only supports list/create/delete (no patch), and hand-authoring a
- * new long-form book excerpt isn't a realistic editing workflow anyway. */
-export function GrowingInfoSection({ slug, items }: { slug: string; items: PlantGrowingInformation[] }) {
-  const { remove } = useSatelliteMutations<PlantGrowingInformation>(slug, "growing_information", growingInfoApi);
+/** View only, deliberately - the backend's growing_information route only
+ * supports list/create/delete (no patch), and hand-authoring or deleting a
+ * synthesized/sourced long-form book excerpt isn't a realistic user action
+ * here (see the "Growing information display" backlog item). The
+ * `consolidated` entry (the AI-generated summary of every `raw` source for
+ * this plant) is the primary/only thing shown by default; the `raw`
+ * sources themselves live behind a "sources" link that opens a popup,
+ * rather than being stacked in the main view. */
+export function GrowingInfoSection({ slug: _slug, items }: { slug: string; items: PlantGrowingInformation[] }) {
+  const [sourcesOpen, setSourcesOpen] = useState(false);
 
   if (items.length === 0) return null;
+
+  const consolidated = items.find((i) => i.record_type === "consolidated");
+  const sources = items.filter((i) => i.record_type !== "consolidated");
 
   return (
     <section className={sectionClass}>
       <h2 className="text-sm font-semibold">Growing information</h2>
-      {items.map((item) => (
-        <div key={item.id} className="flex flex-col gap-1 rounded-md border p-2 text-sm">
-          <div className="flex items-start justify-between gap-2">
-            <span className="text-xs text-muted-foreground">
-              {item.attribution} · {item.record_type}
-              {item.generic_for_species ? " · generic for species" : ""}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label="Remove growing information"
-              onClick={() => remove(item, item.attribution || "growing information")}
-            >
-              <Trash2 />
-            </Button>
-          </div>
-          <p className="text-left whitespace-pre-wrap">{item.text}</p>
+
+      {consolidated ? (
+        <div className="flex flex-col gap-1 rounded-md border p-2 text-sm">
+          <p className="text-left whitespace-pre-wrap">{consolidated.text}</p>
+          <p className="text-xs text-muted-foreground">
+            This text is an AI summary.
+            {sources.length > 0 && (
+              <>
+                {" "}
+                View{" "}
+                <button type="button" className="underline" onClick={() => setSourcesOpen(true)}>
+                  sources
+                </button>
+                .
+              </>
+            )}
+          </p>
         </div>
-      ))}
+      ) : (
+        // No consolidated summary yet (the AI consolidation pass hasn't run
+        // for this plant) - fall back to showing the source text(s)
+        // directly, same as before this rework, just without a delete
+        // button and with each one's own attribution linking to its
+        // original text instead of a plain label.
+        sources.map((item) => (
+          <div key={item.id} className="flex flex-col gap-1 rounded-md border p-2 text-sm">
+            <p className="text-left whitespace-pre-wrap">{item.text}</p>
+            {item.attribution && (
+              <p className="text-xs text-muted-foreground">
+                {item.source_url ? (
+                  <a href={item.source_url} target="_blank" rel="noreferrer" className="underline">
+                    {item.attribution}
+                  </a>
+                ) : (
+                  item.attribution
+                )}
+              </p>
+            )}
+          </div>
+        ))
+      )}
+
+      {consolidated && sources.length > 0 && (
+        <AlertDialog open={sourcesOpen} onOpenChange={setSourcesOpen}>
+          <AlertDialogPopup className="max-w-lg">
+            <AlertDialogTitle>Sources</AlertDialogTitle>
+            <div className="mt-2 flex max-h-96 flex-col gap-3 overflow-y-auto text-left text-sm">
+              {sources.map((item) => (
+                <div key={item.id} className="border-t pt-2 first:border-t-0 first:pt-0">
+                  <p className="whitespace-pre-wrap">{item.text}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {item.source_url ? (
+                      <a href={item.source_url} target="_blank" rel="noreferrer" className="underline">
+                        {item.attribution || "Original text"}
+                      </a>
+                    ) : (
+                      item.attribution
+                    )}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Close</AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogPopup>
+        </AlertDialog>
+      )}
     </section>
   );
 }
