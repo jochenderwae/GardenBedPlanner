@@ -5,6 +5,7 @@ import { Home } from "@/pages/Home";
 import { Layout } from "@/pages/Layout";
 import { PlantsDatabase } from "@/pages/PlantsDatabase";
 import { PlantDetail } from "@/pages/PlantDetail";
+import { Agenda } from "@/pages/Agenda";
 import { MobileShell } from "@/pages/mobile/MobileShell";
 import { MobileHome } from "@/pages/mobile/MobileHome";
 import { MobileAgenda } from "@/pages/mobile/MobileAgenda";
@@ -44,6 +45,7 @@ export function RootShell() {
       <Route element={<AppShell />}>
         <Route path="/" element={<Home />} />
         <Route path="/layout" element={<Layout />} />
+        <Route path="/agenda" element={<Agenda />} />
         <Route path="/plants" element={<PlantsDatabase />} />
         <Route path="/plants/:slug" element={<PlantDetail />} />
       </Route>

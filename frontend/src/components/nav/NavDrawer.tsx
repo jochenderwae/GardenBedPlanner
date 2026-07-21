@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Dialog } from "@base-ui/react/dialog";
-import { Menu, Sprout, LayoutGrid, LayoutTemplate } from "lucide-react";
+import { Menu, Sprout, LayoutGrid, LayoutTemplate, CalendarDays } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ const NAV_ITEMS = [
   { to: "/", label: "Home", icon: LayoutGrid },
   { to: "/layout", label: "Bed Planner", icon: LayoutTemplate },
   { to: "/plants", label: "Plants Database", icon: Sprout },
+  { to: "/agenda", label: "Agenda", icon: CalendarDays },
 ];
 
 export function NavDrawer() {
