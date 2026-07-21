@@ -31,6 +31,7 @@ import httpx
 
 from etl.config import settings
 from etl.growing_info.fetch import Book
+from etl.growing_info.text_normalize import reflow_paragraphs
 
 _HEADING_TAGS = ("h1", "h2", "h3", "h4")
 
@@ -75,7 +76,13 @@ def extract_candidate_sections(book: Book) -> list[Section]:
                 break
             if sib.name == "p":
                 paragraphs.append(sib.get_text(" ", strip=True))
-        text = "\n\n".join(p for p in paragraphs if p)
+        # reflow_paragraphs, not a bare "\n\n".join(...): some source books
+        # tag one <p> per printed line rather than per real paragraph, and/or
+        # preserve the original page's hard line-wraps as literal \r\n
+        # inside one <p>'s text node - both would otherwise land as
+        # mid-sentence newlines in the exported text (issue #119). See
+        # text_normalize.py's module docstring for the full reasoning.
+        text = reflow_paragraphs(paragraphs)
 
         if len(text) < _MIN_SECTION_CHARS:
             continue
