@@ -20,7 +20,10 @@ const SUN_LEVEL_OPTIONS: SelectOption[] = [
   { value: "shadow", label: "Shadow" },
 ];
 
-const LIFE_CYCLE_OPTIONS: SelectOption[] = [
+/** Exported for `LifeCycleFields`, which renders `life_cycle` alongside
+ * `life_cycle_years` (see that component's own doc for why those two don't
+ * go through the generic SCALAR_FIELDS loop below like every other field). */
+export const LIFE_CYCLE_OPTIONS: SelectOption[] = [
   { value: "annual", label: "Annual" },
   { value: "biennial", label: "Biennial" },
   { value: "perennial", label: "Perennial" },
@@ -28,8 +31,11 @@ const LIFE_CYCLE_OPTIONS: SelectOption[] = [
 
 /** Drives the generic field renderer on the plant detail page - one entry
  * per Plant/PlantUpdate scalar field (everything except slug, which is
- * identity, not an editable attribute, and edible_parts, handled as its
- * own "tags" field type since it's the one array-valued scalar). */
+ * identity, not an editable attribute; edible_parts, handled as its own
+ * "tags" field type since it's the one array-valued scalar; and
+ * life_cycle/life_cycle_years, whose values are correlated and so are
+ * rendered together by the dedicated `LifeCycleFields` component instead of
+ * independently through this generic loop - see that component's doc). */
 export const SCALAR_FIELDS: FieldConfig[] = [
   { key: "common_name", label: "Common name", type: "text" },
   { key: "botanical_name", label: "Botanical name", type: "text" },
@@ -59,8 +65,6 @@ export const SCALAR_FIELDS: FieldConfig[] = [
   { key: "succession_enabled", label: "Succession enabled", type: "tristate" },
   { key: "succession_interval_days", label: "Succession interval (days)", type: "number" },
   { key: "succession_max_sowings", label: "Succession max sowings", type: "number" },
-  { key: "life_cycle", label: "Life cycle", type: "select", options: LIFE_CYCLE_OPTIONS },
-  { key: "life_cycle_years", label: "Life cycle years (productive lifespan)", type: "number" },
 ];
 
 export type FieldValue = string | number | boolean | string[] | null;

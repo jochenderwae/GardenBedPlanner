@@ -5,6 +5,7 @@ import { useSnackbar } from "@/components/Snackbar";
 import { getPlant, listPlants, updatePlant, type PlantDetail as PlantDetailData, type PlantUpdate } from "@/api/client";
 import { SCALAR_FIELDS, fieldValue, type FieldValue } from "@/pages/plant-detail/fields";
 import { FieldInput } from "@/pages/plant-detail/FieldInput";
+import { LifeCycleFields } from "@/pages/plant-detail/LifeCycleFields";
 import {
   BeddingNeedsSection,
   CompanionsSection,
@@ -20,27 +21,46 @@ function usePlantAutosave(slug: string) {
   const { show } = useSnackbar();
   const mutation = useMutation({ mutationFn: (patch: PlantUpdate) => updatePlant(slug, patch) });
 
-  function setField(key: keyof PlantUpdate, value: FieldValue) {
-    queryClient.setQueryData<PlantDetailData>(["plant", slug], (old) => (old ? { ...old, [key]: value } : old));
+  // Loosely typed (FieldValue, not PlantUpdate's own per-field types) to
+  // match how `fieldValue`/FieldInput already treat every field generically
+  // - family/genus in particular differ in shape between PlantDetail (a
+  // {id, name} relation) and PlantUpdate (the plain name string that
+  // resolves it), which a strict Partial<PlantDetailData> merge would
+  // reject for a patch object typed per-PlantUpdate-field.
+  function setFields(patch: Partial<Record<keyof PlantUpdate, FieldValue>>) {
+    queryClient.setQueryData<PlantDetailData>(["plant", slug], (old) =>
+      old ? ({ ...old, ...patch } as PlantDetailData) : old,
+    );
   }
 
-  return function saveField(key: keyof PlantUpdate, label: string, newValue: FieldValue, previousValue: FieldValue) {
-    setField(key, newValue);
-    mutation.mutate(
-      { [key]: newValue } as PlantUpdate,
-      {
-        onSuccess: () =>
-          show(`Saved ${label}`, () => {
-            setField(key, previousValue);
-            mutation.mutate({ [key]: previousValue } as PlantUpdate);
-          }),
-        onError: () => {
-          setField(key, previousValue);
-          show(`Failed to save ${label}`);
-        },
+  /** Commits an arbitrary multi-field patch as a single mutation/Undo entry
+   * - used directly by `LifeCycleFields` (life_cycle + life_cycle_years
+   * always change together), and by `saveField` below for the common
+   * single-field case. */
+  function savePatch(
+    patch: Partial<Record<keyof PlantUpdate, FieldValue>>,
+    previous: Partial<Record<keyof PlantUpdate, FieldValue>>,
+    label: string,
+  ) {
+    setFields(patch);
+    mutation.mutate(patch as PlantUpdate, {
+      onSuccess: () =>
+        show(`Saved ${label}`, () => {
+          setFields(previous);
+          mutation.mutate(previous as PlantUpdate);
+        }),
+      onError: () => {
+        setFields(previous);
+        show(`Failed to save ${label}`);
       },
-    );
-  };
+    });
+  }
+
+  function saveField(key: keyof PlantUpdate, label: string, newValue: FieldValue, previousValue: FieldValue) {
+    savePatch({ [key]: newValue }, { [key]: previousValue }, label);
+  }
+
+  return { saveField, savePatch };
 }
 
 export function PlantDetail() {
@@ -53,7 +73,7 @@ export function PlantDetail() {
   // Candidate list for the Companions section's plant pickers - same
   // pattern (and same limit) as the layout editor's own plant query.
   const plantsQuery = useQuery({ queryKey: ["plants"], queryFn: () => listPlants(500) });
-  const saveField = usePlantAutosave(slug);
+  const { saveField, savePatch } = usePlantAutosave(slug);
 
   return (
     <div className="mx-auto max-w-3xl p-6 text-left">
@@ -83,6 +103,7 @@ export function PlantDetail() {
                 onCommit={(newValue, previousValue) => saveField(field.key, field.label, newValue, previousValue)}
               />
             ))}
+            <LifeCycleFields lifeCycle={data.life_cycle} lifeCycleYears={data.life_cycle_years} onSave={savePatch} />
           </section>
 
           <DataSourcesSection slug={slug} items={data.data_sources} />
