@@ -7,8 +7,12 @@ from sqlmodel import SQLModel
 from alembic import context
 
 from app.core.config import settings
-from app.models import bed  # noqa: F401  (registers models on SQLModel.metadata)
-from app.models import plant  # noqa: F401  (registers models on SQLModel.metadata)
+
+# Importing app.models imports every model submodule (see
+# app/models/__init__.py), registering all SQLModel table classes on
+# SQLModel.metadata - required for --autogenerate to see the full schema
+# instead of just whichever modules happened to be imported (issue #130).
+import app.models  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
