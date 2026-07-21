@@ -525,6 +525,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/beds/{bed_id}/placement-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Placement Check */
+        post: operations["placement_check_api_beds__bed_id__placement_check_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/garden-plans": {
         parameters: {
             query?: never;
@@ -997,6 +1014,22 @@ export interface components {
             /** Border Geometry */
             border_geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
+        /** CompanionMatch */
+        CompanionMatch: {
+            /** Neighbor Planting Id */
+            neighbor_planting_id: number;
+            /** Neighbor Plant Slug */
+            neighbor_plant_slug: string;
+            /** Neighbor Plant Common Name */
+            neighbor_plant_common_name: string;
+            relationship: components["schemas"]["CompanionRelationship"];
+            /** Mechanism */
+            mechanism?: string | null;
+            /** Notes */
+            notes?: string | null;
+            /** Distance Cm */
+            distance_cm: number;
+        };
         /**
          * CompanionRelationship
          * @enum {string}
@@ -1358,6 +1391,49 @@ export interface components {
          * @enum {string}
          */
         PestInteractionType: "attracts" | "repels" | "vulnerable_to";
+        /** PlacementCheck */
+        PlacementCheck: {
+            /**
+             * Companions
+             * @default []
+             */
+            companions: components["schemas"]["CompanionMatch"][];
+            /**
+             * Antagonists
+             * @default []
+             */
+            antagonists: components["schemas"]["CompanionMatch"][];
+            /**
+             * Shade Warnings
+             * @default []
+             */
+            shade_warnings: components["schemas"]["ShadeWarning"][];
+        };
+        /**
+         * PlacementCheckRequest
+         * @description POST, not GET-with-query-params, because `geometry` is a nested
+         *     discriminated-union object (rectangle|polygon) - the same reason
+         *     beds.py/plantings.py take a JSON body for create/update instead of
+         *     query params, even though this itself doesn't write anything.
+         */
+        PlacementCheckRequest: {
+            /** Plant Slug */
+            plant_slug: string;
+            /** Geometry */
+            geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+            /**
+             * As Of
+             * Format: date
+             */
+            as_of?: string;
+            /**
+             * Neighbor Distance Cm
+             * @default 150
+             */
+            neighbor_distance_cm: number;
+            /** Exclude Planting Id */
+            exclude_planting_id?: number | null;
+        };
         /**
          * PlacementType
          * @enum {string}
@@ -1975,6 +2051,23 @@ export interface components {
             beds_failed: number;
             /** Failures */
             failures: string[];
+        };
+        /** ShadeWarning */
+        ShadeWarning: {
+            /** Neighbor Planting Id */
+            neighbor_planting_id: number;
+            /** Neighbor Plant Slug */
+            neighbor_plant_slug: string;
+            /** Neighbor Plant Common Name */
+            neighbor_plant_common_name: string;
+            /** Neighbor Height Cm */
+            neighbor_height_cm: number;
+            /** Bearing Deg */
+            bearing_deg: number;
+            /** Distance Cm */
+            distance_cm: number;
+            /** Direction */
+            direction: string;
         };
         /**
          * SunLevel
@@ -3578,6 +3671,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RotationWarning"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    placement_check_api_beds__bed_id__placement_check_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                bed_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlacementCheckRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlacementCheck"];
                 };
             };
             /** @description Validation Error */
