@@ -21,11 +21,12 @@ from app.api.routes import (
     seed_inventory_items,
 )
 from app.core.config import settings
-from app.core.scheduler import scheduler
+from app.core.scheduler import register_jobs, scheduler
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    register_jobs()
     scheduler.start()
     yield
     scheduler.shutdown()
