@@ -525,6 +525,79 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/garden-plans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Garden Plans */
+        get: operations["list_garden_plans_api_garden_plans_get"];
+        put?: never;
+        /** Create Garden Plan */
+        post: operations["create_garden_plan_api_garden_plans_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/garden-plans/{plan_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Garden Plan */
+        get: operations["get_garden_plan_api_garden_plans__plan_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Garden Plan */
+        delete: operations["delete_garden_plan_api_garden_plans__plan_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Garden Plan */
+        patch: operations["update_garden_plan_api_garden_plans__plan_id__patch"];
+        trace?: never;
+    };
+    "/api/garden-plans/{plan_id}/entries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Garden Plan Entries */
+        get: operations["list_garden_plan_entries_api_garden_plans__plan_id__entries_get"];
+        put?: never;
+        /** Create Garden Plan Entry */
+        post: operations["create_garden_plan_entry_api_garden_plans__plan_id__entries_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/garden-plans/{plan_id}/entries/{entry_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Garden Plan Entry */
+        delete: operations["delete_garden_plan_entry_api_garden_plans__plan_id__entries__entry_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Garden Plan Entry */
+        patch: operations["update_garden_plan_entry_api_garden_plans__plan_id__entries__entry_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -737,6 +810,124 @@ export interface components {
             notes: string;
             /** Border Geometry */
             border_geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+        };
+        /**
+         * GardenPlan
+         * @description A season/year's plant wishlist - a plan header (see GardenPlanEntry
+         *     below for the line items). Distinct from Planting: a plan is intent
+         *     ("I want to grow N tomatoes this year"), not yet a placed plant with
+         *     real bed-local geometry - see docs/schema.md's GARDEN_PLAN sketch.
+         */
+        GardenPlan: {
+            /** Id */
+            id?: number | null;
+            /** Season Name */
+            season_name: string;
+            /** Year */
+            year: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** GardenPlanCreate */
+        GardenPlanCreate: {
+            /** Season Name */
+            season_name: string;
+            /** Year */
+            year: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /**
+         * GardenPlanDetail
+         * @description GET /garden-plans/{id} response: the plan plus its entries, mirroring
+         *     the PlantDetail (plants.py) pattern of a flat list response vs. a
+         *     detail response that assembles satellite rows.
+         */
+        GardenPlanDetail: {
+            /** Id */
+            id: number;
+            /** Season Name */
+            season_name: string;
+            /** Year */
+            year: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /**
+             * Entries
+             * @default []
+             */
+            entries: components["schemas"]["GardenPlanEntry"][];
+        };
+        /**
+         * GardenPlanEntry
+         * @description One line item on a GardenPlan: a desired plant + quantity, optionally
+         *     assigned to a specific bed. bed_id is nullable - an entry can exist
+         *     before its bed assignment is decided (docs/schema.md marks it "optional
+         *     - not yet assigned"). Promoting an entry to a real Planting (with
+         *     geometry, in the layout editor) is a natural follow-on interaction, not
+         *     something this table does itself.
+         */
+        GardenPlanEntry: {
+            /** Id */
+            id?: number | null;
+            /** Garden Plan Id */
+            garden_plan_id: number;
+            /** Plant Slug */
+            plant_slug: string;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Desired Quantity */
+            desired_quantity: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** GardenPlanEntryCreate */
+        GardenPlanEntryCreate: {
+            /** Plant Slug */
+            plant_slug: string;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Desired Quantity */
+            desired_quantity: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** GardenPlanEntryUpdate */
+        GardenPlanEntryUpdate: {
+            /** Garden Plan Id */
+            garden_plan_id?: number | null;
+            /** Plant Slug */
+            plant_slug?: string | null;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Desired Quantity */
+            desired_quantity?: number | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** GardenPlanUpdate */
+        GardenPlanUpdate: {
+            /** Season Name */
+            season_name?: string | null;
+            /** Year */
+            year?: number | null;
+            /** Notes */
+            notes?: string | null;
         };
         /** GardenPut */
         GardenPut: {
@@ -2909,6 +3100,288 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RotationWarning"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_garden_plans_api_garden_plans_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenPlan"][];
+                };
+            };
+        };
+    };
+    create_garden_plan_api_garden_plans_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenPlanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenPlan"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_garden_plan_api_garden_plans__plan_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenPlanDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_garden_plan_api_garden_plans__plan_id__delete: {
+        parameters: {
+            query?: {
+                cascade?: boolean;
+            };
+            header?: never;
+            path: {
+                plan_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_garden_plan_api_garden_plans__plan_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenPlanUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenPlan"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_garden_plan_entries_api_garden_plans__plan_id__entries_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenPlanEntry"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_garden_plan_entry_api_garden_plans__plan_id__entries_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenPlanEntryCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenPlanEntry"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_garden_plan_entry_api_garden_plans__plan_id__entries__entry_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: number;
+                entry_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_garden_plan_entry_api_garden_plans__plan_id__entries__entry_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                plan_id: number;
+                entry_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenPlanEntryUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GardenPlanEntry"];
                 };
             };
             /** @description Validation Error */

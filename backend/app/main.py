@@ -8,6 +8,7 @@ from app.api.routes import (
     beds,
     example_garden,
     garden,
+    garden_plans,
     health,
     period_types,
     plantings,
@@ -45,6 +46,7 @@ def create_app() -> FastAPI:
     app.include_router(plantings.router, prefix="/api")
     app.include_router(bed_equipment.router, prefix="/api")
     app.include_router(rotation.router, prefix="/api")
+    app.include_router(garden_plans.router, prefix="/api")
 
     return app
 
