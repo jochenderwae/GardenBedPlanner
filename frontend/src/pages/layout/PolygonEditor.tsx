@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import type Konva from "konva";
 import { Circle, Group, Line, Text } from "react-konva";
 import type { PolygonGeometry } from "@/api/client";
-import { distanceBetweenPoints, formatDistanceCm } from "./geometry";
+import { distanceBetweenPoints, formatDistanceCm, snapToGrid } from "./geometry";
 
 const MIN_POINTS = 3;
 const VERTEX_RADIUS = 5;
@@ -95,7 +95,12 @@ export function PolygonEditor({
   function handleVertexDragEnd(index: number, e: Konva.KonvaEventObject<DragEvent>) {
     const node = e.target;
     setActiveVertexIndex(null);
-    onChange({ ...geometry, points: points.map((p, i) => (i === index ? { x: node.x(), y: node.y() } : p)) });
+    // Grid-snap the vertex's final position - see BedNode.tsx's identical
+    // snapToGrid usage; this path (and handleShapeDragEnd below) didn't
+    // snap at all before (see the "grid-snap + alignment snapping" backlog
+    // item), unlike BedNode's own rectangle drag.
+    const snapped = { x: snapToGrid(node.x()), y: snapToGrid(node.y()) };
+    onChange({ ...geometry, points: points.map((p, i) => (i === index ? snapped : p)) });
   }
 
   // Initial label position/text for the render that follows
@@ -116,9 +121,18 @@ export function PolygonEditor({
 
   function handleShapeDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
     const node = e.target;
-    const dx = node.x();
-    const dy = node.y();
+    const rawDx = node.x();
+    const rawDy = node.y();
     node.position({ x: 0, y: 0 });
+    // Grid-snap the whole-shape drag by snapping the first vertex's new
+    // position and deriving the translation every point shares from that -
+    // keeps the shape's own proportions intact (a plain per-point snap
+    // could distort a non-axis-aligned polygon) while still landing the
+    // dragged shape on the grid, matching BedNode's rectangle-drag snap.
+    const anchor = points[0];
+    const snappedAnchor = { x: snapToGrid(anchor.x + rawDx), y: snapToGrid(anchor.y + rawDy) };
+    const dx = snappedAnchor.x - anchor.x;
+    const dy = snappedAnchor.y - anchor.y;
     onChange({ ...geometry, points: points.map((p) => ({ x: p.x + dx, y: p.y + dy })) });
   }
 

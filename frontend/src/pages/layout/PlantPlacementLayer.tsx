@@ -11,6 +11,7 @@ import {
   rectanglesOverlap,
   rectRenderProps,
   rowGeometryFromDrag,
+  snapToGrid,
 } from "./geometry";
 
 /** "individual" draws with a single click; "row"/"field" draw with a
@@ -261,7 +262,17 @@ function PlantingMarker({
 
     function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
       const node = e.target;
-      onMove({ type: "rectangle", x: node.x(), y: node.y(), width: props.width, height: props.height, rotation: node.rotation() });
+      // Grid-snap the drag's final position - see BedNode.tsx's identical
+      // snapToGrid usage; planting drag didn't snap at all before (see the
+      // "grid-snap + alignment snapping" backlog item).
+      onMove({
+        type: "rectangle",
+        x: snapToGrid(node.x()),
+        y: snapToGrid(node.y()),
+        width: props.width,
+        height: props.height,
+        rotation: node.rotation(),
+      });
     }
 
     return (
@@ -298,8 +309,8 @@ function PlantingMarker({
     const node = e.target;
     onMove({
       type: "rectangle",
-      x: node.x() - rect.width / 2,
-      y: node.y() - rect.height / 2,
+      x: snapToGrid(node.x() - rect.width / 2),
+      y: snapToGrid(node.y() - rect.height / 2),
       width: rect.width,
       height: rect.height,
       rotation: 0,

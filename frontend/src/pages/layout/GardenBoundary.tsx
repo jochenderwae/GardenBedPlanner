@@ -92,12 +92,15 @@ export function GardenBoundary({
           const scaleY = node.scaleY();
           node.scaleX(1);
           node.scaleY(1);
+          // Grid-snap the resize result the same way the drag path already
+          // does (see dragBoundFunc above) - see BedNode.tsx's identical fix
+          // and the "grid-snap + alignment snapping" backlog item.
           onChange({
             type: "rectangle",
-            x: node.x(),
-            y: node.y(),
-            width: Math.max(MIN_SIZE_CM, Math.round(node.width() * scaleX)),
-            height: Math.max(MIN_SIZE_CM, Math.round(node.height() * scaleY)),
+            x: snapToGrid(node.x()),
+            y: snapToGrid(node.y()),
+            width: Math.max(MIN_SIZE_CM, snapToGrid(Math.round(node.width() * scaleX))),
+            height: Math.max(MIN_SIZE_CM, snapToGrid(Math.round(node.height() * scaleY))),
             rotation: node.rotation(),
           });
         }}

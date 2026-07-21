@@ -3,11 +3,13 @@ import { Group, Rect, Text, Transformer } from "react-konva";
 import type Konva from "konva";
 import type { Bed, Geometry, PolygonGeometry } from "@/api/client";
 import {
+  ALIGNMENT_SNAP_THRESHOLD_PX,
   boundingRect,
   type Bounds,
   clampPointToBounds,
   clampRectPositionToBounds,
   colorsForBedCategory,
+  findAlignmentSnap,
   formatDistanceCm,
   rectanglesOverlap,
   snapToGrid,
@@ -171,6 +173,20 @@ export function BedNode({
           dragBoundFunc={(pos) => {
             const world = screenToWorld(pos, viewport);
             let snapped = { x: snapToGrid(world.x), y: snapToGrid(world.y) };
+            // Edge/center alignment against every other bed - a design-tool
+            // "smart guides" style snap, checked after (and able to
+            // override) the fixed-cm grid snap above, since lining up with
+            // a neighboring bed is more useful than a purely arbitrary grid
+            // line once one's nearby. Threshold is a fixed screen-px
+            // distance converted to world/cm via the current zoom, so the
+            // snap feels the same regardless of zoom level.
+            if (otherBedRects && otherBedRects.length > 0) {
+              snapped = findAlignmentSnap(
+                { x: snapped.x, y: snapped.y, width: geometry.width, height: geometry.height },
+                otherBedRects,
+                ALIGNMENT_SNAP_THRESHOLD_PX / viewport.scale,
+              );
+            }
             if (bounds) {
               snapped = clampRectPositionToBounds(snapped.x, snapped.y, geometry.width, geometry.height, bounds);
             }
@@ -210,10 +226,15 @@ export function BedNode({
             const scaleY = node.scaleY();
             node.scaleX(1);
             node.scaleY(1);
-            let width = Math.max(MIN_SIZE_CM, Math.round(node.width() * scaleX));
-            let height = Math.max(MIN_SIZE_CM, Math.round(node.height() * scaleY));
-            let x = node.x();
-            let y = node.y();
+            // Grid-snap the resize result the same way a plain drag already
+            // does (see dragBoundFunc above) - previously only whole-shape
+            // drag snapped to the grid, leaving a resize free to land on any
+            // sub-cm size/position (see the "grid-snap + alignment snapping"
+            // backlog item).
+            let width = Math.max(MIN_SIZE_CM, snapToGrid(Math.round(node.width() * scaleX)));
+            let height = Math.max(MIN_SIZE_CM, snapToGrid(Math.round(node.height() * scaleY)));
+            let x = snapToGrid(node.x());
+            let y = snapToGrid(node.y());
             if (bounds) {
               width = Math.min(width, Math.max(MIN_SIZE_CM, bounds.width));
               height = Math.min(height, Math.max(MIN_SIZE_CM, bounds.height));

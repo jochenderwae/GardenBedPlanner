@@ -269,3 +269,65 @@ export function translateGeometry(geometry: Geometry, dx: number, dy: number): G
   }
   return { ...geometry, points: geometry.points.map((p) => ({ x: p.x + dx, y: p.y + dy })) };
 }
+
+/** Screen-px distance within which a dragged bed's edge/center snaps into
+ * alignment with another bed's matching edge/center - a design-tool "smart
+ * guides" style snap, distinct from (and applied after, so it can override)
+ * the fixed-cm grid snap. Expressed in screen px, not cm, so the snap
+ * *feels* the same regardless of zoom - callers convert to a world/cm
+ * threshold via the current viewport scale (`ALIGNMENT_SNAP_THRESHOLD_PX /
+ * viewport.scale`) before calling `findAlignmentSnap`. */
+export const ALIGNMENT_SNAP_THRESHOLD_PX = 6;
+
+/** A rectangle's near edge, center, and far edge along one axis - generic
+ * over which axis (`min`/`size` are x/width for horizontal alignment, y/
+ * height for vertical) so `findAlignmentSnap` below can run the same
+ * candidate-matching logic for both axes. */
+function edgePositions(min: number, size: number): number[] {
+  return [min, min + size / 2, min + size];
+}
+
+/** Finds the closest edge/center alignment (world/cm) between `rect` and
+ * any of `others`, independently on each axis, and returns the position
+ * `rect` should snap to so the matching edge/center lines up exactly -
+ * dragging a bed near another bed's left/right edge or shared center, the
+ * way a design tool's smart guides work (see the "grid-snap + alignment
+ * snapping" backlog item). Only a rectangle's *position* is adjusted here,
+ * never its size. Rotation is ignored (same bounding-box approximation
+ * `rectanglesOverlap`/`clampRectPositionToBounds` already make for beds).
+ * Returns `rect`'s own (x, y) unchanged on whichever axis has nothing in
+ * `others` within `thresholdCm`. */
+export function findAlignmentSnap(rect: Bounds, others: Bounds[], thresholdCm: number): { x: number; y: number } {
+  let x = rect.x;
+  let bestXDiff = thresholdCm;
+  let y = rect.y;
+  let bestYDiff = thresholdCm;
+
+  const rectXs = edgePositions(rect.x, rect.width);
+  const rectYs = edgePositions(rect.y, rect.height);
+
+  for (const other of others) {
+    const otherXs = edgePositions(other.x, other.width);
+    const otherYs = edgePositions(other.y, other.height);
+    for (const rx of rectXs) {
+      for (const ox of otherXs) {
+        const diff = Math.abs(rx - ox);
+        if (diff < bestXDiff) {
+          bestXDiff = diff;
+          x = rect.x + (ox - rx);
+        }
+      }
+    }
+    for (const ry of rectYs) {
+      for (const oy of otherYs) {
+        const diff = Math.abs(ry - oy);
+        if (diff < bestYDiff) {
+          bestYDiff = diff;
+          y = rect.y + (oy - ry);
+        }
+      }
+    }
+  }
+
+  return { x, y };
+}

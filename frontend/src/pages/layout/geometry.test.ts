@@ -8,6 +8,7 @@ import {
   colorsForBedCategory,
   distanceBetweenPoints,
   fieldGeometryFromDrag,
+  findAlignmentSnap,
   formatDistanceCm,
   normalizedRect,
   normalizeDegrees,
@@ -263,6 +264,56 @@ describe("normalizedRect", () => {
 
   it("returns a zero-size rect for a same-point drag", () => {
     expect(normalizedRect({ x: 5, y: 5 }, { x: 5, y: 5 })).toEqual({ x: 5, y: 5, width: 0, height: 0 });
+  });
+});
+
+describe("findAlignmentSnap", () => {
+  it("snaps to a left-edge alignment within the threshold", () => {
+    // Dragged rect's left edge (x=52) is 2cm from the other rect's left
+    // edge (x=50), within a 5cm threshold.
+    const rect = { x: 52, y: 200, width: 30, height: 30 };
+    const other = { x: 50, y: 0, width: 40, height: 40 };
+    expect(findAlignmentSnap(rect, [other], 5)).toEqual({ x: 50, y: 200 });
+  });
+
+  it("snaps to a shared center alignment", () => {
+    // Other rect spans x=0..40 (center 20); dragged rect's center at
+    // x=19 (10..28) is 1cm off that center, within threshold - closer than
+    // either edge comparison.
+    const rect = { x: 10, y: 0, width: 18, height: 10 };
+    const other = { x: 0, y: 100, width: 40, height: 10 };
+    expect(findAlignmentSnap(rect, [other], 5).x).toBe(11);
+  });
+
+  it("snaps to the closest edge when it beats a further-off center match", () => {
+    // Dragged rect's right edge (88) is 2cm from the other's right edge
+    // (90), closer than its center (78) is to the other's center (75, 3cm
+    // off) - the closer of the two candidate matches wins.
+    const rect = { x: 68, y: 0, width: 20, height: 10 };
+    const other = { x: 60, y: 500, width: 30, height: 10 };
+    expect(findAlignmentSnap(rect, [other], 5)).toEqual({ x: 70, y: 0 });
+  });
+
+  it("leaves position unchanged on an axis with nothing in threshold", () => {
+    const rect = { x: 100, y: 100, width: 20, height: 20 };
+    const other = { x: 0, y: 0, width: 10, height: 10 };
+    expect(findAlignmentSnap(rect, [other], 5)).toEqual({ x: 100, y: 100 });
+  });
+
+  it("picks the closest match when multiple others are each within threshold", () => {
+    // Both others' left edges are within threshold of rect's left edge
+    // (100) - farther's (96) by 4cm, closer's (97) by 3cm - regardless of
+    // which is checked first, the closer one should win.
+    const rect = { x: 100, y: 0, width: 6, height: 6 };
+    const farther = { x: 96, y: 500, width: 1000, height: 6 };
+    const closer = { x: 97, y: 500, width: 1000, height: 6 };
+    expect(findAlignmentSnap(rect, [farther, closer], 5).x).toBe(97);
+  });
+
+  it("snaps x and y independently", () => {
+    const rect = { x: 12, y: 202, width: 10, height: 10 };
+    const other = { x: 10, y: 200, width: 30, height: 30 };
+    expect(findAlignmentSnap(rect, [other], 5)).toEqual({ x: 10, y: 200 });
   });
 });
 
