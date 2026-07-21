@@ -57,6 +57,7 @@ import {
   translateGeometry,
 } from "./layout/geometry";
 import { useUndoHistory } from "./layout/history";
+import { useContainerSize } from "./layout/useContainerSize";
 import {
   clampScale,
   DEFAULT_VIEWPORT,
@@ -147,6 +148,13 @@ export function Layout() {
   const plantingPanelRef = useRef<PlantingPanelHandle>(null);
   const bulkPlantingPanelRef = useRef<BulkPlantingPanelHandle>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
+  // The canvas Stage tracks whichever wrapper div is currently mounted
+  // ("mine" mode or "example" mode - only one renders at a time, see the
+  // JSX below) instead of a fixed CANVAS_WIDTH_PX/HEIGHT_PX, so it fills the
+  // actual space available rather than producing page-level scroll bars
+  // whenever the fixed size didn't match the viewport (see the "No scroll
+  // bars in Bed Layout screen" backlog item).
+  const { ref: canvasContainerRef, size: canvasSize } = useContainerSize(CANVAS_SIZE);
   // Middle-mouse-drag pan (see handlePanMouseDown below) - Stage's own
   // `draggable` used to own panning, but that conflicts with child nodes
   // (beds, polygon vertices, plant markers) that are themselves draggable:
@@ -404,7 +412,7 @@ export function Layout() {
       mode === "mine"
         ? [...(garden ? [boundingRect(garden.border_geometry)] : []), ...beds.map((b) => boundingRect(b.border_geometry))]
         : exampleBeds.map((b) => boundingRect(b.border_geometry));
-    setViewport(fitViewport(boxes, CANVAS_SIZE));
+    setViewport(fitViewport(boxes, canvasSize));
   }
 
   /** Applies (and PATCHes) a bed's geometry - factored out of
@@ -781,7 +789,7 @@ export function Layout() {
   }, [mode, tab, armedPlant, selectedId, selectedPlantingId, selectedPlantingIds, historyUndo, historyRedo]);
 
   return (
-    <div className="flex min-h-svh flex-col gap-4 p-6">
+    <div className="flex h-full min-h-0 flex-col gap-4 overflow-hidden p-6">
       <Toolbar
         mode={mode}
         onModeChange={handleModeChange}
@@ -852,11 +860,11 @@ export function Layout() {
       )}
 
       {mode === "mine" && data && (
-        <div className="flex items-start gap-4">
-          <div className="relative max-w-full overflow-auto rounded-md border">
+        <div className="flex min-h-0 flex-1 items-stretch gap-4">
+          <div ref={canvasContainerRef} className="relative min-h-0 min-w-0 flex-1 overflow-hidden rounded-md border">
             <Stage
-              width={CANVAS_WIDTH_PX}
-              height={CANVAS_HEIGHT_PX}
+              width={canvasSize.width}
+              height={canvasSize.height}
               x={viewport.x}
               y={viewport.y}
               scaleX={viewport.scale}
@@ -867,9 +875,9 @@ export function Layout() {
               onMouseUp={handleBedMarqueeMouseUp}
             >
               <Layer listening={false}>
-                <GridLines canvasSize={CANVAS_SIZE} viewport={viewport} />
+                <GridLines canvasSize={canvasSize} viewport={viewport} />
               </Layer>
-              <RulerLayer canvasSize={CANVAS_SIZE} viewport={viewport} />
+              <RulerLayer canvasSize={canvasSize} viewport={viewport} />
               <Layer>
                 {garden && (
                   <GardenBoundary
@@ -943,50 +951,67 @@ export function Layout() {
             </Stage>
           </div>
 
-          {tab === "garden" && <GardenPanel garden={garden} />}
+          {/* Side panels get their own scroll region (`overflow-y-auto`,
+              bounded by the row's own height via `h-full`) instead of
+              relying on the whole page to scroll when a panel's content
+              (e.g. a bed with lots of fields) exceeds the viewport height -
+              see the "No scroll bars" backlog item. */}
+          {tab === "garden" && (
+            <div className="h-full overflow-y-auto">
+              <GardenPanel garden={garden} />
+            </div>
+          )}
           {tab === "planters" && selectedBed && (
-            <BedPanel
-              ref={bedPanelRef}
-              bed={selectedBed}
-              gardenOrientationDeg={garden?.orientation_deg}
-              onClose={() => setSelectedId(null)}
-              onDeleted={() => setSelectedId(null)}
-            />
+            <div className="h-full overflow-y-auto">
+              <BedPanel
+                ref={bedPanelRef}
+                bed={selectedBed}
+                gardenOrientationDeg={garden?.orientation_deg}
+                onClose={() => setSelectedId(null)}
+                onDeleted={() => setSelectedId(null)}
+              />
+            </div>
           )}
           {tab === "equipment" && (
-            <EquipmentPanel
-              beds={beds}
-              equipment={equipmentList}
-              onClose={() => switchTab("planters")}
-              onPlace={handleEquipmentPlace}
-              onReturnToInventory={handleEquipmentReturnToInventory}
-            />
+            <div className="h-full overflow-y-auto">
+              <EquipmentPanel
+                beds={beds}
+                equipment={equipmentList}
+                onClose={() => switchTab("planters")}
+                onPlace={handleEquipmentPlace}
+                onReturnToInventory={handleEquipmentReturnToInventory}
+              />
+            </div>
           )}
           {tab === "plants" && selectedPlantingIds.size > 0 && (
-            <BulkPlantingPanel
-              ref={bulkPlantingPanelRef}
-              plantings={plantings.filter((p) => p.id != null && selectedPlantingIds.has(p.id))}
-              onClose={() => setSelectedPlantingIds(new Set())}
-              onDeleted={() => setSelectedPlantingIds(new Set())}
-            />
+            <div className="h-full overflow-y-auto">
+              <BulkPlantingPanel
+                ref={bulkPlantingPanelRef}
+                plantings={plantings.filter((p) => p.id != null && selectedPlantingIds.has(p.id))}
+                onClose={() => setSelectedPlantingIds(new Set())}
+                onDeleted={() => setSelectedPlantingIds(new Set())}
+              />
+            </div>
           )}
           {tab === "plants" && selectedPlantingIds.size === 0 && selectedPlanting && (
-            <PlantingPanel
-              ref={plantingPanelRef}
-              planting={selectedPlanting}
-              plant={plantsBySlug.get(selectedPlanting.plant_slug)}
-              onClose={() => setSelectedPlantingId(null)}
-              onDeleted={() => setSelectedPlantingId(null)}
-            />
+            <div className="h-full overflow-y-auto">
+              <PlantingPanel
+                ref={plantingPanelRef}
+                planting={selectedPlanting}
+                plant={plantsBySlug.get(selectedPlanting.plant_slug)}
+                onClose={() => setSelectedPlantingId(null)}
+                onDeleted={() => setSelectedPlantingId(null)}
+              />
+            </div>
           )}
         </div>
       )}
 
       {mode === "example" && exampleGardenQuery.data && (
-        <div className="relative max-w-full overflow-auto rounded-md border">
+        <div ref={canvasContainerRef} className="relative min-h-0 min-w-0 flex-1 overflow-hidden rounded-md border">
           <Stage
-            width={CANVAS_WIDTH_PX}
-            height={CANVAS_HEIGHT_PX}
+            width={canvasSize.width}
+            height={canvasSize.height}
             x={viewport.x}
             y={viewport.y}
             scaleX={viewport.scale}
@@ -995,9 +1020,9 @@ export function Layout() {
             onMouseDown={handlePanMouseDown}
           >
             <Layer listening={false}>
-              <GridLines canvasSize={CANVAS_SIZE} viewport={viewport} />
+              <GridLines canvasSize={canvasSize} viewport={viewport} />
             </Layer>
-            <RulerLayer canvasSize={CANVAS_SIZE} viewport={viewport} />
+            <RulerLayer canvasSize={canvasSize} viewport={viewport} />
             <ExampleGardenLayer beds={exampleBeds} plantsBySlug={plantsBySlug} onHover={setTooltip} />
           </Stage>
           <PlantingTooltip tooltip={tooltip} />
