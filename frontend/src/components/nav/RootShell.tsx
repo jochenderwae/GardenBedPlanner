@@ -11,6 +11,8 @@ import { MobileHome } from "@/pages/mobile/MobileHome";
 import { MobileAgenda } from "@/pages/mobile/MobileAgenda";
 import { MobileLogging } from "@/pages/mobile/MobileLogging";
 import { MobileNotifications } from "@/pages/mobile/MobileNotifications";
+import { MobileSeedGuide } from "@/pages/mobile/MobileSeedGuide";
+import { SeedGuide } from "@/pages/SeedGuide";
 
 /** Root of the route tree - switches between the desktop canvas-editor app
  * and a genuinely separate, simplified mobile/PWA route set based on
@@ -29,6 +31,7 @@ export function RootShell() {
         <Route element={<MobileShell />}>
           <Route path="/" element={<MobileHome />} />
           <Route path="/agenda" element={<MobileAgenda />} />
+          <Route path="/seed-guide" element={<MobileSeedGuide />} />
           <Route path="/logging" element={<MobileLogging />} />
           <Route path="/notifications" element={<MobileNotifications />} />
           {/* A desktop-only deep link (e.g. a bookmark to /layout) opened at
@@ -46,6 +49,7 @@ export function RootShell() {
         <Route path="/" element={<Home />} />
         <Route path="/layout" element={<Layout />} />
         <Route path="/agenda" element={<Agenda />} />
+        <Route path="/seed-guide" element={<SeedGuide />} />
         <Route path="/plants" element={<PlantsDatabase />} />
         <Route path="/plants/:slug" element={<PlantDetail />} />
       </Route>

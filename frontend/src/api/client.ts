@@ -44,6 +44,9 @@ export type PlantPestInteraction = components["schemas"]["PlantPestInteraction"]
 export type PlantGrowingInformation = components["schemas"]["PlantGrowingInformation"];
 export type SeedInfo = components["schemas"]["SeedInfo"];
 export type PeriodType = components["schemas"]["PeriodType"];
+export type SeedInventoryItem = components["schemas"]["SeedInventoryItem"];
+export type SeedInventoryItemCreate = components["schemas"]["SeedInventoryItemCreate"];
+export type SeedInventoryItemUpdate = components["schemas"]["SeedInventoryItemUpdate"];
 
 /** Thrown by `apiFetch` on a non-ok response - carries the HTTP status so
  * callers can branch on a specific code (e.g. `BedPanel.tsx`'s delete flow
@@ -191,6 +194,28 @@ export function updatePlant(slug: string, patch: PlantUpdate): Promise<Plant> {
 
 export function listPeriodTypes(): Promise<PeriodType[]> {
   return apiFetch(`/api/period-types`);
+}
+
+export function listSeedInventoryItems(): Promise<SeedInventoryItem[]> {
+  return apiFetch(`/api/seed-inventory-items`);
+}
+
+export function createSeedInventoryItem(item: SeedInventoryItemCreate): Promise<SeedInventoryItem> {
+  return apiFetch(`/api/seed-inventory-items`, {
+    method: "POST",
+    body: JSON.stringify(item),
+  });
+}
+
+export function updateSeedInventoryItem(id: number, patch: SeedInventoryItemUpdate): Promise<SeedInventoryItem> {
+  return apiFetch(`/api/seed-inventory-items/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteSeedInventoryItem(id: number): Promise<void> {
+  return apiFetch(`/api/seed-inventory-items/${id}`, { method: "DELETE" });
 }
 
 function satellitePath(slug: string, segment: string): string {

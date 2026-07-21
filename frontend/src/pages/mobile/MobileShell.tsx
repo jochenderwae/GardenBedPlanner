@@ -1,11 +1,12 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Bell, CalendarDays, Home as HomeIcon, NotebookPen } from "lucide-react";
+import { Bell, CalendarDays, Home as HomeIcon, NotebookPen, ShoppingBasket } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SnackbarProvider } from "@/components/Snackbar";
 
 const MOBILE_NAV_ITEMS = [
   { to: "/", label: "Home", icon: HomeIcon },
   { to: "/agenda", label: "Agenda", icon: CalendarDays },
+  { to: "/seed-guide", label: "Seeds", icon: ShoppingBasket },
   { to: "/logging", label: "Logging", icon: NotebookPen },
   { to: "/notifications", label: "Notifications", icon: Bell },
 ];
