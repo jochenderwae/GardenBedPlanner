@@ -81,6 +81,15 @@ class Plant(SQLModel, table=True):
     family_id: int | None = Field(default=None, foreign_key="family.id")
     genus_id: int | None = Field(default=None, foreign_key="genus.id")
 
+    # Cultivar-to-species linkage (#110): a nullable self-referencing FK
+    # rather than a separate Cultivar entity or an inheritance/override-
+    # resolution layer - see #64's design-decision comment. Every cultivar
+    # stays a full Plant row (matches how the ETL already stores them, see
+    # data/etl/CLAUDE.md's cultivar-merge fix); this column adds the
+    # hierarchy on top ("all cultivars of tomato" = WHERE parent_plant_slug
+    # = 'tomato') without duplicating/migrating anything else.
+    parent_plant_slug: str | None = Field(default=None, foreign_key="plant.slug")
+
     # Natural habitat temperature range, not a US hardiness zone - more
     # directly useful for adjusting to Belgium's climate (see root
     # CLAUDE.md's domain notes on weather/climate-adjusted planting).

@@ -134,6 +134,7 @@ class PlantDetail(BaseModel):
     water_needs: str | None = None
     family: FamilyRead | None = None
     genus: GenusRead | None = None
+    parent_plant_slug: str | None = None
     min_temperature_c: float | None = None
     max_temperature_c: float | None = None
     days_to_maturity: int | None = None
