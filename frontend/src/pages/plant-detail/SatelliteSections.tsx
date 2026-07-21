@@ -316,61 +316,105 @@ export function BeddingNeedsSection({ slug, items }: { slug: string; items: Plan
   );
 }
 
-export function PestInteractionsSection({ slug, items }: { slug: string; items: PlantPestInteraction[] }) {
-  const { add, remove } = useSatelliteMutations<PlantPestInteraction>(slug, "pest_interactions", pestInteractionApi);
-  const [draft, setDraft] = useState<{ interaction_type: "attracts" | "repels" | "vulnerable_to"; pest_or_insect: string }>({
-    interaction_type: "attracts",
-    pest_or_insect: "",
-  });
+type PestInteractionType = "attracts" | "repels" | "vulnerable_to";
+
+/** One column of the Pests table below - its own current entries plus a
+ * plain text input that adds directly on Enter (no separate "Add" button,
+ * matching #122's companions rework, just with free text instead of a
+ * plant picker since a pest/insect isn't one of the app's own Plant rows).
+ * Stays mounted across adds so its draft text is only cleared on a
+ * successful add, not on every parent re-render. */
+function PestColumn({
+  interactionType,
+  items,
+  onAdd,
+  onRemove,
+}: {
+  interactionType: PestInteractionType;
+  items: PlantPestInteraction[];
+  onAdd: (interactionType: PestInteractionType, pest: string) => void;
+  onRemove: (item: PlantPestInteraction) => void;
+}) {
+  const [draft, setDraft] = useState("");
 
   return (
-    <section className={sectionClass}>
-      <h2 className="text-sm font-semibold">Pest interactions</h2>
+    <div className="flex flex-col gap-2">
       {items.map((item) => (
         <div key={item.id} className={rowClass}>
-          <span className="flex-1">
-            {item.interaction_type}: {item.pest_or_insect}
-          </span>
+          <span className="flex-1">{item.pest_or_insect}</span>
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label="Remove pest interaction"
-            onClick={() => remove(item, item.pest_or_insect)}
+            aria-label={`Remove ${interactionType} pest interaction`}
+            onClick={() => onRemove(item)}
           >
             <Trash2 />
           </Button>
         </div>
       ))}
-      <div className={rowClass}>
-        <select
-          className={inputClass}
-          value={draft.interaction_type}
-          onChange={(e) =>
-            setDraft({ ...draft, interaction_type: e.target.value as typeof draft.interaction_type })
-          }
-        >
-          <option value="attracts">attracts</option>
-          <option value="repels">repels</option>
-          <option value="vulnerable_to">vulnerable_to</option>
-        </select>
-        <input
-          className={inputClass}
-          placeholder="e.g. aphids"
-          value={draft.pest_or_insect}
-          onChange={(e) => setDraft({ ...draft, pest_or_insect: e.target.value })}
-        />
-        <Button
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            if (!draft.pest_or_insect) return;
-            add({ ...draft, notes: null }, draft.pest_or_insect);
-            setDraft({ interaction_type: "attracts", pest_or_insect: "" });
-          }}
-        >
-          <Plus /> Add
-        </Button>
-      </div>
+      <input
+        className={inputClass}
+        placeholder="e.g. aphids"
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key !== "Enter") return;
+          e.preventDefault();
+          const trimmed = draft.trim();
+          if (!trimmed) return;
+          onAdd(interactionType, trimmed);
+          setDraft("");
+        }}
+      />
+    </div>
+  );
+}
+
+export function PestInteractionsSection({ slug, items }: { slug: string; items: PlantPestInteraction[] }) {
+  const { add, remove } = useSatelliteMutations<PlantPestInteraction>(slug, "pest_interactions", pestInteractionApi);
+
+  function handleAdd(interactionType: PestInteractionType, pest: string) {
+    add({ interaction_type: interactionType, pest_or_insect: pest, notes: null }, pest);
+  }
+
+  function handleRemove(item: PlantPestInteraction) {
+    remove(item, item.pest_or_insect);
+  }
+
+  const attracts = items.filter((i) => i.interaction_type === "attracts");
+  const repels = items.filter((i) => i.interaction_type === "repels");
+  const vulnerableTo = items.filter((i) => i.interaction_type === "vulnerable_to");
+
+  return (
+    <section className={sectionClass}>
+      <h2 className="text-sm font-semibold">Pest interactions</h2>
+      <table className="w-full text-sm">
+        <thead>
+          <tr>
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Attracts</th>
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Repels</th>
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Vulnerable to</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="w-1/3 pr-2 align-top">
+              <PestColumn interactionType="attracts" items={attracts} onAdd={handleAdd} onRemove={handleRemove} />
+            </td>
+            <td className="w-1/3 px-2 align-top">
+              <PestColumn interactionType="repels" items={repels} onAdd={handleAdd} onRemove={handleRemove} />
+            </td>
+            <td className="w-1/3 pl-2 align-top">
+              <PestColumn
+                interactionType="vulnerable_to"
+                items={vulnerableTo}
+                onAdd={handleAdd}
+                onRemove={handleRemove}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   );
 }
