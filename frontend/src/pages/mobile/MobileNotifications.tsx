@@ -1,20 +1,40 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useWebPushSubscription } from "@/hooks/useWebPushSubscription";
 
-/** Placeholder until Web Push registration/delivery is fully wired up
- * end-to-end (backend half in progress - see the "Web Push notification
- * delivery" backlog item; the frontend subscribe flow itself is tracked by
- * the "PWA manifest + service worker" item) - this route/tab exists now so
- * the mobile shell's navigation is complete, and is the natural future home
- * for an "enable notifications" action once that flow lands. */
+const STATUS_MESSAGES: Record<string, string> = {
+  unsupported: "This browser doesn't support push notifications.",
+  subscribed: "Notifications are enabled on this device.",
+  denied: "Notification permission was denied - enable it in your browser/device settings to try again.",
+};
+
+/** The one real piece of this tab so far - enabling Web Push (see #46's
+ * backend delivery side and useWebPushSubscription). Reviewing/managing
+ * individual reminders here is still coming, pending the agenda view (#29)
+ * this would surface into. */
 export function MobileNotifications() {
+  const { status, error, subscribe } = useWebPushSubscription();
+  const message = error ?? STATUS_MESSAGES[status];
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Notifications</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-col gap-3">
         <p className="text-sm text-muted-foreground">
-          Coming soon - enable push notifications and review reminders here.
+          Enable push notifications to get reminders for due actions on this device.
+        </p>
+        {status !== "unsupported" && status !== "subscribed" && (
+          <Button size="sm" onClick={subscribe} disabled={status === "subscribing"}>
+            {status === "subscribing" ? "Enabling…" : "Enable notifications"}
+          </Button>
+        )}
+        {message && (
+          <p className={`text-xs ${error ? "text-destructive" : "text-muted-foreground"}`}>{message}</p>
+        )}
+        <p className="text-xs text-muted-foreground">
+          Coming soon - reviewing individual reminders here once the agenda view exists.
         </p>
       </CardContent>
     </Card>

@@ -248,3 +248,30 @@ export function upsertSeedInfo(
 export function deleteSeedInfo(slug: string): Promise<void> {
   return apiFetch(satellitePath(slug, "seed-info"), { method: "DELETE" });
 }
+
+export type PushSubscription = components["schemas"]["PushSubscription"];
+export type PushSubscriptionRegister = components["schemas"]["PushSubscriptionRegister"];
+
+/** The backend's GET /vapid-public-key just returns a plain `dict` (see
+ * backend/app/api/routes/push_subscriptions.py), so openapi-typescript can't
+ * infer a structured response shape for it the way every SQLModel-backed
+ * route above gets - `public_key` is `null` until an operator has actually
+ * configured VAPID keys server-side. */
+export interface VapidPublicKeyResponse {
+  public_key: string | null;
+}
+
+/** The frontend needs this to call `PushManager.subscribe({applicationServerKey})`
+ * (see #47/useWebPushSubscription) - a public value, not a secret. */
+export function getVapidPublicKey(): Promise<VapidPublicKeyResponse> {
+  return apiFetch(`/api/push-subscriptions/vapid-public-key`);
+}
+
+/** Registers (or, by endpoint, re-registers/updates) this browser's Web
+ * Push subscription with the backend - see #46 for the send side. */
+export function registerPushSubscription(payload: PushSubscriptionRegister): Promise<PushSubscription> {
+  return apiFetch(`/api/push-subscriptions`, {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
+}
