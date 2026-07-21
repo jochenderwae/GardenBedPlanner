@@ -508,6 +508,23 @@ export interface paths {
         patch: operations["update_bed_equipment_api_bed_equipment__equipment_id__patch"];
         trace?: never;
     };
+    "/api/beds/{bed_id}/rotation-check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Rotation Check */
+        get: operations["rotation_check_api_beds__bed_id__rotation_check_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1261,6 +1278,25 @@ export interface components {
              * @default 0
              */
             rotation: number;
+        };
+        /** RotationWarning */
+        RotationWarning: {
+            /** Has Warning */
+            has_warning: boolean;
+            /** Family Id */
+            family_id?: number | null;
+            /** Family Name */
+            family_name?: string | null;
+            /** Conflicting Planting Id */
+            conflicting_planting_id?: number | null;
+            /** Conflicting Plant Slug */
+            conflicting_plant_slug?: string | null;
+            /** Conflicting Plant Common Name */
+            conflicting_plant_common_name?: string | null;
+            /** Conflicting Planted Date */
+            conflicting_planted_date?: string | null;
+            /** Conflicting Removed Date */
+            conflicting_removed_date?: string | null;
         };
         /** SeedInfo */
         SeedInfo: {
@@ -2838,6 +2874,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BedEquipment"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    rotation_check_api_beds__bed_id__rotation_check_get: {
+        parameters: {
+            query: {
+                plant_slug: string;
+                as_of?: string;
+                lookback_days?: number;
+            };
+            header?: never;
+            path: {
+                bed_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RotationWarning"];
                 };
             };
             /** @description Validation Error */
