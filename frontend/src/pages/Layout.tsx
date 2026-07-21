@@ -31,7 +31,7 @@ import { BedNode } from "./layout/BedNode";
 import { BedPanel, type BedPanelHandle } from "./layout/BedPanel";
 import { AddBedForm } from "./layout/AddBedForm";
 import { BulkPlantingPanel, type BulkPlantingPanelHandle } from "./layout/BulkPlantingPanel";
-import { CompassWidget, COMPASS_MARGIN_CM } from "./layout/CompassWidget";
+import { compassBoundingBox, compassCenter, CompassWidget } from "./layout/CompassWidget";
 import { ExampleGardenLayer, PlantingTooltip, type PlantingTooltipState } from "./layout/ExampleGardenView";
 import { GardenBoundary } from "./layout/GardenBoundary";
 import { GardenPanel } from "./layout/GardenPanel";
@@ -410,7 +410,11 @@ export function Layout() {
   function handleFitView() {
     const boxes =
       mode === "mine"
-        ? [...(garden ? [boundingRect(garden.border_geometry)] : []), ...beds.map((b) => boundingRect(b.border_geometry))]
+        ? [
+            ...(garden ? [boundingRect(garden.border_geometry)] : []),
+            ...(gardenBounds ? [compassBoundingBox(gardenBounds)] : []),
+            ...beds.map((b) => boundingRect(b.border_geometry)),
+          ]
         : exampleBeds.map((b) => boundingRect(b.border_geometry));
     setViewport(fitViewport(boxes, canvasSize));
   }
@@ -892,7 +896,7 @@ export function Layout() {
                 )}
                 {garden && gardenBounds && (
                   <CompassWidget
-                    center={{ x: gardenBounds.x + gardenBounds.width + COMPASS_MARGIN_CM, y: gardenBounds.y }}
+                    center={compassCenter(gardenBounds)}
                     orientationDeg={garden.orientation_deg}
                     onChange={handleGardenOrientationChange}
                     interactive={tab === "garden"}
