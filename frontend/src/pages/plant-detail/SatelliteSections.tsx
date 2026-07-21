@@ -95,7 +95,9 @@ export function DataSourcesSection({ slug, items }: { slug: string; items: Plant
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold">Data sources</h2>
+      <h2 className="text-sm font-semibold" title="Where this plant's data came from - for attribution and provenance.">
+        Data sources
+      </h2>
       {items.map((item) => (
         <div key={item.id} className={rowClass}>
           <span className="flex-1 truncate">{item.attribution || item.source_url || "(untitled)"}</span>
@@ -113,12 +115,14 @@ export function DataSourcesSection({ slug, items }: { slug: string; items: Plant
         <input
           className={inputClass}
           placeholder="attribution"
+          title="Who/what to credit for this data, e.g. an author or organization name."
           value={draft.attribution}
           onChange={(e) => setDraft({ ...draft, attribution: e.target.value })}
         />
         <input
           className={inputClass}
           placeholder="source URL"
+          title="A link to where this data was sourced from."
           value={draft.source_url}
           onChange={(e) => setDraft({ ...draft, source_url: e.target.value })}
         />
@@ -185,9 +189,11 @@ export function SeedInfoSection({ slug, seedInfo }: { slug: string; seedInfo: Se
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold">Seed info</h2>
+      <h2 className="text-sm font-semibold" title="Seed-specific details used by the seed buying guide and sowing plans.">
+        Seed info
+      </h2>
       <div className={rowClass}>
-        <label className="flex items-center gap-1.5">
+        <label className="flex items-center gap-1.5" title="How many seeds of this plant weigh one gram - used to convert a seed count to a weight, or vice versa.">
           Seeds/gram
           <input
             type="number"
@@ -196,7 +202,7 @@ export function SeedInfoSection({ slug, seedInfo }: { slug: string; seedInfo: Se
             onBlur={(e) => save({ seeds_per_gram: e.target.value === "" ? null : Number(e.target.value) })}
           />
         </label>
-        <label className="flex items-center gap-1.5">
+        <label className="flex items-center gap-1.5" title="Any treatment seeds need before sowing, e.g. soaking, stratification, scarification.">
           Pretreatment
           <input
             type="text"
@@ -217,7 +223,12 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold">Periods</h2>
+      <h2
+        className="text-sm font-semibold"
+        title="Month ranges for this plant's key activities (sowing, harvesting, etc.) - drives the agenda and seed guide views."
+      >
+        Periods
+      </h2>
       {items.map((item) => (
         <div key={item.id} className={rowClass}>
           <span className="flex-1">
@@ -236,6 +247,7 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
       <div className={rowClass}>
         <select
           className={inputClass}
+          title="What kind of activity this period covers, e.g. sowing, harvesting."
           value={draft.period_type}
           onChange={(e) => setDraft({ ...draft, period_type: e.target.value })}
         >
@@ -251,6 +263,7 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
           min={1}
           max={12}
           className={`${inputClass} w-16`}
+          title="Starting month (1-12) for this period."
           value={draft.start_month}
           onChange={(e) => setDraft({ ...draft, start_month: Number(e.target.value) })}
         />
@@ -260,6 +273,7 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
           min={1}
           max={12}
           className={`${inputClass} w-16`}
+          title="Ending month (1-12) for this period."
           value={draft.end_month}
           onChange={(e) => setDraft({ ...draft, end_month: Number(e.target.value) })}
         />
@@ -285,7 +299,9 @@ export function BeddingNeedsSection({ slug, items }: { slug: string; items: Plan
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold">Bedding needs</h2>
+      <h2 className="text-sm font-semibold" title="Bed preparation or maintenance this plant needs, e.g. hilling, staking, mulching.">
+        Bedding needs
+      </h2>
       {items.map((item) => (
         <div key={item.id} className={rowClass}>
           <span className="flex-1">{item.need_type}</span>
@@ -303,6 +319,7 @@ export function BeddingNeedsSection({ slug, items }: { slug: string; items: Plan
         <input
           className={inputClass}
           placeholder="e.g. hilling, staking"
+          title="Bed preparation or maintenance this plant needs, e.g. hilling, staking, mulching."
           value={needType}
           onChange={(e) => setNeedType(e.target.value)}
         />
@@ -361,6 +378,7 @@ function PestColumn({
       <input
         className={inputClass}
         placeholder="e.g. aphids"
+        title="Name of a pest or beneficial insect - press Enter to add."
         value={draft}
         onChange={(e) => setDraft(e.target.value)}
         onKeyDown={(e) => {
@@ -393,13 +411,30 @@ export function PestInteractionsSection({ slug, items }: { slug: string; items: 
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold">Pest interactions</h2>
+      <h2 className="text-sm font-semibold" title="Pests and beneficial insects this plant attracts, repels, or is vulnerable to.">
+        Pest interactions
+      </h2>
       <table className="w-full text-sm">
         <thead>
           <tr>
-            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Attracts</th>
-            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Repels</th>
-            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Vulnerable to</th>
+            <th
+              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
+              title="Pests or insects this plant draws in."
+            >
+              Attracts
+            </th>
+            <th
+              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
+              title="Pests or insects this plant naturally deters."
+            >
+              Repels
+            </th>
+            <th
+              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
+              title="Pests or diseases this plant is susceptible to."
+            >
+              Vulnerable to
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -514,12 +549,24 @@ export function CompanionsSection({
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold">Companions</h2>
+      <h2 className="text-sm font-semibold" title="Other plants this one grows well or poorly alongside.">
+        Companions
+      </h2>
       <table className="w-full text-sm">
         <thead>
           <tr>
-            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Good</th>
-            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Bad</th>
+            <th
+              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
+              title="Plants that benefit this one when grown nearby."
+            >
+              Good
+            </th>
+            <th
+              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
+              title="Plants that hinder this one when grown nearby."
+            >
+              Bad
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -567,7 +614,12 @@ export function GrowingInfoSection({ slug: _slug, items }: { slug: string; items
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold">Growing information</h2>
+      <h2
+        className="text-sm font-semibold"
+        title="A longer-form growing guide for this plant, consolidated from external sources."
+      >
+        Growing information
+      </h2>
 
       {consolidated ? (
         <div className="flex flex-col gap-1 rounded-md border p-2 text-sm">

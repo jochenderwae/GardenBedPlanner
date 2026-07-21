@@ -85,7 +85,10 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
 
   return (
     <>
-      <label className="flex flex-col gap-1">
+      <label
+        className="flex flex-col gap-1"
+        title="Whether this plant completes its life in one season (annual), two (biennial), or lives on for several years (perennial)."
+      >
         <span className="text-xs font-medium text-muted-foreground">Life cycle</span>
         <select
           className={inputClass}
@@ -100,7 +103,10 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
           ))}
         </select>
       </label>
-      <label className="flex flex-col gap-1">
+      <label
+        className="flex flex-col gap-1"
+        title="How many years this plant stays productive - fixed at 1 for annual and 2 for biennial, free-form for perennial."
+      >
         <span className="text-xs font-medium text-muted-foreground">Life cycle years (productive lifespan)</span>
         <input
           type="number"

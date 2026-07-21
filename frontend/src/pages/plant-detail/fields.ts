@@ -12,6 +12,12 @@ export interface FieldConfig {
   label: string;
   type: FieldType;
   options?: SelectOption[];
+  /** Tooltip text (native `title` attribute) shown on the field's label,
+   * explaining what it represents - matching the pattern the "Tooltips on
+   * every input field" backlog item established for the bed/garden/
+   * equipment editing panels (see `BedPanel.tsx`). Generated once per field
+   * here rather than repeated per-instance in `FieldInput.tsx`. */
+  description: string;
 }
 
 const SUN_LEVEL_OPTIONS: SelectOption[] = [
@@ -37,34 +43,130 @@ export const LIFE_CYCLE_OPTIONS: SelectOption[] = [
  * rendered together by the dedicated `LifeCycleFields` component instead of
  * independently through this generic loop - see that component's doc). */
 export const SCALAR_FIELDS: FieldConfig[] = [
-  { key: "common_name", label: "Common name", type: "text" },
-  { key: "botanical_name", label: "Botanical name", type: "text" },
-  { key: "description", label: "Description", type: "textarea" },
-  { key: "sowing_method", label: "Sowing method", type: "textarea" },
-  { key: "spread_cm", label: "Spread (cm)", type: "number" },
-  { key: "row_spacing_cm", label: "Row spacing (cm)", type: "number" },
-  { key: "height_cm", label: "Height (cm)", type: "number" },
-  { key: "sun_level", label: "Sun level", type: "select", options: SUN_LEVEL_OPTIONS },
-  { key: "soil_type", label: "Soil type", type: "text" },
-  { key: "composting_needs", label: "Composting needs", type: "textarea" },
-  { key: "fertilizer_needs", label: "Fertilizer needs", type: "textarea" },
-  { key: "needs_wind_cover", label: "Needs wind cover", type: "tristate" },
-  { key: "needs_rain_cover", label: "Needs rain cover", type: "tristate" },
-  { key: "water_needs", label: "Water needs", type: "text" },
-  { key: "family", label: "Family", type: "text" },
-  { key: "genus", label: "Genus", type: "text" },
-  { key: "min_temperature_c", label: "Min temperature (°C)", type: "number" },
-  { key: "max_temperature_c", label: "Max temperature (°C)", type: "number" },
-  { key: "days_to_maturity", label: "Days to maturity", type: "number" },
-  { key: "soil_ph_min", label: "Soil pH min", type: "number" },
-  { key: "soil_ph_max", label: "Soil pH max", type: "number" },
-  { key: "is_toxic", label: "Is toxic", type: "tristate" },
-  { key: "toxicity_notes", label: "Toxicity notes", type: "text" },
-  { key: "is_edible", label: "Is edible", type: "tristate" },
-  { key: "edible_parts", label: "Edible parts", type: "tags" },
-  { key: "succession_enabled", label: "Succession enabled", type: "tristate" },
-  { key: "succession_interval_days", label: "Succession interval (days)", type: "number" },
-  { key: "succession_max_sowings", label: "Succession max sowings", type: "number" },
+  { key: "common_name", label: "Common name", type: "text", description: "The plant's everyday name, e.g. 'Tomato'." },
+  {
+    key: "botanical_name",
+    label: "Botanical name",
+    type: "text",
+    description: "The scientific (Latin binomial) name, e.g. 'Solanum lycopersicum'.",
+  },
+  { key: "description", label: "Description", type: "textarea", description: "General notes about this plant." },
+  {
+    key: "sowing_method",
+    label: "Sowing method",
+    type: "textarea",
+    description: "How this plant is typically sown, e.g. direct sow, or start indoors and transplant.",
+  },
+  {
+    key: "spread_cm",
+    label: "Spread (cm)",
+    type: "number",
+    description: "How wide a mature plant spreads, in centimeters.",
+  },
+  {
+    key: "row_spacing_cm",
+    label: "Row spacing (cm)",
+    type: "number",
+    description: "Recommended spacing between rows, in centimeters.",
+  },
+  { key: "height_cm", label: "Height (cm)", type: "number", description: "Typical mature height, in centimeters." },
+  {
+    key: "sun_level",
+    label: "Sun level",
+    type: "select",
+    options: SUN_LEVEL_OPTIONS,
+    description: "How much direct sun this plant needs.",
+  },
+  {
+    key: "soil_type",
+    label: "Soil type",
+    type: "text",
+    description: "Preferred soil type, e.g. loam, sandy, well-drained.",
+  },
+  {
+    key: "composting_needs",
+    label: "Composting needs",
+    type: "textarea",
+    description: "Compost/organic matter this plant needs before or during growing.",
+  },
+  {
+    key: "fertilizer_needs",
+    label: "Fertilizer needs",
+    type: "textarea",
+    description: "Fertilizer requirements for this plant.",
+  },
+  {
+    key: "needs_wind_cover",
+    label: "Needs wind cover",
+    type: "tristate",
+    description: "Whether this plant needs protection from wind.",
+  },
+  {
+    key: "needs_rain_cover",
+    label: "Needs rain cover",
+    type: "tristate",
+    description: "Whether this plant needs protection from rain.",
+  },
+  { key: "water_needs", label: "Water needs", type: "text", description: "How much water this plant typically needs." },
+  {
+    key: "family",
+    label: "Family",
+    type: "text",
+    description: "The botanical family this plant belongs to, e.g. Solanaceae - used for succession/rotation warnings.",
+  },
+  { key: "genus", label: "Genus", type: "text", description: "The botanical genus this plant belongs to." },
+  {
+    key: "min_temperature_c",
+    label: "Min temperature (°C)",
+    type: "number",
+    description: "Minimum temperature this plant tolerates, in degrees Celsius.",
+  },
+  {
+    key: "max_temperature_c",
+    label: "Max temperature (°C)",
+    type: "number",
+    description: "Maximum temperature this plant tolerates, in degrees Celsius.",
+  },
+  {
+    key: "days_to_maturity",
+    label: "Days to maturity",
+    type: "number",
+    description: "Typical number of days from sowing/planting to harvest.",
+  },
+  { key: "soil_ph_min", label: "Soil pH min", type: "number", description: "Minimum preferred soil pH." },
+  { key: "soil_ph_max", label: "Soil pH max", type: "number", description: "Maximum preferred soil pH." },
+  { key: "is_toxic", label: "Is toxic", type: "tristate", description: "Whether any part of this plant is toxic." },
+  {
+    key: "toxicity_notes",
+    label: "Toxicity notes",
+    type: "text",
+    description: "Details about which parts are toxic and to whom.",
+  },
+  { key: "is_edible", label: "Is edible", type: "tristate", description: "Whether this plant is edible." },
+  {
+    key: "edible_parts",
+    label: "Edible parts",
+    type: "tags",
+    description: "Which parts of the plant are eaten, e.g. fruit, leaves, roots - comma separated.",
+  },
+  {
+    key: "succession_enabled",
+    label: "Succession enabled",
+    type: "tristate",
+    description: "Whether this plant supports succession (staggered repeat) sowing.",
+  },
+  {
+    key: "succession_interval_days",
+    label: "Succession interval (days)",
+    type: "number",
+    description: "Days to wait between successive sowings.",
+  },
+  {
+    key: "succession_max_sowings",
+    label: "Succession max sowings",
+    type: "number",
+    description: "Maximum number of succession sowings per season.",
+  },
 ];
 
 export type FieldValue = string | number | boolean | string[] | null;

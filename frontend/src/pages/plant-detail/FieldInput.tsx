@@ -34,7 +34,7 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
     const selectValue = value === null || value === undefined ? "" : String(value);
 
     return (
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1" title={field.description}>
         <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
         <select
           className={inputClass}
@@ -58,7 +58,7 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
 
   if (field.type === "number") {
     return (
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1" title={field.description}>
         <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
         <input
           type="number"
@@ -76,7 +76,7 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   if (field.type === "tags") {
     const textValue = Array.isArray(draft) ? draft.join(", ") : "";
     return (
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1" title={field.description}>
         <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
         <input
           type="text"
@@ -104,7 +104,7 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
 
   if (field.type === "textarea") {
     return (
-      <label className="flex flex-col gap-1 sm:col-span-2">
+      <label className="flex flex-col gap-1 sm:col-span-2" title={field.description}>
         <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
         <textarea
           className={inputClass}
@@ -118,7 +118,7 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   }
 
   return (
-    <label className="flex flex-col gap-1">
+    <label className="flex flex-col gap-1" title={field.description}>
       <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
       <input
         type="text"
