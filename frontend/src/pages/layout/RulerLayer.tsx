@@ -22,7 +22,11 @@ interface RulerLayerProps {
  * divided by `viewport.scale` so they read as a constant on-screen size
  * regardless of zoom level, the same way a real ruler's markings don't get
  * thinner as you zoom out. Non-interactive (listening={false}) so it never
- * intercepts drags meant for beds/plants underneath. */
+ * intercepts drags meant for beds/plants underneath - callers should still
+ * render it as the *last* child of the `Stage` (topmost Konva Layer) so
+ * opaque bed/garden-boundary fills don't visually cover its ticks whenever
+ * panning brings that content across the screen edges the ruler is anchored
+ * to (see the "Left tick marks disappear" backlog item). */
 export function RulerLayer({ canvasSize, viewport }: RulerLayerProps) {
   const bounds = visibleWorldBounds(viewport, canvasSize);
   const spacing = pickTickSpacingCm(viewport.scale);

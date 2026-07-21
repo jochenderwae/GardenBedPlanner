@@ -881,7 +881,6 @@ export function Layout() {
               <Layer listening={false}>
                 <GridLines canvasSize={canvasSize} viewport={viewport} />
               </Layer>
-              <RulerLayer canvasSize={canvasSize} viewport={viewport} />
               <Layer>
                 {garden && (
                   <GardenBoundary
@@ -952,6 +951,13 @@ export function Layout() {
                   onMarqueeSelect={handleMarqueeSelect}
                 />
               )}
+              {/* Drawn last (topmost Konva Layer) so opaque bed/garden-boundary
+                  fills underneath never cover the ruler's tick marks - see the
+                  "Left tick marks disappear" backlog item. `listening={false}`
+                  (set inside RulerLayer itself) means it still never intercepts
+                  clicks/drags meant for the layers beneath it despite being on
+                  top visually. */}
+              <RulerLayer canvasSize={canvasSize} viewport={viewport} />
             </Stage>
           </div>
 
@@ -1026,8 +1032,9 @@ export function Layout() {
             <Layer listening={false}>
               <GridLines canvasSize={canvasSize} viewport={viewport} />
             </Layer>
-            <RulerLayer canvasSize={canvasSize} viewport={viewport} />
             <ExampleGardenLayer beds={exampleBeds} plantsBySlug={plantsBySlug} onHover={setTooltip} />
+            {/* Topmost layer - see the "mine" Stage's identical comment above. */}
+            <RulerLayer canvasSize={canvasSize} viewport={viewport} />
           </Stage>
           <PlantingTooltip tooltip={tooltip} />
         </div>
