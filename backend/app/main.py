@@ -10,6 +10,7 @@ from app.api.routes import (
     example_garden,
     garden,
     garden_plans,
+    harvest_logs,
     health,
     period_types,
     plantings,
@@ -49,6 +50,7 @@ def create_app() -> FastAPI:
     app.include_router(rotation.router, prefix="/api")
     app.include_router(garden_plans.router, prefix="/api")
     app.include_router(actions.router, prefix="/api")
+    app.include_router(harvest_logs.router, prefix="/api")
 
     return app
 

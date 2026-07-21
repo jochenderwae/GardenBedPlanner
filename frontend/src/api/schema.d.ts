@@ -635,6 +635,43 @@ export interface paths {
         patch: operations["update_action_api_actions__action_id__patch"];
         trace?: never;
     };
+    "/api/harvest-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Harvest Logs */
+        get: operations["list_harvest_logs_api_harvest_logs_get"];
+        put?: never;
+        /** Create Harvest Log */
+        post: operations["create_harvest_log_api_harvest_logs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/harvest-logs/{harvest_log_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Harvest Log */
+        get: operations["get_harvest_log_api_harvest_logs__harvest_log_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Harvest Log */
+        delete: operations["delete_harvest_log_api_harvest_logs__harvest_log_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Harvest Log */
+        patch: operations["update_harvest_log_api_harvest_logs__harvest_log_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1100,6 +1137,84 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /**
+         * HarvestLog
+         * @description A logged harvest (yield/quality/notes) against a specific Planting -
+         *     per root CLAUDE.md's domain note that harvest logs should inform next
+         *     year's planning. Linked via planting_id rather than bed_id: the point
+         *     is to build a per-crop yield history (this variety of tomato in this
+         *     bed did/didn't do well), which a bare bed_id link would lose once
+         *     multiple plantings have occupied the same bed over time.
+         *
+         *     No HARVEST_LOG table exists yet in docs/schema.md (unlike
+         *     COMPOST_FERTILIZATION_LOG) - this shape is designed here following that
+         *     table's own pattern (a log row referencing what it's about, a date, and
+         *     free-text notes) plus Planting's yield-adjacent fields. yield_amount/
+         *     yield_unit are a free-text-unit pair (kg, count, bunches, ...) rather
+         *     than a fixed unit column, same reasoning as BedEquipment.equipment_type/
+         *     Bed.category: real produce is measured too many different ways (weight
+         *     for tomatoes, count for peppers, bunches for herbs) to force one unit.
+         */
+        HarvestLog: {
+            /** Id */
+            id?: number | null;
+            /** Planting Id */
+            planting_id: number;
+            /**
+             * Harvest Date
+             * Format: date
+             */
+            harvest_date: string;
+            /** Yield Amount */
+            yield_amount?: number | null;
+            /** Yield Unit */
+            yield_unit?: string | null;
+            quality?: components["schemas"]["HarvestQuality"] | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** HarvestLogCreate */
+        HarvestLogCreate: {
+            /** Planting Id */
+            planting_id: number;
+            /**
+             * Harvest Date
+             * Format: date
+             */
+            harvest_date: string;
+            /** Yield Amount */
+            yield_amount?: number | null;
+            /** Yield Unit */
+            yield_unit?: string | null;
+            quality?: components["schemas"]["HarvestQuality"] | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** HarvestLogUpdate */
+        HarvestLogUpdate: {
+            /** Planting Id */
+            planting_id?: number | null;
+            /** Harvest Date */
+            harvest_date?: string | null;
+            /** Yield Amount */
+            yield_amount?: number | null;
+            /** Yield Unit */
+            yield_unit?: string | null;
+            quality?: components["schemas"]["HarvestQuality"] | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /**
+         * HarvestQuality
+         * @enum {string}
+         */
+        HarvestQuality: "poor" | "fair" | "good" | "excellent";
         /**
          * LifeCycle
          * @enum {string}
@@ -3674,6 +3789,166 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Action"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_harvest_logs_api_harvest_logs_get: {
+        parameters: {
+            query?: {
+                /** @description Only entries for this planting */
+                planting_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HarvestLog"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_harvest_log_api_harvest_logs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HarvestLogCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HarvestLog"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_harvest_log_api_harvest_logs__harvest_log_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                harvest_log_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HarvestLog"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_harvest_log_api_harvest_logs__harvest_log_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                harvest_log_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_harvest_log_api_harvest_logs__harvest_log_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                harvest_log_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HarvestLogUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HarvestLog"];
                 };
             };
             /** @description Validation Error */
