@@ -9,6 +9,15 @@ import { DEFAULT_VIEWPORT, screenToWorld, worldToScreen, type Viewport } from ".
 const MIN_SIZE_CM = 100;
 const GARDEN_COLORS = { fill: "transparent", stroke: "#166534" };
 
+// Same fix as BedNode.tsx's identical Transformer setup (see that file's
+// comment for the full explanation) - divide the handle sizes by
+// viewport.scale so they stay a constant size on screen regardless of zoom,
+// instead of shrinking to near-invisible dots when zoomed out.
+const TRANSFORMER_ANCHOR_SIZE_PX = 10;
+const TRANSFORMER_ANCHOR_STROKE_WIDTH_PX = 1;
+const TRANSFORMER_BORDER_STROKE_WIDTH_PX = 1;
+const TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX = 50;
+
 interface GardenBoundaryProps {
   name: string;
   geometry: Geometry;
@@ -115,6 +124,10 @@ export function GardenBoundary({
             if (newBox.width < MIN_SIZE_CM || newBox.height < MIN_SIZE_CM) return oldBox;
             return newBox;
           }}
+          anchorSize={TRANSFORMER_ANCHOR_SIZE_PX / viewport.scale}
+          anchorStrokeWidth={TRANSFORMER_ANCHOR_STROKE_WIDTH_PX / viewport.scale}
+          borderStrokeWidth={TRANSFORMER_BORDER_STROKE_WIDTH_PX / viewport.scale}
+          rotateAnchorOffset={TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX / viewport.scale}
         />
       )}
     </>
