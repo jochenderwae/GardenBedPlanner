@@ -672,6 +672,84 @@ export interface paths {
         patch: operations["update_harvest_log_api_harvest_logs__harvest_log_id__patch"];
         trace?: never;
     };
+    "/api/push-subscriptions/vapid-public-key": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Vapid Public Key
+         * @description The frontend needs this to call PushManager.subscribe({applicationServerKey: ...})
+         *     (see #47) - exposed as a plain public value, not a secret.
+         */
+        get: operations["get_vapid_public_key_api_push_subscriptions_vapid_public_key_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/push-subscriptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Push Subscriptions */
+        get: operations["list_push_subscriptions_api_push_subscriptions_get"];
+        put?: never;
+        /** Register Push Subscription */
+        post: operations["register_push_subscription_api_push_subscriptions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/push-subscriptions/{subscription_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Push Subscription */
+        delete: operations["delete_push_subscription_api_push_subscriptions__subscription_id__delete"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/push-subscriptions/{subscription_id}/send-test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Send Test Push
+         * @description Manual verification hook for the "How to test" flow - triggers a
+         *     real send against one registered subscription so the deployed backend
+         *     can be checked against an actual device/browser.
+         */
+        post: operations["send_test_push_api_push_subscriptions__subscription_id__send_test_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1692,6 +1770,50 @@ export interface components {
             /** Points */
             points: components["schemas"]["Point2D"][];
         };
+        /**
+         * PushSubscription
+         * @description A browser's Web Push subscription (endpoint + the two encryption
+         *     keys from the client's PushSubscription.toJSON(), see
+         *     https://developer.mozilla.org/en-US/docs/Web/API/PushManager/subscribe) -
+         *     registered once the PWA's service worker requests notification
+         *     permission (#47). No auth/multi-device management needed in v1 (single
+         *     user, per root CLAUDE.md) - endpoint is unique so re-registering the
+         *     same device/browser updates its keys in place rather than creating a
+         *     duplicate row.
+         */
+        PushSubscription: {
+            /** Id */
+            id?: number | null;
+            /** Endpoint */
+            endpoint: string;
+            /** P256Dh Key */
+            p256dh_key: string;
+            /** Auth Key */
+            auth_key: string;
+            /** User Agent */
+            user_agent?: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at?: string;
+        };
+        /**
+         * PushSubscriptionRegister
+         * @description Mirrors the browser's PushSubscription.toJSON() shape (endpoint +
+         *     keys.p256dh/keys.auth) - the frontend passes this straight through from
+         *     PushManager.subscribe(), plus an optional user_agent for debugging.
+         */
+        PushSubscriptionRegister: {
+            /** Endpoint */
+            endpoint: string;
+            /** Keys */
+            keys: {
+                [key: string]: string;
+            };
+            /** User Agent */
+            user_agent?: string | null;
+        };
         /** RectangleGeometry */
         RectangleGeometry: {
             /**
@@ -1759,6 +1881,19 @@ export interface components {
          * @enum {string}
          */
         SunLevel: "full_sun" | "half_sun" | "shadow";
+        /** TestSendRequest */
+        TestSendRequest: {
+            /**
+             * Title
+             * @default GardenBedPlanner
+             */
+            title: string;
+            /**
+             * Body
+             * @default Test notification
+             */
+            body: string;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -3949,6 +4084,147 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HarvestLog"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_vapid_public_key_api_push_subscriptions_vapid_public_key_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+        };
+    };
+    list_push_subscriptions_api_push_subscriptions_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushSubscription"][];
+                };
+            };
+        };
+    };
+    register_push_subscription_api_push_subscriptions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PushSubscriptionRegister"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PushSubscription"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_push_subscription_api_push_subscriptions__subscription_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subscription_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    send_test_push_api_push_subscriptions__subscription_id__send_test_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                subscription_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TestSendRequest"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */

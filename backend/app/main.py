@@ -15,6 +15,7 @@ from app.api.routes import (
     period_types,
     plantings,
     plants,
+    push_subscriptions,
     rotation,
 )
 from app.core.config import settings
@@ -51,6 +52,7 @@ def create_app() -> FastAPI:
     app.include_router(garden_plans.router, prefix="/api")
     app.include_router(actions.router, prefix="/api")
     app.include_router(harvest_logs.router, prefix="/api")
+    app.include_router(push_subscriptions.router, prefix="/api")
 
     return app
 
