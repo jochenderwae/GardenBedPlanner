@@ -97,3 +97,17 @@ def mark_pass_done(slug: str, pass_name: str) -> None:
             (slug, pass_name, _now()),
         )
         conn.commit()
+
+
+def reset_pass_done(slug: str, pass_name: str) -> None:
+    """Un-checkpoints one plant/pass so run_passes redoes it on the next
+    invocation - used when a pass's own logic changes (e.g. issue #120's
+    metric-units prompt fix) and already-processed plants need to go
+    through it again, without re-running the other 3 passes (still
+    correctly marked done) or the whole ingestion phase."""
+    assert pass_name in PASS_NAMES, f"unknown pass {pass_name!r}"
+    with _connect() as conn:
+        conn.execute(
+            "DELETE FROM plant_pass_done WHERE slug = ? AND pass_name = ?", (slug, pass_name)
+        )
+        conn.commit()

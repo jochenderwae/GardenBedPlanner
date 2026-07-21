@@ -19,6 +19,7 @@ not worth the extra variable during initial build-out.
 """
 
 import json
+import re
 from datetime import datetime, timezone
 
 import httpx
@@ -28,8 +29,65 @@ from etl.ollama_resolve import resolve_scalar_field
 
 CROSSCHECK_LOG = DATA_DIR / "growing_info_crosscheck_log.jsonl"
 INTERESTING_LOG = DATA_DIR / "growing_info_interesting_log.jsonl"
+# issue #120: the consolidate prompt now requires every imperial measurement
+# to carry a metric value too, but an LLM instruction isn't a guarantee -
+# logged (not silently accepted, not blocked/retried) so a human can spot-
+# check whether misses are rare noise or a systematic prompt problem.
+IMPERIAL_RESIDUAL_LOG = DATA_DIR / "growing_info_imperial_residual_log.jsonl"
+# issue #120 follow-up: found while verifying the metric-units reconsolidation
+# run - celery has 9 raw entries (~36k prompt chars, the largest of any
+# plant), and its consolidate call hit the Ollama request timeout. The
+# exception was caught and printed but never marked_pass_done was still
+# called unconditionally in run.py, so celery was silently left with NO
+# consolidated entry and no persistent trace (the print landed in a
+# detached run's redirected stdout, easy to miss). Now logged persistently
+# here, and ConsolidationFailed (below) stops run.py from marking the pass
+# done on failure, so a future run_passes retries it instead of losing it.
+CONSOLIDATE_FAILURE_LOG = DATA_DIR / "growing_info_consolidate_failure_log.jsonl"
 
 _MAX_TEXT_CHARS = 6000  # per-call prompt budget across the raw entries
+# consolidate_pass's own prompt (unlike extract/crosscheck/surface, which
+# read the much-shorter _best_text) concatenates ALL raw entries uncapped
+# in total - some plants (celery: 9 raw entries, ~36k chars) can take
+# noticeably longer than the default 240s to process. Bumped just for this
+# call rather than raising the global default, since the other three passes
+# never see prompts anywhere near this size.
+_CONSOLIDATE_TIMEOUT_SECONDS = 480
+
+
+class ConsolidationFailed(Exception):
+    """Raised by consolidate_pass when the Ollama call itself errors out
+    (timeout, bad JSON, connection error, etc.) - distinct from returning
+    None for the legitimate "fewer than 2 raw entries, nothing to
+    synthesize" case. Callers (run.py) must not mark the consolidate pass
+    done when this is raised."""
+
+# Best-effort detector for a leftover imperial-only measurement: a number
+# (digits or spelled out) directly followed by an imperial unit word, with
+# no metric unit (cm/mm/m/l/kg/g) anywhere nearby. Not a precise parser -
+# just enough to flag likely misses for review, same spirit as every other
+# "log it, don't guess" heuristic in this pipeline.
+_NUMBER_WORD = r"(?:\d+(?:\.\d+)?|one|two|three|four|five|six|seven|eight|nine|ten)"
+_IMPERIAL_RE = re.compile(
+    rf"\b{_NUMBER_WORD}(?:\s*(?:to|-|or)\s*{_NUMBER_WORD})?\s*"
+    r"(?:inch(?:es)?|foot|feet|ft\.?|yard(?:s)?)\b",
+    re.IGNORECASE,
+)
+_METRIC_NEARBY_RE = re.compile(r"\b\d+(?:\.\d+)?\s*(?:cm|mm|m|km)\b", re.IGNORECASE)
+
+
+def _find_imperial_residuals(text: str, window: int = 40) -> list[str]:
+    """Returns the surrounding snippet for each imperial-unit mention that
+    doesn't have a metric measurement within `window` characters either
+    side - a real conversion has both close together (e.g. '30cm (12in)'),
+    so a lone imperial mention with no nearby metric value is a likely miss."""
+    hits = []
+    for m in _IMPERIAL_RE.finditer(text):
+        start, end = max(0, m.start() - window), min(len(text), m.end() + window)
+        snippet = text[start:end]
+        if not _METRIC_NEARBY_RE.search(snippet):
+            hits.append(snippet.strip())
+    return hits
 
 
 def _append_log(path, entry: dict) -> None:
@@ -38,7 +96,7 @@ def _append_log(path, entry: dict) -> None:
         f.write(json.dumps(entry) + "\n")
 
 
-def _call_ollama(prompt: str, schema: dict, *, model: str | None = None) -> dict:
+def _call_ollama(prompt: str, schema: dict, *, model: str | None = None, timeout: float = 240) -> dict:
     resp = httpx.post(
         f"{settings.ollama_host}/api/generate",
         json={
@@ -48,7 +106,7 @@ def _call_ollama(prompt: str, schema: dict, *, model: str | None = None) -> dict
             "stream": False,
             "options": {"temperature": 0.1},
         },
-        timeout=240,
+        timeout=timeout,
     )
     resp.raise_for_status()
     return json.loads(resp.json()["response"])
@@ -92,8 +150,16 @@ def consolidate_pass(plant_json: dict) -> dict | None:
         "paragraphs) of practical growing advice, combining what's "
         "complementary and not repeating what's redundant. Keep concrete "
         "specifics (spacing, timing, soil, pests) rather than vague "
-        'generalities. Respond with JSON only: {"consolidated_text": "<the '
-        'combined text>"}.'
+        "generalities. These old books use imperial measurements "
+        "throughout (inches, feet, spelled out as words like 'three or "
+        "four inches' as well as digits like '4 ft') - convert EVERY "
+        "single one you find, spelled-out or numeric, to metric (cm, m, L, "
+        "etc.) as the primary unit, and add the original imperial value in "
+        "parentheses afterward, e.g. '30cm (12in) apart', '1.2m (4ft) "
+        "between rows', or '7-10cm (three or four inches) high'. Do not "
+        "leave any measurement in imperial units only, including ones "
+        "spelled out in words rather than digits. Respond with JSON only: "
+        '{"consolidated_text": "<the combined text>"}.'
     )
     schema = {
         "type": "object",
@@ -101,13 +167,31 @@ def consolidate_pass(plant_json: dict) -> dict | None:
         "required": ["consolidated_text"],
     }
     try:
-        parsed = _call_ollama(prompt, schema)
+        parsed = _call_ollama(prompt, schema, timeout=_CONSOLIDATE_TIMEOUT_SECONDS)
         text = parsed["consolidated_text"].strip()
     except Exception as exc:  # noqa: BLE001
-        print(f"[passes] consolidate failed for {plant_json['slug']}: {exc!r}")
-        return None
+        slug = plant_json["slug"]
+        print(f"[passes] consolidate failed for {slug}: {exc!r}")
+        _append_log(
+            CONSOLIDATE_FAILURE_LOG,
+            {
+                "slug": slug,
+                "common_name": common_name,
+                "num_raw_entries": len(raw),
+                "prompt_chars": len(sources_text),
+                "error": repr(exc),
+            },
+        )
+        raise ConsolidationFailed(f"{slug}: {exc!r}") from exc
     if not text:
         return None
+
+    residuals = _find_imperial_residuals(text)
+    if residuals:
+        _append_log(
+            IMPERIAL_RESIDUAL_LOG,
+            {"slug": plant_json["slug"], "common_name": common_name, "residual_snippets": residuals},
+        )
 
     return {
         "text": text,

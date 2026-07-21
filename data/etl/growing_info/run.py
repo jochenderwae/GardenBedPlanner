@@ -152,15 +152,25 @@ def run_passes(plant_limit: int | None) -> None:
         changed = False
 
         if not state.is_pass_done(slug, "consolidate"):
-            entry = passes.consolidate_pass(plant_json)
-            if entry:
-                added = storage.add_growing_info_entry(
-                    plant_json, text=entry["text"], source_url=None,
-                    attribution=entry["attribution"], copyright_status=entry["copyright_status"],
-                    record_type="consolidated",
-                )
-                changed = changed or added
-            state.mark_pass_done(slug, "consolidate")
+            try:
+                entry = passes.consolidate_pass(plant_json)
+            except passes.ConsolidationFailed as exc:
+                # Don't mark done - a genuine call failure (timeout, bad
+                # JSON, etc.), not "nothing to consolidate". Leaving the
+                # checkpoint unset means the next run_passes invocation
+                # retries this plant instead of silently losing it (see
+                # passes.CONSOLIDATE_FAILURE_LOG's docstring for the
+                # celery incident that motivated this).
+                print(f"[growing_info] consolidate failed for {slug}, will retry next run: {exc}")
+            else:
+                if entry:
+                    added = storage.add_growing_info_entry(
+                        plant_json, text=entry["text"], source_url=None,
+                        attribution=entry["attribution"], copyright_status=entry["copyright_status"],
+                        record_type="consolidated",
+                    )
+                    changed = changed or added
+                state.mark_pass_done(slug, "consolidate")
 
         if changed:
             storage.save_plant_json(plant_json)

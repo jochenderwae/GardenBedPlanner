@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSnackbar } from "@/components/Snackbar";
+import { PlantSearchList } from "@/components/PlantSearchList";
 import {
   beddingNeedApi,
   createCompanion,
@@ -14,6 +15,7 @@ import {
   periodApi,
   pestInteractionApi,
   upsertSeedInfo,
+  type Plant,
   type PlantBeddingNeed,
   type PlantCompanion,
   type PlantDataSource,
@@ -373,13 +375,57 @@ export function PestInteractionsSection({ slug, items }: { slug: string; items: 
   );
 }
 
-export function CompanionsSection({ slug, items }: { slug: string; items: PlantCompanion[] }) {
+/** One "Good"/"Bad" column of the Companions table below - its own current
+ * companions plus an always-open `PlantSearchList` that adds a companion
+ * immediately on pick (no separate "Add" button), staying mounted (and so
+ * keeping its search text) across picks so several can be added in a row. */
+function CompanionColumn({
+  relationship,
+  items,
+  candidatePlants,
+  onAdd,
+  onRemove,
+}: {
+  relationship: "good" | "bad";
+  items: PlantCompanion[];
+  candidatePlants: Plant[];
+  onAdd: (companionSlug: string, relationship: "good" | "bad") => void;
+  onRemove: (item: PlantCompanion) => void;
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      {items.map((item) => (
+        <div key={item.companion_plant_slug} className={rowClass}>
+          <span className="flex-1">{item.companion_plant_slug}</span>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={`Remove ${relationship} companion`}
+            onClick={() => onRemove(item)}
+          >
+            <Trash2 />
+          </Button>
+        </div>
+      ))}
+      <PlantSearchList plants={candidatePlants} onPick={(companionSlug) => onAdd(companionSlug, relationship)} autoFocus={false} />
+    </div>
+  );
+}
+
+export function CompanionsSection({
+  slug,
+  items,
+  allPlants,
+}: {
+  slug: string;
+  items: PlantCompanion[];
+  allPlants: Plant[];
+}) {
   const queryClient = useQueryClient();
   const { show } = useSnackbar();
-  const [draft, setDraft] = useState<{ companion_plant_slug: string; relationship: "good" | "bad" }>({
-    companion_plant_slug: "",
-    relationship: "good",
-  });
+  // Excludes the plant's own page from its candidate companion list - a
+  // plant can't meaningfully be its own companion.
+  const candidatePlants = allPlants.filter((p) => p.slug !== slug);
 
   function setList(updater: (list: PlantCompanion[]) => PlantCompanion[]) {
     queryClient.setQueryData<PlantDetail>(["plant", slug], (old) =>
@@ -387,9 +433,8 @@ export function CompanionsSection({ slug, items }: { slug: string; items: PlantC
     );
   }
 
-  function add() {
-    if (!draft.companion_plant_slug) return;
-    const item = { companion_plant_slug: draft.companion_plant_slug, relationship: draft.relationship };
+  function add(companionSlug: string, relationship: "good" | "bad") {
+    const item = { companion_plant_slug: companionSlug, relationship };
     createCompanion(slug, item).then((created) => {
       setList((list) => [...list, created]);
       show(`Added companion ${created.companion_plant_slug}`, () => {
@@ -398,7 +443,6 @@ export function CompanionsSection({ slug, items }: { slug: string; items: PlantC
         );
       });
     });
-    setDraft({ companion_plant_slug: "", relationship: "good" });
   }
 
   function remove(item: PlantCompanion) {
@@ -415,38 +459,42 @@ export function CompanionsSection({ slug, items }: { slug: string; items: PlantC
     });
   }
 
+  const good = items.filter((c) => c.relationship === "good");
+  const bad = items.filter((c) => c.relationship === "bad");
+
   return (
     <section className={sectionClass}>
       <h2 className="text-sm font-semibold">Companions</h2>
-      {items.map((item) => (
-        <div key={item.companion_plant_slug} className={rowClass}>
-          <span className="flex-1">
-            {item.companion_plant_slug} — {item.relationship}
-          </span>
-          <Button variant="ghost" size="icon-sm" aria-label="Remove companion" onClick={() => remove(item)}>
-            <Trash2 />
-          </Button>
-        </div>
-      ))}
-      <div className={rowClass}>
-        <input
-          className={inputClass}
-          placeholder="companion plant slug"
-          value={draft.companion_plant_slug}
-          onChange={(e) => setDraft({ ...draft, companion_plant_slug: e.target.value })}
-        />
-        <select
-          className={inputClass}
-          value={draft.relationship}
-          onChange={(e) => setDraft({ ...draft, relationship: e.target.value as "good" | "bad" })}
-        >
-          <option value="good">good</option>
-          <option value="bad">bad</option>
-        </select>
-        <Button size="sm" variant="outline" onClick={add}>
-          <Plus /> Add
-        </Button>
-      </div>
+      <table className="w-full text-sm">
+        <thead>
+          <tr>
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Good</th>
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">Bad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="w-1/2 pr-3 align-top">
+              <CompanionColumn
+                relationship="good"
+                items={good}
+                candidatePlants={candidatePlants}
+                onAdd={add}
+                onRemove={remove}
+              />
+            </td>
+            <td className="w-1/2 pl-3 align-top">
+              <CompanionColumn
+                relationship="bad"
+                items={bad}
+                candidatePlants={candidatePlants}
+                onAdd={add}
+                onRemove={remove}
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </section>
   );
 }
