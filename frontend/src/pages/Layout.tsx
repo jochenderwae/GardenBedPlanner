@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Stage, Layer, Line } from "react-konva";
+import { Stage, Layer, Line, Rect } from "react-konva";
 import type Konva from "konva";
 import {
   createPlanting,
@@ -51,6 +51,7 @@ import {
   clampRectPositionToBounds,
   DRAG_SNAP_CM,
   GRID_SPACING_CM,
+  normalizedRect,
   NUDGE_STEP_CM,
   rectanglesOverlap,
   translateGeometry,
@@ -146,10 +147,73 @@ export function Layout() {
   const plantingPanelRef = useRef<PlantingPanelHandle>(null);
   const bulkPlantingPanelRef = useRef<BulkPlantingPanelHandle>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
+  // Middle-mouse-drag pan (see handlePanMouseDown below) - Stage's own
+  // `draggable` used to own panning, but that conflicts with child nodes
+  // (beds, polygon vertices, plant markers) that are themselves draggable:
+  // Konva only tracks one active drag gesture at a time, and stopping the
+  // Stage's drag mid-gesture to "guard" it ends up cancelling the child
+  // node's own just-started drag instead of isolating it (see the "pan/drag
+  // bug" backlog item this replaced). Panning is now handled entirely
+  // outside Konva's drag system: `isPanning` just controls whether the
+  // window-level mousemove/mouseup listeners below are subscribed,
+  // `lastPanPointRef` tracks the raw (untransformed) pointer position
+  // between ticks.
+  const [isPanning, setIsPanning] = useState(false);
+  const lastPanPointRef = useRef<{ x: number; y: number } | null>(null);
+  // Left-drag-over-empty-canvas marquee select for the Planters tab (see
+  // PlantPlacementLayer's identical pattern for the Plants tab, which is
+  // bed-scoped rather than canvas-wide since plants only ever live inside a
+  // bed). World/cm coordinates (Stage-relative, already accounts for
+  // pan/zoom via getRelativePointerPosition).
+  const [bedMarquee, setBedMarquee] = useState<{ start: { x: number; y: number }; current: { x: number; y: number } } | null>(
+    null,
+  );
+  // Multi-bed highlight from a marquee that overlapped 2+ beds - kept
+  // separate from the single-select `selectedId` (which still drives
+  // BedPanel) since there's no bulk-bed-edit panel yet; a marquee hitting
+  // exactly one bed still goes through `selectedId` as before so a plain
+  // click-drag-release over one bed behaves like a normal select.
+  const [selectedBedIds, setSelectedBedIds] = useState<Set<number>>(new Set());
   // Undo/redo over the four geometry-mutation call sites below (bed, garden
   // boundary, planting, equipment) - see history.ts's own doc for why this
   // is a small linear stack rather than a full command-pattern engine.
   const history = useUndoHistory();
+
+  useEffect(() => {
+    if (!isPanning) return;
+    function handleMouseMove(e: MouseEvent) {
+      const last = lastPanPointRef.current;
+      if (!last) return;
+      const dx = e.clientX - last.x;
+      const dy = e.clientY - last.y;
+      lastPanPointRef.current = { x: e.clientX, y: e.clientY };
+      setViewport((v) => ({ ...v, x: v.x + dx, y: v.y + dy }));
+    }
+    function handleMouseUp() {
+      setIsPanning(false);
+      lastPanPointRef.current = null;
+    }
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isPanning]);
+
+  /** Middle mouse button (button 1) down anywhere on a Stage starts a pan -
+   * shared by both Stage instances ("mine" and "example" mode). Returns
+   * whether it handled the event, so callers with additional left-click
+   * logic (the "mine" Stage's marquee-select) know to skip that when this
+   * already consumed it. `preventDefault` stops the browser's own
+   * middle-click autoscroll cursor from kicking in over the canvas. */
+  function handlePanMouseDown(e: Konva.KonvaEventObject<MouseEvent>): boolean {
+    if (e.evt.button !== 1) return false;
+    e.evt.preventDefault();
+    lastPanPointRef.current = { x: e.evt.clientX, y: e.evt.clientY };
+    setIsPanning(true);
+    return true;
+  }
 
   const { data, isPending, isError } = useQuery({
     queryKey: ["beds"],
@@ -247,6 +311,7 @@ export function Layout() {
   function switchTab(next: PlacementTab) {
     setTab(next);
     setSelectedId(null);
+    setSelectedBedIds(new Set());
     setPlantPickerOpen(false);
     setSelectedPlantingId(null);
     setSelectedPlantingIds(new Set());
@@ -282,31 +347,52 @@ export function Layout() {
     }
   }
 
-  /** Guards the Stage's own drag-to-pan against child nodes (beds, garden
-   * boundary, polygon vertices, plantings) that are themselves `draggable`.
-   * Konva's Stage-drag is triggered by any pointerdown inside the canvas
-   * container regardless of which child shape was actually hit - it is
-   * *not* stopped by a child node's own `draggable`/`dragBoundFunc` the way
-   * DOM event bubbling would suppress a parent handler. Without this guard,
-   * dragging a bed or a polygon vertex also pans the whole garden view at
-   * the same time. Konva's own documented fix: on `dragstart`, if the
-   * event's target isn't the Stage itself, immediately stop the Stage's
-   * drag so only the child node's own drag proceeds. */
-  function handleStageDragStart(e: Konva.KonvaEventObject<DragEvent>) {
+  /** The "mine" Stage's own mousedown - middle button starts a pan (see
+   * handlePanMouseDown); a left-button mousedown that lands on empty canvas
+   * (not on a bed or any other interactive node - `e.target === stage`)
+   * clears the current bed selection and, on the Planters tab, starts a
+   * marquee-select drag (see handleBedMarqueeMouseMove/Up below). */
+  function handleMineStageMouseDown(e: Konva.KonvaEventObject<MouseEvent>) {
+    if (handlePanMouseDown(e)) return;
+    if (e.evt.button !== 0) return;
     const stage = e.target.getStage();
-    if (!stage) return;
-    if (e.target !== stage) {
-      stage.stopDrag();
+    if (!stage || e.target !== stage) return;
+    setSelectedId(null);
+    setSelectedBedIds(new Set());
+    if (tab === "planters") {
+      const pos = stage.getRelativePointerPosition();
+      if (pos) setBedMarquee({ start: pos, current: pos });
     }
   }
 
-  /** Stage's own drag (empty-canvas drag-to-pan only, see the dragstart
-   * guard above). Konva owns the position during the gesture same as every
-   * other drag in this editor; mirror it into `viewport` state once the
-   * gesture ends. */
-  function handleStageDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
-    if (e.target !== e.target.getStage()) return;
-    setViewport((v) => ({ ...v, x: e.target.x(), y: e.target.y() }));
+  function handleBedMarqueeMouseMove(e: Konva.KonvaEventObject<MouseEvent>) {
+    if (!bedMarquee) return;
+    const stage = e.target.getStage();
+    const pos = stage?.getRelativePointerPosition();
+    if (pos) setBedMarquee((prev) => (prev ? { ...prev, current: pos } : prev));
+  }
+
+  /** Completes a bed marquee drag - every bed whose bounding box overlaps
+   * the drawn rectangle gets selected. A single hit goes through the normal
+   * `selectedId` (so BedPanel opens, matching a plain click); 2+ hits are
+   * highlighted via `selectedBedIds` instead, since there's no bulk-bed-edit
+   * panel yet (see the state's own doc above). */
+  function handleBedMarqueeMouseUp(e: Konva.KonvaEventObject<MouseEvent>) {
+    if (!bedMarquee) return;
+    const stage = e.target.getStage();
+    const pos = stage?.getRelativePointerPosition() ?? bedMarquee.current;
+    const rect = normalizedRect(bedMarquee.start, pos);
+    const hitIds = beds
+      .filter((b) => b.id != null && rectanglesOverlap(rect, boundingRect(b.border_geometry)))
+      .map((b) => b.id as number);
+    setBedMarquee(null);
+    if (hitIds.length === 1) {
+      setSelectedId(hitIds[0]);
+      setSelectedBedIds(new Set());
+    } else if (hitIds.length > 1) {
+      setSelectedId(null);
+      setSelectedBedIds(new Set(hitIds));
+    }
   }
 
   /** "Fit to garden": frame the garden boundary + every bed (falling back
@@ -591,6 +677,7 @@ export function Layout() {
   function handleModeChange(next: ViewMode) {
     if (next === "example") {
       setSelectedId(null);
+      setSelectedBedIds(new Set());
       setSelectedPlantingIds(new Set());
     }
     setMode(next);
@@ -650,6 +737,7 @@ export function Layout() {
           setArmedPlant(null);
         } else if (tab === "planters") {
           setSelectedId(null);
+          setSelectedBedIds(new Set());
         } else if (tab === "plants") {
           setSelectedPlantingId(null);
           setSelectedPlantingIds(new Set());
@@ -714,7 +802,8 @@ export function Layout() {
         onRedo={history.redo}
       />
       <p className="text-xs text-muted-foreground">
-        Scroll to pan, Ctrl/Cmd+scroll to zoom, drag empty canvas to pan.
+        Scroll to pan, Ctrl/Cmd+scroll to zoom, middle-click drag to pan, left-click drag on empty canvas to
+        select.
       </p>
 
       {mode === "mine" && (
@@ -772,15 +861,10 @@ export function Layout() {
               y={viewport.y}
               scaleX={viewport.scale}
               scaleY={viewport.scale}
-              draggable
               onWheel={handleWheel}
-              onDragStart={handleStageDragStart}
-              onDragEnd={handleStageDragEnd}
-              onMouseDown={(e) => {
-                if (e.target === e.target.getStage()) {
-                  setSelectedId(null);
-                }
-              }}
+              onMouseDown={handleMineStageMouseDown}
+              onMouseMove={handleBedMarqueeMouseMove}
+              onMouseUp={handleBedMarqueeMouseUp}
             >
               <Layer listening={false}>
                 <GridLines canvasSize={CANVAS_SIZE} viewport={viewport} />
@@ -811,8 +895,13 @@ export function Layout() {
                   <BedNode
                     key={bed.id}
                     bed={bed}
-                    isSelected={tab === "planters" && bed.id === selectedId}
-                    onSelect={() => setSelectedId(bed.id ?? null)}
+                    isSelected={
+                      tab === "planters" && (bed.id === selectedId || (bed.id != null && selectedBedIds.has(bed.id)))
+                    }
+                    onSelect={() => {
+                      setSelectedId(bed.id ?? null);
+                      setSelectedBedIds(new Set());
+                    }}
                     onChange={(geometry) => handleBedChange(bed, geometry)}
                     interactive={tab === "planters"}
                     viewport={viewport}
@@ -820,6 +909,20 @@ export function Layout() {
                     otherBedRects={[...bedRectsById.entries()].filter(([id]) => id !== bed.id).map(([, rect]) => rect)}
                   />
                 ))}
+                {bedMarquee &&
+                  (() => {
+                    const rect = normalizedRect(bedMarquee.start, bedMarquee.current);
+                    return (
+                      <Rect
+                        {...rect}
+                        fill="#2563eb1a"
+                        stroke="#2563eb"
+                        strokeWidth={1 / viewport.scale}
+                        dash={[4, 4]}
+                        listening={false}
+                      />
+                    );
+                  })()}
               </Layer>
               {tab === "equipment" && <EquipmentLayer beds={beds} equipment={equipmentList} />}
               {tab === "plants" && (
@@ -888,10 +991,8 @@ export function Layout() {
             y={viewport.y}
             scaleX={viewport.scale}
             scaleY={viewport.scale}
-            draggable
             onWheel={handleWheel}
-            onDragStart={handleStageDragStart}
-            onDragEnd={handleStageDragEnd}
+            onMouseDown={handlePanMouseDown}
           >
             <Layer listening={false}>
               <GridLines canvasSize={CANVAS_SIZE} viewport={viewport} />
