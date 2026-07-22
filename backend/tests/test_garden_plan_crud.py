@@ -133,3 +133,168 @@ def test_delete_garden_plan_without_cascade_conflicts_when_it_has_entries(
     cascade_response = client.delete(f"/api/garden-plans/{plan_id}", params={"cascade": "true"})
     assert cascade_response.status_code == 204
     assert client.get(f"/api/garden-plans/{plan_id}").status_code == 404
+
+
+def test_create_garden_plan_requires_season_name_and_year(client: TestClient) -> None:
+    missing_year = client.post("/api/garden-plans", json={"season_name": "A"})
+    assert missing_year.status_code == 422
+
+    missing_season_name = client.post("/api/garden-plans", json={"year": 2027})
+    assert missing_season_name.status_code == 422
+
+    empty_body = client.post("/api/garden-plans", json={})
+    assert empty_body.status_code == 422
+
+
+def test_create_garden_plan_entry_bad_bed_id_returns_409(client: TestClient, db_session) -> None:
+    plant_slug = _create_plant(db_session)
+    plan_id = client.post("/api/garden-plans", json={"season_name": "A", "year": 2027}).json()["id"]
+
+    response = client.post(
+        f"/api/garden-plans/{plan_id}/entries",
+        json={"plant_slug": plant_slug, "bed_id": 999999, "desired_quantity": 1},
+    )
+    assert response.status_code == 409
+
+
+def test_create_garden_plan_entry_for_missing_plan_404(client: TestClient, db_session) -> None:
+    plant_slug = _create_plant(db_session)
+    response = client.post(
+        "/api/garden-plans/999999/entries",
+        json={"plant_slug": plant_slug, "desired_quantity": 1},
+    )
+    assert response.status_code == 404
+
+
+def test_list_garden_plan_entries_for_missing_plan_404(client: TestClient) -> None:
+    assert client.get("/api/garden-plans/999999/entries").status_code == 404
+
+
+def test_garden_plan_entry_desired_quantity_has_no_positivity_constraint(
+    client: TestClient, db_session
+) -> None:
+    """No `ge=`/`gt=` constraint is declared on `desired_quantity` (plain
+    `int`) - documents actual behavior (0 and negative values are currently
+    accepted, not rejected) rather than assuming validation exists that
+    isn't actually there."""
+    plant_slug = _create_plant(db_session)
+    plan_id = client.post("/api/garden-plans", json={"season_name": "A", "year": 2027}).json()["id"]
+
+    zero_response = client.post(
+        f"/api/garden-plans/{plan_id}/entries",
+        json={"plant_slug": plant_slug, "desired_quantity": 0},
+    )
+    assert zero_response.status_code == 201, zero_response.text
+    assert zero_response.json()["desired_quantity"] == 0
+
+    negative_response = client.post(
+        f"/api/garden-plans/{plan_id}/entries",
+        json={"plant_slug": plant_slug, "desired_quantity": -3},
+    )
+    assert negative_response.status_code == 201, negative_response.text
+    assert negative_response.json()["desired_quantity"] == -3
+
+
+def test_update_garden_plan_entry_bad_plant_slug_returns_409(client: TestClient, db_session) -> None:
+    plant_slug = _create_plant(db_session)
+    plan_id = client.post("/api/garden-plans", json={"season_name": "A", "year": 2027}).json()["id"]
+    entry_id = client.post(
+        f"/api/garden-plans/{plan_id}/entries",
+        json={"plant_slug": plant_slug, "desired_quantity": 1},
+    ).json()["id"]
+
+    response = client.patch(
+        f"/api/garden-plans/{plan_id}/entries/{entry_id}", json={"plant_slug": "no-such-plant"}
+    )
+    assert response.status_code == 409
+
+
+def test_update_garden_plan_entry_ignores_garden_plan_id_reassignment(
+    client: TestClient, db_session
+) -> None:
+    """`garden_plan_id` is deliberately popped out of the PATCH payload
+    (per the route's own comment) - an entry can't be silently reparented
+    to a different plan through this endpoint."""
+    plant_slug = _create_plant(db_session)
+    plan_a_id = client.post("/api/garden-plans", json={"season_name": "A", "year": 2027}).json()["id"]
+    plan_b_id = client.post("/api/garden-plans", json={"season_name": "B", "year": 2027}).json()["id"]
+    entry_id = client.post(
+        f"/api/garden-plans/{plan_a_id}/entries",
+        json={"plant_slug": plant_slug, "desired_quantity": 1},
+    ).json()["id"]
+
+    response = client.patch(
+        f"/api/garden-plans/{plan_a_id}/entries/{entry_id}",
+        json={"garden_plan_id": plan_b_id, "desired_quantity": 9},
+    )
+    assert response.status_code == 200
+    assert response.json()["garden_plan_id"] == plan_a_id  # unchanged, not reparented
+    assert response.json()["desired_quantity"] == 9  # the rest of the patch still applied
+
+    # Still only visible under plan A, not plan B.
+    assert len(client.get(f"/api/garden-plans/{plan_a_id}/entries").json()) == 1
+    assert len(client.get(f"/api/garden-plans/{plan_b_id}/entries").json()) == 0
+
+
+def test_deleting_a_bed_referenced_by_a_garden_plan_entry_returns_409_not_500(
+    client: TestClient, db_session
+) -> None:
+    """`garden_plan_entry.bed_id` has no ON DELETE behavior in the migration
+    (plain FK) and bed deletion's own cascade logic (beds.py) only cleans up
+    Planting/BedEquipment rows, not GardenPlanEntry - a bed still referenced
+    by a plan entry should hit a real, clean 409 via commit_or_409, not an
+    unhandled 500 from a raw FK-violation exception."""
+    plant_slug = _create_plant(db_session)
+    bed_id = client.post("/api/beds", json={"name": "Bed", "border_geometry": rectangle()}).json()["id"]
+    plan_id = client.post("/api/garden-plans", json={"season_name": "A", "year": 2027}).json()["id"]
+    client.post(
+        f"/api/garden-plans/{plan_id}/entries",
+        json={"plant_slug": plant_slug, "bed_id": bed_id, "desired_quantity": 1},
+    )
+
+    response = client.delete(f"/api/beds/{bed_id}")
+    assert response.status_code == 409
+
+    # Even the bed's own cascade=true delete doesn't know about
+    # garden_plan_entry - same 409, not a crash.
+    cascade_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
+    assert cascade_response.status_code == 409
+
+
+def test_deleting_a_plant_referenced_by_a_garden_plan_entry_returns_409_not_500(
+    client: TestClient, db_session
+) -> None:
+    """KNOWN REAL BUG (found by this test, filed on #28 - see that issue's
+    tester comment): this currently raises an unhandled 500
+    (sqlalchemy.exc.IntegrityError propagating straight out of the request),
+    not a clean 409.
+
+    Root cause: `plants.py`'s `delete_plant` deletes the `Plant` row itself
+    via a Core-style bulk statement (`session.exec(delete(PlantTable)...)`),
+    which Postgres executes - and checks FK constraints for - immediately,
+    not deferred to `session.commit()`. `commit_or_409` (app/api/deps.py)
+    only wraps `session.commit()` in its try/except, so a constraint
+    violation raised by that earlier `session.exec()` call entirely bypasses
+    it. Contrast with `beds.py`'s `delete_bed`, which uses ORM-instance-style
+    `session.delete(bed)` - that defers the actual SQL DELETE to
+    flush/commit time, which happens *inside* `commit_or_409`'s try block,
+    so the equivalent bed-deletion case (see
+    `test_deleting_a_bed_referenced_by_a_garden_plan_entry_returns_409_not_500`
+    above) correctly gets a 409. Nothing referenced `plant.slug` via a real,
+    not-already-cleaned-up FK before #28 added `garden_plan_entry.plant_slug`
+    - this crash path didn't exist until that migration landed.
+
+    Left failing on purpose (not skipped/deleted) - fix direction is either
+    switching `delete_plant` to `session.delete(plant)` (matching beds.py),
+    or having it explicitly clean up `garden_plan_entry` rows the same way
+    it already does for every other plant-referencing satellite table, or
+    both."""
+    plant_slug = _create_plant(db_session)
+    plan_id = client.post("/api/garden-plans", json={"season_name": "A", "year": 2027}).json()["id"]
+    client.post(
+        f"/api/garden-plans/{plan_id}/entries",
+        json={"plant_slug": plant_slug, "desired_quantity": 1},
+    )
+
+    response = client.delete(f"/api/plants/{plant_slug}")
+    assert response.status_code == 409
