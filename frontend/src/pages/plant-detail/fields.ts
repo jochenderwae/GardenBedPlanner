@@ -107,7 +107,12 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "tristate",
     description: "Whether this plant needs protection from rain.",
   },
-  { key: "water_needs", label: "Water needs", type: "text", description: "How much water this plant typically needs." },
+  {
+    key: "water_needs_mm_per_week",
+    label: "Water needs (mm/week)",
+    type: "number",
+    description: "How much water this plant typically needs per week, in millimeters.",
+  },
   {
     key: "family",
     label: "Family",
