@@ -1,6 +1,6 @@
 import type { PlantDetail, PlantUpdate } from "@/api/client";
 
-export type FieldType = "text" | "textarea" | "number" | "select" | "tristate" | "tags";
+export type FieldType = "text" | "textarea" | "number" | "select" | "tristate" | "multiselect";
 
 export interface SelectOption {
   value: string;
@@ -35,13 +35,32 @@ export const LIFE_CYCLE_OPTIONS: SelectOption[] = [
   { value: "perennial", label: "Perennial" },
 ];
 
+/** Canonical edible-parts categories - matches the enum in
+ * `data/plant.schema.json`'s `edible_parts` field (the data-engineer-owned
+ * source of truth the plant-database ETL validates against). Drives the
+ * "multiselect" rendering path in `FieldInput.tsx`, replacing the old
+ * comma-separated free-text "tags" input for this field. */
+export const EDIBLE_PARTS_OPTIONS: SelectOption[] = [
+  { value: "fruit", label: "Fruit" },
+  { value: "leaves", label: "Leaves" },
+  { value: "roots", label: "Roots" },
+  { value: "tubers", label: "Tubers" },
+  { value: "bulbs", label: "Bulbs" },
+  { value: "stems", label: "Stems" },
+  { value: "seeds", label: "Seeds" },
+  { value: "flowers", label: "Flowers" },
+  { value: "pods", label: "Pods" },
+  { value: "shoots", label: "Shoots" },
+];
+
 /** Drives the generic field renderer on the plant detail page - one entry
  * per Plant/PlantUpdate scalar field (everything except slug, which is
- * identity, not an editable attribute; edible_parts, handled as its own
- * "tags" field type since it's the one array-valued scalar; and
- * life_cycle/life_cycle_years, whose values are correlated and so are
- * rendered together by the dedicated `LifeCycleFields` component instead of
- * independently through this generic loop - see that component's doc). */
+ * identity, not an editable attribute; and life_cycle/life_cycle_years,
+ * whose values are correlated and so are rendered together by the
+ * dedicated `LifeCycleFields` component instead of independently through
+ * this generic loop - see that component's doc). edible_parts is still
+ * part of this loop but uses the "multiselect" field type (the one
+ * array-valued scalar) rather than a plain scalar type. */
 export const SCALAR_FIELDS: FieldConfig[] = [
   { key: "common_name", label: "Common name", type: "text", description: "The plant's everyday name, e.g. 'Tomato'." },
   {
@@ -151,8 +170,9 @@ export const SCALAR_FIELDS: FieldConfig[] = [
   {
     key: "edible_parts",
     label: "Edible parts",
-    type: "tags",
-    description: "Which parts of the plant are eaten, e.g. fruit, leaves, roots - comma separated.",
+    type: "multiselect",
+    options: EDIBLE_PARTS_OPTIONS,
+    description: "Which parts of the plant are eaten, e.g. fruit, leaves, roots.",
   },
   {
     key: "succession_enabled",

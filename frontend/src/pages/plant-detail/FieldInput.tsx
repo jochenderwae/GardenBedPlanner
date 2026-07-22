@@ -83,31 +83,36 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
     );
   }
 
-  if (field.type === "tags") {
-    const textValue = Array.isArray(draft) ? draft.join(", ") : "";
+  if (field.type === "multiselect") {
+    const selected = Array.isArray(value) ? value : [];
+    const options = field.options ?? [];
+
     return (
-      <label className="flex flex-col gap-1">
-        <FieldLabel field={field} />
-        <Input
-          type="text"
-          placeholder="fruit, leaves, ..."
-          value={textValue}
-          onChange={(e) =>
-            setDraft(
-              e.target.value
-                .split(",")
-                .map((s) => s.trim())
-                .filter(Boolean),
-            )
-          }
-          onBlur={() => {
-            const normalized = Array.isArray(draft) ? draft : [];
-            if (JSON.stringify(normalized) !== JSON.stringify(value ?? [])) {
-              onCommit(normalized, value);
-            }
-          }}
-        />
-      </label>
+      <fieldset className="flex flex-col gap-1">
+        <legend className="mb-1">
+          <FieldLabel field={field} />
+        </legend>
+        <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+          {options.map((opt) => {
+            const checked = selected.includes(opt.value);
+            return (
+              <label key={opt.value} className="flex items-center gap-1.5 text-sm">
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={(e) => {
+                    const next = e.target.checked
+                      ? [...selected, opt.value]
+                      : selected.filter((v) => v !== opt.value);
+                    onCommit(next, value);
+                  }}
+                />
+                {opt.label}
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
     );
   }
 
