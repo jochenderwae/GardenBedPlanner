@@ -1,7 +1,8 @@
 import type Konva from "konva";
-import { Circle, Group, Layer, Rect, Text } from "react-konva";
+import { Group, Layer, Rect, Text } from "react-konva";
 import type { ExampleBed, ExamplePlanting, Plant } from "@/api/client";
 import { boundingRect, colorForSlug, colorsForBedCategory, DEFAULT_PLANTING_DIAMETER_CM } from "./geometry";
+import { PlantFootprint } from "./PlantFootprint";
 
 export interface PlantingTooltipState {
   x: number;
@@ -116,7 +117,8 @@ function PlantingDot({
   }
 
   return (
-    <Circle
+    <PlantFootprint
+      growthHabit={plant?.growth_habit}
       x={planting.x_cm}
       y={planting.y_cm}
       radius={radius}

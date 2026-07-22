@@ -1,6 +1,6 @@
 import type Konva from "konva";
 import { useMemo, useState } from "react";
-import { Circle, Group, Layer, Rect, Text } from "react-konva";
+import { Group, Layer, Rect, Text } from "react-konva";
 import type { Bed, Geometry, PlacementType, Plant, Planting } from "@/api/client";
 import {
   boundingRect,
@@ -13,6 +13,7 @@ import {
   rowGeometryFromDrag,
   snapToGrid,
 } from "./geometry";
+import { PlantFootprint } from "./PlantFootprint";
 
 /** "individual" draws with a single click; "row"/"field" draw with a
  * click-drag-release gesture (see PlantPlacementLayer's mouse handlers
@@ -319,7 +320,8 @@ function PlantingMarker({
 
   return (
     <>
-      <Circle
+      <PlantFootprint
+        growthHabit={plant?.growth_habit}
         x={centerX}
         y={centerY}
         radius={radius}
