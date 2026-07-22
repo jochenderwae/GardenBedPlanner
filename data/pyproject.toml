@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["bandit>=1.8.0", "ruff>=0.15.22"]
+dev = ["bandit>=1.8.0", "pytest>=9.1.1", "ruff>=0.15.22"]
 
 [tool.uv]
 package = false
