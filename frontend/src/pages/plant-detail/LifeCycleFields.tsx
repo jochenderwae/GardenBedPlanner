@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Input, Select } from "@/components/ui/input";
+import { FieldHint } from "@/components/ui/tooltip";
 import type { PlantUpdate } from "@/api/client";
 import { LIFE_CYCLE_OPTIONS, type FieldValue } from "./fields";
 
@@ -83,11 +84,11 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
 
   return (
     <>
-      <label
-        className="flex flex-col gap-1"
-        title="Whether this plant completes its life in one season (annual), two (biennial), or lives on for several years (perennial)."
-      >
-        <span className="text-xs font-medium text-muted-foreground">Life cycle</span>
+      <label className="flex flex-col gap-1">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+          Life cycle
+          <FieldHint description="Whether this plant completes its life in one season (annual), two (biennial), or lives on for several years (perennial)." />
+        </span>
         <Select
           value={lifeCycle ?? ""}
           onChange={(e) => commitLifeCycle((e.target.value || null) as LifeCycle)}
@@ -100,11 +101,11 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
           ))}
         </Select>
       </label>
-      <label
-        className="flex flex-col gap-1"
-        title="How many years this plant stays productive - fixed at 1 for annual and 2 for biennial, free-form for perennial."
-      >
-        <span className="text-xs font-medium text-muted-foreground">Life cycle years (productive lifespan)</span>
+      <label className="flex flex-col gap-1">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+          Life cycle years (productive lifespan)
+          <FieldHint description="How many years this plant stays productive - fixed at 1 for annual and 2 for biennial, free-form for perennial." />
+        </span>
         <Input
           type="number"
           value={yearsDraft === null || yearsDraft === undefined ? "" : String(yearsDraft)}

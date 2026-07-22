@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Textarea } from "@/components/ui/input";
+import { FieldHint } from "@/components/ui/tooltip";
 import { putGarden, type Garden, type GardenPut } from "@/api/client";
 
 const DEFAULT_GARDEN_SIZE_CM = 500;
@@ -58,8 +59,11 @@ export function GardenPanel({ garden }: GardenPanelProps) {
           shape afterward. Also creates a ground-level bed you can plant directly into.
         </p>
         <div className="flex flex-col gap-3">
-          <label className="flex flex-col gap-1" title="Your garden's display name.">
-            <span className="text-xs font-medium text-muted-foreground">Name</span>
+          <label className="flex flex-col gap-1">
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+              Name
+              <FieldHint description="Your garden's display name." />
+            </span>
             <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
           </label>
           <Button
@@ -95,8 +99,11 @@ export function GardenPanel({ garden }: GardenPanelProps) {
       <h2 className="mb-3 text-sm font-medium">Edit garden</h2>
 
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1" title="Your garden's display name.">
-          <span className="text-xs font-medium text-muted-foreground">Name</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Name
+            <FieldHint description="Your garden's display name." />
+          </span>
           <Input
             value={draft.name}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, name: e.target.value } : prev))}
@@ -104,11 +111,11 @@ export function GardenPanel({ garden }: GardenPanelProps) {
           />
         </label>
 
-        <label
-          className="flex flex-col gap-1"
-          title="Free-text climate zone, e.g. a Köppen or USDA hardiness zone code, if you track one."
-        >
-          <span className="text-xs font-medium text-muted-foreground">Climate zone</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Climate zone
+            <FieldHint description="Free-text climate zone, e.g. a Köppen or USDA hardiness zone code, if you track one." />
+          </span>
           <Input
             value={draft.climate_zone ?? ""}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, climate_zone: e.target.value || null } : prev))}
@@ -116,8 +123,11 @@ export function GardenPanel({ garden }: GardenPanelProps) {
           />
         </label>
 
-        <label className="flex flex-col gap-1" title="Free-text location, e.g. a city or address.">
-          <span className="text-xs font-medium text-muted-foreground">Location</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Location
+            <FieldHint description="Free-text location, e.g. a city or address." />
+          </span>
           <Input
             value={draft.location ?? ""}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, location: e.target.value || null } : prev))}
@@ -125,8 +135,11 @@ export function GardenPanel({ garden }: GardenPanelProps) {
           />
         </label>
 
-        <label className="flex flex-col gap-1" title="Any other notes about the garden.">
-          <span className="text-xs font-medium text-muted-foreground">Notes</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Notes
+            <FieldHint description="Any other notes about the garden." />
+          </span>
           <Textarea
             rows={3}
             value={draft.notes}

@@ -1,11 +1,25 @@
 import { useEffect, useState } from "react";
 import { Input, Select, Textarea } from "@/components/ui/input";
+import { FieldHint } from "@/components/ui/tooltip";
 import type { FieldConfig, FieldValue } from "./fields";
 
 interface FieldInputProps {
   field: FieldConfig;
   value: FieldValue;
   onCommit: (newValue: FieldValue, previousValue: FieldValue) => void;
+}
+
+/** The label-row shared by every branch below - field name plus the
+ * info-icon tooltip that replaced the old `title` attribute on the
+ * enclosing `<label>` (see the "replace title= attribute tooltips"
+ * backlog item). */
+function FieldLabel({ field }: { field: FieldConfig }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+      {field.label}
+      <FieldHint description={field.description} />
+    </span>
+  );
 }
 
 export function FieldInput({ field, value, onCommit }: FieldInputProps) {
@@ -32,8 +46,8 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
     const selectValue = value === null || value === undefined ? "" : String(value);
 
     return (
-      <label className="flex flex-col gap-1" title={field.description}>
-        <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
+      <label className="flex flex-col gap-1">
+        <FieldLabel field={field} />
         <Select
           value={selectValue}
           onChange={(e) => {
@@ -55,8 +69,8 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
 
   if (field.type === "number") {
     return (
-      <label className="flex flex-col gap-1" title={field.description}>
-        <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
+      <label className="flex flex-col gap-1">
+        <FieldLabel field={field} />
         <Input
           type="number"
           value={draft === null || draft === undefined ? "" : String(draft)}
@@ -72,8 +86,8 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   if (field.type === "tags") {
     const textValue = Array.isArray(draft) ? draft.join(", ") : "";
     return (
-      <label className="flex flex-col gap-1" title={field.description}>
-        <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
+      <label className="flex flex-col gap-1">
+        <FieldLabel field={field} />
         <Input
           type="text"
           placeholder="fruit, leaves, ..."
@@ -99,8 +113,8 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
 
   if (field.type === "textarea") {
     return (
-      <label className="flex flex-col gap-1 sm:col-span-2" title={field.description}>
-        <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
+      <label className="flex flex-col gap-1 sm:col-span-2">
+        <FieldLabel field={field} />
         <Textarea
           rows={3}
           value={typeof draft === "string" ? draft : ""}
@@ -112,8 +126,8 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   }
 
   return (
-    <label className="flex flex-col gap-1" title={field.description}>
-      <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
+    <label className="flex flex-col gap-1">
+      <FieldLabel field={field} />
       <Input
         type="text"
         value={typeof draft === "string" ? draft : ""}

@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Input, Select, Textarea } from "@/components/ui/input";
+import { FieldHint } from "@/components/ui/tooltip";
 import { ApiError, deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 import { rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
@@ -114,8 +115,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
       </div>
 
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1" title="The bed's display name, e.g. 'North planter'.">
-          <span className="text-xs font-medium text-muted-foreground">Name</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Name
+            <FieldHint description="The bed's display name, e.g. 'North planter'." />
+          </span>
           <Input
             value={draft.name}
             onChange={(e) => setDraft((prev) => ({ ...prev, name: e.target.value }))}
@@ -123,11 +127,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           />
         </label>
 
-        <label
-          className="flex flex-col gap-1"
-          title="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list."
-        >
-          <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Category (optional)
+            <FieldHint description="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list." />
+          </span>
           <Input
             placeholder="e.g. raised planter, ground bed, compost..."
             value={draft.category ?? ""}
@@ -143,8 +147,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
 
         {draft.border_geometry.type === "rectangle" ? (
           <div className="grid grid-cols-3 gap-2">
-            <label className="flex flex-col gap-1" title="Bed width in centimeters.">
-              <span className="text-xs font-medium text-muted-foreground">Width (cm)</span>
+            <label className="flex flex-col gap-1">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                Width (cm)
+                <FieldHint description="Bed width in centimeters." />
+              </span>
               <Input
                 type="number"
                 variant="numeric"
@@ -157,8 +164,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
                 }}
               />
             </label>
-            <label className="flex flex-col gap-1" title="Bed length in centimeters.">
-              <span className="text-xs font-medium text-muted-foreground">Length (cm)</span>
+            <label className="flex flex-col gap-1">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                Length (cm)
+                <FieldHint description="Bed length in centimeters." />
+              </span>
               <Input
                 type="number"
                 variant="numeric"
@@ -171,11 +181,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
                 }}
               />
             </label>
-            <label
-              className="flex flex-col gap-1"
-              title="Rotation in degrees, clockwise, relative to the garden's own orientation - 0 means aligned with the garden, not with the canvas."
-            >
-              <span className="text-xs font-medium text-muted-foreground">Rotation (°)</span>
+            <label className="flex flex-col gap-1">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                Rotation (°)
+                <FieldHint description="Rotation in degrees, clockwise, relative to the garden's own orientation - 0 means aligned with the garden, not with the canvas." />
+              </span>
               <Input
                 type="number"
                 variant="numeric"
@@ -198,11 +208,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           <p className="text-xs text-muted-foreground">Polygon shape - edit vertices directly on the canvas.</p>
         )}
 
-        <label
-          className="flex flex-col gap-1"
-          title="Height above ground, in centimeters - 0 for a flat/ground-level bed. Any height above ground draws the bed with a thicker outline on the canvas."
-        >
-          <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Height (cm)
+            <FieldHint description="Height above ground, in centimeters - 0 for a flat/ground-level bed. Any height above ground draws the bed with a thicker outline on the canvas." />
+          </span>
           <Input
             type="number"
             value={draft.height_cm}
@@ -211,8 +221,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           />
         </label>
 
-        <label className="flex flex-col gap-1" title="How much direct sun this bed gets.">
-          <span className="text-xs font-medium text-muted-foreground">Sun level</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Sun level
+            <FieldHint description="How much direct sun this bed gets." />
+          </span>
           <Select
             value={draft.sun_level ?? ""}
             onChange={(e) => commit({ sun_level: (e.target.value || null) as Bed["sun_level"] })}
@@ -224,8 +237,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           </Select>
         </label>
 
-        <label className="flex flex-col gap-1" title="Free-text soil description, e.g. loam, sandy, compost-amended.">
-          <span className="text-xs font-medium text-muted-foreground">Soil type</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Soil type
+            <FieldHint description="Free-text soil description, e.g. loam, sandy, compost-amended." />
+          </span>
           <Input
             value={draft.soil_type ?? ""}
             onChange={(e) => setDraft((prev) => ({ ...prev, soil_type: e.target.value || null }))}
@@ -233,17 +249,21 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           />
         </label>
 
-        <label className="flex items-center gap-2" title="Whether this bed is inside/covered by a greenhouse.">
+        <label className="flex items-center gap-2">
           <input
             type="checkbox"
             checked={draft.has_greenhouse}
             onChange={(e) => commit({ has_greenhouse: e.target.checked })}
           />
           <span className="text-sm">Greenhouse</span>
+          <FieldHint description="Whether this bed is inside/covered by a greenhouse." />
         </label>
 
-        <label className="flex flex-col gap-1" title="Any other notes about this bed.">
-          <span className="text-xs font-medium text-muted-foreground">Notes</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Notes
+            <FieldHint description="Any other notes about this bed." />
+          </span>
           <Textarea
             rows={3}
             value={draft.notes}

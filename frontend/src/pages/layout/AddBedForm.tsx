@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogPopup, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { FieldHint } from "@/components/ui/tooltip";
 import { createBed, type Bed, type Geometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 
@@ -80,16 +81,19 @@ export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps
               </Button>
             </div>
 
-            <label className="flex flex-col gap-1" title="The bed's display name, e.g. 'North planter'.">
-              <span className="text-xs font-medium text-muted-foreground">Name</span>
+            <label className="flex flex-col gap-1">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                Name
+                <FieldHint description="The bed's display name, e.g. 'North planter'." />
+              </span>
               <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
             </label>
 
-            <label
-              className="flex flex-col gap-1"
-              title="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list."
-            >
-              <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
+            <label className="flex flex-col gap-1">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                Category (optional)
+                <FieldHint description="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list." />
+              </span>
               <Input
                 placeholder="e.g. raised planter, ground bed, compost..."
                 value={category}
@@ -97,11 +101,11 @@ export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps
               />
             </label>
 
-            <label
-              className="flex flex-col gap-1"
-              title="Rectangle is the default and works for most beds; switch to Polygon for an irregular shape."
-            >
-              <span className="text-xs font-medium text-muted-foreground">Shape</span>
+            <label className="flex flex-col gap-1">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                Shape
+                <FieldHint description="Rectangle is the default and works for most beds; switch to Polygon for an irregular shape." />
+              </span>
               <ShapeTypeToggle geometry={geometry} onChange={setGeometry} />
             </label>
 

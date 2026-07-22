@@ -4,6 +4,7 @@ import { PackageCheck, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Select } from "@/components/ui/input";
+import { FieldHint, Tooltip } from "@/components/ui/tooltip";
 import {
   createBedEquipment,
   deleteBedEquipment,
@@ -103,8 +104,11 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
 
       <form className="mb-4 flex flex-col gap-2 border-b pb-4" onSubmit={submit}>
         <p className="text-xs text-muted-foreground">Add to inventory - place it on a bed afterward.</p>
-        <label className="flex flex-col gap-1" title="Free-text equipment type, e.g. trellis, drip line, stake.">
-          <span className="text-xs font-medium text-muted-foreground">Type</span>
+        <label className="flex flex-col gap-1">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Type
+            <FieldHint description="Free-text equipment type, e.g. trellis, drip line, stake." />
+          </span>
           <Input
             placeholder="e.g. trellis, drip line, stake..."
             value={equipmentType}
@@ -112,19 +116,22 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
           />
         </label>
         <div className="grid grid-cols-2 gap-2">
-          <label className="flex flex-col gap-1" title="How tall this equipment stands, in centimeters.">
-            <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
+          <label className="flex flex-col gap-1">
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+              Height (cm)
+              <FieldHint description="How tall this equipment stands, in centimeters." />
+            </span>
             <Input
               type="number"
               value={heightCm}
               onChange={(e) => setHeightCm(e.target.value)}
             />
           </label>
-          <label
-            className="flex flex-col gap-1"
-            title="Water delivery rate in liters per hour, for irrigation equipment."
-          >
-            <span className="text-xs font-medium text-muted-foreground">Water (L/h)</span>
+          <label className="flex flex-col gap-1">
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+              Water (L/h)
+              <FieldHint description="Water delivery rate in liters per hour, for irrigation equipment." />
+            </span>
             <Input
               type="number"
               value={waterDeliveryLph}
@@ -187,14 +194,11 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
                   <div className="text-xs text-muted-foreground">{bedName(item.bed_id)}</div>
                 </div>
                 <div className="flex items-center gap-0.5">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onReturnToInventory(item)}
-                    title="Return to inventory"
-                  >
-                    Unplace
-                  </Button>
+                  <Tooltip content="Return to inventory">
+                    <Button variant="ghost" size="sm" onClick={() => onReturnToInventory(item)}>
+                      Unplace
+                    </Button>
+                  </Tooltip>
                   <Button
                     variant="ghost"
                     size="icon-sm"

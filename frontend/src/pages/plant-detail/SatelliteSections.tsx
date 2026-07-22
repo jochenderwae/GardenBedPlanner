@@ -12,6 +12,7 @@ import {
 import { useSnackbar } from "@/components/Snackbar";
 import { PlantSearchList } from "@/components/PlantSearchList";
 import { Input, Select } from "@/components/ui/input";
+import { FieldHint } from "@/components/ui/tooltip";
 import {
   beddingNeedApi,
   createCompanion,
@@ -103,8 +104,9 @@ export function DataSourcesSection({ slug, items }: { slug: string; items: Plant
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold" title="Where this plant's data came from - for attribution and provenance.">
+      <h2 className="inline-flex items-center gap-1 text-sm font-semibold">
         Data sources
+        <FieldHint description="Where this plant's data came from - for attribution and provenance." />
       </h2>
       {visibleItems.map((item) => (
         <div key={item.id} className={rowClass}>
@@ -129,17 +131,17 @@ export function DataSourcesSection({ slug, items }: { slug: string; items: Plant
         <Input
           className="w-auto"
           placeholder="attribution"
-          title="Who/what to credit for this data, e.g. an author or organization name."
           value={draft.attribution}
           onChange={(e) => setDraft({ ...draft, attribution: e.target.value })}
         />
+        <FieldHint description="Who/what to credit for this data, e.g. an author or organization name." />
         <Input
           className="w-auto"
           placeholder="source URL"
-          title="A link to where this data was sourced from."
           value={draft.source_url}
           onChange={(e) => setDraft({ ...draft, source_url: e.target.value })}
         />
+        <FieldHint description="A link to where this data was sourced from." />
         <Button
           size="sm"
           variant="outline"
@@ -203,12 +205,14 @@ export function SeedInfoSection({ slug, seedInfo }: { slug: string; seedInfo: Se
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold" title="Seed-specific details used by the seed buying guide and sowing plans.">
+      <h2 className="inline-flex items-center gap-1 text-sm font-semibold">
         Seed info
+        <FieldHint description="Seed-specific details used by the seed buying guide and sowing plans." />
       </h2>
       <div className={rowClass}>
-        <label className="flex items-center gap-1.5" title="How many seeds of this plant weigh one gram - used to convert a seed count to a weight, or vice versa.">
+        <label className="flex items-center gap-1.5">
           Seeds/gram
+          <FieldHint description="How many seeds of this plant weigh one gram - used to convert a seed count to a weight, or vice versa." />
           <Input
             type="number"
             className="w-auto"
@@ -216,8 +220,9 @@ export function SeedInfoSection({ slug, seedInfo }: { slug: string; seedInfo: Se
             onBlur={(e) => save({ seeds_per_gram: e.target.value === "" ? null : Number(e.target.value) })}
           />
         </label>
-        <label className="flex items-center gap-1.5" title="Any treatment seeds need before sowing, e.g. soaking, stratification, scarification.">
+        <label className="flex items-center gap-1.5">
           Pretreatment
+          <FieldHint description="Any treatment seeds need before sowing, e.g. soaking, stratification, scarification." />
           <Input
             type="text"
             className="w-auto"
@@ -237,11 +242,9 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
 
   return (
     <section className={sectionClass}>
-      <h2
-        className="text-sm font-semibold"
-        title="Month ranges for this plant's key activities (sowing, harvesting, etc.) - drives the agenda and seed guide views."
-      >
+      <h2 className="inline-flex items-center gap-1 text-sm font-semibold">
         Periods
+        <FieldHint description="Month ranges for this plant's key activities (sowing, harvesting, etc.) - drives the agenda and seed guide views." />
       </h2>
       {items.map((item) => (
         <div key={item.id} className={rowClass}>
@@ -261,7 +264,6 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
       <div className={rowClass}>
         <Select
           className="w-auto"
-          title="What kind of activity this period covers, e.g. sowing, harvesting."
           value={draft.period_type}
           onChange={(e) => setDraft({ ...draft, period_type: e.target.value })}
         >
@@ -272,25 +274,26 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
             </option>
           ))}
         </Select>
+        <FieldHint description="What kind of activity this period covers, e.g. sowing, harvesting." />
         <Input
           type="number"
           min={1}
           max={12}
           className="w-16"
-          title="Starting month (1-12) for this period."
           value={draft.start_month}
           onChange={(e) => setDraft({ ...draft, start_month: Number(e.target.value) })}
         />
+        <FieldHint description="Starting month (1-12) for this period." />
         <span>–</span>
         <Input
           type="number"
           min={1}
           max={12}
           className="w-16"
-          title="Ending month (1-12) for this period."
           value={draft.end_month}
           onChange={(e) => setDraft({ ...draft, end_month: Number(e.target.value) })}
         />
+        <FieldHint description="Ending month (1-12) for this period." />
         <Button
           size="sm"
           variant="outline"
@@ -313,8 +316,9 @@ export function BeddingNeedsSection({ slug, items }: { slug: string; items: Plan
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold" title="Bed preparation or maintenance this plant needs, e.g. hilling, staking, mulching.">
+      <h2 className="inline-flex items-center gap-1 text-sm font-semibold">
         Bedding needs
+        <FieldHint description="Bed preparation or maintenance this plant needs, e.g. hilling, staking, mulching." />
       </h2>
       {items.map((item) => (
         <div key={item.id} className={rowClass}>
@@ -333,10 +337,10 @@ export function BeddingNeedsSection({ slug, items }: { slug: string; items: Plan
         <Input
           className="w-auto"
           placeholder="e.g. hilling, staking"
-          title="Bed preparation or maintenance this plant needs, e.g. hilling, staking, mulching."
           value={needType}
           onChange={(e) => setNeedType(e.target.value)}
         />
+        <FieldHint description="Bed preparation or maintenance this plant needs, e.g. hilling, staking, mulching." />
         <Button
           size="sm"
           variant="outline"
@@ -389,20 +393,22 @@ function PestColumn({
           </Button>
         </div>
       ))}
-      <Input
-        placeholder="e.g. aphids"
-        title="Name of a pest or beneficial insect - press Enter to add."
-        value={draft}
-        onChange={(e) => setDraft(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key !== "Enter") return;
-          e.preventDefault();
-          const trimmed = draft.trim();
-          if (!trimmed) return;
-          onAdd(interactionType, trimmed);
-          setDraft("");
-        }}
-      />
+      <div className="flex items-center gap-1">
+        <Input
+          placeholder="e.g. aphids"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            const trimmed = draft.trim();
+            if (!trimmed) return;
+            onAdd(interactionType, trimmed);
+            setDraft("");
+          }}
+        />
+        <FieldHint description="Name of a pest or beneficial insect - press Enter to add." />
+      </div>
     </div>
   );
 }
@@ -424,29 +430,30 @@ export function PestInteractionsSection({ slug, items }: { slug: string; items: 
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold" title="Pests and beneficial insects this plant attracts, repels, or is vulnerable to.">
+      <h2 className="inline-flex items-center gap-1 text-sm font-semibold">
         Pest interactions
+        <FieldHint description="Pests and beneficial insects this plant attracts, repels, or is vulnerable to." />
       </h2>
       <table className="w-full text-sm">
         <thead>
           <tr>
-            <th
-              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
-              title="Pests or insects this plant draws in."
-            >
-              Attracts
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                Attracts
+                <FieldHint description="Pests or insects this plant draws in." />
+              </span>
             </th>
-            <th
-              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
-              title="Pests or insects this plant naturally deters."
-            >
-              Repels
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                Repels
+                <FieldHint description="Pests or insects this plant naturally deters." />
+              </span>
             </th>
-            <th
-              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
-              title="Pests or diseases this plant is susceptible to."
-            >
-              Vulnerable to
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                Vulnerable to
+                <FieldHint description="Pests or diseases this plant is susceptible to." />
+              </span>
             </th>
           </tr>
         </thead>
@@ -562,23 +569,24 @@ export function CompanionsSection({
 
   return (
     <section className={sectionClass}>
-      <h2 className="text-sm font-semibold" title="Other plants this one grows well or poorly alongside.">
+      <h2 className="inline-flex items-center gap-1 text-sm font-semibold">
         Companions
+        <FieldHint description="Other plants this one grows well or poorly alongside." />
       </h2>
       <table className="w-full text-sm">
         <thead>
           <tr>
-            <th
-              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
-              title="Plants that benefit this one when grown nearby."
-            >
-              Good
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                Good
+                <FieldHint description="Plants that benefit this one when grown nearby." />
+              </span>
             </th>
-            <th
-              className="pb-1 text-left text-xs font-semibold text-muted-foreground"
-              title="Plants that hinder this one when grown nearby."
-            >
-              Bad
+            <th className="pb-1 text-left text-xs font-semibold text-muted-foreground">
+              <span className="inline-flex items-center gap-1">
+                Bad
+                <FieldHint description="Plants that hinder this one when grown nearby." />
+              </span>
             </th>
           </tr>
         </thead>
@@ -627,11 +635,9 @@ export function GrowingInfoSection({ slug: _slug, items }: { slug: string; items
 
   return (
     <section className={sectionClass}>
-      <h2
-        className="text-sm font-semibold"
-        title="A longer-form growing guide for this plant, consolidated from external sources."
-      >
+      <h2 className="inline-flex items-center gap-1 text-sm font-semibold">
         Growing information
+        <FieldHint description="A longer-form growing guide for this plant, consolidated from external sources." />
       </h2>
 
       {consolidated ? (

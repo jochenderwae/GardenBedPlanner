@@ -2,6 +2,7 @@ import type { RefObject } from "react";
 import { Maximize, Plus, Redo2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioToggleGroup, TabToggleGroup } from "@/components/ui/toggle-group";
+import { Tooltip } from "@/components/ui/tooltip";
 import type { Plant } from "@/api/client";
 import type { PlacementMode } from "./PlantPlacementLayer";
 
@@ -109,32 +110,24 @@ export function Toolbar({
         <div className="flex items-center gap-2">
           {mode === "mine" && (
             <>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={onUndo}
-                disabled={!canUndo}
-                title="Undo last move/resize (Ctrl+Z)"
-                aria-label="Undo"
-              >
-                <Undo2 />
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={onRedo}
-                disabled={!canRedo}
-                title="Redo (Ctrl+Shift+Z)"
-                aria-label="Redo"
-              >
-                <Redo2 />
-              </Button>
+              <Tooltip content="Undo last move/resize (Ctrl+Z)">
+                <Button size="sm" variant="outline" onClick={onUndo} disabled={!canUndo} aria-label="Undo">
+                  <Undo2 />
+                </Button>
+              </Tooltip>
+              <Tooltip content="Redo (Ctrl+Shift+Z)">
+                <Button size="sm" variant="outline" onClick={onRedo} disabled={!canRedo} aria-label="Redo">
+                  <Redo2 />
+                </Button>
+              </Tooltip>
             </>
           )}
           <span className="w-10 text-right text-xs tabular-nums text-muted-foreground">{Math.round(zoomPercent)}%</span>
-          <Button size="sm" variant="outline" onClick={onFitView} title="Fit the whole garden in view">
-            <Maximize /> Fit view
-          </Button>
+          <Tooltip content="Fit the whole garden in view">
+            <Button size="sm" variant="outline" onClick={onFitView}>
+              <Maximize /> Fit view
+            </Button>
+          </Tooltip>
         </div>
       </div>
       <div className="flex min-h-7 items-center gap-2">
