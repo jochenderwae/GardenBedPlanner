@@ -131,7 +131,7 @@ class PlantDetail(BaseModel):
     fertilizer_needs: str | None = None
     needs_wind_cover: bool | None = None
     needs_rain_cover: bool | None = None
-    water_needs: str | None = None
+    water_needs_mm_per_week: float | None = None
     growth_habit: str | None = None
     family: FamilyRead | None = None
     genus: GenusRead | None = None

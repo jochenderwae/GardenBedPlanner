@@ -70,7 +70,7 @@ class Plant(SQLModel, table=True):
     fertilizer_needs: str | None = None
     needs_wind_cover: bool | None = None
     needs_rain_cover: bool | None = None
-    water_needs: str | None = None
+    water_needs_mm_per_week: float | None = None
     # Free text (e.g. "vining", "bushy", "upright", "spreading") - no fixed
     # enum exists for the habit vocabulary populate_growth_habit.py already
     # produced across data/plants/*.json, same style as soil_type/

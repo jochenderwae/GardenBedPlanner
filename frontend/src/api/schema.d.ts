@@ -1468,8 +1468,8 @@ export interface components {
             needs_wind_cover?: boolean | null;
             /** Needs Rain Cover */
             needs_rain_cover?: boolean | null;
-            /** Water Needs */
-            water_needs?: string | null;
+            /** Water Needs Mm Per Week */
+            water_needs_mm_per_week?: number | null;
             /** Growth Habit */
             growth_habit?: string | null;
             /** Parent Plant Slug */
@@ -1556,8 +1556,8 @@ export interface components {
             needs_wind_cover?: boolean | null;
             /** Needs Rain Cover */
             needs_rain_cover?: boolean | null;
-            /** Water Needs */
-            water_needs?: string | null;
+            /** Water Needs Mm Per Week */
+            water_needs_mm_per_week?: number | null;
             /** Growth Habit */
             growth_habit?: string | null;
             /** Parent Plant Slug */
@@ -1647,8 +1647,8 @@ export interface components {
             needs_wind_cover?: boolean | null;
             /** Needs Rain Cover */
             needs_rain_cover?: boolean | null;
-            /** Water Needs */
-            water_needs?: string | null;
+            /** Water Needs Mm Per Week */
+            water_needs_mm_per_week?: number | null;
             /** Growth Habit */
             growth_habit?: string | null;
             family?: components["schemas"]["FamilyRead"] | null;
@@ -1798,8 +1798,8 @@ export interface components {
             needs_wind_cover?: boolean | null;
             /** Needs Rain Cover */
             needs_rain_cover?: boolean | null;
-            /** Water Needs */
-            water_needs?: string | null;
+            /** Water Needs Mm Per Week */
+            water_needs_mm_per_week?: number | null;
             /** Growth Habit */
             growth_habit?: string | null;
             /** Parent Plant Slug */
