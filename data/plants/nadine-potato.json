@@ -125,5 +125,15 @@
   "growth_habit": "spreading",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "rich in organic matter",
+  "soil_type": "deep, cool, moist soil that is finely pulverized and contains much potash. A sandy loam abundantly supplied with organic matter and naturally well drained",
+  "spread_cm": 35,
+  "row_spacing_cm": 87,
+  "seed_info": {
+    "pretreatment": "sprout the sets so that short, thick, firm, colored shoots are secured. To secure these sprouts, provide light and a moderate degree of warmth, 4-10°C (40°-50°F)."
+  },
+  "edible_parts": [
+    "tubers"
+  ]
 }

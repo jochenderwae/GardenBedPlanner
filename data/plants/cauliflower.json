@@ -129,7 +129,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "enriched with commercial fertilizer or well-decomposed stable manure",
+  "fertilizer_needs": "commercial fertilizer",
   "needs_rain_cover": false,
   "bedding_needs": [
     {
@@ -138,5 +138,14 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "decomposed manure",
+  "soil_type": "rich, moist soil",
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 4
+    }
+  ]
 }

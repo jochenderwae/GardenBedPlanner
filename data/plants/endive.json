@@ -4,8 +4,8 @@
   "botanical_name": "Cichorium endivia var. crispum",
   "description": "Curly Endive is a narrow-leaved member of the Chicory family (versus Escarole, which is broad-leaved). It grows in loose heads of narrow, green, lacey leaves with curled tips. The head is often tied together when it is 25cm tall to blanch the inner leaves. The outer leaves have a slightly bitter flavor, and the inner leaves have a subtle sweetness and more delicate texture. All of the leaves sweeten slightly with frost or cooking. Curly Endive can be eaten raw in salads or cooked in soups, stews, and other dishes.",
   "sowing_method": "Direct seed indoors, transplant outside after hardening off seedlings",
-  "spread_cm": 25,
-  "row_spacing_cm": 40,
+  "spread_cm": 20,
+  "row_spacing_cm": 30,
   "height_cm": 25,
   "sun_level": "full_sun",
   "family": "Asteraceae",
@@ -87,8 +87,20 @@
     {
       "need_type": "blanching",
       "notes": "gather and tie leaves with cloth when 6-8 inches long"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "gather the leaves together and tie them with strips of cloth"
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich soil",
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 4,
+      "end_month": 4
+    }
+  ]
 }

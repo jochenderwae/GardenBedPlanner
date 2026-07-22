@@ -5,7 +5,7 @@
   "description": "Sunrays or Sungolds are a cherry tomato variety that produce small, round golden to orange tomatoes. They have deeply sweet, delicious, fruity flavor. Harvest when they are at their deepest hue for the most intense flavor. Cherry tomatoes do not need to be pruned. Trellis and staking is optional.",
   "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
   "spread_cm": 30,
-  "row_spacing_cm": 90,
+  "row_spacing_cm": 107.5,
   "height_cm": 300,
   "sun_level": "full_sun",
   "family": "Solanaceae",
@@ -128,8 +128,26 @@
     {
       "need_type": "trellising",
       "notes": "flaring frames or trellises for support"
+    },
+    {
+      "need_type": "hilling"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "planting",
+      "start_month": 6,
+      "end_month": 6
+    }
+  ]
 }

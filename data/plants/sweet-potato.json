@@ -4,7 +4,7 @@
   "botanical_name": "Ipomoea batatas",
   "description": "The sweet potato is a large, starchy, tuberous root. The tuber is long and tapered and has yellow, orange, red, brown, purple, or beige skin. It's flesh can be white, red, pink, violet, yellow, orange, or purple. Sweet potato cultivars with white or pale yellow flesh are not as sweet and moist as those with red, pink or orange flesh. The heart-shaped leaves and vines are sometimes eaten as greens when the plants are young, but eating the leaves interferes with the growth of the tuber underground. The sweet potato is not related to the potato or the yam.",
   "sowing_method": "Slips",
-  "spread_cm": 100,
+  "spread_cm": 30.48,
   "row_spacing_cm": 35,
   "height_cm": 25,
   "sun_level": "full_sun",
@@ -12,6 +12,7 @@
   "genus": "Ipomoea",
   "is_edible": true,
   "edible_parts": [
+    "root",
     "roots",
     "tubers"
   ],
@@ -126,8 +127,20 @@
     {
       "need_type": "shallow cultivation",
       "notes": "to prevent vines from rooting along their length"
+    },
+    {
+      "need_type": "ridges",
+      "notes": "Planting on ridges helps ensure proper drainage"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "moderately fertile sandy loam with good drainage.",
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 10,
+      "end_month": 10
+    }
+  ]
 }

@@ -5,7 +5,7 @@
   "description": "White onions are a type of onion with white skin and white flesh. They are members of the Allium family along with garlic and leeks. They tend to have a sharper, more pungent flavor than yellow onions, and thinner, papery skin. They can be eaten cooked or raw (mince and add to salsas and chutneys). Make sure to choose a variety suited to your day length.",
   "sowing_method": "Direct seed indoors or plant sets (small bulbs) outside.",
   "spread_cm": 13,
-  "row_spacing_cm": 10,
+  "row_spacing_cm": 37.5,
   "height_cm": 60,
   "sun_level": "full_sun",
   "family": "Amaryllidaceae",
@@ -133,14 +133,30 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "composting_needs": "well-composted stable manure",
-  "fertilizer_needs": "Commercial fertilizers rich in potash",
+  "composting_needs": "rich in organic matter",
+  "fertilizer_needs": "Commercial fertilizers rich in potash and nitrogen",
   "bedding_needs": [
     {
       "need_type": "soil preparation",
       "notes": "plowed deeply and harrowed until smooth and mellow to a depth of 4 or 5 inches"
+    },
+    {
+      "need_type": "mulch",
+      "notes": "covered with light litter in cold climates"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_rain_cover": false,
+  "soil_type": "well-drained, fertile soil",
+  "edible_parts": [
+    "bulb"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 10,
+      "end_month": 10
+    }
+  ]
 }

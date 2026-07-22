@@ -4,7 +4,7 @@
   "botanical_name": "Solanum lycopersicum",
   "description": "Heirloom tomatoes are open-pollinated, non-hybrid cultivars that have usually been passed down through several generations because of valued characteristics like flavor and appearance. Heirlooms are sweeter and more richly flavored than conventional tomatoes. They come in a wide variety of shapes, sizes, and colors, each with it's own unique flavor. They are often more disease-resistant, but have a shorter shelf life than conventional tomatoes. Some cultivars can be prone to cracking. Heirlooms often have a higher water content than conventional tomatoes and are often eaten raw with freshly ground salt and pepper, fresh basil, olive oil, and mozzarella.",
   "sowing_method": "Direct seed indoors and transplant seedlings outside after hardening off",
-  "spread_cm": 10,
+  "spread_cm": 52.5,
   "row_spacing_cm": 10,
   "height_cm": 10,
   "sun_level": "full_sun",
@@ -114,7 +114,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "balanced mix focusing on nitrogen, potash, and phosphoric acid",
+  "fertilizer_needs": "balanced fertilizer or compost before planting; side-dress with nitrate of soda when established",
   "needs_wind_cover": false,
   "needs_rain_cover": true,
   "bedding_needs": [
@@ -125,8 +125,27 @@
     {
       "need_type": "flaring frames",
       "notes": "for supporting heavy fruit-laden shoots"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "bury two-thirds of the stem horizontally in a shallow trench and cover with soil to encourage rooting along the buried stem"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "planting",
+      "start_month": 7,
+      "end_month": 7
+    }
+  ]
 }

@@ -117,7 +117,7 @@
   ],
   "fertilizer_needs": "complete fertilizer containing nitrogen, phosphoric acid, and potash",
   "seed_info": {
-    "pretreatment": "allow the cut surfaces to dry for a few days before planting to prevent rotting"
+    "pretreatment": "Sprout the sets so that short, thick, firm, colored shoots are secured by providing light and a moderate degree of warmth (4-10°C or 40°-50°F), then allow the cut surfaces to dry for a few days before planting to prevent rotting."
   },
   "bedding_needs": [
     {
@@ -131,10 +131,21 @@
     {
       "need_type": "in-row spacing",
       "notes": "9 to 18 inches apart within the row"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "harrowed two or three times before the plants come up, and the crop should have light, surface tillings five to eight other times during the season"
     }
   ],
   "growth_habit": "rosette",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "rich in organic matter",
+  "soil_type": "deep, cool, moist soil that is finely pulverized and contains much potash. A sandy loam abundantly supplied with organic matter",
+  "spread_cm": 34,
+  "row_spacing_cm": 87,
+  "edible_parts": [
+    "tubers"
+  ]
 }

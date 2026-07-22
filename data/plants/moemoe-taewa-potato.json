@@ -117,7 +117,7 @@
   ],
   "fertilizer_needs": "concentrated, quick-acting fertilizers",
   "seed_info": {
-    "pretreatment": "Sprout the sets before planting to secure short, thick, firm shoots."
+    "pretreatment": "Sprout the sets before planting to secure short, thick, firm shoots; allow the cut surfaces to dry for a few days before planting to prevent rotting."
   },
   "bedding_needs": [
     {
@@ -128,5 +128,19 @@
   "growth_habit": "upright",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "plenty of organic matter",
+  "soil_type": "rich, well-drained soil",
+  "spread_cm": 30,
+  "row_spacing_cm": 82.5,
+  "edible_parts": [
+    "tuber"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 5
+    }
+  ]
 }

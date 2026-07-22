@@ -116,7 +116,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Apply coarse manure in the fall or well-rotted manure in the spring, plowing it under. In early spring, apply bone dust or phosphate if manure is scarce.",
+  "fertilizer_needs": "Apply coarse manure in the fall or well-rotted manure in the spring, plowing it under; in early spring, apply bone dust or phosphate if manure is scarce.",
   "needs_wind_cover": true,
   "bedding_needs": [
     {
@@ -126,5 +126,18 @@
   ],
   "growth_habit": "spreading",
   "life_cycle": "perennial",
-  "life_cycle_years": 7
+  "life_cycle_years": 7,
+  "needs_rain_cover": false,
+  "soil_type": "clayey, moist but not waterlogged conditions",
+  "spread_cm": 91,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

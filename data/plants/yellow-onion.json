@@ -134,7 +134,7 @@
     }
   ],
   "composting_needs": "well-composted stable manure",
-  "fertilizer_needs": "high-grade commercial fertilizers rich in potash",
+  "fertilizer_needs": "high-grade commercial fertilizers rich in potash or well-rotted manure",
   "bedding_needs": [
     {
       "need_type": "double furrows between each bed",
@@ -142,5 +142,21 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "well-drained, fertile soil rich in organic matter",
+  "edible_parts": [
+    "bulbs"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 10,
+      "end_month": 10
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    }
+  ]
 }

@@ -162,8 +162,30 @@
     {
       "need_type": "soil",
       "notes": "rich, warm soil for quick maturation for early varieties"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "place plants on top of ridges spaced 1m (3ft) apart for overwintering"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "22-44 tons per hectare (10-20 tons per acre) of manure",
+  "fertilizer_needs": "56kg per hectare (50lb per acre) of nitrate of soda, 1120kg per hectare (1000lb per acre) lime if acidic soil",
+  "soil_type": "rich, warm soil for early varieties and heavier, moisture-retentive soil for late varieties",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 1,
+      "end_month": 1
+    },
+    {
+      "period_type": "sowing",
+      "start_month": 2,
+      "end_month": 2
+    }
+  ]
 }

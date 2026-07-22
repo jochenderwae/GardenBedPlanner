@@ -4,8 +4,8 @@
   "botanical_name": "Raphanus sativus",
   "description": "Icicle radishes have long, slender, snow-white roots and green leaves. The roots have a crisp flesh with a mild flavor. Radishes grow best in cool weather. Often eaten raw in salads.",
   "sowing_method": "Direct seed",
-  "spread_cm": 8,
-  "row_spacing_cm": 2,
+  "spread_cm": 8.57,
+  "row_spacing_cm": 37.5,
   "height_cm": 20,
   "sun_level": "full_sun",
   "companions": [
@@ -144,10 +144,30 @@
     {
       "need_type": "thinning",
       "notes": "about 2 inches apart"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "sand or a similar medium"
     }
   ],
   "growth_habit": "rosette",
   "genus": "Raphanus",
   "family": "Brassicaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "quick, rich soil",
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 1,
+      "end_month": 2
+    },
+    {
+      "period_type": "planting",
+      "start_month": 7,
+      "end_month": 8
+    }
+  ]
 }

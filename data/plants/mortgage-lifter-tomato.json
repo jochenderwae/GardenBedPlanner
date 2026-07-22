@@ -107,7 +107,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Fertilize based on soil composition; avoid excessive nitrogen",
+  "fertilizer_needs": "Fertilize based on soil test results; avoid excessive nitrogen",
   "needs_rain_cover": true,
   "bedding_needs": [
     {
@@ -117,10 +117,31 @@
     {
       "need_type": "hilling",
       "notes": "set plants deeply in a shallow trench, covering the stem with soil to encourage rooting along its length"
+    },
+    {
+      "need_type": "trellising",
+      "notes": "use flaring frames or trellises for support"
     }
   ],
   "growth_habit": "upright",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "spread_cm": 42,
+  "row_spacing_cm": 106.5,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 5
+    }
+  ]
 }

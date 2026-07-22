@@ -161,8 +161,16 @@
     {
       "need_type": "interplanting",
       "notes": "with corn, potatoes or sweet corn"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "plant pumpkin seeds among field corn, placing one seed per 12m (40ft) row of corn or in the gaps between corn hills"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "spread_cm": 609.6,
+  "edible_parts": [
+    "fruit"
+  ]
 }

@@ -117,7 +117,7 @@
   ],
   "fertilizer_needs": "complete fertilizer containing nitrogen, phosphoric acid, and potash if necessary, based on soil tests. Use barnyard manure sparingly due to disease risks, but clover sod or green manures like rye can be beneficial.",
   "seed_info": {
-    "pretreatment": "sprout the sets before planting"
+    "pretreatment": "Allow the cut surfaces to dry for a few days before planting to prevent rotting; sprout the sets before planting."
   },
   "bedding_needs": [
     {
@@ -128,5 +128,24 @@
   "growth_habit": "rosette",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "plenty of organic matter",
+  "soil_type": "rich, well-drained soil with plenty of organic matter, ideally a sandy loam",
+  "spread_cm": 35.56,
+  "row_spacing_cm": 91.44,
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    }
+  ]
 }

@@ -89,8 +89,22 @@
     {
       "need_type": "spacing",
       "notes": "approximately two feet apart"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "plant two pepper plants between each hill of cantaloupes"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

@@ -76,10 +76,17 @@
     {
       "need_type": "mechanical protection",
       "notes": "wire fencing or earth mounds"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "earth mounds 30cm (12in) high around tree trunks"
     }
   ],
   "growth_habit": "tree",
   "genus": "Pyrus",
   "family": "Rosaceae",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ]
 }

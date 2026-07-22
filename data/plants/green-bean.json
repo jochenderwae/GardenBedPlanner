@@ -5,7 +5,7 @@
   "description": "Green beans are the unripe, young fruit and protective pods of various cultivars of the common bean (Phaseolus vulgaris). Immature or young pods of the runner bean (Phaseolus coccineus), yardlong bean (Vigna unguiculata subsp. sesquipedalis), and hyacinth bean (Lablab purpureus) are used in a similar way.",
   "sowing_method": "direct",
   "spread_cm": 40,
-  "row_spacing_cm": 80,
+  "row_spacing_cm": 61,
   "height_cm": 250,
   "sun_level": "full_sun",
   "family": "Fabaceae",
@@ -60,6 +60,12 @@
     {
       "need_type": "rows",
       "notes": "two feet apart, and about four inches apart in the row"
+    },
+    {
+      "need_type": "hilling"
+    },
+    {
+      "need_type": "staking"
     }
   ],
   "growth_habit": "climbing",

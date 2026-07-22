@@ -121,7 +121,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "avoiding excessive manuring",
+  "fertilizer_needs": "based on soil needs, avoiding excess nitrogen",
   "needs_rain_cover": true,
   "bedding_needs": [
     {
@@ -134,5 +134,20 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 6
+    }
+  ]
 }

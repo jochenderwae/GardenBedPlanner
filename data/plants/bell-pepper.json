@@ -5,7 +5,7 @@
   "description": "The bell pepper is a cultivar group of the species Capsicum annuum. Bell pepper cultivars produce fruits in colors including red, yellow, orange, green, brown, white, and purple. The fruit is often mildly sweet, because this specific cultivar does not produce capsaicin, the chemical responsible for other peppers' spiciness.",
   "sowing_method": "Purchased plants. Transplant when soil is warm.",
   "spread_cm": 45,
-  "row_spacing_cm": 45,
+  "row_spacing_cm": 90,
   "height_cm": 50,
   "sun_level": "full_sun",
   "family": "Solanaceae",
@@ -94,5 +94,15 @@
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

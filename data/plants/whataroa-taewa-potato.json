@@ -116,9 +116,9 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "liberally with barnyard manure or commercial fertilizers containing nitrogen, phosphoric acid, and potash",
+  "fertilizer_needs": "liberally with quick-acting fertilizers containing nitrogen, phosphoric acid, and potash",
   "seed_info": {
-    "pretreatment": "cut them a few days beforehand to allow the surface to dry"
+    "pretreatment": "cut them a few days beforehand to allow the surface to dry then sprout the sets to ensure short, thick, firm shoots"
   },
   "bedding_needs": [
     {
@@ -129,5 +129,18 @@
   "growth_habit": "rosette",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "deep, cool, moist soil rich in potash and finely pulverized",
+  "spread_cm": 37.5,
+  "row_spacing_cm": 88,
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

@@ -4,7 +4,7 @@
   "botanical_name": "Cucurbita pepo var. pepo",
   "description": "Delicata is an oblong, cylindrical, cream-colored squash with green and sometimes orange stripes. Like all squash, it grows on vines. It has deep orange flesh that tastes like a sweet potato, but sweeter. Delicata is consumed as a winter squash, but is actually in the same species as summer squash: Cucurbita pepo. Delicata is delicious roasted, baked, sauteed, or steamed. When roasted or baked, the rind can be eaten as well.",
   "sowing_method": "Direct seed in groups of 2, thin to 1 plant when seedling have 2 sets of adult leaves",
-  "spread_cm": 80,
+  "spread_cm": 30,
   "row_spacing_cm": 90,
   "height_cm": 30,
   "sun_level": "full_sun",
@@ -99,7 +99,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "needs_rain_cover": false,
+  "needs_rain_cover": true,
   "bedding_needs": [
     {
       "need_type": "hilling",
@@ -107,5 +107,16 @@
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich soil",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 12,
+      "end_month": 12
+    }
+  ]
 }

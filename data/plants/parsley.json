@@ -3,8 +3,8 @@
   "common_name": "Parsley",
   "botanical_name": "Petroselinum crispum",
   "sowing_method": "flat",
-  "spread_cm": 10,
-  "row_spacing_cm": 22.9,
+  "spread_cm": 30,
+  "row_spacing_cm": 25.45,
   "height_cm": 30,
   "sun_level": "full_sun",
   "water_needs": "~0.5 in/week",
@@ -150,14 +150,34 @@
   ],
   "needs_rain_cover": false,
   "seed_info": {
-    "pretreatment": "soak in warm water"
+    "pretreatment": "soak parsley seeds in warm water for 24 hours before planting"
   },
   "bedding_needs": [
     {
       "need_type": "spacing",
       "notes": "12 inches apart with 4 inches between each plant"
+    },
+    {
+      "need_type": "thinning",
+      "notes": "to 30cm (12in) apart"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "biennial"
+  "life_cycle": "biennial",
+  "soil_type": "moist, rich soil",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 9,
+      "end_month": 12
+    },
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 5
+    }
+  ]
 }

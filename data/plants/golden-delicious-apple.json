@@ -4,8 +4,8 @@
   "botanical_name": "Malus pumila",
   "description": "Golden Delicious apples are a milder flavored apple cultivar with thin yellow skin and crispy, sweet, pale white flesh. They can be eaten fresh or baked. Blossoms are white or pink. Trees have a chilling requirement of 600-700 hours. Golden Delicious apples are self-pollinating, but can benefit from nearby trees with the same bloom period, and are great pollinators for apple trees that don't self-pollinate. Apples are propagated through grafting because seeds do not breed true. Semi-dwarf and dwarf sizes are available. Depending on the size chosen, the tree will bear fruit within 2-5 years of planting.",
   "sowing_method": "Transplant bare-root plant",
-  "spread_cm": 450,
-  "row_spacing_cm": 450,
+  "spread_cm": 325,
+  "row_spacing_cm": 325,
   "height_cm": 450,
   "sun_level": "full_sun",
   "family": "Rosaceae",
@@ -90,15 +90,34 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "high in potash and low in nitrogen if the soil is not rich",
+  "fertilizer_needs": "high in potash and low in nitrogen",
   "needs_wind_cover": false,
   "needs_rain_cover": false,
   "bedding_needs": [
     {
       "need_type": "cover crops",
       "notes": "buckwheat and crimson clover to protect windfalls and ensure winter survival"
+    },
+    {
+      "need_type": "cover crop",
+      "notes": "buckwheat and crimson clover"
     }
   ],
   "growth_habit": "tree",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "fertilizing",
+      "start_month": 3,
+      "end_month": 4
+    },
+    {
+      "period_type": "planting",
+      "start_month": 8,
+      "end_month": 8
+    }
+  ]
 }

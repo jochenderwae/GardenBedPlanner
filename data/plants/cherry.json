@@ -63,5 +63,15 @@
     }
   ],
   "growth_habit": "tree",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 6,
+      "end_month": 8
+    }
+  ]
 }

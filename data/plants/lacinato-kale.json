@@ -4,8 +4,8 @@
   "botanical_name": "Brassica oleracea",
   "description": "Lacinato, Dinosaur, Tuscan, or Italian Kale has very dark green or blue-green leaves that are heavily crinkled or blistered (savoyed) instead of curled. The leaves have a rich, tender taste and are softer than curly green kales. Can be harvested at baby or adult stage. Delicious raw or cooked. Light frosts increase the sweetness of the leaves.",
   "sowing_method": "Direct seed outdoors or transplant seedlings",
-  "spread_cm": 75,
-  "row_spacing_cm": 45,
+  "spread_cm": 30,
+  "row_spacing_cm": 75,
   "height_cm": 75,
   "sun_level": "full_sun",
   "family": "Brassicaceae",
@@ -98,5 +98,21 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "biennial"
+  "life_cycle": "biennial",
+  "soil_type": "rich, deep soil",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 9,
+      "end_month": 12
+    }
+  ]
 }

@@ -116,10 +116,10 @@
     }
   ],
   "composting_needs": "barnyard manure well-rotted and applied the year before planting",
-  "fertilizer_needs": "complete fertilizers containing nitrogen, phosphoric acid, and potash if necessary",
+  "fertilizer_needs": "complete fertilizer containing nitrogen, phosphoric acid, and potash",
   "needs_rain_cover": false,
   "seed_info": {
-    "pretreatment": "cut larger ones a few days before planting to allow the surfaces to dry and prevent rotting"
+    "pretreatment": "cut larger ones a few days before planting to allow the surfaces to dry and prevent rotting; sprout the sets to ensure short, thick, firm shoots"
   },
   "bedding_needs": [
     {
@@ -130,5 +130,11 @@
   "growth_habit": "spreading",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "deep, cool, moist soil rich in potash and finely pulverized",
+  "spread_cm": 40,
+  "row_spacing_cm": 83.5,
+  "edible_parts": [
+    "root"
+  ]
 }

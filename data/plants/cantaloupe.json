@@ -5,7 +5,7 @@
   "description": "Cantaloupes are round melons that grow on vines and have sweet, firm, juicy, orange flesh. The rind is light-grey and reticulated (or covered in a \"net-like\" pattern).",
   "sowing_method": "Sow 2-3 seeds per peat pot indoors and transplant peat pots directly into soil when soil is warm. Thin to 1 seedling.",
   "spread_cm": 150,
-  "row_spacing_cm": 91.4,
+  "row_spacing_cm": 120,
   "height_cm": 40,
   "sun_level": "full_sun",
   "water_needs": "~1.5 in/week",
@@ -104,5 +104,17 @@
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "fill with compost",
+  "soil_type": "sandy loam",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 8
+    }
+  ]
 }

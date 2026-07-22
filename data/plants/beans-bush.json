@@ -169,5 +169,10 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "clay loams or those overlying limestone, but sandy and gravelly loams can also be used if they contain humus",
+  "spread_cm": 7.6,
+  "edible_parts": [
+    "seeds"
+  ]
 }

@@ -4,7 +4,7 @@
   "botanical_name": "Asparagus officinalis",
   "description": "Perennial spring vegetable often sown from crowns. The vegetable has a mild flavor with earthy undertones. When mature and reproducing, the plant creates tall, stout stems with feathery foliage and small red berries.",
   "sowing_method": "Transplant crowns outside, or start seeds indoors",
-  "spread_cm": 42,
+  "spread_cm": 45,
   "row_spacing_cm": 45.7,
   "height_cm": 140,
   "sun_level": "full_sun",
@@ -185,9 +185,18 @@
     {
       "need_type": "mulching",
       "notes": "Protect young plants with a layer of manure or compost in fall and work it down to the roots in spring."
+    },
+    {
+      "need_type": "hilling",
+      "notes": "Fill the trench gradually as the plants grow"
     }
   ],
   "growth_habit": "upright",
   "life_cycle": "perennial",
-  "life_cycle_years": 15
+  "life_cycle_years": 15,
+  "composting_needs": "good fine compost",
+  "soil_type": "deep, rich, well-drained soil",
+  "edible_parts": [
+    "shoots"
+  ]
 }

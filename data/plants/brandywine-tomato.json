@@ -119,8 +119,8 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "composting_needs": "Use complete fertilizers or compost sparingly",
-  "fertilizer_needs": "Avoid excessive manuring, which can stimulate vine growth at the expense of fruit production. Use complete fertilizers or compost sparingly.",
+  "composting_needs": "Use complete fertilizers or compost sparingly; rich in organic matter",
+  "fertilizer_needs": "Use balanced fertilizer or compost sparingly before planting to avoid excessive vine growth.",
   "needs_rain_cover": true,
   "bedding_needs": [
     {
@@ -139,5 +139,22 @@
   "growth_habit": "upright",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "spread_cm": 60,
+  "row_spacing_cm": 120,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 5
+    }
+  ]
 }

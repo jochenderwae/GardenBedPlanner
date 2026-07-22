@@ -5,7 +5,7 @@
   "description": "Lettuce is a cool weather crop and high temperatures will impede germination and/or cause the plant to bolt (go to seed quickly). Some hybrid cultivars have been bred to be more heat-resistant.",
   "sowing_method": "Direct seed outdoors, thin to 20cm when seedlings are 3cm tall",
   "spread_cm": 30,
-  "row_spacing_cm": 25.4,
+  "row_spacing_cm": 33,
   "height_cm": 20,
   "sun_level": "half_sun",
   "water_needs": "~0.5 in/week",
@@ -207,5 +207,21 @@
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich sandy loam",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 9,
+      "end_month": 10
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 2,
+      "end_month": 3
+    }
+  ]
 }

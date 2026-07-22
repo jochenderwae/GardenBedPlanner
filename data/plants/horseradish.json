@@ -4,7 +4,7 @@
   "botanical_name": "Armoracia rusticana",
   "description": "Horseradish is a hardy perennial plant in the Brassica family (Brassicaceae) grown for it's tapered white taproot, generally 20-25cm long, which is used as a spice and eaten as a vegetable. Roots are ground or shredded to make pungent, spicy sauces and condiments. Seeds or root cuttings are planted in the fall, and the taproot is harvested the following year. It can be harvested in fall after the first frost kills off the greens, or in the early spring before new leaves grow. A winter of hard frosts will sweeten the root. Horseradish should be divided and replanted every 2 years to prevent it from becoming woody. The plant spreads rapidly. If invasive tendencies are managed properly, it is a good companion plant because it wards off diseases and repels insects like potato bugs and beetles, aphids, whiteflies, blister beetles, and some caterpillars.",
   "sowing_method": "Root cuttings",
-  "spread_cm": 30,
+  "spread_cm": 37.5,
   "row_spacing_cm": 30,
   "height_cm": 180,
   "sun_level": "full_sun",
@@ -109,8 +109,29 @@
     {
       "need_type": "deep",
       "notes": "deep, rich, moist soil"
+    },
+    {
+      "need_type": "weed control",
+      "notes": "Weed control is essential"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_rain_cover": false,
+  "soil_type": "deep, rich soil with plenty of moisture",
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 11
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 12,
+      "end_month": 3
+    }
+  ]
 }

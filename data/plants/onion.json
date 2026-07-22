@@ -5,7 +5,7 @@
   "description": ".",
   "sowing_method": "Start indoors",
   "spread_cm": 15,
-  "row_spacing_cm": 15,
+  "row_spacing_cm": 30,
   "height_cm": 1,
   "sun_level": "full_sun",
   "water_needs": "~0.5 in/week",
@@ -193,7 +193,7 @@
     }
   ],
   "composting_needs": "well-composted stable manure",
-  "fertilizer_needs": "high-grade commercial fertilizers",
+  "fertilizer_needs": "heavy manuring",
   "bedding_needs": [
     {
       "need_type": "deep plowing",
@@ -202,8 +202,29 @@
     {
       "need_type": "harrowing",
       "notes": "multiple harrowings to achieve a smooth, mellow texture to a depth of 4-5 inches"
+    },
+    {
+      "need_type": "raised beds",
+      "notes": "for poorly drained soils"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_rain_cover": false,
+  "soil_type": "deep, rich loams",
+  "edible_parts": [
+    "onions"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 1,
+      "end_month": 12
+    },
+    {
+      "period_type": "sowing",
+      "start_month": 8,
+      "end_month": 10
+    }
+  ]
 }

@@ -4,8 +4,8 @@
   "botanical_name": "Raphanus sativus",
   "description": "Radishes are fast-growing cool season root vegetables in the Brassica family. Their taproots come in variety of shapes, sizes, and colors and have a sharp, spicy taste. They are usually eaten raw and added to salads. Radishes need cool weather and moist soil - they do not do well in hot, dry environments. More growing information is available in individual species entries.",
   "sowing_method": "Direct seed outdoors",
-  "spread_cm": 8,
-  "row_spacing_cm": 10,
+  "spread_cm": 8.75,
+  "row_spacing_cm": 37.5,
   "height_cm": 15,
   "sun_level": "full_sun",
   "family": "Brassicaceae",
@@ -147,7 +147,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "needs_rain_cover": false,
+  "needs_rain_cover": true,
   "bedding_needs": [
     {
       "need_type": "rows",
@@ -156,8 +156,23 @@
     {
       "need_type": "depth",
       "notes": "1/2 inch to 1 inch deep"
+    },
+    {
+      "need_type": "thinning",
+      "notes": "to prevent crowding"
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, well-drained soil",
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 12,
+      "end_month": 1
+    }
+  ]
 }

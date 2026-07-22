@@ -115,9 +115,9 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "phosphate fertilizer for a quick start and consider using concentrated, quick-acting fertilizers for early varieties",
+  "fertilizer_needs": "phosphate fertilizer for a quick start; complete fertilizer containing nitrogen, phosphoric acid, and potash",
   "seed_info": {
-    "pretreatment": "allow the cut surfaces to dry before planting to prevent rotting"
+    "pretreatment": "allow the cut surfaces to dry for a few days before planting to prevent rotting"
   },
   "bedding_needs": [
     {
@@ -127,10 +127,33 @@
     {
       "need_type": "weed control",
       "notes": "kept loose and free of weeds"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "ensure the soil is well-prepared and free of compacted areas"
     }
   ],
   "growth_habit": "upright",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "abundant in organic matter",
+  "soil_type": "rich, sandy loam soil (10-25cm deep) that is well-drained",
+  "spread_cm": 30,
+  "row_spacing_cm": 105,
+  "edible_parts": [
+    "tubers"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    }
+  ]
 }

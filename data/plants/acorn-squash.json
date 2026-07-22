@@ -4,7 +4,7 @@
   "botanical_name": "Cucurbita pepo",
   "description": "Dark green and/or orange to yellow patterned rind with longitudinal ridges. Acorn-shaped, generally 4-7 inches long. Sweet, yellow-orange flesh inside. Belongs to the same species as summer squashes like zucchini and crookneck squash.",
   "sowing_method": "seeds",
-  "spread_cm": 150,
+  "spread_cm": 30,
   "row_spacing_cm": 60,
   "height_cm": 30,
   "sun_level": "full_sun",
@@ -109,8 +109,23 @@
     {
       "need_type": "hills",
       "notes": "4 to 5 feet apart for bush varieties, 8 to 16 feet for running varieties"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "Hills should be made similarly to those for cucumbers and cantaloupes"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich soil",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 12,
+      "end_month": 12
+    }
+  ]
 }

@@ -4,7 +4,7 @@
   "botanical_name": "Solanum lycopersicum",
   "description": "The tomato is the fruit of the tomato plant, a member of the Nightshade family (Solanaceae). The fruit grows on a small compact bush.",
   "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
-  "spread_cm": 45,
+  "spread_cm": 30,
   "row_spacing_cm": 76.2,
   "height_cm": 45,
   "sun_level": "full_sun",
@@ -176,8 +176,8 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "light dressing of nitrate of soda at planting time",
-  "needs_rain_cover": false,
+  "fertilizer_needs": "balanced fertilizer or compost; light dressing of nitrate of soda at planting time",
+  "needs_rain_cover": true,
   "bedding_needs": [
     {
       "need_type": "staking",
@@ -193,5 +193,20 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 5
+    }
+  ]
 }

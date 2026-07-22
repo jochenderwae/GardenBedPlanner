@@ -4,7 +4,7 @@
   "botanical_name": "Cucurbita pepo",
   "description": "Pattypan squash is a variety of summer squash that has a bright yellow, green or white skin and is shaped like a flying saucer with scalloped edges. The squash's flesh is most tender when it is slightly immature - the squash is usually harvested when it is 5-8cm in diameter. It can be baked, grilled, fried, or boiled.",
   "sowing_method": "Direct seed outdoors or direct seed into peat pots and transplant pots into soil",
-  "spread_cm": 100,
+  "spread_cm": 30,
   "row_spacing_cm": 90,
   "height_cm": 80,
   "sun_level": "full_sun",
@@ -92,13 +92,21 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "needs_rain_cover": false,
+  "needs_rain_cover": true,
   "bedding_needs": [
     {
       "need_type": "hills",
       "notes": "spaced 3 to 4 feet apart each way for bush varieties"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "7-10cm (three or four inches) high and 30cm (12in) wide"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, well-drained soil",
+  "edible_parts": [
+    "fruit"
+  ]
 }

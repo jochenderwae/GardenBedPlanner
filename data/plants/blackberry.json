@@ -4,7 +4,7 @@
   "botanical_name": "Rubus fruticosus",
   "description": "Deeply colored, sweet, clustered berries. The blackberry plant is a perennial plant that bears biennial stems or canes. The plant often has thorns, though some cultivars do not. Most varieties have greater berry yields from the second year on. In peak season, expect to harvest twice a week.",
   "sowing_method": "Transplant canes into soil or pot",
-  "spread_cm": 75,
+  "spread_cm": 152.4,
   "row_spacing_cm": 100,
   "height_cm": 175,
   "sun_level": "full_sun",
@@ -99,9 +99,24 @@
     {
       "need_type": "pruning",
       "notes": "Thin out to four or five canes and pinch these off at about three feet; cut them when tied up the following spring. Cut canes back to four or five feet and laterals to no more than eighteen inches."
+    },
+    {
+      "need_type": "staking",
+      "notes": "wires or a trellis"
     }
   ],
   "growth_habit": "climbing",
   "life_cycle": "perennial",
-  "life_cycle_years": 15
+  "life_cycle_years": 15,
+  "soil_type": "slightly drier soil than raspberries and do not require as rich soil",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 9,
+      "end_month": 10
+    }
+  ]
 }

@@ -207,6 +207,17 @@ def consolidate_pass(plant_json: dict) -> dict | None:
 # a source" - typed per field for the same reason ollama_resolve.py's
 # _FIELD_VALUE_TYPES exists (an unconstrained schema gets read as "produce a
 # nested object" by the model, not "produce a scalar").
+#
+# issue #127: broadened beyond that original fixed list to also mine
+# growing_information for periods/edible_parts/soil_type/spread_cm/
+# row_spacing_cm - fields a STRUCTURED source could in principle cover (and
+# for periods, was even documented as covered by Trefle in data/CLAUDE.md's
+# source-coverage table - confirmed on inspection that mapping was never
+# actually implemented in sources/trefle.py, so every plant's periods list
+# is empty regardless of growing_information) but which frequently sit
+# empty in practice, and which the old gardening-book text often states
+# explicitly (e.g. bell pepper: "sown about the middle of March"; chicory:
+# "space plants 30cm (12in) apart in rows that are 90-120cm (3-4ft)").
 _EXTRACT_SCHEMA = {
     "type": "object",
     "properties": {
@@ -226,10 +237,27 @@ _EXTRACT_SCHEMA = {
                 "required": ["need_type"],
             },
         },
+        "soil_type": {"type": ["string", "null"]},
+        "spread_cm": {"type": ["number", "null"]},
+        "row_spacing_cm": {"type": ["number", "null"]},
+        "edible_parts": {"type": ["array", "null"], "items": {"type": "string"}},
+        "periods": {
+            "type": ["array", "null"],
+            "items": {
+                "type": "object",
+                "properties": {
+                    "period_type": {"type": "string"},
+                    "start_month": {"type": ["integer", "null"]},
+                    "end_month": {"type": ["integer", "null"]},
+                },
+                "required": ["period_type", "start_month", "end_month"],
+            },
+        },
     },
     "required": [
         "composting_needs", "fertilizer_needs", "needs_wind_cover",
         "needs_rain_cover", "seed_pretreatment", "bedding_needs",
+        "soil_type", "spread_cm", "row_spacing_cm", "edible_parts", "periods",
     ],
 }
 
@@ -244,10 +272,26 @@ def _extract_fields_via_ollama(slug: str, common_name: str, text: str) -> dict:
         "- needs_wind_cover: true/false if the text discusses wind protection/staking against wind, else null\n"
         "- needs_rain_cover: true/false if the text discusses rain/frost protection, else null\n"
         "- seed_pretreatment: seed pretreatment before sowing (e.g. soaking, stratification), or null\n"
-        "- bedding_needs: array of {need_type, notes} for hilling/staking/ground-cover/etc mentioned, or null\n\n"
+        "- bedding_needs: array of {need_type, notes} for hilling/staking/ground-cover/etc mentioned, or null\n"
+        "- soil_type: preferred soil type/texture explicitly described (e.g. 'deep, rich loam'), or null\n"
+        "- spread_cm: a single representative number in centimeters for how far apart individual "
+        "plants should be spaced, ONLY if the text gives a specific measurement (convert imperial "
+        "to metric if needed; if a range is given, use the middle of the range), else null\n"
+        "- row_spacing_cm: same as spread_cm but for the spacing BETWEEN ROWS specifically "
+        "(only if the text distinguishes row spacing from in-row plant spacing), else null\n"
+        "- edible_parts: array of short lowercase strings (e.g. 'root', 'leaves', 'fruit', 'flowers', "
+        "'seeds') for plant parts the text explicitly describes eating/using as food, or null\n"
+        "- periods: array of {period_type, start_month, end_month} for recurring annual timing "
+        "windows explicitly stated in the text (month numbers 1-12; for a single month, set "
+        "start_month equal to end_month). period_type must be one of exactly: 'sowing', "
+        "'planting', 'fertilizing', 'harvesting' - pick whichever this window is actually about. "
+        "Only include a period if the text names a specific month or season mapped confidently to "
+        "month numbers; do not guess. Return null (or omit) if no such window is stated.\n\n"
         "Respond with JSON only, matching exactly this shape: "
         '{"composting_needs": ..., "fertilizer_needs": ..., "needs_wind_cover": ..., '
-        '"needs_rain_cover": ..., "seed_pretreatment": ..., "bedding_needs": ...}.'
+        '"needs_rain_cover": ..., "seed_pretreatment": ..., "bedding_needs": ..., '
+        '"soil_type": ..., "spread_cm": ..., "row_spacing_cm": ..., "edible_parts": ..., '
+        '"periods": ...}.'
     )
     try:
         return _sanitize_extracted(_call_ollama(prompt, _EXTRACT_SCHEMA))
@@ -267,10 +311,26 @@ def _sanitize_extracted(extracted: dict) -> dict:
     string. Normalizes both back to None for every string-typed key here
     before this dict is used for anything."""
     cleaned = dict(extracted)
-    for key in ("composting_needs", "fertilizer_needs", "seed_pretreatment"):
+    for key in ("composting_needs", "fertilizer_needs", "seed_pretreatment", "soil_type"):
         value = cleaned.get(key)
         if isinstance(value, str) and value.strip().lower() in ("null", "none", ""):
             cleaned[key] = None
+    # Defensive against out-of-range/malformed period entries slipping past
+    # the JSON schema (schema only constrains type, not the 1-12 range) -
+    # same "log it, don't guess" spirit as the rest of this module, but a
+    # single bad period entry shouldn't sink the whole extraction, so it's
+    # just dropped here rather than logged (callers only see valid ones).
+    periods = cleaned.get("periods") or []
+    valid_periods = []
+    for p in periods:
+        period_type = p.get("period_type")
+        start, end = p.get("start_month"), p.get("end_month")
+        if not period_type or not isinstance(start, int) or not isinstance(end, int):
+            continue
+        if not (1 <= start <= 12 and 1 <= end <= 12):
+            continue
+        valid_periods.append({"period_type": period_type, "start_month": start, "end_month": end})
+    cleaned["periods"] = valid_periods
     return cleaned
 
 
@@ -293,6 +353,21 @@ def extract_pass(plant_json: dict) -> list[str]:
     etl/CLAUDE.md's note on merge.py's list-field handling), so extracted
     bedding_needs are unioned by need_type instead, same simpler pattern
     export.py already uses for other list fields.
+
+    issue #127 broadened this same reconciliation to soil_type/spread_cm/
+    row_spacing_cm (ordinary scalars - already have _FIELD_HINTS/
+    _FIELD_VALUE_TYPES entries in ollama_resolve.py from the main pipeline,
+    so they slot into the exact same existing-vs-extracted conflict
+    resolution as composting_needs etc. above) plus two more list fields:
+    edible_parts (unioned, same need_type-union pattern as bedding_needs -
+    there's nothing to key it by since it's just a flat string list, so it's
+    a straight set union) and periods (additive-only, keyed by period_type -
+    deliberately does NOT overwrite or attempt to resolve a conflict against
+    an existing period of the same type, since merge.py's own list-field
+    handling never does full LLM resolution for periods either; a period
+    only gets added here when that period_type doesn't already exist for
+    this plant, so a growing-info-derived guess never silently replaces a
+    period a more authoritative structured source already established).
     """
     text = _best_text(plant_json)
     if not text:
@@ -306,7 +381,10 @@ def extract_pass(plant_json: dict) -> list[str]:
 
     changed: list[str] = []
 
-    for field_name in ("composting_needs", "fertilizer_needs", "needs_wind_cover", "needs_rain_cover"):
+    for field_name in (
+        "composting_needs", "fertilizer_needs", "needs_wind_cover", "needs_rain_cover",
+        "soil_type", "spread_cm", "row_spacing_cm",
+    ):
         value = extracted.get(field_name)
         if value is None:
             continue
@@ -353,6 +431,25 @@ def extract_pass(plant_json: dict) -> list[str]:
             existing_bedding.append(need)
             existing_types.add(need.get("need_type"))
             changed.append("bedding_needs")
+
+    extracted_edible_parts = extracted.get("edible_parts") or []
+    if extracted_edible_parts:
+        existing_parts = set(plant_json.get("edible_parts") or [])
+        merged_parts = existing_parts | {p.strip().lower() for p in extracted_edible_parts if p and p.strip()}
+        if merged_parts != existing_parts:
+            plant_json["edible_parts"] = sorted(merged_parts)
+            changed.append("edible_parts")
+
+    extracted_periods = extracted.get("periods") or []
+    if extracted_periods:
+        existing_periods = plant_json.setdefault("periods", [])
+        existing_period_types = {p.get("period_type") for p in existing_periods}
+        for period in extracted_periods:
+            if period["period_type"] in existing_period_types:
+                continue  # a period of this type already exists from another source - don't overwrite it
+            existing_periods.append(period)
+            existing_period_types.add(period["period_type"])
+            changed.append("periods")
 
     return changed
 

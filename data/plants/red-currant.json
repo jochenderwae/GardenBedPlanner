@@ -83,8 +83,23 @@
     {
       "need_type": "mulch",
       "notes": "during hot, dry weather to retain moisture"
+    },
+    {
+      "need_type": "mulching",
+      "notes": "during hot, dry weather"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "soil_type": "deep, rich, and moist soil, ideally a clayey loam",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 1,
+      "end_month": 12
+    }
+  ]
 }

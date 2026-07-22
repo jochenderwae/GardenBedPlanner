@@ -4,7 +4,7 @@
   "botanical_name": "Abelmoschus esculentus",
   "description": "Okra is a frost-tender annual grown for it's edible seed pods and, less commonly, it's leaves and stems. Plants can be green or red.",
   "sowing_method": "Direct seed indoors or outside",
-  "spread_cm": 25,
+  "spread_cm": 46,
   "row_spacing_cm": 25,
   "height_cm": 250,
   "sun_level": "full_sun",
@@ -12,6 +12,7 @@
   "genus": "Abelmoschus",
   "is_edible": true,
   "edible_parts": [
+    "pods",
     "seeds"
   ],
   "data_sources": [
@@ -85,8 +86,20 @@
     {
       "need_type": "spacing",
       "notes": "rows spaced 3½ to 5 feet apart"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "cultivate the soil regularly to keep it loose and weed-free until the plants begin to shade the ground"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, well-drained loam",
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 5
+    }
+  ]
 }

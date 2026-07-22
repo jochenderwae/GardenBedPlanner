@@ -14,6 +14,7 @@
   "soil_ph_max": 7.5,
   "is_edible": true,
   "edible_parts": [
+    "leaves",
     "stem"
   ],
   "data_sources": [

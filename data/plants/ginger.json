@@ -12,6 +12,7 @@
   "genus": "Zingiber",
   "is_edible": true,
   "edible_parts": [
+    "root",
     "roots"
   ],
   "data_sources": [
@@ -51,5 +52,12 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 9,
+      "end_month": 12
+    }
+  ]
 }

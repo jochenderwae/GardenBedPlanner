@@ -86,5 +86,22 @@
   ],
   "fertilizer_needs": "good fertilization",
   "growth_habit": "tree",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "spread_cm": 37.5,
+  "bedding_needs": [
+    {
+      "need_type": "mechanical protection",
+      "notes": "wire fencing or earth mounds 30cm (12in) high around the trunk"
+    }
+  ],
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 10
+    }
+  ]
 }

@@ -4,7 +4,7 @@
   "botanical_name": "Allium schoenoprasum",
   "description": "Chives are a perennial herb in the Allium genus related to garlic, shallots, leeks, scallions, and Chinese onions. They are grown for culinary and ornamental purposes. The scapes or stems are hollow and tubular and have a mild onion taste. They are one of the fines herbes of French cuisine and commonly used fresh. The plant forms dense clusters of slender 2-3cm bulbs, which can be cooked. Chive flowers are edible, star-shaped, and pale purple. Chives are a good companion plant because their sulfur compounds repel negative insects, and their flowers attract bees.",
   "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
-  "spread_cm": 10,
+  "spread_cm": 30,
   "row_spacing_cm": 25.4,
   "height_cm": 50,
   "sun_level": "full_sun",
@@ -136,5 +136,16 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "soil_type": "well-drained soil",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

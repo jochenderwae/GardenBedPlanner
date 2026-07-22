@@ -96,8 +96,26 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Fertilize the field broadcast before planting, applying additional fertilizer where the plants will stand.",
+  "fertilizer_needs": "Fertilize before planting and again when setting out plants.",
   "needs_rain_cover": false,
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "enriched with well-rotted manure or compost",
+  "soil_type": "sandy loam soil that is well-drained and has a moist subsoil.",
+  "bedding_needs": [
+    {
+      "need_type": "hills",
+      "notes": "enriched with well-rotted manure or compost"
+    }
+  ],
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

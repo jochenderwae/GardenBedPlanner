@@ -14,7 +14,9 @@
   "soil_ph_max": 7.5,
   "is_edible": true,
   "edible_parts": [
-    "flowers"
+    "flowers",
+    "leaves",
+    "root"
   ],
   "companions": [
     {
@@ -96,5 +98,18 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "good garden soil",
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 9,
+      "end_month": 12
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 6,
+      "end_month": 8
+    }
+  ]
 }

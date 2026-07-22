@@ -115,8 +115,8 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "composting_needs": "barnyard manure well-rotted or incorporated into the soil a year before planting to avoid diseases",
-  "fertilizer_needs": "complete fertilizers containing nitrogen, phosphoric acid, and potash if needed",
+  "composting_needs": "plenty of organic matter, such as well-rotted barnyard manure incorporated into the soil a year before planting",
+  "fertilizer_needs": "complete fertilizers containing nitrogen, phosphoric acid, and potash",
   "needs_rain_cover": false,
   "bedding_needs": [
     {
@@ -127,5 +127,26 @@
   "growth_habit": "rosette",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, sandy loam",
+  "spread_cm": 37.5,
+  "row_spacing_cm": 82.5,
+  "seed_info": {
+    "pretreatment": "Sprout the seed potatoes before planting to encourage early growth."
+  },
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 4,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 8
+    }
+  ]
 }

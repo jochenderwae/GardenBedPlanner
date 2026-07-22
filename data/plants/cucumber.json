@@ -146,8 +146,8 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "heavy dressings of stable manure and liberal applications of nitrogen-rich fertilizer",
-  "needs_rain_cover": false,
+  "fertilizer_needs": "nitrogen-rich fertilizers",
+  "needs_rain_cover": true,
   "bedding_needs": [
     {
       "need_type": "hills",
@@ -156,7 +156,25 @@
     {
       "need_type": "drills",
       "notes": "6 feet apart"
+    },
+    {
+      "need_type": "hilling"
+    },
+    {
+      "need_type": "staking"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "soil_type": "well-drained, light sandy loam",
+  "spread_cm": 30,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 4
+    }
+  ]
 }

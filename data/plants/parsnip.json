@@ -170,5 +170,21 @@
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "biennial"
+  "life_cycle": "biennial",
+  "soil_type": "deep, rich, well-drained soil with a loose texture",
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 10,
+      "end_month": 12
+    }
+  ]
 }

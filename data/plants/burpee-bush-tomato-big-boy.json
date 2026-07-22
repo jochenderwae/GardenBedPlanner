@@ -5,7 +5,7 @@
   "description": "Heirloom tomatoes are open-pollinated, non-hybrid cultivars that have usually been passed down through several generations because of valued characteristics like flavor and appearance. Heirlooms are sweeter and more richly flavored than conventional tomatoes. They come in a wide variety of shapes, sizes, and colors, each with it's own unique flavor. They are often more disease-resistant, but have a shorter shelf life than conventional tomatoes. Some cultivars can be prone to cracking. Heirlooms often have a higher water content than conventional tomatoes and are often eaten raw with freshly ground salt and pepper, fresh basil, olive oil, and mozzarella.",
   "sowing_method": "Direct seed indoors and transplant seedlings outside after hardening off",
   "spread_cm": 45,
-  "row_spacing_cm": 45,
+  "row_spacing_cm": 120,
   "height_cm": 45,
   "sun_level": "full_sun",
   "family": "Solanaceae",
@@ -114,7 +114,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "avoiding excessive manuring",
+  "fertilizer_needs": "based on soil needs, avoiding excess nitrogen",
   "needs_wind_cover": true,
   "needs_rain_cover": false,
   "bedding_needs": [
@@ -125,8 +125,27 @@
     {
       "need_type": "support frames",
       "notes": "use flaring frames to support heavy fruit-laden shoots"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "dig a shallow trench and bury the stem of tall seedlings"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 6
+    }
+  ]
 }

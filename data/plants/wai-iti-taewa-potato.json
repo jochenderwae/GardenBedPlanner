@@ -125,5 +125,15 @@
   "growth_habit": "rosette",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "plenty of organic matter",
+  "soil_type": "rich, well-drained",
+  "spread_cm": 34.5,
+  "row_spacing_cm": 88,
+  "seed_info": {
+    "pretreatment": "Sprout the seed potatoes before planting to encourage strong, colored shoots."
+  },
+  "edible_parts": [
+    "root"
+  ]
 }

@@ -100,5 +100,17 @@
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "spread_cm": 150,
+  "row_spacing_cm": 460,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 4
+    }
+  ]
 }

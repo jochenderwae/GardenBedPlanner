@@ -115,7 +115,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "complete fertilizer containing nitrogen, phosphoric acid, and potash or barnyard manure",
+  "fertilizer_needs": "complete fertilizer containing nitrogen, phosphoric acid, and potash or quick-acting fertilizers for early potatoes",
   "bedding_needs": [
     {
       "need_type": "hilling",
@@ -125,5 +125,27 @@
   "growth_habit": "spreading",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "plenty of organic matter",
+  "soil_type": "rich, sandy loam soil with good drainage",
+  "spread_cm": 37,
+  "row_spacing_cm": 82,
+  "seed_info": {
+    "pretreatment": "Sprout the seed potatoes before planting to encourage strong growth."
+  },
+  "edible_parts": [
+    "tubers"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    }
+  ]
 }

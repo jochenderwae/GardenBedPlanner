@@ -4,7 +4,7 @@
   "botanical_name": "Malus pumila",
   "description": "The apple is a deciduous tree in the Rose family grown for it's sweet fruit. The apple originated in Central Asia and has spread across the world. There are now over 7,500 cultivars bred for a variety of climates and characteristics. Apples are propagated through grafting because seeds do not breed true.",
   "sowing_method": "Bare root tree",
-  "spread_cm": 500,
+  "spread_cm": 375,
   "height_cm": 300,
   "sun_level": "full_sun",
   "water_needs": "~2.0 in/week",
@@ -150,5 +150,17 @@
     }
   ],
   "growth_habit": "tree",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "needs_rain_cover": false,
+  "row_spacing_cm": 400,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "fertilizing",
+      "start_month": 1,
+      "end_month": 8
+    }
+  ]
 }

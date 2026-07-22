@@ -4,8 +4,8 @@
   "botanical_name": "Taraxacum officinale",
   "description": "Dandelions are a large genus of flowering plants in the Asteraceae family native to Eurasia and North America. The two most common species, T. officinale and T. erythrospermum, propagate as wildflowers, but they can also be cultivated for their greens, flowers, and roots. Dandelions are perennial, herbaceous plants with long taproots, lobed leaves that grow in rosettes, and yellow flower heads composed of florets. The young leaves can be used raw in salads. They are high in vitamins and minerals. Older, larger leaves are more bitter and are best sautéed or added to soups and stews. The flower petals are used to make dandelion wine. The roots take a year to harvest, and can be brewed into a detoxifying, mildly diuretic tea or coffee substitute. Dandelions are considered a beneficial weed and have a number of uses as a companion plant. They combat fusarium wilt, a soil-borne fungal disease that afflicts tomatoes, because their roots produce an acid that \"starves\" the disease of one of its essential nutrients, iron. Their taproots loosen compacted soils and bring up nutrients for shallower-rooted plants. Dandelions attract pollinating insects and release ethylene gas, helping fruit to ripen. Deadhead flowers to prevent the plants from becoming invasive.",
   "sowing_method": "Direct seed outdoors, thin to 15cm",
-  "spread_cm": 45,
-  "row_spacing_cm": 15,
+  "spread_cm": 30,
+  "row_spacing_cm": 45,
   "height_cm": 45,
   "sun_level": "full_sun",
   "family": "Asteraceae",
@@ -82,8 +82,28 @@
     {
       "need_type": "tillage",
       "notes": "good tillage throughout the season"
+    },
+    {
+      "need_type": "mulch",
+      "notes": "light mulch during winter"
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich and deep",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

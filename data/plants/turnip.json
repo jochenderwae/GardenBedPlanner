@@ -5,7 +5,7 @@
   "description": "Turnips are smooth, round root vegetables 5-20 cm in diameter. They are often white below the soil line and bright purple or green above. Turnips usually have white flesh and a slightly sweet and bitter taste, similar to cabbage. The edible foliage tastes similar to mustard greens. Turnips are a cool-weather crop and do best as spring or fall plantings.",
   "sowing_method": "Direct seed outdoors, thin to 10cm when seedlings are 3cm tall",
   "spread_cm": 30,
-  "row_spacing_cm": 10,
+  "row_spacing_cm": 37.5,
   "height_cm": 30,
   "sun_level": "full_sun",
   "family": "Brassicaceae",
@@ -101,13 +101,28 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "needs_rain_cover": false,
+  "needs_rain_cover": true,
   "bedding_needs": [
     {
       "need_type": "drills",
       "notes": "12 to 18 inches apart for early crop"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "remove tops before storage"
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, moist soil",
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 4
+    }
+  ]
 }

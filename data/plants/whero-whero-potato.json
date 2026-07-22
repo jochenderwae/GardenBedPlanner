@@ -115,10 +115,10 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "phosphate",
+  "fertilizer_needs": "complete fertilizer containing nitrogen, phosphoric acid, and potash before planting",
   "needs_rain_cover": false,
   "seed_info": {
-    "pretreatment": "sprouting the sets before planting to ensure vigorous growth."
+    "pretreatment": "Allow the cut surfaces to dry for a few days before planting to prevent rotting; sprouting the sets before planting can ensure vigorous growth."
   },
   "bedding_needs": [
     {
@@ -132,10 +132,32 @@
     {
       "need_type": "plant spacing",
       "notes": "9 to 18 inches between plants"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "keep the soil moist but not waterlogged"
     }
   ],
   "growth_habit": "spreading",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, sandy loam",
+  "spread_cm": 30,
+  "row_spacing_cm": 90,
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    }
+  ]
 }

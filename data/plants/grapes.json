@@ -102,15 +102,23 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "well-rotted manure and wood ashes if necessary",
+  "fertilizer_needs": "2-8-10 fertilizer or well-rotted manure and wood ashes if necessary",
   "needs_wind_cover": true,
   "needs_rain_cover": false,
   "bedding_needs": [
     {
       "need_type": "staking",
       "notes": "Stake up one or two shoots. Run the main trunks up this wire and stretch the arms along it."
+    },
+    {
+      "need_type": "trellis",
+      "notes": "Train canes to a stake or trellis"
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "soil_type": "well-drained soil",
+  "edible_parts": [
+    "fruit"
+  ]
 }

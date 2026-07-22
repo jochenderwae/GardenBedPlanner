@@ -4,8 +4,8 @@
   "botanical_name": "Allium cepa",
   "description": "Spring onions resemble scallions in appearance and flavor, but they are actually very young storage onions. Yellow, red, or white storage onions are pulled out of the ground before the standard harvest date, when their skins are still thin and they are mild in flavor. Their bulbs and greens can be eaten fresh or cooked.",
   "sowing_method": "Direct seed or plant slips or sets",
-  "spread_cm": 8,
-  "row_spacing_cm": 8,
+  "spread_cm": 8.57,
+  "row_spacing_cm": 32.5,
   "height_cm": 30,
   "sun_level": "full_sun",
   "family": "Amaryllidaceae",
@@ -126,8 +126,8 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "composting_needs": "clean, well-composted stable manure several months before planting",
-  "fertilizer_needs": "Commercial fertilizers rich in potash",
+  "composting_needs": "well-composted stable manure applied several months before planting",
+  "fertilizer_needs": "Commercial fertilizers high in potash",
   "needs_rain_cover": false,
   "bedding_needs": [
     {
@@ -137,8 +137,25 @@
     {
       "need_type": "harrowing",
       "notes": "until the soil is smooth and mellow to a depth of 4-5 inches"
+    },
+    {
+      "need_type": "thinning",
+      "notes": "to 7-10cm (three or four inches) apart"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "deep, rich loams",
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 10,
+      "end_month": 10
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 4,
+      "end_month": 6
+    }
+  ]
 }

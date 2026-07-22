@@ -4,7 +4,7 @@
   "botanical_name": "Allium sativum",
   "description": "The garlic plant has a bulbous root separated into cloves and a tall stalk with branching leaves. The plant has two main subspecies: hard and soft neck. The choice between which subspecies to grow depends on latitude and at what point in the growing season you will be planting the crop: garlic can be day-length sensitive. Hard-neck garlic is usually grown in cooler climates and creates larger cloves. Soft-neck garlic is grown in warmer climates and produces smaller, tightly-packed cloves. Be sure to trim garlic scapes before they flower - this will focus the plant's energy into bulb growth, resulting in larger cloves and bulbs. Scapes have a fresh, light garlic flavor. They are delicious raw or cooked, and make a great pesto.",
   "sowing_method": "Direct seed large cloves",
-  "spread_cm": 10,
+  "spread_cm": 12.5,
   "row_spacing_cm": 17.8,
   "height_cm": 120,
   "sun_level": "full_sun",
@@ -18,6 +18,7 @@
   "succession_enabled": false,
   "succession_max_sowings": 1,
   "edible_parts": [
+    "bulb",
     "stem"
   ],
   "companions": [
@@ -182,5 +183,17 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 9,
+      "end_month": 9
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    }
+  ]
 }

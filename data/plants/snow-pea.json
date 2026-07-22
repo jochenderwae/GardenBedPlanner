@@ -86,5 +86,16 @@
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich and well-draining; a slight clay content can be beneficial.",
+  "edible_parts": [
+    "pods"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

@@ -62,8 +62,17 @@
     {
       "need_type": "level plats",
       "notes": "rows 3 feet apart with 15 to 18 inches between plants"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "Ridges should be 20-30cm (8-12in) high"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "spread_cm": 60,
+  "row_spacing_cm": 120,
+  "edible_parts": [
+    "fruit"
+  ]
 }

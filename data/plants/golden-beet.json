@@ -5,7 +5,7 @@
   "description": "Golden beets have gold rather than red taproots. The veins of their leaves are yellow rather than red. They have a sweeter, milder flavor than red beets. Like red beets, their leaves can be eaten and the roots are delicious shaved raw into salads or roasted.",
   "sowing_method": "Direct sow, thin to 8cm apart when seedlings are 5cm tall",
   "spread_cm": 25,
-  "row_spacing_cm": 30,
+  "row_spacing_cm": 63.5,
   "height_cm": 20,
   "sun_level": "full_sun",
   "family": "Amaranthaceae",
@@ -113,10 +113,10 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Use plenty of well-prepared fertilizer; rough or undecomposed material should not be used.",
-  "needs_rain_cover": false,
+  "fertilizer_needs": "Use well-prepared fertilizer; apply top dressing of powdered nitrate soda when plants are one-third grown.",
+  "needs_rain_cover": true,
   "seed_info": {
-    "pretreatment": "Soak seeds in tepid water before planting to aid germination"
+    "pretreatment": "Soak seeds in tepid water before planting to speed germination"
   },
   "bedding_needs": [
     {
@@ -133,5 +133,19 @@
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "avoid rough or undecomposed material",
+  "soil_type": "rich, sandy loam soil",
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 12
+    }
+  ]
 }

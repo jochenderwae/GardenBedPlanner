@@ -113,7 +113,7 @@
     }
   ],
   "composting_needs": "Use complete fertilizer or compost sparingly",
-  "fertilizer_needs": "Use complete fertilizer or compost sparingly",
+  "fertilizer_needs": "Use balanced fertilizer or compost sparingly, avoiding excessive nitrogen",
   "needs_rain_cover": true,
   "bedding_needs": [
     {
@@ -127,8 +127,24 @@
     {
       "need_type": "trellising",
       "notes": "flaring frames or trellises for support"
+    },
+    {
+      "need_type": "ground-cover",
+      "notes": "sprawl on the ground"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "spread_cm": 75,
+  "row_spacing_cm": 105,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 5
+    }
+  ]
 }

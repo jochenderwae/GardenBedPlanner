@@ -68,7 +68,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "needs_wind_cover": false,
+  "needs_wind_cover": true,
   "bedding_needs": [
     {
       "need_type": "staking",
@@ -77,10 +77,26 @@
     {
       "need_type": "ground_cover",
       "notes": "Avoid letting vines touch the ground to prevent pod decay and mildew."
+    },
+    {
+      "need_type": "trellising",
+      "notes": "for tall varieties"
     }
   ],
   "growth_habit": "climbing",
   "genus": "Pisum",
   "family": "Fabaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_rain_cover": false,
+  "soil_type": "rich and well-draining; a bit of clay can be beneficial",
+  "edible_parts": [
+    "pods"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

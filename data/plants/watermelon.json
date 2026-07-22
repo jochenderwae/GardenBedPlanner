@@ -115,5 +115,17 @@
       "notes": "mixing several shovelfuls of well-rotted manure with the soil and covering it with fine, soft earth"
     }
   ],
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "well-drained soil rich in sand and nutrients",
+  "spread_cm": 91,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 5
+    }
+  ]
 }

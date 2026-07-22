@@ -65,8 +65,24 @@
     {
       "need_type": "spacing",
       "notes": "rows 3 feet apart and plants 15 to 18 inches within rows"
+    },
+    {
+      "need_type": "ridging",
+      "notes": "20-30cm high ridges for planting"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "spread_cm": 51,
+  "row_spacing_cm": 90,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

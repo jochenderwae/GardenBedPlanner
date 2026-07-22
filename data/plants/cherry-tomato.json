@@ -125,8 +125,15 @@
     {
       "need_type": "spacing",
       "notes": "spacing them 18-24 inches apart in rows that are 3.5-4 feet apart"
+    },
+    {
+      "need_type": "trellising",
+      "notes": "use frames or trellises to support plants and keep fruits off the ground"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ]
 }

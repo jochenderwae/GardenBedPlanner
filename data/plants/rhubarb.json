@@ -4,8 +4,8 @@
   "botanical_name": "Rheum rhabarbarum",
   "description": "Rhubarb is a perennial herbaceous plant in USDA Zones 4-8. It cannot be harvested from in the first year of planting. It has large green leaves that are poisonous and thick, red-green stalks that are edible raw or cooked. It's stalks have a strong, tart taste and are commonly used in strawberry-rhubarb pies.",
   "sowing_method": "Transplant crowns or direct seed indoors",
-  "spread_cm": 75,
-  "row_spacing_cm": 92,
+  "spread_cm": 90,
+  "row_spacing_cm": 120,
   "height_cm": 75,
   "sun_level": "full_sun",
   "family": "Polygonaceae",
@@ -119,7 +119,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "a lot of manure",
+  "fertilizer_needs": "well-cultivated soil and manure",
   "needs_rain_cover": false,
   "bedding_needs": [
     {
@@ -129,5 +129,16 @@
   ],
   "growth_habit": "upright",
   "life_cycle": "perennial",
-  "life_cycle_years": 5
+  "life_cycle_years": 5,
+  "soil_type": "deep, rich soil that retains moisture well",
+  "edible_parts": [
+    "stalks"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

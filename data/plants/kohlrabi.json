@@ -4,7 +4,7 @@
   "botanical_name": "Brassica oleracea var. gongylodes",
   "description": "Kohlrabi is a low, stout cultivar of cabbage that has a swollen, almost spherical stem with leaves sprouting off the top. The stem can be light green, white, or purple. Both the stem and leaves are edible. The stem's taste and texture is similar to a broccoli stem or cabbage heart, but milder and sweeter. Younger stems can be as crisp and juicy as apples, but much less sweet. Older stems tend to be woody. Like other members of the Brassica family, kohlrabi prefers mild, cool weather.",
   "sowing_method": "Direct seed, thin to 10cm apart when seedlings are 2-5cm tall",
-  "spread_cm": 30,
+  "spread_cm": 20,
   "row_spacing_cm": 15.2,
   "height_cm": 20,
   "sun_level": "full_sun",
@@ -131,5 +131,8 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "stem"
+  ]
 }

@@ -130,8 +130,25 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "rotted manure or nitrate of soda at 400 pounds per acre",
+  "fertilizer_needs": "400 pounds per acre (450kg/ha) of nitrate of soda or rotted manure",
   "needs_rain_cover": false,
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "warm, loose, and rich soil with good drainage",
+  "bedding_needs": [
+    {
+      "need_type": "hilling/staking",
+      "notes": "horse-tillage"
+    }
+  ],
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 5
+    }
+  ]
 }

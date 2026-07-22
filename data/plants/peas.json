@@ -3,7 +3,7 @@
   "common_name": "Peas",
   "botanical_name": "Pisum sativum",
   "sowing_method": "direct",
-  "spread_cm": 3,
+  "spread_cm": 8.75,
   "row_spacing_cm": 30,
   "height_cm": 60,
   "sun_level": "full_sun",
@@ -215,5 +215,11 @@
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "well-manured the previous year",
+  "needs_rain_cover": false,
+  "soil_type": "well-drained, fertile soil",
+  "edible_parts": [
+    "seeds"
+  ]
 }

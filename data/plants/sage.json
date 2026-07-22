@@ -131,8 +131,22 @@
     {
       "need_type": "plowing",
       "notes": "roots can be taken up when the plowing is done, divided and reset"
+    },
+    {
+      "need_type": "disturbance",
+      "notes": "not disturbed by the plow"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 12,
+      "end_month": 12
+    }
+  ]
 }

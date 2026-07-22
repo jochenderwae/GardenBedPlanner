@@ -153,14 +153,34 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "abundant, immediately available plant food",
+  "fertilizer_needs": "abundant immediately available plant food",
   "needs_rain_cover": false,
   "bedding_needs": [
     {
       "need_type": "ridges",
       "notes": "place plants on top of ridges for overwintering"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "place plants on top of ridges spaced 1m (3ft) apart for overwintering"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, warm soil for early maturation; heavier, moisture-retentive soil to prevent heads from bursting",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 1,
+      "end_month": 1
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 7,
+      "end_month": 7
+    }
+  ]
 }

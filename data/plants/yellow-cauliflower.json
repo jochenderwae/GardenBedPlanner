@@ -4,7 +4,7 @@
   "botanical_name": "Brassica oleracea var. botrytis",
   "description": "Yellow Cauliflower is a cauliflower cultivar that forms yellow heads. It is a member of the Brassicaceae family. The solid, firm head resembles that of broccoli and sits atop a stalk. The head is wrapped in thick leaves that begin to open when the plant is ready for harvest. All cauliflower does best in cool weather.",
   "sowing_method": "Sow seeds indoors, harden seedlings off before transplanting",
-  "spread_cm": 30,
+  "spread_cm": 60,
   "row_spacing_cm": 60,
   "height_cm": 75,
   "sun_level": "full_sun",
@@ -95,16 +95,24 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Use high-quality seed from a reputable seedsman",
+  "fertilizer_needs": "enrich with commercial fertilizer or well-decomposed manure",
   "needs_rain_cover": false,
   "bedding_needs": [
     {
       "need_type": "mulch",
       "notes": "preserve surface mulch and prevent moisture loss"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "draw the leaves together and tie them loosely with twine or raffia to bleach the curds white"
     }
   ],
   "growth_habit": "upright",
   "genus": "Brassica",
   "family": "Brassicaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, moist soil",
+  "edible_parts": [
+    "curds"
+  ]
 }

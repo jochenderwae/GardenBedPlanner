@@ -119,8 +119,17 @@
     {
       "need_type": "space",
       "notes": "Allow vines plenty of room to run, at least four feet on every side"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "1m (3ft) apart for bush varieties and 2.4-5m (8-16ft) apart for running varieties"
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich soil similar to that needed for muskmelons",
+  "spread_cm": 30,
+  "edible_parts": [
+    "fruit"
+  ]
 }

@@ -97,8 +97,8 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "manure and phosphate rock in spring if needed",
-  "needs_wind_cover": false,
+  "fertilizer_needs": "manure and phosphate rock in spring if needed; high in potash but not too high in nitrogen if soil is not rich",
+  "needs_wind_cover": true,
   "needs_rain_cover": false,
   "bedding_needs": [
     {
@@ -108,8 +108,22 @@
     {
       "need_type": "cultivation",
       "notes": "4-6 foot wide space around each tree, loosening the soil every spring and keeping it stirred until August"
+    },
+    {
+      "need_type": "cover crop",
+      "notes": "buckwheat and crimson clover"
     }
   ],
   "growth_habit": "tree",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "fertilizing",
+      "start_month": 8,
+      "end_month": 8
+    }
+  ]
 }

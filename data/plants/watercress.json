@@ -48,7 +48,7 @@
       "copyright_status": "Public domain in the USA."
     }
   ],
-  "needs_rain_cover": false,
+  "needs_rain_cover": true,
   "bedding_needs": [
     {
       "need_type": "ground-cover",
@@ -56,5 +56,15 @@
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 12,
+      "end_month": 3
+    }
+  ]
 }

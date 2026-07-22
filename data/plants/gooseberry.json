@@ -73,5 +73,9 @@
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "soil_type": "moist soil",
+  "edible_parts": [
+    "fruit"
+  ]
 }

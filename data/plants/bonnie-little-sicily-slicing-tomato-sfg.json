@@ -114,7 +114,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Apply a light dressing of nitrate of soda at planting time for better results. In the North, fertilize the soil a season in advance with thoroughly rotted manure.",
+  "fertilizer_needs": "Fertilize based on soil composition; apply a light dressing of nitrate of soda at planting time.",
   "needs_wind_cover": false,
   "needs_rain_cover": true,
   "bedding_needs": [
@@ -125,8 +125,27 @@
     {
       "need_type": "pruning",
       "notes": "For small gardens, prune plants to a single stem by pinching out side shoots and tying them to 4-5 foot tall stakes. In larger gardens, use flaring frames or simple wooden racks to support vines."
+    },
+    {
+      "need_type": "trellising",
+      "notes": "use flaring frames or trellises for support"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 6
+    }
+  ]
 }

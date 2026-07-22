@@ -184,8 +184,8 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "composting_needs": "10 to 20 tons of well-rotted barnyard manure per acre annually",
-  "fertilizer_needs": "500 to 800 pounds of common salt and 1,000 pounds of ground quicklime for improved soil structure and flavor enhancement",
+  "composting_needs": "45-90 metric tonnes of well-rotted barnyard manure per hectare annually",
+  "fertilizer_needs": "high-grade fertilizer with about 6% nitrogen, 5% available phosphoric acid, and 10% potash",
   "bedding_needs": [
     {
       "need_type": "hilling",
@@ -193,5 +193,19 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "biennial"
+  "life_cycle": "biennial",
+  "needs_rain_cover": false,
+  "soil_type": "rich, mellow, sandy loam soil with plenty of leaf mold and good drainage",
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 7,
+      "end_month": 8
+    },
+    {
+      "period_type": "fertilizing",
+      "start_month": 1,
+      "end_month": 12
+    }
+  ]
 }

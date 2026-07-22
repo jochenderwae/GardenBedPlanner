@@ -40,5 +40,8 @@
       "copyright_status": "Public domain in the USA."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "edible_parts": [
+    "leaves"
+  ]
 }

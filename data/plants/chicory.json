@@ -13,7 +13,8 @@
   "is_edible": true,
   "edible_parts": [
     "flowers",
-    "leaves"
+    "leaves",
+    "root"
   ],
   "data_sources": [
     {
@@ -78,5 +79,8 @@
     }
   ],
   "life_cycle": "perennial",
-  "life_cycle_years": 1
+  "life_cycle_years": 1,
+  "soil_type": "deep, rich loam soil with moderate nitrogen content",
+  "spread_cm": 30,
+  "row_spacing_cm": 105
 }

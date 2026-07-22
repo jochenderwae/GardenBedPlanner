@@ -74,7 +74,7 @@
     }
   ],
   "seed_info": {
-    "pretreatment": "soaked over night in warm water"
+    "pretreatment": "soaked overnight in warm water"
   },
   "bedding_needs": [
     {
@@ -83,5 +83,9 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves",
+    "seeds"
+  ]
 }

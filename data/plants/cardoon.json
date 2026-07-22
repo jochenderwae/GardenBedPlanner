@@ -53,5 +53,17 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich soil",
+  "spread_cm": 45.72,
+  "edible_parts": [
+    "leaf stems"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

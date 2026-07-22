@@ -103,7 +103,25 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Fertilize the field broadcast before plowing and apply additional fertilizer where plants will stand",
+  "fertilizer_needs": "Fertilize before planting by broadcasting over the entire area and applying additional fertilizer where plants will stand",
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_rain_cover": false,
+  "soil_type": "sandy loam soil that is well-drained and has a moist subsoil",
+  "bedding_needs": [
+    {
+      "need_type": "hilling",
+      "notes": "keep the ground mellow enough to let a person sink nearly to the ankles in dry times"
+    }
+  ],
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 4
+    }
+  ]
 }

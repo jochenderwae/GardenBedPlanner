@@ -4,7 +4,7 @@
   "botanical_name": "Brassica oleracea (acephala)",
   "description": "Kale is a cultivar of the species Brassica oleracea. It has green or purple leaves that branch off from one to multiple upright stems and do not form a head like cabbage. The plant is usually grown as an annual, but if grown as a perennial, it will form seeds in the second year. Current popular varieties include Curly kale, Italian kale, and Red Russian kale (green leaves with pale purple stems). It can be grown as baby salad greens or for bunching adult leaves. Leaves are sweeter after a frost and delicious eaten raw, added to salads, sautéed, or added to stews and casseroles.",
   "sowing_method": "Direct seed. If planting indoors, harden off before transplanting seedlings outside.",
-  "spread_cm": 75,
+  "spread_cm": 38,
   "row_spacing_cm": 45,
   "height_cm": 75,
   "sun_level": "full_sun",
@@ -145,5 +145,16 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, deep soil",
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 1,
+      "end_month": 2
+    }
+  ]
 }

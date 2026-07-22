@@ -4,7 +4,7 @@
   "botanical_name": "Daucus carota var. sativus",
   "description": "White carrots are a carrot cultivar that have pale yellow to white skin. They sometimes have a lower yield than orange carrots. They have a mild flavor that is less earthy than other carrot varieties. They are grown and cooked the same way as standard orange carrots.",
   "sowing_method": "Direct seed outdoors, thin to 3cm apart when seedlings are 7cm high",
-  "spread_cm": 8,
+  "spread_cm": 8.57,
   "row_spacing_cm": 3,
   "height_cm": 15,
   "sun_level": "full_sun",
@@ -113,10 +113,26 @@
     {
       "need_type": "shallow tillage",
       "notes": "especially when young"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "earth-covered heaps"
     }
   ],
   "growth_habit": "rosette",
   "genus": "Daucus",
   "family": "Apiaceae",
-  "life_cycle": "biennial"
+  "life_cycle": "biennial",
+  "fertilizer_needs": "avoid excessively rich ground",
+  "soil_type": "deep, warm, sandy soil",
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 6
+    }
+  ]
 }

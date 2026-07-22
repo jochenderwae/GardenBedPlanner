@@ -55,5 +55,20 @@
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "hops"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    },
+    {
+      "period_type": "fertilizing",
+      "start_month": 10,
+      "end_month": 12
+    }
+  ]
 }

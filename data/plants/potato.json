@@ -5,7 +5,7 @@
   "description": "Potatoes are starchy root vegetables in the Solanaceae, or Nightshade, family, which also includes tomatoes, eggplants, and peppers. They originated in South America, and spread to become a worldwide staple. The leaves and fruit are usually poisonous and the stem tuber is the only edible part once it is cooked. The potato can be cooked in many ways, brewed into alcohol, and also used as the basis for creating bioplastics. More growing information is available in individual species entries.",
   "sowing_method": "Direct seed outdoors after last frost. Each piece must have one eye.",
   "spread_cm": 30,
-  "row_spacing_cm": 90,
+  "row_spacing_cm": 89,
   "height_cm": 60,
   "sun_level": "full_sun",
   "water_needs": "~1.5 in/week",
@@ -206,9 +206,9 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "concentrated, quick-acting fertilizers",
+  "fertilizer_needs": "quick-acting fertilizers",
   "seed_info": {
-    "pretreatment": "cut them a few days beforehand to allow the surface to dry"
+    "pretreatment": "Sprout the sets before planting to ensure short, thick, firm shoots."
   },
   "bedding_needs": [
     {
@@ -217,5 +217,22 @@
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "rich in potash",
+  "soil_type": "deep, cool, moist soil that is finely pulverized and rich in potash",
+  "edible_parts": [
+    "tubers"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 5
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 8
+    }
+  ]
 }

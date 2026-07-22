@@ -5,7 +5,7 @@
   "description": "Red onions are onion cultivars that have purplish red skin and white flesh tinged with red. They are members of the Allium family along with garlic and leeks. They have a sweet to mild flavor and can be eaten raw (in salads and guacamole), grilled, sautéed, or baked. Make sure to choose a variety suited to your day length.",
   "sowing_method": "Direct seed indoors or plant sets (small bulbs) outside.",
   "spread_cm": 13,
-  "row_spacing_cm": 10,
+  "row_spacing_cm": 33,
   "height_cm": 60,
   "sun_level": "full_sun",
   "family": "Amaryllidaceae",
@@ -131,8 +131,23 @@
     {
       "need_type": "soil_preparation",
       "notes": "plowing moderately deep, then harrowing, disking, rolling, and dragging until smooth and mellow to a depth of 4-5 inches"
+    },
+    {
+      "need_type": "mulching",
+      "notes": "covered with light litter in cold climates"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_rain_cover": false,
+  "edible_parts": [
+    "bulb"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 1,
+      "end_month": 2
+    }
+  ]
 }

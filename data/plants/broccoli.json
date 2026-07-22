@@ -104,7 +104,7 @@
       "copyright_status": "Public domain in the USA."
     }
   ],
-  "composting_needs": "Manure that has been well composted should be used plentifully and plowed in deep",
+  "composting_needs": "well composted",
   "needs_rain_cover": true,
   "bedding_needs": [
     {
@@ -113,5 +113,26 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "deep, rich soil",
+  "edible_parts": [
+    "heads"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 5
+    },
+    {
+      "period_type": "planting",
+      "start_month": 6,
+      "end_month": 7
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 12,
+      "end_month": 5
+    }
+  ]
 }

@@ -4,7 +4,7 @@
   "botanical_name": "Brassica oleracea",
   "description": "Cabbage is a member of the Brassica family and related to kale, broccoli, brussels sprouts, and cauliflower. It's dense, layered heads grow on stalks and are surrounded by looser outer leaves. It's leaves can be green, white, or purple in color, and smooth or crinkly in texture. Depending on the variety, the head can be round, oblong, or flat. Cabbage prefers cooler temperatures and is best planted in the spring or fall.",
   "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off.",
-  "spread_cm": 40,
+  "spread_cm": 37.5,
   "row_spacing_cm": 49.05,
   "height_cm": 30,
   "sun_level": "full_sun",
@@ -249,8 +249,29 @@
     {
       "need_type": "ridges",
       "notes": "for autumn planting"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "place plants on top of ridges for autumn planting"
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_rain_cover": false,
+  "soil_type": "rich, well-drained soil",
+  "edible_parts": [
+    "heads"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 11,
+      "end_month": 1
+    },
+    {
+      "period_type": "planting",
+      "start_month": 7,
+      "end_month": 7
+    }
+  ]
 }

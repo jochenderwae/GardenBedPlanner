@@ -3,7 +3,7 @@
   "common_name": "Lettuce Drunken Woman",
   "description": "Italian Heirloom. Attractive bright green leaves with ruffled almost frizzy edges in deep bronze. Leaf lettuce type with dense centre.",
   "sowing_method": "Direct Sow",
-  "row_spacing_cm": 20,
+  "row_spacing_cm": 37.5,
   "botanical_name": "Lactuca sativa",
   "data_sources": [
     {
@@ -140,5 +140,27 @@
   "growth_habit": "rosette",
   "genus": "Lactuca",
   "family": "Asteraceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich sandy loam soil",
+  "spread_cm": 8.75,
+  "edible_parts": [
+    "leaves"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 10,
+      "end_month": 12
+    },
+    {
+      "period_type": "planting",
+      "start_month": 4,
+      "end_month": 4
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    }
+  ]
 }

@@ -114,7 +114,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "based on soil needs, avoiding excessive nitrogen",
+  "fertilizer_needs": "balanced fertilizer based on soil needs, avoiding excessive nitrogen",
   "needs_rain_cover": true,
   "bedding_needs": [
     {
@@ -135,5 +135,16 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "enriched with compost",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

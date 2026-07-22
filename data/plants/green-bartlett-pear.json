@@ -81,5 +81,15 @@
   "growth_habit": "tree",
   "genus": "Pyrus",
   "family": "Rosaceae",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 8,
+      "end_month": 9
+    }
+  ]
 }

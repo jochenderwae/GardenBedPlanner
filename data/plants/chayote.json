@@ -45,7 +45,7 @@
       "copyright_status": "Public domain in the USA."
     }
   ],
-  "fertilizer_needs": "sufficient humus or other fertilizing material be at hand",
+  "fertilizer_needs": "sufficient humus or other fertilizing material",
   "needs_wind_cover": true,
   "bedding_needs": [
     {
@@ -58,5 +58,9 @@
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "loose sandy or loamy substratum",
+  "edible_parts": [
+    "fruit"
+  ]
 }

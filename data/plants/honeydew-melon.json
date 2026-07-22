@@ -5,7 +5,7 @@
   "description": "Honeydew melons have a round to slightly oval shape. Like other melons, they grow on vines. Their sweet, tender flesh is pale green or orange in color, and the smooth peel ranges from greenish to yellow.",
   "sowing_method": "Direct seed",
   "spread_cm": 150,
-  "row_spacing_cm": 90,
+  "row_spacing_cm": 120,
   "height_cm": 30,
   "sun_level": "full_sun",
   "family": "Cucurbitaceae",
@@ -116,15 +116,31 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "composting_needs": "Manure for melon hills should be ricked up in long low piles in the fall, turned and mixed until thoroughly decomposed by spring",
+  "composting_needs": "well-rotted manure",
   "fertilizer_needs": "Apply rotted manure at the intersections of the furrows, using a quart to half-peck per hill, mixing it with soil or covering it without mixing.",
   "needs_rain_cover": false,
   "bedding_needs": [
     {
       "need_type": "hills",
       "notes": "Hills can be planted four to six feet apart each way, depending on soil richness."
+    },
+    {
+      "need_type": "hilling",
+      "notes": "0.5-1L of well-rotted manure mixed with the soil"
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_wind_cover": true,
+  "soil_type": "well-drained soil rich in humus",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 5,
+      "end_month": 5
+    }
+  ]
 }

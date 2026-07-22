@@ -56,5 +56,17 @@
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "good garden soil",
+  "edible_parts": [
+    "leaves",
+    "stems"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

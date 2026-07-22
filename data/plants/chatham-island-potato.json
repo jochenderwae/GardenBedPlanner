@@ -117,7 +117,7 @@
   ],
   "fertilizer_needs": "concentrated, quick-acting fertilizers",
   "seed_info": {
-    "pretreatment": "Sprout the sets in light and moderate warmth (40°-50°F) to secure short, thick, firm, colored shoots."
+    "pretreatment": "Sprout the sets indoors in light under moderate warmth (40°-50°F) to secure short, thick, firm, colored shoots."
   },
   "bedding_needs": [
     {
@@ -128,5 +128,18 @@
   "growth_habit": "upright",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "deep, cool, moist soil rich in potash and finely pulverized. The ideal soil is a sandy loam with abundant organic matter and good drainage.",
+  "spread_cm": 30,
+  "row_spacing_cm": 95,
+  "edible_parts": [
+    "tubers"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

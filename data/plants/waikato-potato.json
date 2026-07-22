@@ -115,7 +115,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Apply phosphate at planting for a quick start",
+  "fertilizer_needs": "Apply complete fertilizer containing nitrogen, phosphoric acid, and potash at planting.",
   "seed_info": {
     "pretreatment": "sprout the sets under moderate warmth (40°-50°F) to secure short, thick, firm shoots."
   },
@@ -128,5 +128,12 @@
   "growth_habit": "rosette",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "plenty of organic matter",
+  "soil_type": "sandy loam with good drainage and high fertility",
+  "spread_cm": 34.5,
+  "row_spacing_cm": 80,
+  "edible_parts": [
+    "root"
+  ]
 }

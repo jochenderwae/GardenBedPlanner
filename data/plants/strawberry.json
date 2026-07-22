@@ -161,15 +161,34 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "Use phosphate, bone, or wood ashes for fertilization if soil is not very rich.",
+  "fertilizer_needs": "Apply phosphate, bone meal, or wood ashes before the first spring cultivation if soil is not very rich.",
   "needs_rain_cover": true,
   "bedding_needs": [
     {
       "need_type": "mulching",
       "notes": "Cover rows lightly with long manure or old hay after the ground freezes to protect from rapid freezing and thawing."
+    },
+    {
+      "need_type": "mulch",
+      "notes": "Keep grass out of young plant rows to prevent crowding."
     }
   ],
   "growth_habit": "spreading",
   "life_cycle": "perennial",
-  "life_cycle_years": 3
+  "life_cycle_years": 3,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "planting",
+      "start_month": 3,
+      "end_month": 3
+    },
+    {
+      "period_type": "fertilizing",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }

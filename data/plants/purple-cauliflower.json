@@ -4,7 +4,7 @@
   "botanical_name": "Brassica oleracea var. botrytis",
   "description": "Purple cauliflower is a cultivar of cauliflower that grows purple. Like regular cauliflower, it does not do well in hot weather. It's purple color comes from anthocyanins (the same antioxidants found in red wine). To retain the color, sprinkle with vinegar or lemon juice before cooking.",
   "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
-  "spread_cm": 65,
+  "spread_cm": 75,
   "row_spacing_cm": 45,
   "height_cm": 50,
   "sun_level": "full_sun",
@@ -113,5 +113,10 @@
   "growth_habit": "upright",
   "genus": "Brassica",
   "family": "Brassicaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "composting_needs": "well-decomposed stable manure",
+  "soil_type": "rich, moist soil",
+  "edible_parts": [
+    "heads"
+  ]
 }

@@ -115,7 +115,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "complete fertilizer containing nitrogen, phosphoric acid, and potash",
+  "fertilizer_needs": "complete fertilizer containing nitrogen, phosphoric acid, and potash before planting",
   "bedding_needs": [
     {
       "need_type": "deep planting",
@@ -128,10 +128,23 @@
     {
       "need_type": "plant spacing within rows",
       "notes": "9 to 18 inches"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "plant seed potatoes 7-10cm (three or four inches) deep"
     }
   ],
   "growth_habit": "spreading",
   "genus": "Solanum",
   "family": "Solanaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "soil_type": "rich, sandy loam soil that is well-drained and abundant in organic matter",
+  "spread_cm": 30,
+  "row_spacing_cm": 90,
+  "seed_info": {
+    "pretreatment": "allow the cut surfaces to dry for a few days before planting to prevent rotting"
+  },
+  "edible_parts": [
+    "root"
+  ]
 }

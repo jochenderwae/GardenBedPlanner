@@ -4,8 +4,8 @@
   "botanical_name": "Daucus carota var. sativus",
   "description": "Purple carrots are a carrot cultivar that have purple skin and orange to purple flesh. They are a little less sweet than orange carrots and sometimes have a lower yield. They can be cooked the same way as carrots.",
   "sowing_method": "Direct seed outdoors, thin to 3cm apart when seedlings are 7cm high",
-  "spread_cm": 8,
-  "row_spacing_cm": 3,
+  "spread_cm": 8.57,
+  "row_spacing_cm": 37.5,
   "height_cm": 15,
   "sun_level": "full_sun",
   "companions": [
@@ -115,7 +115,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "prefers a soil rich in potash and phosphoric acid but avoid excessive manure",
+  "fertilizer_needs": "prefers a soil rich in potash and phosphoric acid; use commercial fertilizer for best results",
   "bedding_needs": [
     {
       "need_type": "rows spacing",
@@ -124,10 +124,30 @@
     {
       "need_type": "within row spacing",
       "notes": "3 to 5 inches within the row"
+    },
+    {
+      "need_type": "hilling",
+      "notes": "either in earth-covered heaps"
     }
   ],
   "growth_habit": "rosette",
   "genus": "Daucus",
   "family": "Apiaceae",
-  "life_cycle": "biennial"
+  "life_cycle": "biennial",
+  "soil_type": "deep, warm, sandy soil or light loam",
+  "edible_parts": [
+    "root"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 1,
+      "end_month": 6
+    },
+    {
+      "period_type": "harvesting",
+      "start_month": 4,
+      "end_month": 4
+    }
+  ]
 }

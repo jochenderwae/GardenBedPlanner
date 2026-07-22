@@ -5,7 +5,7 @@
   "description": "Pineapple tomatoes are an heirloom variety that produce large fruit that can weigh 1-2lbs and measure at least 12cm in diameter. Tomatoes are bi-colored with a streaked red and yellow exterior. Flesh is swirled with red, pink, orange, and yellow and meaty with few seeds. They have a sweet fruity taste with a hint of citrus. For larger yield and improved plant health, prune and stake plants.",
   "sowing_method": "Direct seed indoors, transplant seedlings outside after hardening off",
   "spread_cm": 45,
-  "row_spacing_cm": 90,
+  "row_spacing_cm": 106.7,
   "sun_level": "full_sun",
   "family": "Solanaceae",
   "genus": "Solanum",
@@ -113,7 +113,7 @@
       "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted"
     }
   ],
-  "fertilizer_needs": "based on soil needs, avoiding excessive nitrogen",
+  "fertilizer_needs": "light dressing of nitrate of soda (34g/L) at planting time, avoiding excessive nitrogen",
   "needs_rain_cover": true,
   "bedding_needs": [
     {
@@ -126,5 +126,16 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "needs_wind_cover": true,
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "sowing",
+      "start_month": 3,
+      "end_month": 3
+    }
+  ]
 }
