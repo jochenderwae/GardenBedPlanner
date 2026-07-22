@@ -30,6 +30,15 @@ Finds the highest-priority item labeled `role:<you>` with Status `Ready to Start
 
 If nothing matches, it says so plainly - don't fall back to a `New`/`Analyzed` item or something outside your role.
 
+### "find tickets ready for testing" (args: optionally a role to narrow by)
+
+```
+.claude\skills\backlog\scripts\find_ready_for_testing.ps1
+.claude\skills\backlog\scripts\find_ready_for_testing.ps1 -Role frontend-developer
+```
+
+Read-only. Lists every item at Status `Ready for Testing`, regardless of which role built it, sorted by priority - this is `tester`'s queue-finder, separate from `pick_top_task.ps1` because tester's work is defined by *status* (Ready for Testing), not by a `role:tester` label the way every other role's queue is. Doesn't claim/change anything - `tester` uses `set_status.ps1` itself once it's actually finished testing an item (`tested`, or back to `started`/`assigned` if testing found a real problem).
+
 ### "change status" (args: issue number, new status)
 
 ```

@@ -60,7 +60,11 @@ CLAUDE.md
 
 ## Backlog and subagents
 
-`product-owner/BACKLOG.md` is the tracked feature backlog — every active item carries `priority`/`status`/`responsible`(/`depends-on`) fields (schema: `.claude/agents/product-owner.md`; interaction conventions: `/backlog` skill). Status flow: `new` → `ready-to-start` → `assigned` → `started` → `ready-for-testing` → `tested` → `verified`. **Only the user may set `status: ready-to-start` or `status: verified`** — an item stays `new` (not actionable by any agent, regardless of who it's assigned to) until the user explicitly releases it. Standing rule: editor-related work is prioritized first until told otherwise. Subagents: `product-owner` (maintains the backlog, doesn't write code), `data-engineer` (works `data/task_queue.md`, restricted to `data/` + three narrow exceptions — including keeping `docs/domain-model.md`/`docs/schema.md` accurate and re-rendering `docs/schema-er.png` via `/render-schema` when the diagram changes), `frontend-developer` and `backend-developer` (pick up `responsible: frontend-developer`/`backend-developer` items once `ready-to-start`, restricted to `frontend/`/`backend/` respectively — **both can commit, push, and deploy to garden-planner-dev without asking, as soon as a task is finished, including backend-developer running Alembic migrations against the real database; this is a deliberate standing exception to the "always confirm before deploying" rule below, granted 2026-07-19/2026-07-20, not an oversight**). `backend-developer` verifies every migration against the real `garden_test` database (see "Development environment" below) before deploying it for real.
+The GitHub Project (https://github.com/users/jochenderwae/projects/1) is the tracked feature backlog — every active item carries `priority`/`status`/`responsible`(/`depends-on`) fields (schema: `.claude/agents/product-owner.md`; interaction conventions: `/backlog` skill). `product-owner/BACKLOG.md` is deprecated as of 2026-07-20 (kept only as historical record). Status flow: `new` → `analyzed` → `ready-to-start` → `assigned` → `started` → `ready-for-testing` → `tested` → `verified`. **Only the user may set `status: ready-to-start` or `status: verified`** — an item stays `new`/`analyzed` (not actionable by any agent, regardless of who it's assigned to) until the user explicitly releases it. Standing rule: editor-related work is prioritized first until told otherwise.
+
+Subagents: `product-owner` (maintains the backlog as an analyst, doesn't write code), `data-engineer` (works `data/task_queue.md`, restricted to `data/` + three narrow exceptions — including keeping `docs/domain-model.md`/`docs/schema.md` accurate and re-rendering `docs/schema-er.png` via `/render-schema` when the diagram changes), `frontend-developer`/`backend-developer` (pick up `role:frontend-developer`/`backend-developer` items once `ready-to-start`, restricted to `frontend/`/`backend/` respectively; `backend-developer` verifies every migration against the real `garden_test` database before deploying it for real), `tester` (tests every item at `status: ready-for-testing` regardless of which role built it, across both `backend/tests/` and `frontend/` — including installing new test tooling like Playwright when a ticket genuinely needs it — but never edits application code itself), `ui-ux-designer` (prepares design-specced tickets for `frontend-developer` and periodically evaluates screens; writes only to `ui-ux-designer/` and the backlog, never `frontend/` itself), `code-reviewer` (whole-repo lean/clean/readability sweeps, applying fixes directly), `security-analyst` (whole-repo vulnerability hunting and remediation — calibrated to this app's intentional single-user/no-auth-in-v1 scope, never proposes adding auth as a "fix").
+
+**Standing "commit/push/deploy without asking" exceptions to the "always confirm before deploying" rule below**: `frontend-developer` and `backend-developer` (granted 2026-07-19/2026-07-20, each restricted to its own directory, `backend-developer` additionally running Alembic migrations against the real database) and, as of 2026-07-21, `code-reviewer` and `security-analyst` — the latter two aren't restricted to one directory, so their exception is conditioned on a full backend+frontend+data build/test regression pass (not just the area actually touched) passing clean before every single commit; see each agent's own definition for the exact steps, and don't relax that condition even though the authorization itself matches frontend/backend-developer's. No other subagent has this exception — every other agent's default is to confirm before committing, same as the main assistant.
 
 ## Commands
 
@@ -73,6 +77,7 @@ Backend (`cd backend`, uv-managed, Python 3.12, package installs live in `.venv`
 - `uv run pytest` — run tests — `/test-backend`
 - `uv run ruff check .` — lint — `/build-backend`
 - `uv run python -c "from app.main import app; ..."` — smoke-check the app imports/constructs cleanly (no server/Postgres needed) — also `/build-backend`
+- `uv run bandit -r app -c pyproject.toml` — Python security static analysis — `/security-scan`
 
 Frontend (`cd frontend`, npm-managed):
 - `npm run dev` — dev server (http://localhost:5173), proxies `/api` to `http://localhost:8000` — `/dev-server`
@@ -82,10 +87,13 @@ Frontend (`cd frontend`, npm-managed):
 
 Data/ETL (`cd data`, uv-managed, its own `pyproject.toml` — see `data/etl/CLAUDE.md`):
 - `uv run ruff check etl/` — lint — `/build-data`
+- `uv run bandit -r etl -c pyproject.toml` — Python security static analysis — `/security-scan`
 - `uv run python -m <module>` (e.g. `etl.run`, `etl.growing_info.run`, `etl.backfill_taxonomy`, `etl.state_report`, `etl.generate_example_garden`, `etl.verify_garden`) — `/run-etl-module`
 - validating `data/example_garden.json` after regenerating it — `/test-data`
 
 `garden-planner-dev` (see `infra/deploy/CLAUDE.md`): `/deploy-backend`, `/deploy-frontend`, `/deploy-data` (import `data/plants/*.json` + `data/example_garden.json` into the real Postgres via the deployed backend's importer scripts), `/health-check`, `/db-query` (run a local `.sql` file against its real Postgres). `/release` chains build/test/commit-push/deploy across all three areas as one guided flow.
+
+**CI** (`.github/workflows/ci.yml`, added 2026-07-21): runs build+lint+test+bandit for backend/frontend/data on every push, via a GitHub-hosted runner with an ephemeral Postgres service container for backend integration tests. Pure validation — no deploy step, no secrets, no access to `garden-planner-dev`; deploys stay exactly what they already were, explicit `/deploy-*` skill runs. This is a safety net on top of (not instead of) each agent's own pre-commit verification.
 
 Both `npm run dev` and `uv run uvicorn ...` must be running simultaneously for the frontend health check and future API calls to work.
 

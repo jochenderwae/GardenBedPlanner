@@ -1,0 +1,98 @@
+name: CI
+
+# Pure validation - build/lint/test only. No deploy, no secrets, no access to
+# garden-planner-dev. Deploys stay exactly what they already were: explicit
+# /deploy-* skill runs (by an agent with standing authorization, or the user).
+# See CLAUDE.md "Backlog and subagents" for which agents have that authorization
+# and why it's conditioned on this same regression suite passing first.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: garden_ci
+          POSTGRES_PASSWORD: garden_ci
+          POSTGRES_DB: garden_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U garden_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+      - name: Install dependencies
+        working-directory: backend
+        run: uv sync
+      - name: Lint (ruff)
+        working-directory: backend
+        run: uv run ruff check .
+      - name: App-construction smoke check
+        working-directory: backend
+        run: uv run python -c "from app.main import app; print(f'OK - app imports cleanly, {len(app.routes)} routes registered')"
+      - name: Security scan (bandit)
+        working-directory: backend
+        run: uv run bandit -r app -c pyproject.toml
+      - name: Test (pytest, against the ephemeral CI Postgres)
+        working-directory: backend
+        env:
+          TEST_DATABASE_URL: postgresql+psycopg://garden_ci:garden_ci@localhost:5432/garden_ci
+        run: uv run pytest
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Lint (oxlint)
+        working-directory: frontend
+        run: npm run lint
+      - name: Typecheck + build (tsc + vite)
+        working-directory: frontend
+        run: npm run build
+      - name: Test (vitest)
+        working-directory: frontend
+        run: npm run test
+
+  data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+      - name: Install dependencies
+        working-directory: data
+        run: uv sync
+      - name: Lint (ruff)
+        working-directory: data
+        run: uv run ruff check etl/
+      - name: Security scan (bandit)
+        working-directory: data
+        run: uv run bandit -r etl -c pyproject.toml
+      - name: Validate example_garden.json fixture
+        working-directory: data
+        run: uv run python -m etl.verify_garden
+      # No `uv run pytest` step yet - data/pyproject.toml has no pytest dev
+      # dependency and no data/tests/ directory exist yet (see
+      # docs/testing-plan.md Phase 1, Data/ETL section). Add one here the
+      # same day real coverage lands, not before.

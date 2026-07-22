@@ -17,6 +17,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "bandit>=1.8.0",
     "httpx>=0.28.1",
     "pytest>=9.1.1",
     "ruff>=0.15.22",
@@ -29,3 +30,10 @@ package = false
 markers = [
     "integration: needs a real Postgres via TEST_DATABASE_URL (see backend/.env.example)",
 ]
+
+[tool.bandit]
+# B101 (assert_used) flags every `assert` as a finding - real signal in code
+# that relies on assert for a security check, pure noise for internal
+# invariant checks (which is the only way this codebase uses assert). Skip
+# it project-wide rather than #nosec-ing each call site individually.
+skips = ["B101"]

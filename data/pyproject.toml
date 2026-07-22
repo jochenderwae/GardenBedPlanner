@@ -13,7 +13,14 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["ruff>=0.15.22"]
+dev = ["bandit>=1.8.0", "ruff>=0.15.22"]
 
 [tool.uv]
 package = false
+
+[tool.bandit]
+# B101 (assert_used) flags every `assert` as a finding - real signal in code
+# that relies on assert for a security check, pure noise for internal
+# invariant checks (which is the only way this codebase uses assert). Skip
+# it project-wide rather than #nosec-ing each call site individually.
+skips = ["B101"]

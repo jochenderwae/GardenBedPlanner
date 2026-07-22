@@ -40,3 +40,7 @@ TODO.md
 
 # Short-lived GraphQL response cache for the /backlog skill's scripts
 .claude/skills/backlog/scripts/.cache/
+
+# ui-ux-designer's ephemeral screenshot captures + review-cadence marker (local state, not a deliverable)
+ui-ux-designer/screenshots/
+ui-ux-designer/.last-reviewed-commit
