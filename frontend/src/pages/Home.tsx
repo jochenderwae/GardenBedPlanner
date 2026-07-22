@@ -11,7 +11,7 @@ export function Home() {
   });
 
   return (
-    <div className="mx-auto flex min-h-svh max-w-md flex-col items-center justify-center gap-6 p-6 text-center">
+    <div className="mx-auto flex h-full max-w-md flex-col items-center justify-center gap-6 p-6 text-center">
       <Card className="w-full">
         <CardHeader>
           <CardTitle>GardenBedPlanner</CardTitle>
