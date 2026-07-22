@@ -123,14 +123,13 @@ export function Layout() {
   // with beds still empty prompts again (see that component's own doc).
   const [onboardingDismissed, setOnboardingDismissed] = useState(false);
   // "Arm" a plant, then draw where it goes (point/row/area) - see
-  // PlantPlacementLayer's own doc. plantPickerOpen/plantPickerPos are for
-  // the popover that picks *which* plant gets armed (anchored under the
-  // toolbar button below, not tied to a canvas click position the way the
-  // old click-first flow's picker was).
+  // PlantPlacementLayer's own doc. plantPickerOpen/plantPickerAnchorRef are
+  // for the popover that picks *which* plant gets armed (anchored under the
+  // toolbar button below via Popover's `anchor` prop, not tied to a canvas
+  // click position the way the old click-first flow's picker was).
   const [armedPlant, setArmedPlant] = useState<Plant | null>(null);
   const [placementMode, setPlacementMode] = useState<PlacementMode>("individual");
   const [plantPickerOpen, setPlantPickerOpen] = useState(false);
-  const [plantPickerPos, setPlantPickerPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const plantPickerAnchorRef = useRef<HTMLDivElement>(null);
   // Clicking a placed plant marker opens its edit/details popup
   // (PlantingPanel), matching how clicking a bed opens BedPanel.
@@ -326,8 +325,6 @@ export function Layout() {
   }
 
   function openPlantPicker() {
-    const rect = plantPickerAnchorRef.current?.getBoundingClientRect();
-    if (rect) setPlantPickerPos({ x: rect.left, y: rect.bottom + 4 });
     setPlantPickerOpen(true);
   }
 
@@ -1040,18 +1037,16 @@ export function Layout() {
         </div>
       )}
 
-      {plantPickerOpen && (
-        <PlantPicker
-          x={plantPickerPos.x}
-          y={plantPickerPos.y}
-          plants={plantsQuery.data ?? []}
-          onPick={(slug) => {
-            setArmedPlant(plantsBySlug.get(slug) ?? null);
-            setPlantPickerOpen(false);
-          }}
-          onClose={() => setPlantPickerOpen(false)}
-        />
-      )}
+      <PlantPicker
+        open={plantPickerOpen}
+        anchorRef={plantPickerAnchorRef}
+        plants={plantsQuery.data ?? []}
+        onPick={(slug) => {
+          setArmedPlant(plantsBySlug.get(slug) ?? null);
+          setPlantPickerOpen(false);
+        }}
+        onClose={() => setPlantPickerOpen(false)}
+      />
 
       {showAddForm && (
         <AddBedForm

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronRight, Pencil, Plus, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogPopup, DialogTitle } from "@/components/ui/dialog";
 import { Input, Select } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { createPlant, listPlants, type Plant } from "@/api/client";
@@ -470,49 +471,56 @@ function AddPlantForm({ onClose, onCreated }: { onClose: () => void; onCreated: 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <Card className="w-full max-w-sm p-4" onClick={(e) => e.stopPropagation()}>
-        <form className="flex flex-col gap-3" onSubmit={submit}>
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-medium">Add plant</h2>
-            <Button variant="ghost" size="icon-sm" type="button" aria-label="Close" onClick={onClose}>
-              <X />
-            </Button>
-          </div>
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <DialogPopup>
+        <Card className="w-full max-w-sm p-4">
+          <form className="flex flex-col gap-3" onSubmit={submit}>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-base font-medium">Add plant</DialogTitle>
+              <Button variant="ghost" size="icon-sm" type="button" aria-label="Close" onClick={onClose}>
+                <X />
+              </Button>
+            </div>
 
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">Common name</span>
-            <Input
-              value={commonName}
-              onChange={(e) => setCommonName(e.target.value)}
-              autoFocus
-            />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">Botanical name</span>
-            <Input value={botanicalName} onChange={(e) => setBotanicalName(e.target.value)} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">Family (optional)</span>
-            <Input value={family} onChange={(e) => setFamily(e.target.value)} />
-          </label>
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">Genus (optional)</span>
-            <Input value={genus} onChange={(e) => setGenus(e.target.value)} />
-          </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Common name</span>
+              <Input
+                value={commonName}
+                onChange={(e) => setCommonName(e.target.value)}
+                autoFocus
+              />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Botanical name</span>
+              <Input value={botanicalName} onChange={(e) => setBotanicalName(e.target.value)} />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Family (optional)</span>
+              <Input value={family} onChange={(e) => setFamily(e.target.value)} />
+            </label>
+            <label className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Genus (optional)</span>
+              <Input value={genus} onChange={(e) => setGenus(e.target.value)} />
+            </label>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <div className="mt-1 flex justify-end gap-2">
-            <Button type="button" variant="outline" size="sm" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" size="sm" disabled={mutation.isPending}>
-              {mutation.isPending ? "Creating…" : "Create"}
-            </Button>
-          </div>
-        </form>
-      </Card>
-    </div>
+            <div className="mt-1 flex justify-end gap-2">
+              <Button type="button" variant="outline" size="sm" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" disabled={mutation.isPending}>
+                {mutation.isPending ? "Creating…" : "Create"}
+              </Button>
+            </div>
+          </form>
+        </Card>
+      </DialogPopup>
+    </Dialog>
   );
 }

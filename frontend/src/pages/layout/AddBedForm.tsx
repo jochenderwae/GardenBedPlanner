@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Dialog, DialogPopup, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { createBed, type Bed, type Geometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
@@ -63,58 +64,65 @@ export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <Card className="w-full max-w-sm p-4" onClick={(e) => e.stopPropagation()}>
-        <form className="flex flex-col gap-3" onSubmit={submit}>
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-medium">Add bed</h2>
-            <Button variant="ghost" size="icon-sm" type="button" aria-label="Close" onClick={onClose}>
-              <X />
-            </Button>
-          </div>
+    <Dialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onClose();
+      }}
+    >
+      <DialogPopup>
+        <Card className="w-full max-w-sm p-4">
+          <form className="flex flex-col gap-3" onSubmit={submit}>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-base font-medium">Add bed</DialogTitle>
+              <Button variant="ghost" size="icon-sm" type="button" aria-label="Close" onClick={onClose}>
+                <X />
+              </Button>
+            </div>
 
-          <label className="flex flex-col gap-1" title="The bed's display name, e.g. 'North planter'.">
-            <span className="text-xs font-medium text-muted-foreground">Name</span>
-            <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
-          </label>
+            <label className="flex flex-col gap-1" title="The bed's display name, e.g. 'North planter'.">
+              <span className="text-xs font-medium text-muted-foreground">Name</span>
+              <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+            </label>
 
-          <label
-            className="flex flex-col gap-1"
-            title="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list."
-          >
-            <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
-            <Input
-              placeholder="e.g. raised planter, ground bed, compost..."
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            />
-          </label>
+            <label
+              className="flex flex-col gap-1"
+              title="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list."
+            >
+              <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
+              <Input
+                placeholder="e.g. raised planter, ground bed, compost..."
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              />
+            </label>
 
-          <label
-            className="flex flex-col gap-1"
-            title="Rectangle is the default and works for most beds; switch to Polygon for an irregular shape."
-          >
-            <span className="text-xs font-medium text-muted-foreground">Shape</span>
-            <ShapeTypeToggle geometry={geometry} onChange={setGeometry} />
-          </label>
+            <label
+              className="flex flex-col gap-1"
+              title="Rectangle is the default and works for most beds; switch to Polygon for an irregular shape."
+            >
+              <span className="text-xs font-medium text-muted-foreground">Shape</span>
+              <ShapeTypeToggle geometry={geometry} onChange={setGeometry} />
+            </label>
 
-          <p className="text-xs text-muted-foreground">
-            Starts at {DEFAULT_WIDTH_CM}×{DEFAULT_HEIGHT_CM}cm - drag/resize/rotate (or edit vertices, for a polygon)
-            after creating.
-          </p>
+            <p className="text-xs text-muted-foreground">
+              Starts at {DEFAULT_WIDTH_CM}×{DEFAULT_HEIGHT_CM}cm - drag/resize/rotate (or edit vertices, for a
+              polygon) after creating.
+            </p>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="text-sm text-destructive">{error}</p>}
 
-          <div className="mt-1 flex justify-end gap-2">
-            <Button type="button" variant="outline" size="sm" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button type="submit" size="sm" disabled={mutation.isPending}>
-              {mutation.isPending ? "Creating…" : "Create"}
-            </Button>
-          </div>
-        </form>
-      </Card>
-    </div>
+            <div className="mt-1 flex justify-end gap-2">
+              <Button type="button" variant="outline" size="sm" onClick={onClose}>
+                Cancel
+              </Button>
+              <Button type="submit" size="sm" disabled={mutation.isPending}>
+                {mutation.isPending ? "Creating…" : "Create"}
+              </Button>
+            </div>
+          </form>
+        </Card>
+      </DialogPopup>
+    </Dialog>
   );
 }
