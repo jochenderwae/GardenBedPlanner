@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
+import { Input, Select } from "@/components/ui/input";
 import type { PlantUpdate } from "@/api/client";
 import { LIFE_CYCLE_OPTIONS, type FieldValue } from "./fields";
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 type LifeCycle = "annual" | "biennial" | "perennial" | null;
 
@@ -90,8 +88,7 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
         title="Whether this plant completes its life in one season (annual), two (biennial), or lives on for several years (perennial)."
       >
         <span className="text-xs font-medium text-muted-foreground">Life cycle</span>
-        <select
-          className={inputClass}
+        <Select
           value={lifeCycle ?? ""}
           onChange={(e) => commitLifeCycle((e.target.value || null) as LifeCycle)}
         >
@@ -101,16 +98,15 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
               {opt.label}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
       <label
         className="flex flex-col gap-1"
         title="How many years this plant stays productive - fixed at 1 for annual and 2 for biennial, free-form for perennial."
       >
         <span className="text-xs font-medium text-muted-foreground">Life cycle years (productive lifespan)</span>
-        <input
+        <Input
           type="number"
-          className={inputClass}
           value={yearsDraft === null || yearsDraft === undefined ? "" : String(yearsDraft)}
           onChange={(e) => setYearsDraft(e.target.value === "" ? null : Number(e.target.value))}
           onBlur={commitYears}

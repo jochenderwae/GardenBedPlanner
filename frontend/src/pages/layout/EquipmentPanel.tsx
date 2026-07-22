@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { PackageCheck, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input, Select } from "@/components/ui/input";
 import {
   createBedEquipment,
   deleteBedEquipment,
@@ -10,9 +11,6 @@ import {
   type BedEquipment,
   type BedEquipmentCreate,
 } from "@/api/client";
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 export const DEFAULT_EQUIPMENT_SIZE_CM = 20;
 
@@ -107,8 +105,7 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
         <p className="text-xs text-muted-foreground">Add to inventory - place it on a bed afterward.</p>
         <label className="flex flex-col gap-1" title="Free-text equipment type, e.g. trellis, drip line, stake.">
           <span className="text-xs font-medium text-muted-foreground">Type</span>
-          <input
-            className={inputClass}
+          <Input
             placeholder="e.g. trellis, drip line, stake..."
             value={equipmentType}
             onChange={(e) => setEquipmentType(e.target.value)}
@@ -117,9 +114,8 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
         <div className="grid grid-cols-2 gap-2">
           <label className="flex flex-col gap-1" title="How tall this equipment stands, in centimeters.">
             <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
-            <input
+            <Input
               type="number"
-              className={inputClass}
               value={heightCm}
               onChange={(e) => setHeightCm(e.target.value)}
             />
@@ -129,9 +125,8 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
             title="Water delivery rate in liters per hour, for irrigation equipment."
           >
             <span className="text-xs font-medium text-muted-foreground">Water (L/h)</span>
-            <input
+            <Input
               type="number"
-              className={inputClass}
               value={waterDeliveryLph}
               onChange={(e) => setWaterDeliveryLph(e.target.value)}
             />
@@ -163,8 +158,7 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
                 </div>
                 <label className="flex items-center gap-1.5">
                   <PackageCheck className="size-3.5 shrink-0 text-muted-foreground" />
-                  <select
-                    className={inputClass}
+                  <Select
                     value=""
                     disabled={beds.length === 0}
                     onChange={(e) => handlePlace(item, e.target.value)}
@@ -175,7 +169,7 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
                         {bed.name}
                       </option>
                     ))}
-                  </select>
+                  </Select>
                 </label>
               </div>
             ))}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Input, Select, Textarea } from "@/components/ui/input";
 import type { FieldConfig, FieldValue } from "./fields";
 
 interface FieldInputProps {
@@ -6,9 +7,6 @@ interface FieldInputProps {
   value: FieldValue;
   onCommit: (newValue: FieldValue, previousValue: FieldValue) => void;
 }
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   const [draft, setDraft] = useState(value);
@@ -36,8 +34,7 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
     return (
       <label className="flex flex-col gap-1" title={field.description}>
         <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
-        <select
-          className={inputClass}
+        <Select
           value={selectValue}
           onChange={(e) => {
             const raw = e.target.value;
@@ -51,7 +48,7 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
               {opt.label}
             </option>
           ))}
-        </select>
+        </Select>
       </label>
     );
   }
@@ -60,9 +57,8 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
     return (
       <label className="flex flex-col gap-1" title={field.description}>
         <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
-        <input
+        <Input
           type="number"
-          className={inputClass}
           value={draft === null || draft === undefined ? "" : String(draft)}
           onChange={(e) => setDraft(e.target.value === "" ? null : Number(e.target.value))}
           onBlur={() => {
@@ -78,9 +74,8 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
     return (
       <label className="flex flex-col gap-1" title={field.description}>
         <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
-        <input
+        <Input
           type="text"
-          className={inputClass}
           placeholder="fruit, leaves, ..."
           value={textValue}
           onChange={(e) =>
@@ -106,8 +101,7 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
     return (
       <label className="flex flex-col gap-1 sm:col-span-2" title={field.description}>
         <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
-        <textarea
-          className={inputClass}
+        <Textarea
           rows={3}
           value={typeof draft === "string" ? draft : ""}
           onChange={(e) => setDraft(e.target.value)}
@@ -120,9 +114,8 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   return (
     <label className="flex flex-col gap-1" title={field.description}>
       <span className="text-xs font-medium text-muted-foreground">{field.label}</span>
-      <input
+      <Input
         type="text"
-        className={inputClass}
         value={typeof draft === "string" ? draft : ""}
         onChange={(e) => setDraft(e.target.value)}
         onBlur={commitText}

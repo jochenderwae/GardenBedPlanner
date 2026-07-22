@@ -3,11 +3,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { createBed, type Bed, type Geometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 // A reasonable default planter size (matches root CLAUDE.md's large
 // planters) - there's no more fixed type -> default-size table since
@@ -77,7 +75,7 @@ export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps
 
           <label className="flex flex-col gap-1" title="The bed's display name, e.g. 'North planter'.">
             <span className="text-xs font-medium text-muted-foreground">Name</span>
-            <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+            <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
           </label>
 
           <label
@@ -85,8 +83,7 @@ export function AddBedForm({ onClose, onCreated, nextPosition }: AddBedFormProps
             title="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list."
           >
             <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
-            <input
-              className={inputClass}
+            <Input
               placeholder="e.g. raised planter, ground bed, compost..."
               value={category}
               onChange={(e) => setCategory(e.target.value)}

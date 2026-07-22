@@ -4,11 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronRight, Pencil, Plus, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input, Select } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { createPlant, listPlants, type Plant } from "@/api/client";
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 type SortKey = "common_name" | "botanical_name" | "family";
 type SortDir = "asc" | "desc";
@@ -202,16 +200,16 @@ export function PlantsDatabase() {
       <div className="mb-4 flex flex-wrap items-center gap-2">
         <div className="relative min-w-48 flex-1">
           <Search className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground" />
-          <input
+          <Input
             type="text"
-            className={cn(inputClass, "pl-8")}
+            className="pl-8"
             placeholder="Search by name, botanical name, family, genus…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <select
-          className={cn(inputClass, "w-auto")}
+        <Select
+          className="w-auto"
           value={familyFilter}
           onChange={(e) => setFamilyFilter(e.target.value)}
         >
@@ -221,13 +219,13 @@ export function PlantsDatabase() {
               {name}
             </option>
           ))}
-        </select>
-        <select className={cn(inputClass, "w-auto")} value={sunFilter} onChange={(e) => setSunFilter(e.target.value)}>
+        </Select>
+        <Select className="w-auto" value={sunFilter} onChange={(e) => setSunFilter(e.target.value)}>
           <option value="">All sun levels</option>
           <option value="full_sun">Full sun</option>
           <option value="half_sun">Half sun</option>
           <option value="shadow">Shadow</option>
-        </select>
+        </Select>
         {hasFilters && (
           <Button variant="ghost" size="sm" onClick={clearFilters}>
             <X /> Clear
@@ -484,8 +482,7 @@ function AddPlantForm({ onClose, onCreated }: { onClose: () => void; onCreated: 
 
           <label className="flex flex-col gap-1">
             <span className="text-xs font-medium text-muted-foreground">Common name</span>
-            <input
-              className={inputClass}
+            <Input
               value={commonName}
               onChange={(e) => setCommonName(e.target.value)}
               autoFocus
@@ -493,15 +490,15 @@ function AddPlantForm({ onClose, onCreated }: { onClose: () => void; onCreated: 
           </label>
           <label className="flex flex-col gap-1">
             <span className="text-xs font-medium text-muted-foreground">Botanical name</span>
-            <input className={inputClass} value={botanicalName} onChange={(e) => setBotanicalName(e.target.value)} />
+            <Input value={botanicalName} onChange={(e) => setBotanicalName(e.target.value)} />
           </label>
           <label className="flex flex-col gap-1">
             <span className="text-xs font-medium text-muted-foreground">Family (optional)</span>
-            <input className={inputClass} value={family} onChange={(e) => setFamily(e.target.value)} />
+            <Input value={family} onChange={(e) => setFamily(e.target.value)} />
           </label>
           <label className="flex flex-col gap-1">
             <span className="text-xs font-medium text-muted-foreground">Genus (optional)</span>
-            <input className={inputClass} value={genus} onChange={(e) => setGenus(e.target.value)} />
+            <Input value={genus} onChange={(e) => setGenus(e.target.value)} />
           </label>
 
           {error && <p className="text-sm text-destructive">{error}</p>}

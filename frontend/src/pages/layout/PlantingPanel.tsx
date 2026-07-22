@@ -12,10 +12,8 @@ import {
   AlertDialogPopup,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Input, Select } from "@/components/ui/input";
 import { deletePlanting, updatePlanting, type PlacementType, type Plant, type Planting, type PlantingUpdate } from "@/api/client";
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 const PLACEMENT_TYPE_LABELS: Record<PlacementType, string> = {
   individual: "Point",
@@ -98,8 +96,7 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
 
         <label className="flex flex-col gap-1">
           <span className="text-xs font-medium text-muted-foreground">Placement type</span>
-          <select
-            className={inputClass}
+          <Select
             value={draft.placement_type}
             onChange={(e) => commit({ placement_type: e.target.value as PlacementType })}
           >
@@ -108,14 +105,13 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
                 {PLACEMENT_TYPE_LABELS[t]}
               </option>
             ))}
-          </select>
+          </Select>
         </label>
 
         <label className="flex flex-col gap-1">
           <span className="text-xs font-medium text-muted-foreground">Planted date</span>
-          <input
+          <Input
             type="date"
-            className={inputClass}
             value={draft.planted_date ?? ""}
             onChange={(e) => setDraft((prev) => ({ ...prev, planted_date: e.target.value || null }))}
             onBlur={() => draft.planted_date !== planting.planted_date && commit({ planted_date: draft.planted_date })}
@@ -124,9 +120,8 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
 
         <label className="flex flex-col gap-1">
           <span className="text-xs font-medium text-muted-foreground">Removed date</span>
-          <input
+          <Input
             type="date"
-            className={inputClass}
             value={draft.removed_date ?? ""}
             onChange={(e) => setDraft((prev) => ({ ...prev, removed_date: e.target.value || null }))}
             onBlur={() => draft.removed_date !== planting.removed_date && commit({ removed_date: draft.removed_date })}

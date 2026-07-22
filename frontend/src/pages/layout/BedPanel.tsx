@@ -12,24 +12,10 @@ import {
   AlertDialogPopup,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { cn } from "@/lib/utils";
+import { Input, Select, Textarea } from "@/components/ui/input";
 import { ApiError, deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 import { rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
-
-/** The width/length/rotation trio below is 3-up in a 20rem panel - real
- * tight on horizontal room, and the native number-input spinner arrows
- * alone were eating enough of it to clip a 3-digit cm value or a negative
- * rotation. Drops the spinner (`[appearance:textfield]` + hiding the
- * WebKit spin buttons) and trims the side padding a bit to give the digits
- * themselves back the room the browser chrome was taking. */
-const numberInputClass = cn(
-  inputClass,
-  "px-1.5 text-center [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
-);
 
 interface BedPanelProps {
   bed: Bed;
@@ -130,8 +116,7 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
       <div className="flex flex-col gap-3">
         <label className="flex flex-col gap-1" title="The bed's display name, e.g. 'North planter'.">
           <span className="text-xs font-medium text-muted-foreground">Name</span>
-          <input
-            className={inputClass}
+          <Input
             value={draft.name}
             onChange={(e) => setDraft((prev) => ({ ...prev, name: e.target.value }))}
             onBlur={() => draft.name !== bed.name && commit({ name: draft.name })}
@@ -143,8 +128,7 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           title="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list."
         >
           <span className="text-xs font-medium text-muted-foreground">Category (optional)</span>
-          <input
-            className={inputClass}
+          <Input
             placeholder="e.g. raised planter, ground bed, compost..."
             value={draft.category ?? ""}
             onChange={(e) => setDraft((prev) => ({ ...prev, category: e.target.value || null }))}
@@ -161,9 +145,9 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           <div className="grid grid-cols-3 gap-2">
             <label className="flex flex-col gap-1" title="Bed width in centimeters.">
               <span className="text-xs font-medium text-muted-foreground">Width (cm)</span>
-              <input
+              <Input
                 type="number"
-                className={numberInputClass}
+                variant="numeric"
                 value={draft.border_geometry.width}
                 onChange={(e) => setRectField("width", Number(e.target.value))}
                 onBlur={() => {
@@ -175,9 +159,9 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
             </label>
             <label className="flex flex-col gap-1" title="Bed length in centimeters.">
               <span className="text-xs font-medium text-muted-foreground">Length (cm)</span>
-              <input
+              <Input
                 type="number"
-                className={numberInputClass}
+                variant="numeric"
                 value={draft.border_geometry.height}
                 onChange={(e) => setRectField("height", Number(e.target.value))}
                 onBlur={() => {
@@ -192,9 +176,9 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
               title="Rotation in degrees, clockwise, relative to the garden's own orientation - 0 means aligned with the garden, not with the canvas."
             >
               <span className="text-xs font-medium text-muted-foreground">Rotation (°)</span>
-              <input
+              <Input
                 type="number"
-                className={numberInputClass}
+                variant="numeric"
                 value={Math.round(rotationRelativeToGarden(draft.border_geometry.rotation, gardenOrientationDeg))}
                 onChange={(e) =>
                   setRectField("rotation", rotationFromGardenRelative(Number(e.target.value), gardenOrientationDeg))
@@ -219,9 +203,8 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           title="Height above ground, in centimeters - 0 for a flat/ground-level bed. Any height above ground draws the bed with a thicker outline on the canvas."
         >
           <span className="text-xs font-medium text-muted-foreground">Height (cm)</span>
-          <input
+          <Input
             type="number"
-            className={inputClass}
             value={draft.height_cm}
             onChange={(e) => setDraft((prev) => ({ ...prev, height_cm: Number(e.target.value) }))}
             onBlur={() => draft.height_cm !== bed.height_cm && commit({ height_cm: draft.height_cm })}
@@ -230,8 +213,7 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
 
         <label className="flex flex-col gap-1" title="How much direct sun this bed gets.">
           <span className="text-xs font-medium text-muted-foreground">Sun level</span>
-          <select
-            className={inputClass}
+          <Select
             value={draft.sun_level ?? ""}
             onChange={(e) => commit({ sun_level: (e.target.value || null) as Bed["sun_level"] })}
           >
@@ -239,13 +221,12 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
             <option value="full_sun">Full sun</option>
             <option value="half_sun">Half sun</option>
             <option value="shadow">Shadow</option>
-          </select>
+          </Select>
         </label>
 
         <label className="flex flex-col gap-1" title="Free-text soil description, e.g. loam, sandy, compost-amended.">
           <span className="text-xs font-medium text-muted-foreground">Soil type</span>
-          <input
-            className={inputClass}
+          <Input
             value={draft.soil_type ?? ""}
             onChange={(e) => setDraft((prev) => ({ ...prev, soil_type: e.target.value || null }))}
             onBlur={() => draft.soil_type !== bed.soil_type && commit({ soil_type: draft.soil_type })}
@@ -263,8 +244,7 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
 
         <label className="flex flex-col gap-1" title="Any other notes about this bed.">
           <span className="text-xs font-medium text-muted-foreground">Notes</span>
-          <textarea
-            className={inputClass}
+          <Textarea
             rows={3}
             value={draft.notes}
             onChange={(e) => setDraft((prev) => ({ ...prev, notes: e.target.value }))}

@@ -2,10 +2,8 @@ import { useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input, Textarea } from "@/components/ui/input";
 import { putGarden, type Garden, type GardenPut } from "@/api/client";
-
-const inputClass =
-  "w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 
 const DEFAULT_GARDEN_SIZE_CM = 500;
 
@@ -62,7 +60,7 @@ export function GardenPanel({ garden }: GardenPanelProps) {
         <div className="flex flex-col gap-3">
           <label className="flex flex-col gap-1" title="Your garden's display name.">
             <span className="text-xs font-medium text-muted-foreground">Name</span>
-            <input className={inputClass} value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+            <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
           </label>
           <Button
             size="sm"
@@ -99,8 +97,7 @@ export function GardenPanel({ garden }: GardenPanelProps) {
       <div className="flex flex-col gap-3">
         <label className="flex flex-col gap-1" title="Your garden's display name.">
           <span className="text-xs font-medium text-muted-foreground">Name</span>
-          <input
-            className={inputClass}
+          <Input
             value={draft.name}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, name: e.target.value } : prev))}
             onBlur={() => draft.name !== garden?.name && commit({ name: draft.name })}
@@ -112,8 +109,7 @@ export function GardenPanel({ garden }: GardenPanelProps) {
           title="Free-text climate zone, e.g. a Köppen or USDA hardiness zone code, if you track one."
         >
           <span className="text-xs font-medium text-muted-foreground">Climate zone</span>
-          <input
-            className={inputClass}
+          <Input
             value={draft.climate_zone ?? ""}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, climate_zone: e.target.value || null } : prev))}
             onBlur={() => draft.climate_zone !== garden?.climate_zone && commit({ climate_zone: draft.climate_zone })}
@@ -122,8 +118,7 @@ export function GardenPanel({ garden }: GardenPanelProps) {
 
         <label className="flex flex-col gap-1" title="Free-text location, e.g. a city or address.">
           <span className="text-xs font-medium text-muted-foreground">Location</span>
-          <input
-            className={inputClass}
+          <Input
             value={draft.location ?? ""}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, location: e.target.value || null } : prev))}
             onBlur={() => draft.location !== garden?.location && commit({ location: draft.location })}
@@ -132,8 +127,7 @@ export function GardenPanel({ garden }: GardenPanelProps) {
 
         <label className="flex flex-col gap-1" title="Any other notes about the garden.">
           <span className="text-xs font-medium text-muted-foreground">Notes</span>
-          <textarea
-            className={inputClass}
+          <Textarea
             rows={3}
             value={draft.notes}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, notes: e.target.value } : prev))}

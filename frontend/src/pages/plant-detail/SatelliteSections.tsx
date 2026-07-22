@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useSnackbar } from "@/components/Snackbar";
 import { PlantSearchList } from "@/components/PlantSearchList";
+import { Input, Select } from "@/components/ui/input";
 import {
   beddingNeedApi,
   createCompanion,
@@ -32,8 +33,6 @@ import {
   type SeedInfo,
 } from "@/api/client";
 
-const inputClass =
-  "rounded-md border border-input bg-background px-2 py-1 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50";
 const sectionClass = "flex flex-col gap-2 border-t pt-4";
 const rowClass = "flex flex-wrap items-center gap-2 text-sm";
 
@@ -112,15 +111,15 @@ export function DataSourcesSection({ slug, items }: { slug: string; items: Plant
         </div>
       ))}
       <div className={rowClass}>
-        <input
-          className={inputClass}
+        <Input
+          className="w-auto"
           placeholder="attribution"
           title="Who/what to credit for this data, e.g. an author or organization name."
           value={draft.attribution}
           onChange={(e) => setDraft({ ...draft, attribution: e.target.value })}
         />
-        <input
-          className={inputClass}
+        <Input
+          className="w-auto"
           placeholder="source URL"
           title="A link to where this data was sourced from."
           value={draft.source_url}
@@ -195,18 +194,18 @@ export function SeedInfoSection({ slug, seedInfo }: { slug: string; seedInfo: Se
       <div className={rowClass}>
         <label className="flex items-center gap-1.5" title="How many seeds of this plant weigh one gram - used to convert a seed count to a weight, or vice versa.">
           Seeds/gram
-          <input
+          <Input
             type="number"
-            className={inputClass}
+            className="w-auto"
             defaultValue={current.seeds_per_gram ?? ""}
             onBlur={(e) => save({ seeds_per_gram: e.target.value === "" ? null : Number(e.target.value) })}
           />
         </label>
         <label className="flex items-center gap-1.5" title="Any treatment seeds need before sowing, e.g. soaking, stratification, scarification.">
           Pretreatment
-          <input
+          <Input
             type="text"
-            className={inputClass}
+            className="w-auto"
             defaultValue={current.pretreatment ?? ""}
             onBlur={(e) => save({ pretreatment: e.target.value || null })}
           />
@@ -245,8 +244,8 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
         </div>
       ))}
       <div className={rowClass}>
-        <select
-          className={inputClass}
+        <Select
+          className="w-auto"
           title="What kind of activity this period covers, e.g. sowing, harvesting."
           value={draft.period_type}
           onChange={(e) => setDraft({ ...draft, period_type: e.target.value })}
@@ -257,22 +256,22 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
               {pt.code}
             </option>
           ))}
-        </select>
-        <input
+        </Select>
+        <Input
           type="number"
           min={1}
           max={12}
-          className={`${inputClass} w-16`}
+          className="w-16"
           title="Starting month (1-12) for this period."
           value={draft.start_month}
           onChange={(e) => setDraft({ ...draft, start_month: Number(e.target.value) })}
         />
         <span>–</span>
-        <input
+        <Input
           type="number"
           min={1}
           max={12}
-          className={`${inputClass} w-16`}
+          className="w-16"
           title="Ending month (1-12) for this period."
           value={draft.end_month}
           onChange={(e) => setDraft({ ...draft, end_month: Number(e.target.value) })}
@@ -316,8 +315,8 @@ export function BeddingNeedsSection({ slug, items }: { slug: string; items: Plan
         </div>
       ))}
       <div className={rowClass}>
-        <input
-          className={inputClass}
+        <Input
+          className="w-auto"
           placeholder="e.g. hilling, staking"
           title="Bed preparation or maintenance this plant needs, e.g. hilling, staking, mulching."
           value={needType}
@@ -375,8 +374,7 @@ function PestColumn({
           </Button>
         </div>
       ))}
-      <input
-        className={inputClass}
+      <Input
         placeholder="e.g. aphids"
         title="Name of a pest or beneficial insect - press Enter to add."
         value={draft}
