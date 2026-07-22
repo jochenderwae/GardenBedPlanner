@@ -71,6 +71,12 @@ class Plant(SQLModel, table=True):
     needs_wind_cover: bool | None = None
     needs_rain_cover: bool | None = None
     water_needs: str | None = None
+    # Free text (e.g. "vining", "bushy", "upright", "spreading") - no fixed
+    # enum exists for the habit vocabulary populate_growth_habit.py already
+    # produced across data/plants/*.json, same style as soil_type/
+    # composting_needs above. Intended to eventually drive a realistic
+    # per-plant footprint in the layout editor instead of a generic circle.
+    growth_habit: str | None = None
 
     # Taxonomy - needed for family-based rotation/succession logic (see root
     # CLAUDE.md's domain notes). botanical_name usually encodes genus in its

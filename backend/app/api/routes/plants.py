@@ -132,6 +132,7 @@ class PlantDetail(BaseModel):
     needs_wind_cover: bool | None = None
     needs_rain_cover: bool | None = None
     water_needs: str | None = None
+    growth_habit: str | None = None
     family: FamilyRead | None = None
     genus: GenusRead | None = None
     parent_plant_slug: str | None = None

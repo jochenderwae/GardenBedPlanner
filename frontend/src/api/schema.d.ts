@@ -1470,6 +1470,8 @@ export interface components {
             needs_rain_cover?: boolean | null;
             /** Water Needs */
             water_needs?: string | null;
+            /** Growth Habit */
+            growth_habit?: string | null;
             /** Parent Plant Slug */
             parent_plant_slug?: string | null;
             /** Min Temperature C */
@@ -1556,6 +1558,8 @@ export interface components {
             needs_rain_cover?: boolean | null;
             /** Water Needs */
             water_needs?: string | null;
+            /** Growth Habit */
+            growth_habit?: string | null;
             /** Parent Plant Slug */
             parent_plant_slug?: string | null;
             /** Min Temperature C */
@@ -1645,6 +1649,8 @@ export interface components {
             needs_rain_cover?: boolean | null;
             /** Water Needs */
             water_needs?: string | null;
+            /** Growth Habit */
+            growth_habit?: string | null;
             family?: components["schemas"]["FamilyRead"] | null;
             genus?: components["schemas"]["GenusRead"] | null;
             /** Parent Plant Slug */
@@ -1794,6 +1800,8 @@ export interface components {
             needs_rain_cover?: boolean | null;
             /** Water Needs */
             water_needs?: string | null;
+            /** Growth Habit */
+            growth_habit?: string | null;
             /** Parent Plant Slug */
             parent_plant_slug?: string | null;
             /** Min Temperature C */
