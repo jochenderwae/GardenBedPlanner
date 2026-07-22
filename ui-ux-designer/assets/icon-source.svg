@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-labelledby="gbp-icon-title">
+  <title id="gbp-icon-title">GardenBedPlanner</title>
+  <!--
+    GardenBedPlanner app icon - source of truth for all generated PWA/favicon/apple-touch-icon
+    assets. See ui-ux-designer/reviews/2026-07-22-review.md finding #9 (issue #149) and issue #47
+    for the ticket this was produced for.
+
+    Concept: a raised garden bed (the app's actual core domain object - see root CLAUDE.md's
+    "4 large wooden planters... 3 small planters... a berry row") with a single sprout growing
+    from it. Deliberately distinct from lucide-react's `Sprout` icon already used for the
+    "Plants Database" nav item (NavDrawer.tsx) - that icon means "plants" specifically inside
+    the app's own nav; this mark means "the whole app / the bed itself", so reusing the same
+    glyph for both would blur that distinction rather than reinforce identity.
+
+    Palette: theme green (#2f6f3e, the manifest's real theme_color) is the PRIMARY color,
+    carried by the stem and left leaf. The lighter sage tint (#82a98b, a straight tint of the
+    same green, not an invented hue) shades the right leaf for a touch of flat/geometric depth.
+    The wood-brown box (#8a5a34) and darker soil (#5c3a20) are supporting/structural colors that
+    describe the "bed" concept literally (real wood, real soil) rather than adding an unrelated
+    accent color competing with theme_color.
+
+    Background: intentionally transparent. Do NOT bake in a background fill here - see the icon
+    spec (issue #149) for which target (regular "any" PNG vs. maskable vs. apple-touch-icon)
+    needs a solid background added at raster time, and with which color.
+
+    Safe zone: all shape geometry is kept within a circle of radius ~195px centered at (256,256)
+    - inside the ~205px-radius (80%-diameter) safe zone Android maskable icons are cropped to -
+    so this source can be used directly as the maskable base without redrawing content, only
+    padding/background needs to be added by the raster tool.
+  -->
+  <rect x="126" y="290" width="260" height="110" rx="20" ry="20" fill="#8a5a34" />
+  <rect x="142" y="272" width="228" height="28" rx="13" ry="13" fill="#5c3a20" />
+  <rect x="246" y="150" width="20" height="134" rx="10" ry="10" fill="#2f6f3e" />
+  <ellipse cx="214" cy="130" rx="46" ry="22" fill="#2f6f3e" transform="rotate(-28 214 130)" />
+  <ellipse cx="298" cy="130" rx="46" ry="22" fill="#82a98b" transform="rotate(28 298 130)" />
+</svg>
