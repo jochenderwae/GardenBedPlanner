@@ -29,8 +29,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Red Russian Kale is typically grown as a biennial in temperate climates like Belgium, as it is often allowed to overwinter and produce seeds in the second year."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves'] inferred by Ollama; reasoning: Red Russian Kale is primarily eaten for its leafy greens."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "biennial"
+  "life_cycle": "biennial",
+  "edible_parts": [
+    "leaves"
+  ]
 }

@@ -38,8 +38,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Cumin is typically grown as an annual in temperate climates like Belgium, as it is sensitive to cold and is usually started from seed each year."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds'] inferred by Ollama; reasoning: Cumin is primarily grown for its seeds, which are dried and used as a spice."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "seeds"
+  ]
 }

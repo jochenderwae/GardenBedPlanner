@@ -25,8 +25,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Bitter orange is typically grown as a perennial in temperate climates like Belgium, although it may require protection during colder months."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The bitter orange is primarily grown for its fruit, which is used in cooking and to make marmalade."
     }
   ],
   "growth_habit": "tree",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ]
 }

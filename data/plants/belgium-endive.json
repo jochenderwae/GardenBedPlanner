@@ -12,8 +12,8 @@
   "soil_ph_max": 7.5,
   "is_edible": true,
   "edible_parts": [
-    "flowers",
-    "leaves"
+    "leaves",
+    "flowers"
   ],
   "companions": [
     {
@@ -38,6 +38,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Belgian Endive is typically grown as a biennial in home gardens because it requires two growing seasons to produce its characteristic heads."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['flowers', 'leaves'] to ['leaves', 'flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growth_habit": "rosette",

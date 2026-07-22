@@ -51,7 +51,14 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds'] inferred by Ollama; reasoning: The Black Walnut is primarily valued for its seeds, which are the edible nuts."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "edible_parts": [
+    "seeds"
+  ]
 }

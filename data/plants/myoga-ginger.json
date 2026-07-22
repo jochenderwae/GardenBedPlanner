@@ -27,8 +27,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Myoga Ginger is typically grown as a perennial in temperate climates like Belgium due to its cold hardiness and ability to spread through rhizomes."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['flowers', 'shoots'] inferred by Ollama; reasoning: Myoga Ginger is grown for its edible flower buds and young spring shoots."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "flowers",
+    "shoots"
+  ]
 }

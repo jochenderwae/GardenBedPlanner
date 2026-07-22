@@ -24,10 +24,17 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Romanesco is typically grown as an annual in home gardens in Belgium, harvested within a single growing season."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['flowers'] inferred by Ollama; reasoning: Romanesco is a variety of cauliflower and the edible part is the immature flower head."
     }
   ],
   "growth_habit": "upright",
   "genus": "Brassica",
   "family": "Brassicaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "flowers"
+  ]
 }

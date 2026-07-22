@@ -30,8 +30,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: White Currants are typically grown as perennial shrubs in home gardens in Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The edible part of the White Currant is its berries, which are considered a fruit in common-sense gardener groupings."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ]
 }

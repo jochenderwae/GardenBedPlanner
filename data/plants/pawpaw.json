@@ -14,7 +14,7 @@
   "soil_ph_max": 7.2,
   "is_edible": true,
   "edible_parts": [
-    "fruits"
+    "fruit"
   ],
   "companions": [
     {
@@ -40,6 +40,10 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree, Shrub' includes 'Tree'"
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['fruits'] to ['fruit'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growth_habit": "tree"

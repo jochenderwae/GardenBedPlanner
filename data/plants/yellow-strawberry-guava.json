@@ -21,9 +21,16 @@
       "source_url": "https://en.wikipedia.org/wiki/Psidium",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Psidium'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The Yellow Strawberry Guava is primarily grown for its edible fruit."
     }
   ],
   "growth_habit": "tree",
   "genus": "Psidium",
-  "family": "Myrtaceae"
+  "family": "Myrtaceae",
+  "edible_parts": [
+    "fruit"
+  ]
 }

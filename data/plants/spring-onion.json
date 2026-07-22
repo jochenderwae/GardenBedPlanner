@@ -52,6 +52,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Spring onions are typically grown and harvested within a single growing season in Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'bulbs'] inferred by Ollama; reasoning: Spring onions are harvested and eaten for both their bulbs and greens."
     }
   ],
   "growing_information": [
@@ -157,5 +161,9 @@
       "start_month": 4,
       "end_month": 6
     }
+  ],
+  "edible_parts": [
+    "leaves",
+    "bulbs"
   ]
 }

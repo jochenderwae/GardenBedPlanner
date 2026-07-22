@@ -111,8 +111,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Basil is typically grown as an annual in Belgium because it is sensitive to frost and does not survive the winter outdoors."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves'] inferred by Ollama; reasoning: Basil is commonly grown for its aromatic leaves which are used in cooking."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves"
+  ]
 }

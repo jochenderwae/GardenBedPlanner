@@ -18,8 +18,8 @@
   "succession_enabled": false,
   "succession_max_sowings": 1,
   "edible_parts": [
-    "bulb",
-    "stem"
+    "bulbs",
+    "stems"
   ],
   "companions": [
     {
@@ -152,6 +152,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Garlic is typically grown as a perennial in temperate climates like Belgium, as it can remain in the ground from one year to another if left undisturbed."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['bulb', 'stem'] to ['bulbs', 'stems'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [

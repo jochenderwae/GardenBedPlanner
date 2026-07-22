@@ -27,8 +27,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: African Marigold is typically grown as an annual in temperate climates like Belgium because it is not cold-hardy and is usually replanted each year."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['flowers'] inferred by Ollama; reasoning: The florets of the African Marigold are used as food coloring and can be eaten."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "flowers"
+  ]
 }

@@ -27,8 +27,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Water Spinach is a tropical plant that is not cold-hardy and typically grown as an annual in temperate climates like Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'shoots'] inferred by Ollama; reasoning: Water spinach is primarily grown for its tender shoots and leaves."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves",
+    "shoots"
+  ]
 }

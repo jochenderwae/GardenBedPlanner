@@ -32,8 +32,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Purple amaranth is described as a fast-growing annual and is typically grown as such in home gardens."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'seeds'] inferred by Ollama; reasoning: Purple amaranth is grown for both its young leaves and its seed heads."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves",
+    "seeds"
+  ]
 }

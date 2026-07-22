@@ -48,6 +48,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Salsify is typically grown as an annual in home gardens for its edible root and leaves."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -100,7 +104,7 @@
   "spread_cm": 8.75,
   "row_spacing_cm": 91.44,
   "edible_parts": [
-    "root"
+    "roots"
   ],
   "periods": [
     {

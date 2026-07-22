@@ -29,8 +29,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Almond trees are typically grown as perennials in home gardens."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds'] inferred by Ollama; reasoning: The almond tree is primarily cultivated for its edible seeds."
     }
   ],
   "growth_habit": "tree",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "seeds"
+  ]
 }

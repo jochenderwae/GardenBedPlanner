@@ -47,8 +47,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Comfrey is typically grown as a perennial in home gardens in Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves'] inferred by Ollama; reasoning: Comfrey is primarily grown for its edible leaves."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "leaves"
+  ]
 }

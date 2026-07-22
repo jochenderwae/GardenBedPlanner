@@ -119,9 +119,16 @@
     {
       "attribution": "ollama-life-cycle-years-inference",
       "notes": "life_cycle_years=3 inferred by Ollama; reasoning: The description mentions that thyme needs to be divided or replaced after 3-4 years."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves'] inferred by Ollama; reasoning: Thyme is primarily used as a culinary herb, and the leaves are the part that is eaten."
     }
   ],
   "growth_habit": "spreading",
   "life_cycle": "perennial",
-  "life_cycle_years": 3
+  "life_cycle_years": 3,
+  "edible_parts": [
+    "leaves"
+  ]
 }

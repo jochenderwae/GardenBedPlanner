@@ -37,7 +37,14 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree, Shrub' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The primary edible part of the olive plant is its fruit."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "edible_parts": [
+    "fruit"
+  ]
 }

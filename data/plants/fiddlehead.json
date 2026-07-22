@@ -20,6 +20,13 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['shoots'] inferred by Ollama; reasoning: Fiddleheads are the young, coiled fronds of ferns harvested before they open into mature leaves."
     }
+  ],
+  "edible_parts": [
+    "shoots"
   ]
 }

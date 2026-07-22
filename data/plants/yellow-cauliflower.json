@@ -45,6 +45,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Yellow Cauliflower is typically grown as an annual in temperate climates like Belgium, as it is sensitive to frost and heat."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['curds'] to ['flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -113,6 +117,6 @@
   "life_cycle": "annual",
   "soil_type": "rich, moist soil",
   "edible_parts": [
-    "curds"
+    "flowers"
   ]
 }

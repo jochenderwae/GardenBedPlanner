@@ -28,7 +28,14 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The loquat is primarily grown for its edible yellow fruit."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "edible_parts": [
+    "fruit"
+  ]
 }

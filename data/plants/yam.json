@@ -34,7 +34,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Yams are described as perennial, herbaceous vines."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['tubers'] inferred by Ollama; reasoning: Yams form edible starchy tubers."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "edible_parts": [
+    "tubers"
+  ]
 }

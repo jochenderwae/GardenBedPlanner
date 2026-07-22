@@ -14,8 +14,15 @@
       "source_url": "https://en.wikipedia.org/wiki/Agaricus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Agaricus'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: Portobello mushrooms are the mature version of white button mushrooms and are eaten as a fruit."
     }
   ],
   "genus": "Agaricus",
-  "family": "Agaricaceae"
+  "family": "Agaricaceae",
+  "edible_parts": [
+    "fruit"
+  ]
 }

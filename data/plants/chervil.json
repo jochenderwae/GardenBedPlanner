@@ -14,9 +14,9 @@
   "soil_ph_max": 7.5,
   "is_edible": true,
   "edible_parts": [
-    "flowers",
     "leaves",
-    "root"
+    "roots",
+    "flowers"
   ],
   "companions": [
     {
@@ -65,6 +65,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Chervil is typically grown as an annual in temperate climates like Belgium, as it thrives in cool conditions and does not tolerate hot summers well."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['flowers', 'leaves', 'root'] to ['leaves', 'roots', 'flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [

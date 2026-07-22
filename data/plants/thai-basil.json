@@ -29,8 +29,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Thai Basil is typically grown as an annual in temperate climates like Belgium because it does not tolerate frost and is usually replanted each year."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves'] inferred by Ollama; reasoning: Thai Basil is primarily grown for its fragrant and delicious leaves."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves"
+  ]
 }

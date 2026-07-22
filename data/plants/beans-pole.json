@@ -73,10 +73,17 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Pole beans are typically grown as annuals in temperate climates like Belgium, as they complete their life cycle within one growing season."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['pods'] inferred by Ollama; reasoning: Pole beans are typically eaten as pods when they are immature and tender."
     }
   ],
   "growth_habit": "climbing",
   "genus": "Phaseolus",
   "family": "Fabaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "pods"
+  ]
 }

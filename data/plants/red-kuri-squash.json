@@ -28,8 +28,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Red Kuri Squash is typically grown as an annual in temperate climates like Belgium, as it is not cold-hardy and is usually started from seed each year."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The Red Kuri Squash is primarily eaten for its fleshy interior, which is the common-sense definition of a fruit."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ]
 }

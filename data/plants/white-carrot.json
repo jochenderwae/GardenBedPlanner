@@ -50,6 +50,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Carrots are typically grown as biennials in home gardens because they are usually harvested in the first year for their roots but can be left to flower and produce seed in the second year."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -126,7 +130,7 @@
   "fertilizer_needs": "avoid excessively rich ground",
   "soil_type": "deep, warm, sandy soil",
   "edible_parts": [
-    "root"
+    "roots"
   ],
   "periods": [
     {

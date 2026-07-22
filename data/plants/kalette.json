@@ -25,8 +25,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Kale and Brussels sprouts are typically grown as annuals in a temperate climate like Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'flowers'] inferred by Ollama; reasoning: Kalette is a hybrid of kale and Brussels sprouts, so its edible parts are the leaves and flower-like florets."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves",
+    "flowers"
+  ]
 }

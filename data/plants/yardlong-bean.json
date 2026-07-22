@@ -26,8 +26,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Yardlong beans are typically grown as annuals in temperate climates like Belgium, as they are sensitive to frost and are usually planted anew each year."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds', 'pods'] inferred by Ollama; reasoning: The Yardlong Bean is primarily eaten as a pod when immature and can also be dried and used as seeds."
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "seeds",
+    "pods"
+  ]
 }

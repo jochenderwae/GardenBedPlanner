@@ -39,8 +39,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Buckwheat is typically grown as an annual in temperate climates like Belgium because it completes its life cycle within one growing season."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'seeds'] inferred by Ollama; reasoning: Buckwheat is primarily grown for its grain-like seeds and edible leaves."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves",
+    "seeds"
+  ]
 }

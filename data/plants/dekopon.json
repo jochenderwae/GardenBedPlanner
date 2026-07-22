@@ -20,9 +20,16 @@
       "source_url": "https://en.wikipedia.org/wiki/Citrus",
       "attribution": "wikipedia-taxonomy",
       "notes": "family/genus backfilled from Wikipedia/Wikidata taxonomy for genus 'Citrus'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: Dekopon is a type of citrus fruit and the edible part is the fleshy fruit itself."
     }
   ],
   "growth_habit": "tree",
   "genus": "Citrus",
-  "family": "Rutaceae"
+  "family": "Rutaceae",
+  "edible_parts": [
+    "fruit"
+  ]
 }

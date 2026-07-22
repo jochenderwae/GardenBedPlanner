@@ -14,8 +14,8 @@
   "soil_ph_max": 7.5,
   "is_edible": true,
   "edible_parts": [
-    "flowers",
-    "leaves"
+    "leaves",
+    "flowers"
   ],
   "data_sources": [
     {
@@ -33,6 +33,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Radicchio is typically grown as an annual in temperate climates like Belgium, as it is harvested within one growing season."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['flowers', 'leaves'] to ['leaves', 'flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growth_habit": "rosette",

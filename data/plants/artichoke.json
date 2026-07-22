@@ -45,6 +45,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Artichokes are typically grown as perennials in Belgium's temperate climate (Zone 7), producing edible flower-heads over multiple years."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['flower buds'] to ['flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -101,7 +105,7 @@
   "life_cycle": "perennial",
   "soil_type": "deep, rich sandy loam soil",
   "edible_parts": [
-    "flower buds"
+    "flowers"
   ],
   "periods": [
     {

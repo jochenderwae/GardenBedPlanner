@@ -14,7 +14,7 @@
   "soil_ph_max": 7.0,
   "is_edible": true,
   "edible_parts": [
-    "fruits",
+    "fruit",
     "seeds"
   ],
   "data_sources": [
@@ -34,6 +34,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Wax beans are typically grown as annuals in temperate climates like Belgium, as they are sensitive to frost and are usually planted anew each year."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['fruits', 'seeds'] to ['fruit', 'seeds'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growth_habit": "climbing",

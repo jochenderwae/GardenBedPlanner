@@ -25,7 +25,14 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='spreading' - Trefle growth_habit='Shrub' includes Shrub/Subshrub"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds'] inferred by Ollama; reasoning: The edible part of the pistachio plant is the seed inside the hard shell."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "edible_parts": [
+    "seeds"
+  ]
 }

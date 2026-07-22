@@ -24,10 +24,17 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Kamokamo (Cucurbita pepo) is typically grown as an annual in temperate climates like Belgium, as it is sensitive to frost and is harvested within one growing season."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: Kamokamo is a type of summer squash and the edible part is the fruit."
     }
   ],
   "growth_habit": "spreading",
   "genus": "Cucurbita",
   "family": "Cucurbitaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ]
 }

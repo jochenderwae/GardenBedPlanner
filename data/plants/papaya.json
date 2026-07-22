@@ -30,7 +30,14 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree, Shrub' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: Papayas are primarily grown for their fruit."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "edible_parts": [
+    "fruit"
+  ]
 }

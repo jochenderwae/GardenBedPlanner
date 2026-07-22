@@ -73,8 +73,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Pineapple Sage is a tender perennial in its native climate but is typically grown as an annual in the temperate climate of Belgium due to its sensitivity to cold."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'flowers'] inferred by Ollama; reasoning: Pineapple Sage is known for its edible leaves and flowers."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves",
+    "flowers"
+  ]
 }

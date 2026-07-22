@@ -111,6 +111,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Celery is typically grown as a biennial in temperate climates like Belgium, where it is often started from seed in the first year and harvested in the second year for its stalks."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'stems'] inferred by Ollama; reasoning: The description mentions that both the stalks and leaves of celery can be eaten."
     }
   ],
   "growing_information": [
@@ -207,5 +211,9 @@
       "start_month": 1,
       "end_month": 12
     }
+  ],
+  "edible_parts": [
+    "leaves",
+    "stems"
   ]
 }

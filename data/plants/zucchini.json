@@ -54,8 +54,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Zucchini is typically grown as an annual in Belgium because it is sensitive to frost and is planted anew each year."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit', 'flowers'] inferred by Ollama; reasoning: Zucchini is commonly eaten as a fruit and its flowers are also edible."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit",
+    "flowers"
+  ]
 }

@@ -35,7 +35,14 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree, Shrub' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds'] inferred by Ollama; reasoning: Coffee is primarily grown for its seeds, which are the coffee beans."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "edible_parts": [
+    "seeds"
+  ]
 }

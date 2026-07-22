@@ -31,8 +31,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Heirloom tomatoes are typically grown as annuals in Belgium's temperate climate because they do not survive the winter outdoors."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: Heirloom tomatoes are primarily grown for their fleshy, seed-bearing structures which are eaten as produce."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ]
 }

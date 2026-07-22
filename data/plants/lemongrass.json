@@ -24,7 +24,14 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='upright' - Trefle growth_habit='Graminoid' is graminoid (grass-like), rendered as upright"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['stems'] inferred by Ollama; reasoning: Lemongrass is primarily used for its stalks and leaves."
     }
   ],
-  "growth_habit": "upright"
+  "growth_habit": "upright",
+  "edible_parts": [
+    "stems"
+  ]
 }

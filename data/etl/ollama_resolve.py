@@ -448,6 +448,105 @@ def infer_life_cycle_years(
     return resolved, reasoning
 
 
+_EDIBLE_PARTS_VALUES = [
+    "fruit", "leaves", "roots", "tubers", "bulbs", "stems", "seeds", "flowers", "pods", "shoots",
+]
+
+_EDIBLE_PARTS_DESCRIPTIONS = {
+    "fruit": "the fleshy seed-bearing structure eaten as produce, common-sense not strict botany (tomato, apple, squash, cucumber, pepper, strawberry)",
+    "leaves": "leafy greens, including tight leaf-cluster 'heads' like cabbage/lettuce (lettuce, spinach, kale, cabbage)",
+    "roots": "a true root (carrot, beet, radish)",
+    "tubers": "a swollen underground stem/root storing starch, distinct from a true root (potato, cassava)",
+    "bulbs": "a layered underground storage structure (onion, garlic, shallot)",
+    "stems": "an above-ground stem/stalk, including a thickened stem base that is NOT a true bulb (celery, rhubarb, kohlrabi, leek)",
+    "seeds": "the mature seed eaten on its own, not in-pod (sunflower seeds, corn kernels, dry beans)",
+    "flowers": "an immature flower bud/head or flower cluster (broccoli, cauliflower, artichoke, hops cones, squash blossoms)",
+    "pods": "eaten whole, pod and immature seed together (green beans, snap peas)",
+    "shoots": "a young stem/growth tip harvested before it matures (asparagus, sea kale, bamboo)",
+}
+
+
+def infer_edible_parts(
+    slug: str,
+    common_name: str,
+    botanical_name: str | None,
+    description: str | None,
+    growing_info_excerpt: str | None,
+) -> tuple[list[str] | None, str]:
+    """Infers this project's own closed edible_parts category list (see
+    plant.schema.json - backlog #133) for plants missing the field. No
+    structured source in this pipeline carries a closed-category version of
+    this field, so this leans on Ollama's own general knowledge, informed by
+    whatever description/growing_information text is available - same shape
+    as infer_life_cycle's "no structured candidate at all" case.
+
+    Deliberately conservative: if the plant is not genuinely edible (or
+    Ollama isn't confident which part(s)), returns (None, reasoning) rather
+    than a guess - the caller should leave edible_parts unset in that case,
+    same convention as every other infer_* helper here. Note this
+    deliberately does NOT trust this plant's own recorded is_edible field as
+    an input signal - a live data audit (2026-07-22, backlog #133) found 25
+    plants with edible_parts already populated (apple, cherry, corn,
+    cucumber, watermelon, grapes, strawberry, ...) that are also marked
+    is_edible=false, so that field can't be trusted as a gate here; asking
+    Ollama to judge edibility fresh from the plant's own identity/
+    description avoids inheriting that bug (flagged separately for the
+    is_edible field itself in suggestions.md, out of this issue's scope)."""
+    options_text = "\n".join(
+        f"- '{cat}': {_EDIBLE_PARTS_DESCRIPTIONS[cat]}" for cat in _EDIBLE_PARTS_VALUES
+    )
+    context_lines = [f"Common name: {common_name}"]
+    if botanical_name:
+        context_lines.append(f"Botanical name: {botanical_name}")
+    if description:
+        context_lines.append(f"Description: {description[:500]}")
+    if growing_info_excerpt:
+        context_lines.append(f"Growing information excerpt: {growing_info_excerpt}")
+
+    prompt = (
+        "You are categorizing which part(s) of a garden plant are eaten, for "
+        "a home-garden planning tool. Use common-sense gardener groupings, "
+        "not strict botany (e.g. a strawberry's edible part is 'fruit' even "
+        "though it isn't technically a botanical fruit).\n\n"
+        + "\n".join(context_lines)
+        + "\n\nChoose ALL that apply from this closed list (usually just one, "
+        "occasionally two - e.g. cassava is both 'roots' and 'tubers', leek "
+        "is both 'stems' and 'leaves'):\n"
+        + options_text
+        + "\n\nIf this plant (or the part in question) is not actually eaten "
+        "by people - purely ornamental, or you are not reasonably confident "
+        'which part(s) apply - respond with null rather than guessing. '
+        'Respond with JSON only: {"resolved_value": ["<category>", ...] or '
+        'null, "reasoning": "<one sentence>"}.'
+    )
+    value_type = {
+        "type": ["array", "null"],
+        "items": {"enum": _EDIBLE_PARTS_VALUES},
+    }
+    try:
+        resolved, reasoning = _call_ollama(prompt, _response_schema(value_type))
+        if resolved is not None:
+            if not isinstance(resolved, list) or not resolved:
+                resolved, reasoning = (
+                    None,
+                    f"Ollama returned {resolved!r}, not a non-empty list - treated as unmatched",
+                )
+            elif any(v not in _EDIBLE_PARTS_VALUES for v in resolved):
+                resolved, reasoning = (
+                    None,
+                    f"Ollama returned {resolved!r}, contains a value outside the closed list - treated as unmatched",
+                )
+            else:
+                # Dedupe while preserving the canonical list's own order,
+                # not whatever order Ollama emitted them in.
+                resolved = [v for v in _EDIBLE_PARTS_VALUES if v in resolved]
+    except Exception as exc:  # noqa: BLE001 - never let an LLM hiccup abort the run
+        resolved, reasoning = None, f"Ollama call failed ({exc!r})"
+
+    _log_conflict(slug, "edible_parts (inferred)", [], resolved, reasoning)
+    return resolved, reasoning
+
+
 def _call_ollama(prompt: str, response_schema: dict) -> tuple:
     resp = httpx.post(
         f"{settings.ollama_host}/api/generate",

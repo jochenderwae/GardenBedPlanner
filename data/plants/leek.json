@@ -57,6 +57,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Leeks are typically grown as biennials in a home garden, as they are often sown in early spring and harvested the following year."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['soft bulbs', 'thick leaves'] to ['leaves', 'stems'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -90,8 +94,8 @@
   "growth_habit": "upright",
   "life_cycle": "biennial",
   "edible_parts": [
-    "soft bulbs",
-    "thick leaves"
+    "leaves",
+    "stems"
   ],
   "periods": [
     {

@@ -20,9 +20,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Water Caltrop is typically grown as an annual in temperate climates like Belgium because it completes its life cycle within one growing season."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds'] inferred by Ollama; reasoning: The Water Caltrop is primarily grown for its large, starchy seeds."
     }
   ],
   "genus": "Trapa",
   "family": "Trapaceae",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "seeds"
+  ]
 }

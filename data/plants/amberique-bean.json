@@ -28,7 +28,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Amberique-bean (Strophostyles helvola) is known for its trailing and sprawling growth habit."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds'] inferred by Ollama; reasoning: The Amberique-Bean is primarily grown for its edible seeds."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "edible_parts": [
+    "seeds"
+  ]
 }

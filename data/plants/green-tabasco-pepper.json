@@ -28,8 +28,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Green Tabasco peppers are typically grown as annuals in a temperate climate like Belgium because they are sensitive to frost and do not survive cold winters."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: Green Tabasco peppers are eaten as a fruit in the common-sense gardener grouping."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "fruit"
+  ]
 }

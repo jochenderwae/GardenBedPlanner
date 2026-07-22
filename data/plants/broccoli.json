@@ -93,6 +93,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Broccoli is typically grown as an annual in temperate climates like Belgium, harvested within a single growing season."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['heads'] to ['flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -116,7 +120,7 @@
   "life_cycle": "annual",
   "soil_type": "deep, rich soil",
   "edible_parts": [
-    "heads"
+    "flowers"
   ],
   "periods": [
     {

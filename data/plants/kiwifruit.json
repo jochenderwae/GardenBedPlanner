@@ -25,10 +25,17 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Kiwifruit is typically grown as a perennial in home gardens in Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The primary edible part of the Kiwifruit plant is its fruit."
     }
   ],
   "growth_habit": "climbing",
   "genus": "Actinidia",
   "family": "Actinidiaceae",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ]
 }

@@ -50,6 +50,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Potatoes are typically grown as annuals in temperate climates like Belgium."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -134,7 +138,7 @@
   "spread_cm": 37.5,
   "row_spacing_cm": 88,
   "edible_parts": [
-    "root"
+    "roots"
   ],
   "periods": [
     {

@@ -23,8 +23,18 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Mitsuba is typically grown as a perennial in temperate climates like Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'roots', 'stems', 'seeds'] inferred by Ollama; reasoning: The description mentions that the leaves, stems, roots, and seeds of Mitsuba are all edible."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "leaves",
+    "roots",
+    "stems",
+    "seeds"
+  ]
 }

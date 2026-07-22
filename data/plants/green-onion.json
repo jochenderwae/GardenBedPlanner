@@ -15,7 +15,7 @@
   "is_edible": true,
   "edible_parts": [
     "leaves",
-    "stem"
+    "stems"
   ],
   "data_sources": [
     {
@@ -38,6 +38,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: The plant is described as perennial and propagated by separating tufts."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['leaves', 'stem'] to ['leaves', 'stems'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [

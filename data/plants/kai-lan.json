@@ -25,8 +25,17 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Kai-lan is typically grown as an annual in temperate climates like Belgium because it is harvested within a single growing season."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'stems', 'flowers'] inferred by Ollama; reasoning: Kai-lan is primarily grown for its thick stems and glossy leaves, as well as its small flower buds."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "leaves",
+    "stems",
+    "flowers"
+  ]
 }

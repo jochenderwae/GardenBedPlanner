@@ -43,6 +43,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Celeriac is typically grown as a biennial in home gardens because it produces its edible root in the first year and flowers/seeds in the second year."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -76,6 +80,6 @@
   "growth_habit": "rosette",
   "life_cycle": "biennial",
   "edible_parts": [
-    "root"
+    "roots"
   ]
 }

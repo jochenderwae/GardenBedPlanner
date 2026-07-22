@@ -23,8 +23,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Anise hyssop is typically grown as a perennial in temperate climates like Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'flowers'] inferred by Ollama; reasoning: Anise hyssop is commonly used for its leaves and flowers in herbal teas and as seasonings."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "leaves",
+    "flowers"
+  ]
 }

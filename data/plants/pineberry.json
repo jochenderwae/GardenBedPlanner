@@ -25,6 +25,13 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The pineberry is a type of strawberry and the edible part is the fruit."
     }
+  ],
+  "edible_parts": [
+    "fruit"
   ]
 }

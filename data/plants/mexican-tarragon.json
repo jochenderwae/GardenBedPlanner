@@ -27,8 +27,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Mexican Tarragon is typically grown as a perennial in temperate climates like Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['leaves', 'flowers'] inferred by Ollama; reasoning: The leaves and flowers of Mexican Tarragon are both edible."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "leaves",
+    "flowers"
+  ]
 }

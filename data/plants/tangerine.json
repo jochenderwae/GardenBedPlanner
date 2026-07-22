@@ -33,7 +33,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Tangerine is described as a small evergreen citrus tree."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The primary edible part of a tangerine is its fruit."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "edible_parts": [
+    "fruit"
+  ]
 }

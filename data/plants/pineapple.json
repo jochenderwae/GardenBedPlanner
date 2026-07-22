@@ -14,7 +14,7 @@
   "soil_ph_max": 6.0,
   "is_edible": true,
   "edible_parts": [
-    "fruits"
+    "fruit"
   ],
   "data_sources": [
     {
@@ -32,6 +32,10 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='rosette' inferred by Ollama (Trefle growth_habit is bare 'Forb/herb' - ambiguous between upright/rosette/spreading, deferred to Ollama); reasoning: The pineapple plant has thick, waxy leaves that grow in a rosette pattern from the ground."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['fruits'] to ['fruit'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growth_habit": "rosette"

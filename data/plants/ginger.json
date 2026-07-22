@@ -12,7 +12,6 @@
   "genus": "Zingiber",
   "is_edible": true,
   "edible_parts": [
-    "root",
     "roots"
   ],
   "data_sources": [
@@ -40,6 +39,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Ginger is typically grown as an annual in temperate climates like Belgium because it requires warm temperatures and does not tolerate frost."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root', 'roots'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [

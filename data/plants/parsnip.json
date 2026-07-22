@@ -98,6 +98,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Parsnips are typically grown for their root in the first year and allowed to flower and set seed in the second year."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -173,7 +177,7 @@
   "life_cycle": "biennial",
   "soil_type": "deep, rich, well-drained soil with a loose texture",
   "edible_parts": [
-    "root"
+    "roots"
   ],
   "periods": [
     {

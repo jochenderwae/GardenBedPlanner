@@ -32,8 +32,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Carrots are typically grown as biennials in a home garden in Belgium, where they are cultivated for their edible roots in the first year and allowed to flower and produce seeds in the second year."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['roots'] inferred by Ollama; reasoning: Carrots are primarily grown for their edible roots."
     }
   ],
   "growth_habit": "rosette",
-  "life_cycle": "biennial"
+  "life_cycle": "biennial",
+  "edible_parts": [
+    "roots"
+  ]
 }

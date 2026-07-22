@@ -60,6 +60,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Horseradish is typically grown from root cuttings every year in a home garden setting because it becomes woody and less productive in the second year."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -120,7 +124,7 @@
   "needs_rain_cover": false,
   "soil_type": "deep, rich soil with plenty of moisture",
   "edible_parts": [
-    "root"
+    "roots"
   ],
   "periods": [
     {

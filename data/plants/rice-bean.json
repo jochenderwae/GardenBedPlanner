@@ -37,8 +37,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Rice Bean is described as a warm-season annual vine legume."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds'] inferred by Ollama; reasoning: The rice bean is primarily grown for its small edible beans, which are often dried and cooked as dal."
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "seeds"
+  ]
 }

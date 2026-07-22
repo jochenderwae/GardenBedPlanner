@@ -45,8 +45,11 @@
     "is_edible": { "type": ["boolean", "null"] },
     "edible_parts": {
       "type": ["array", "null"],
-      "items": { "type": "string" },
-      "description": "e.g. ['fruit', 'leaves']. Open-ended, not a closed enum."
+      "items": {
+        "type": "string",
+        "enum": ["fruit", "leaves", "roots", "tubers", "bulbs", "stems", "seeds", "flowers", "pods", "shoots"]
+      },
+      "description": "Closed list of edible-part categories (backlog #133), common-sense gardener groupings rather than strict botany - e.g. 'fruit' covers a strawberry even though it isn't one botanically. Values: 'fruit' (tomato, apple, squash, cucumber, pepper, berries in the everyday sense - the fleshy seed-bearing structure eaten as produce), 'leaves' (lettuce, spinach, kale, cabbage - cabbage's 'head' is a tight leaf cluster, not a flower structure), 'roots' (carrot, beet, radish - true roots), 'tubers' (potato, cassava - swollen underground stems/roots storing starch, kept distinct from 'roots' since a plant like cassava genuinely has both), 'bulbs' (onion, garlic, shallot - layered underground storage structures), 'stems' (celery, rhubarb, kohlrabi, cardoon's leaf-stalks, chard's midrib, leek's thickened stem base which is NOT a true bulb despite older sources sometimes calling it one), 'seeds' (sunflower, corn kernels, dry beans/peas eaten as the seed itself rather than in-pod), 'flowers' (broccoli and cauliflower's immature flower heads/curds, artichoke's flower bud, hops' cone - itself a cluster of flower bracts, courgette/squash blossoms, nasturtium), 'pods' (green beans, snap peas - eaten whole, pod and immature seed together, as opposed to 'seeds' which is the mature seed alone), 'shoots' (asparagus, sea kale, bamboo - a young stem/growth tip harvested before it matures into a stem proper). null/omitted = not populated (either genuinely not edible - see is_toxic/is_edible - or not yet categorized); an empty array is not used, omit the field instead."
     },
 
     "succession_enabled": { "type": ["boolean", "null"], "description": "Whether this crop can be re-sown at intervals through the season rather than once." },

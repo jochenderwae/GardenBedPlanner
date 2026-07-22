@@ -35,8 +35,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: In a temperate climate like Belgium, Runner Beans are typically grown as annuals because the ground freezes in winter."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['seeds', 'pods'] inferred by Ollama; reasoning: Runner Beans are primarily grown for their edible beans, which can be eaten as pods when immature and as seeds when mature."
     }
   ],
   "growth_habit": "climbing",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "seeds",
+    "pods"
+  ]
 }

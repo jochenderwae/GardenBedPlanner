@@ -12,7 +12,6 @@
   "genus": "Ipomoea",
   "is_edible": true,
   "edible_parts": [
-    "root",
     "roots",
     "tubers"
   ],
@@ -79,6 +78,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Sweet potatoes are typically grown as annuals in Belgium due to the climate's short growing season and frost."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root', 'roots', 'tubers'] to ['roots', 'tubers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [

@@ -99,6 +99,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Carrots are typically grown for their root in the first year and then allowed to flower and go to seed in the second year when grown for seed production."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -170,7 +174,7 @@
   "life_cycle": "biennial",
   "soil_type": "deep, warm, sandy soil or light loam",
   "edible_parts": [
-    "root"
+    "roots"
   ],
   "periods": [
     {

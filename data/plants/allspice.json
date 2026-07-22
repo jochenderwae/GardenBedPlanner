@@ -25,7 +25,15 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Tree' includes 'Tree'"
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit', 'leaves'] inferred by Ollama; reasoning: Allspice is primarily eaten as a dried unripe fruit and its leaves are also used in cooking."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "edible_parts": [
+    "fruit",
+    "leaves"
+  ]
 }

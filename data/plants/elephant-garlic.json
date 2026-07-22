@@ -33,8 +33,16 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Elephant Garlic is typically grown as a perennial in home gardens in Belgium, as it can survive multiple growing seasons and is often planted in the spring or autumn."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['bulbs', 'stems'] inferred by Ollama; reasoning: Elephant Garlic is primarily grown for its large garlic-like bulbs and the immature plant tops (scapes) are also edible."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "bulbs",
+    "stems"
+  ]
 }

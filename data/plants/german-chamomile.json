@@ -55,8 +55,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: German Chamomile is typically grown as an annual in home gardens in Belgium."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['flowers'] inferred by Ollama; reasoning: German Chamomile is primarily used for its flowers, which are often dried and used to make tea."
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "edible_parts": [
+    "flowers"
+  ]
 }

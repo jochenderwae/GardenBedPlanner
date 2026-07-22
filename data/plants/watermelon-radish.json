@@ -61,6 +61,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Watermelon radishes are typically grown for their edible roots in a single growing season and are not allowed to go to seed."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -156,7 +160,7 @@
   "needs_rain_cover": false,
   "soil_type": "rich, well-draining soil",
   "edible_parts": [
-    "root"
+    "roots"
   ],
   "periods": [
     {

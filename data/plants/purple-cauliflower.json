@@ -52,6 +52,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Purple cauliflower is typically grown as an annual in temperate climates like Belgium, as it does not tolerate hot weather and is harvested within one growing season."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['heads'] to ['flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -117,6 +121,6 @@
   "composting_needs": "well-decomposed stable manure",
   "soil_type": "rich, moist soil",
   "edible_parts": [
-    "heads"
+    "flowers"
   ]
 }

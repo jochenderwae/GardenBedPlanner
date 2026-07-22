@@ -34,8 +34,15 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Licorice (Glycyrrhiza glabra) is typically grown as a perennial in temperate climates like Belgium, as it can live for multiple years and is not usually replanted annually."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['roots'] inferred by Ollama; reasoning: Licorice is primarily grown for its root, which is used for flavoring and medicinal purposes."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "roots"
+  ]
 }

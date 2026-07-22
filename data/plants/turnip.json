@@ -56,6 +56,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Turnips are typically grown as a cool-weather crop in spring or fall and harvested within one growing season."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -116,7 +120,7 @@
   "life_cycle": "annual",
   "soil_type": "rich, moist soil",
   "edible_parts": [
-    "root"
+    "roots"
   ],
   "periods": [
     {

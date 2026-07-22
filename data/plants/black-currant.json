@@ -41,9 +41,16 @@
     {
       "attribution": "ollama-life-cycle-years-inference",
       "notes": "life_cycle_years=15 inferred by Ollama; reasoning: Black currant bushes typically start to decline in productivity after about 15 years."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The edible part of the black currant is its berries, which are considered a fruit in common-sense gardener groupings."
     }
   ],
   "growth_habit": "spreading",
   "life_cycle": "perennial",
-  "life_cycle_years": 15
+  "life_cycle_years": 15,
+  "edible_parts": [
+    "fruit"
+  ]
 }

@@ -84,6 +84,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Cauliflower is typically grown as an annual in temperate climates like Belgium, as it is harvested within one growing season."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['flowers'] inferred by Ollama; reasoning: The edible part of cauliflower is the immature flower head."
     }
   ],
   "growing_information": [
@@ -147,5 +151,8 @@
       "start_month": 3,
       "end_month": 4
     }
+  ],
+  "edible_parts": [
+    "flowers"
   ]
 }

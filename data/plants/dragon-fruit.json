@@ -22,7 +22,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='climbing' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Dragon Fruit (Hylocereus undatus) is described as a vine-like cactus that requires support to grow upward."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The edible part of the dragon fruit plant is its fleshy, seed-bearing structure."
     }
   ],
-  "growth_habit": "climbing"
+  "growth_habit": "climbing",
+  "edible_parts": [
+    "fruit"
+  ]
 }

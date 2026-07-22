@@ -12,9 +12,9 @@
   "soil_ph_max": 7.5,
   "is_edible": true,
   "edible_parts": [
-    "flowers",
     "leaves",
-    "root"
+    "roots",
+    "flowers"
   ],
   "data_sources": [
     {
@@ -46,6 +46,10 @@
     {
       "attribution": "ollama-life-cycle-years-inference",
       "notes": "life_cycle_years=1 inferred by Ollama; reasoning: The provided information suggests that chicory is typically grown as an annual under cultivation."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['flowers', 'leaves', 'root'] to ['leaves', 'roots', 'flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [

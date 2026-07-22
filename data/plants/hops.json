@@ -35,6 +35,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Hops are typically grown from root pieces and do not need replanting each year, indicating they are perennial in a home garden setting."
+    },
+    {
+      "attribution": "manual-edible-parts-normalization",
+      "notes": "edible_parts normalized from ['hops'] to ['flowers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
     }
   ],
   "growing_information": [
@@ -57,7 +61,7 @@
   "growth_habit": "climbing",
   "life_cycle": "perennial",
   "edible_parts": [
-    "hops"
+    "flowers"
   ],
   "periods": [
     {

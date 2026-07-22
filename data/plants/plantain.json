@@ -24,7 +24,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: Plantains grow from a long underground rhizome and have a central trunk with giant leaves wrapping around it."
+    },
+    {
+      "attribution": "ollama-edible-parts-inference",
+      "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The edible part of the plantain is its fruit."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "edible_parts": [
+    "fruit"
+  ]
 }
