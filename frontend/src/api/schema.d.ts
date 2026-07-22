@@ -804,6 +804,43 @@ export interface paths {
         patch: operations["update_seed_inventory_item_api_seed_inventory_items__item_id__patch"];
         trace?: never;
     };
+    "/api/irrigation-zones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Irrigation Zones */
+        get: operations["list_irrigation_zones_api_irrigation_zones_get"];
+        put?: never;
+        /** Create Irrigation Zone */
+        post: operations["create_irrigation_zone_api_irrigation_zones_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/irrigation-zones/{zone_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Irrigation Zone */
+        get: operations["get_irrigation_zone_api_irrigation_zones__zone_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Irrigation Zone */
+        delete: operations["delete_irrigation_zone_api_irrigation_zones__zone_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Irrigation Zone */
+        patch: operations["update_irrigation_zone_api_irrigation_zones__zone_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -967,6 +1004,8 @@ export interface components {
             height_cm?: number | null;
             /** Water Delivery Lph */
             water_delivery_lph?: number | null;
+            /** Zone Id */
+            zone_id?: number | null;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -980,6 +1019,8 @@ export interface components {
             height_cm?: number | null;
             /** Water Delivery Lph */
             water_delivery_lph?: number | null;
+            /** Zone Id */
+            zone_id?: number | null;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -993,6 +1034,8 @@ export interface components {
             height_cm?: number | null;
             /** Water Delivery Lph */
             water_delivery_lph?: number | null;
+            /** Zone Id */
+            zone_id?: number | null;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -1363,6 +1406,66 @@ export interface components {
          * @enum {string}
          */
         HarvestQuality: "poor" | "fair" | "good" | "excellent";
+        /**
+         * IrrigationZone
+         * @description Groups one or more BedEquipment rows (drip lines/emitters) that share
+         *     a water source/valve, so the garden's watering setup can be planned and
+         *     queried per zone (#36, a root CLAUDE.md core-scope item) rather than
+         *     equipment-by-equipment. A flat id/name lookup with a nullable zone_id FK
+         *     on BedEquipment (see that model), not a many-to-many join table - matches
+         *     the garden's actual scale (a handful of planters/beds/valves) and the
+         *     real-world constraint that one drip line/emitter run is fed by exactly
+         *     one valve, so a single FK is enough to express "in this zone or not".
+         */
+        IrrigationZone: {
+            /** Id */
+            id?: number | null;
+            /** Name */
+            name: string;
+            /** Notes */
+            notes?: string | null;
+        };
+        /** IrrigationZoneCreate */
+        IrrigationZoneCreate: {
+            /** Name */
+            name: string;
+            /** Notes */
+            notes?: string | null;
+        };
+        /**
+         * IrrigationZoneDetail
+         * @description GET /irrigation-zones/{zone_id} response: the zone plus its member
+         *     equipment and their combined water delivery - "the zone's total water
+         *     delivery can be queried/displayed" (#36's test criterion 3).
+         *     total_water_delivery_lph sums only member equipment that has a
+         *     water_delivery_lph set; equipment in the zone without one (e.g. a stake
+         *     grouped in for some other organizational reason) is left out of the sum
+         *     rather than treated as a 0 rate, since "no known rate" and "a known zero
+         *     rate" aren't the same thing. None (not 0) if no member equipment has a
+         *     rate set at all.
+         */
+        IrrigationZoneDetail: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Notes */
+            notes?: string | null;
+            /**
+             * Equipment
+             * @default []
+             */
+            equipment: components["schemas"]["BedEquipment"][];
+            /** Total Water Delivery Lph */
+            total_water_delivery_lph?: number | null;
+        };
+        /** IrrigationZoneUpdate */
+        IrrigationZoneUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
         /**
          * LifeCycle
          * @enum {string}
@@ -4621,6 +4724,154 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SeedInventoryItem"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_irrigation_zones_api_irrigation_zones_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationZone"][];
+                };
+            };
+        };
+    };
+    create_irrigation_zone_api_irrigation_zones_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationZoneCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationZone"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_irrigation_zone_api_irrigation_zones__zone_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                zone_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationZoneDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_irrigation_zone_api_irrigation_zones__zone_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                zone_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_irrigation_zone_api_irrigation_zones__zone_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                zone_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationZoneUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationZone"];
                 };
             };
             /** @description Validation Error */

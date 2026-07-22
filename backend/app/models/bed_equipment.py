@@ -21,3 +21,9 @@ class BedEquipment(SQLModel, table=True):
     geometry: dict | None = Field(default=None, sa_column=Column(JSONB, nullable=True))
     height_cm: float | None = None
     water_delivery_lph: float | None = None
+    # Drip irrigation zone grouping (#36) - which shared water source/valve
+    # this equipment belongs to, if any. Nullable: most equipment
+    # (trellises, stakes, cold frames) never belongs to a zone, and even
+    # drip lines/emitters can exist unzoned (placed but not yet wired into a
+    # planned watering circuit). See app/models/irrigation_zone.py.
+    zone_id: int | None = Field(default=None, foreign_key="irrigation_zone.id")
