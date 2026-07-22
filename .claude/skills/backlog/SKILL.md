@@ -45,7 +45,15 @@ Read-only. Lists every item at Status `Ready for Testing`, regardless of which r
 .claude\skills\backlog\scripts\set_status.ps1 -Number 42 -Status started
 ```
 
-Accepts `analyzed`/`assigned`/`started`/`ready-for-testing`/`tested` - **refuses `ready-to-start` and `verified` outright** (throws, doesn't silently no-op). `analyzed` is product-owner's own step, see `.claude/agents/product-owner.md`'s "Analyst workflow". Moving backward (e.g. testing found a real problem, back to `started`) is allowed - that's a legitimate correction, just say why in your report/PR/commit so the history isn't lost. If you have the narrow BACKLOG.md-era "append an outcome note" habit: the equivalent now is `gh issue comment <number> --body "..."` - comment on the issue, don't try to rewrite its body (the body is the original task description, not a running log).
+Accepts `new`/`analyzed`/`assigned`/`started`/`ready-for-testing`/`tested` - **refuses `ready-to-start` and `verified` outright** (throws, doesn't silently no-op). `analyzed` is product-owner's own step, see `.claude/agents/product-owner.md`'s "Analyst workflow". Moving backward is allowed - that's a legitimate correction, not a mistake to block, and it's deliberately safe: `new` and `analyzed` both sit below the user-only `ready-to-start` gate, so backing an item down (even all the way to `new`) never starts unauthorized work, it only re-opens something for review. Use `new` when a finding invalidates an issue's whole prior analysis (e.g. a `tested`/`verified` item turns out to still reproduce, or a `ready-for-testing` item's approach turns out fundamentally wrong) - `started`/`assigned` for a smaller correction that doesn't need full re-triage. Always say why in a `gh issue comment` so the history isn't lost - the equivalent of the old BACKLOG.md "append an outcome note" habit is `gh issue comment <number> --body "..."`, not rewriting the issue body (that's the original task description, not a running log).
+
+### "reopen a closed issue" (no dedicated script - use `gh` directly)
+
+```
+gh issue reopen <number> --repo jochenderwae/GardenBedPlanner --comment "<why>"
+```
+
+For an issue that was closed `verified` (or `not_planned`) but a later finding shows the problem still exists, or the "not planned" call no longer holds. Always include `--comment` explaining why - same reasoning as backing status down to `new`: this doesn't grant any agent the ability to start work on it (it reopens at whatever status it had, still gated by `ready-to-start` same as anything else), it just puts it back in front of the user/product-owner for a fresh look. Follow up with `set_status.ps1 -Status new` (or `analyzed`, if only a light re-check is needed) once reopened, since a just-reopened issue's status field is still whatever it was when closed.
 
 ### "re-assign" (args: issue number, new role, optionally old role to remove)
 
