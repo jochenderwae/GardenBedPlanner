@@ -44,7 +44,11 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
         )}
       >
         {snackbar && (
-          <div className="flex items-center gap-3 rounded-lg bg-foreground px-4 py-2.5 text-sm text-background shadow-lg">
+          <div
+            role="status"
+            aria-live="polite"
+            className="flex items-center gap-3 rounded-lg bg-foreground px-4 py-2.5 text-sm text-background shadow-lg"
+          >
             <span>{snackbar.message}</span>
             {snackbar.onUndo && (
               <Button
