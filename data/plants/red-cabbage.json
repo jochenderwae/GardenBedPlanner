@@ -187,5 +187,6 @@
       "start_month": 2,
       "end_month": 2
     }
-  ]
+  ],
+  "parent_plant_slug": "cabbage"
 }

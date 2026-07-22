@@ -139,5 +139,6 @@
   "row_spacing_cm": 88,
   "edible_parts": [
     "roots"
-  ]
+  ],
+  "parent_plant_slug": "potato"
 }

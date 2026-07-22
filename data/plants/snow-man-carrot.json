@@ -47,5 +47,6 @@
   "life_cycle": "biennial",
   "edible_parts": [
     "roots"
-  ]
+  ],
+  "parent_plant_slug": "carrot"
 }

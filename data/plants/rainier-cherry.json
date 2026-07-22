@@ -68,5 +68,6 @@
   "life_cycle": "perennial",
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "parent_plant_slug": "cherry"
 }

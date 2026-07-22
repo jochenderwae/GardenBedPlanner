@@ -163,5 +163,6 @@
       "start_month": 2,
       "end_month": 3
     }
-  ]
+  ],
+  "parent_plant_slug": "lettuce"
 }

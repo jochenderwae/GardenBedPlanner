@@ -173,5 +173,6 @@
       "start_month": 7,
       "end_month": 8
     }
-  ]
+  ],
+  "parent_plant_slug": "radish"
 }

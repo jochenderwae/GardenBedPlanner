@@ -135,5 +135,6 @@
   },
   "edible_parts": [
     "tubers"
-  ]
+  ],
+  "parent_plant_slug": "potato"
 }

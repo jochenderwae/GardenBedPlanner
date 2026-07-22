@@ -147,5 +147,6 @@
       "start_month": 5,
       "end_month": 6
     }
-  ]
+  ],
+  "parent_plant_slug": "tomato"
 }

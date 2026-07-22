@@ -15,6 +15,7 @@ from etl.config import PLANTS_OUT_DIR
 from etl.export import build_plant_json, validate, write_plant_json
 from etl.matching import MasterList
 from etl.merge import SourceRecord, merge_plant
+from etl.parent_plant_slug import backfill_all as backfill_parent_plant_slugs
 from etl.sources import (
     homesteader,
     openfarm,
@@ -188,6 +189,21 @@ def main() -> None:
 
     summary = state.progress_summary()
     print(f"Done. Progress: {summary}. Output in {PLANTS_OUT_DIR}")
+
+    # #111: recompute cultivar->species parent_plant_slug links over the
+    # complete, current data/plants/*.json set as the final step of every
+    # full run - this is what makes a newly-added cultivar (or a newly-
+    # added species record that a previously-unmatched cultivar can now
+    # link to) get linked automatically, without a separate manual backfill
+    # command. See parent_plant_slug.py's module docstring for the matching
+    # design and why it's safe to re-run unconditionally (never overwrites,
+    # only fills empty parent_plant_slug fields).
+    print("[parent_plant_slug] recomputing cultivar->species links...")
+    stats = backfill_parent_plant_slugs()
+    print(
+        f"[parent_plant_slug] {stats['updated']} plant(s) updated"
+        + (f", {stats['ambiguous']} ambiguous tie(s) logged to {stats['log']}" if stats["ambiguous"] else "")
+    )
 
 
 if __name__ == "__main__":

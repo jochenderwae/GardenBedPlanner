@@ -39,5 +39,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "parent_plant_slug": "basil"
 }

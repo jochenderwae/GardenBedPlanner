@@ -165,5 +165,6 @@
   "edible_parts": [
     "leaves",
     "bulbs"
-  ]
+  ],
+  "parent_plant_slug": "onion"
 }

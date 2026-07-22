@@ -147,5 +147,6 @@
   "row_spacing_cm": 87,
   "edible_parts": [
     "tubers"
-  ]
+  ],
+  "parent_plant_slug": "potato"
 }

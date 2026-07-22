@@ -123,5 +123,6 @@
       "start_month": 3,
       "end_month": 4
     }
-  ]
+  ],
+  "parent_plant_slug": "eggplant"
 }

@@ -65,5 +65,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "flowers"
-  ]
+  ],
+  "parent_plant_slug": "chamomile"
 }

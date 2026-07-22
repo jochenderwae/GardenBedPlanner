@@ -122,5 +122,6 @@
   "soil_type": "rich, moist soil",
   "edible_parts": [
     "flowers"
-  ]
+  ],
+  "parent_plant_slug": "cauliflower"
 }

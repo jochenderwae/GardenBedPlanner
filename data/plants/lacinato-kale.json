@@ -114,5 +114,6 @@
       "start_month": 9,
       "end_month": 12
     }
-  ]
+  ],
+  "parent_plant_slug": "kale"
 }

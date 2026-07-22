@@ -153,5 +153,6 @@
       "start_month": 4,
       "end_month": 4
     }
-  ]
+  ],
+  "parent_plant_slug": "carrot"
 }

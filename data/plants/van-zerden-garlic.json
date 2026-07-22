@@ -109,5 +109,6 @@
       "start_month": 8,
       "end_month": 9
     }
-  ]
+  ],
+  "parent_plant_slug": "garlic"
 }

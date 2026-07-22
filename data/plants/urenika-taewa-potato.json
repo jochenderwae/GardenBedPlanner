@@ -150,5 +150,6 @@
   },
   "edible_parts": [
     "roots"
-  ]
+  ],
+  "parent_plant_slug": "potato"
 }

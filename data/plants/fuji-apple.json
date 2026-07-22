@@ -125,5 +125,6 @@
       "start_month": 8,
       "end_month": 8
     }
-  ]
+  ],
+  "parent_plant_slug": "apple"
 }

@@ -124,5 +124,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "parent_plant_slug": "squash"
 }

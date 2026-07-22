@@ -106,5 +106,6 @@
       "start_month": 3,
       "end_month": 3
     }
-  ]
+  ],
+  "parent_plant_slug": "bell-pepper"
 }

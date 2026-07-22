@@ -142,5 +142,6 @@
       "start_month": 5,
       "end_month": 5
     }
-  ]
+  ],
+  "parent_plant_slug": "melon"
 }

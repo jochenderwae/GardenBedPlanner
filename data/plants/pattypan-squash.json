@@ -108,5 +108,6 @@
   "soil_type": "rich, well-drained soil",
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "parent_plant_slug": "squash"
 }

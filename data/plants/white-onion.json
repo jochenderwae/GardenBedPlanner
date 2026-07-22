@@ -162,5 +162,6 @@
       "start_month": 10,
       "end_month": 10
     }
-  ]
+  ],
+  "parent_plant_slug": "onion"
 }

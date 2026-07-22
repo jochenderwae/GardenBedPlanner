@@ -151,5 +151,6 @@
       "end_month": 5
     }
   ],
-  "water_needs_mm_per_week": 38.1
+  "water_needs_mm_per_week": 38.1,
+  "parent_plant_slug": "honeydew-melon"
 }

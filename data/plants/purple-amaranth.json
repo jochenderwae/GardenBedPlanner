@@ -43,5 +43,6 @@
   "edible_parts": [
     "leaves",
     "seeds"
-  ]
+  ],
+  "parent_plant_slug": "amaranth"
 }

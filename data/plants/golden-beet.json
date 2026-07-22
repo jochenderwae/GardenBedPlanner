@@ -155,5 +155,6 @@
   "edible_parts": [
     "leaves",
     "roots"
-  ]
+  ],
+  "parent_plant_slug": "beet"
 }

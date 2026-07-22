@@ -36,5 +36,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "roots"
-  ]
+  ],
+  "parent_plant_slug": "daikon"
 }

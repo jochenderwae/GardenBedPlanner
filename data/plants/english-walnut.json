@@ -55,5 +55,6 @@
   "life_cycle": "perennial",
   "edible_parts": [
     "seeds"
-  ]
+  ],
+  "parent_plant_slug": "walnut"
 }

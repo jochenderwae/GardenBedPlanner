@@ -33,6 +33,12 @@
     "family": { "type": ["string", "null"], "description": "Taxonomic family, e.g. 'Solanaceae'. Used for rotation/succession-family logic." },
     "genus": { "type": ["string", "null"], "description": "Taxonomic genus, e.g. 'Solanum'. Kept separate from botanical_name so rotation queries don't have to parse it back out." },
 
+    "parent_plant_slug": {
+      "type": ["string", "null"],
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "description": "References another plant's slug (must resolve at import time, not enforceable in JSON Schema alone, and must not equal this plant's own slug) - the species/base plant this record is a named cultivar/variety of, e.g. 'brandywine-tomato'.parent_plant_slug = 'tomato'. Every cultivar stays its own full plant record (see data/etl/CLAUDE.md's cultivar-merge fix) - this is a hierarchy layered on top, not a merge. null = not (yet) confidently linked - either this plant isn't a cultivar of anything already in the database, or the link couldn't be determined without guessing (see data/etl/parent_plant_slug.py and data/parent_plant_slug_ambiguous.jsonl)."
+    },
+
     "min_temperature_c": { "type": ["number", "null"], "description": "Natural habitat temperature range, not a US hardiness zone." },
     "max_temperature_c": { "type": ["number", "null"] },
 
