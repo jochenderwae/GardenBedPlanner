@@ -4,7 +4,6 @@
   "botanical_name": "Eriophyllum confertiflorum",
   "row_spacing_cm": 53.3,
   "sun_level": "full_sun",
-  "water_needs": "~0.25 in/week",
   "family": "Asteraceae",
   "genus": "Eriophyllum",
   "days_to_maturity": 120,
@@ -66,5 +65,6 @@
       "notes": "growth_habit='spreading' - Trefle growth_habit='Shrub, Subshrub' includes Shrub/Subshrub"
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "water_needs_mm_per_week": 6.3
 }

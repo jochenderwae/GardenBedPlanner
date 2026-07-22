@@ -4,7 +4,6 @@
   "botanical_name": "Cucurbita melopepo",
   "row_spacing_cm": 106.7,
   "sun_level": "full_sun",
-  "water_needs": "~1.5 in/week",
   "family": "Cucurbitaceae",
   "genus": "Cucurbita",
   "days_to_maturity": 52,
@@ -70,5 +69,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "water_needs_mm_per_week": 38.1
 }

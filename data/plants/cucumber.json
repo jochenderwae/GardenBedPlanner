@@ -4,7 +4,6 @@
   "botanical_name": "Ecballium elaterium",
   "row_spacing_cm": 106.7,
   "sun_level": "full_sun",
-  "water_needs": "~2 in/week",
   "family": "Cucurbitaceae",
   "genus": "Ecballium",
   "days_to_maturity": 65,
@@ -176,5 +175,6 @@
       "start_month": 3,
       "end_month": 4
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 50.8
 }

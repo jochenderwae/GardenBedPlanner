@@ -8,7 +8,6 @@
   "row_spacing_cm": 60,
   "height_cm": 90,
   "sun_level": "full_sun",
-  "water_needs": "~0.25 in/week",
   "family": "Lamiaceae",
   "genus": "Rosmarinus",
   "days_to_maturity": 100,
@@ -95,5 +94,6 @@
   "life_cycle": "perennial",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "water_needs_mm_per_week": 6.3
 }

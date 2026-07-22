@@ -4,7 +4,6 @@
   "botanical_name": "Physalis longifolia",
   "row_spacing_cm": 76.2,
   "sun_level": "full_sun",
-  "water_needs": "~1.0 in/week",
   "family": "Solanaceae",
   "genus": "Physalis",
   "days_to_maturity": 70,
@@ -63,5 +62,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "water_needs_mm_per_week": 25.4
 }

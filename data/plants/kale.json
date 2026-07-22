@@ -8,7 +8,6 @@
   "row_spacing_cm": 45,
   "height_cm": 75,
   "sun_level": "full_sun",
-  "water_needs": "~1 in/week",
   "family": "Brassicaceae",
   "genus": "Brassica",
   "days_to_maturity": 60,
@@ -156,5 +155,6 @@
       "start_month": 1,
       "end_month": 2
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 25.4
 }

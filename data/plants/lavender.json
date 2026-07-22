@@ -4,7 +4,6 @@
   "botanical_name": "Lavandula stoechas",
   "row_spacing_cm": 76.2,
   "sun_level": "full_sun",
-  "water_needs": "~0.25 in/week",
   "family": "Lamiaceae",
   "genus": "Lavandula",
   "days_to_maturity": 100,
@@ -65,5 +64,6 @@
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "water_needs_mm_per_week": 6.3
 }

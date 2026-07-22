@@ -8,7 +8,6 @@
   "row_spacing_cm": 240,
   "height_cm": 240,
   "sun_level": "full_sun",
-  "water_needs": "~1.0 in/week",
   "family": "Ericaceae",
   "genus": "Vaccinium",
   "days_to_maturity": 365,
@@ -75,5 +74,6 @@
   "life_cycle_years": 15,
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "water_needs_mm_per_week": 25.4
 }

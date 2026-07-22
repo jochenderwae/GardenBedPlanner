@@ -7,7 +7,6 @@
   "spread_cm": 375,
   "height_cm": 300,
   "sun_level": "full_sun",
-  "water_needs": "~2.0 in/week",
   "family": "Rosaceae",
   "genus": "Malus",
   "days_to_maturity": 1000,
@@ -162,5 +161,6 @@
       "start_month": 1,
       "end_month": 8
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 50.8
 }

@@ -4,7 +4,6 @@
   "botanical_name": "Ocimum tenuiflorum",
   "row_spacing_cm": 38.1,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Lamiaceae",
   "genus": "Ocimum",
   "days_to_maturity": 65,
@@ -60,5 +59,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

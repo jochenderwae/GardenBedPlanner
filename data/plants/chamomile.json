@@ -4,7 +4,6 @@
   "botanical_name": "Matricaria chamomilla",
   "row_spacing_cm": 25.4,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Asteraceae",
   "genus": "Matricaria",
   "days_to_maturity": 60,
@@ -77,5 +76,6 @@
   "edible_parts": [
     "leaves",
     "flowers"
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

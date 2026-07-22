@@ -8,7 +8,6 @@
   "row_spacing_cm": 35,
   "height_cm": 60,
   "sun_level": "half_sun",
-  "water_needs": "~0.75 in/week",
   "family": "Lamiaceae",
   "genus": "Mentha",
   "days_to_maturity": 90,
@@ -77,5 +76,6 @@
   "life_cycle": "perennial",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "water_needs_mm_per_week": 19.0
 }

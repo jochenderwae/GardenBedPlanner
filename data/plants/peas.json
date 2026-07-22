@@ -7,7 +7,6 @@
   "row_spacing_cm": 30,
   "height_cm": 60,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Fabaceae",
   "genus": "Pisum",
   "days_to_maturity": 65,
@@ -221,5 +220,6 @@
   "soil_type": "well-drained, fertile soil",
   "edible_parts": [
     "seeds"
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

@@ -4,7 +4,6 @@
   "botanical_name": "Echinacea angustifolia",
   "row_spacing_cm": 53.3,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Asteraceae",
   "genus": "Echinacea",
   "days_to_maturity": 120,
@@ -42,5 +41,6 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "water_needs_mm_per_week": 12.7
 }

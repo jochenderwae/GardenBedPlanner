@@ -8,7 +8,6 @@
   "row_spacing_cm": 33,
   "height_cm": 20,
   "sun_level": "half_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Asteraceae",
   "genus": "Lactuca",
   "days_to_maturity": 50,
@@ -223,5 +222,6 @@
       "start_month": 2,
       "end_month": 3
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

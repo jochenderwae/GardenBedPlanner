@@ -8,7 +8,6 @@
   "row_spacing_cm": 25,
   "height_cm": 60,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Asteraceae",
   "genus": "Stevia",
   "days_to_maturity": 100,
@@ -55,5 +54,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

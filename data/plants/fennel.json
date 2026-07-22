@@ -8,7 +8,6 @@
   "row_spacing_cm": 38.1,
   "height_cm": 60,
   "sun_level": "full_sun",
-  "water_needs": "~0.75 in/week",
   "family": "Apiaceae",
   "genus": "Foeniculum",
   "days_to_maturity": 90,
@@ -100,5 +99,6 @@
   "edible_parts": [
     "bulbs",
     "stems"
-  ]
+  ],
+  "water_needs_mm_per_week": 19.0
 }

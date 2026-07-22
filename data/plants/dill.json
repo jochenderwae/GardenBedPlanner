@@ -8,7 +8,6 @@
   "row_spacing_cm": 27.9,
   "height_cm": 90,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Apiaceae",
   "genus": "Anethum",
   "days_to_maturity": 55,
@@ -157,5 +156,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "seeds"
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

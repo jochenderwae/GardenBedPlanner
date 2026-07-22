@@ -8,7 +8,6 @@
   "row_spacing_cm": 45.7,
   "height_cm": 100,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Boraginaceae",
   "genus": "Borago",
   "days_to_maturity": 55,
@@ -93,5 +92,6 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "water_needs_mm_per_week": 12.7
 }

@@ -4,7 +4,6 @@
   "botanical_name": "Dischidia ovata",
   "row_spacing_cm": 106.7,
   "sun_level": "full_sun",
-  "water_needs": "~1.5 in/week",
   "family": "Apocynaceae",
   "genus": "Dischidia",
   "days_to_maturity": 85,
@@ -127,5 +126,6 @@
       "start_month": 5,
       "end_month": 5
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 38.1
 }

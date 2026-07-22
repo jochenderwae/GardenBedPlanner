@@ -4,7 +4,6 @@
   "botanical_name": "Symphytum orientale",
   "row_spacing_cm": 91.4,
   "sun_level": "full_sun",
-  "water_needs": "~0.75 in/week",
   "family": "Boraginaceae",
   "genus": "Symphytum",
   "days_to_maturity": 60,
@@ -57,5 +56,6 @@
   "life_cycle": "perennial",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "water_needs_mm_per_week": 19.0
 }

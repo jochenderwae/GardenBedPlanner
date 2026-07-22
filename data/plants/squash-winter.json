@@ -4,7 +4,6 @@
   "botanical_name": "Cucurbita maxima",
   "row_spacing_cm": 152.4,
   "sun_level": "full_sun",
-  "water_needs": "~1.5 in/week",
   "family": "Cucurbitaceae",
   "genus": "Cucurbita",
   "days_to_maturity": 85,
@@ -70,5 +69,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "water_needs_mm_per_week": 38.1
 }

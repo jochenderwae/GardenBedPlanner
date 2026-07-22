@@ -8,7 +8,6 @@
   "row_spacing_cm": 38.1,
   "height_cm": 25,
   "sun_level": "full_sun",
-  "water_needs": "~0.25 in/week",
   "family": "Lamiaceae",
   "genus": "Thymus",
   "days_to_maturity": 90,
@@ -130,5 +129,6 @@
   "life_cycle_years": 3,
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "water_needs_mm_per_week": 6.3
 }

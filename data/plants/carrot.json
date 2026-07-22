@@ -8,7 +8,6 @@
   "row_spacing_cm": 47,
   "height_cm": 25,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Apiaceae",
   "genus": "Daucus",
   "days_to_maturity": 70,
@@ -182,5 +181,6 @@
       "start_month": 1,
       "end_month": 6
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

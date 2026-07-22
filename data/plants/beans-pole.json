@@ -3,7 +3,6 @@
   "common_name": "Pole Beans",
   "row_spacing_cm": 17.8,
   "sun_level": "full_sun",
-  "water_needs": "~1 in/week",
   "days_to_maturity": 65,
   "succession_enabled": false,
   "succession_max_sowings": 1,
@@ -85,5 +84,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "pods"
-  ]
+  ],
+  "water_needs_mm_per_week": 25.4
 }

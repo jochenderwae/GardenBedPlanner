@@ -8,7 +8,6 @@
   "row_spacing_cm": 12.7,
   "height_cm": 15,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Amaranthaceae",
   "genus": "Spinacia",
   "days_to_maturity": 45,
@@ -175,5 +174,6 @@
       "start_month": 8,
       "end_month": 9
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

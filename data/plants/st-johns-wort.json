@@ -8,7 +8,6 @@
   "row_spacing_cm": 90,
   "height_cm": 100,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Hypericaceae",
   "genus": "Hypericum",
   "days_to_maturity": 100,
@@ -65,5 +64,6 @@
     }
   ],
   "growth_habit": "upright",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "water_needs_mm_per_week": 12.7
 }

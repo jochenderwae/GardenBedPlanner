@@ -28,7 +28,7 @@
     "fertilizer_needs": { "type": ["string", "null"] },
     "needs_wind_cover": { "type": ["boolean", "null"] },
     "needs_rain_cover": { "type": ["boolean", "null"] },
-    "water_needs": { "type": ["string", "null"] },
+    "water_needs_mm_per_week": { "type": ["number", "null"], "description": "Depth-rate, e.g. 25.4 for '~1 in/week'. Matches BedEquipment.water_delivery_lph's L/hour convention - later irrigation planning multiplies this by a bed's area to get an actual volume target (see docs/schema.md)." },
 
     "family": { "type": ["string", "null"], "description": "Taxonomic family, e.g. 'Solanaceae'. Used for rotation/succession-family logic." },
     "genus": { "type": ["string", "null"], "description": "Taxonomic genus, e.g. 'Solanum'. Kept separate from botanical_name so rotation queries don't have to parse it back out." },

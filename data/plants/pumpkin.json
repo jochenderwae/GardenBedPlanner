@@ -6,7 +6,6 @@
   "sowing_method": "Direct seed indoors (and transplant outside after seedlings are hardened off) or outdoors",
   "row_spacing_cm": 152.4,
   "sun_level": "full_sun",
-  "water_needs": "~1.5 in/week",
   "family": "Cucurbitaceae",
   "genus": "Cucurbita",
   "days_to_maturity": 105,
@@ -172,5 +171,6 @@
   "spread_cm": 609.6,
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "water_needs_mm_per_week": 38.1
 }

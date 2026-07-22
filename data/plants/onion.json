@@ -8,7 +8,6 @@
   "row_spacing_cm": 30,
   "height_cm": 1,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Amaryllidaceae",
   "genus": "Allium",
   "days_to_maturity": 100,
@@ -230,5 +229,6 @@
       "start_month": 8,
       "end_month": 10
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

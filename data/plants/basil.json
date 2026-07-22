@@ -6,7 +6,6 @@
   "row_spacing_cm": 45,
   "height_cm": 60,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Lamiaceae",
   "genus": "Ocimum",
   "days_to_maturity": 60,
@@ -121,5 +120,6 @@
   "life_cycle": "annual",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

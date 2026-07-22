@@ -8,7 +8,6 @@
   "row_spacing_cm": 100,
   "height_cm": 175,
   "sun_level": "full_sun",
-  "water_needs": "~1.5 in/week",
   "family": "Rosaceae",
   "genus": "Rubus",
   "days_to_maturity": 365,
@@ -118,5 +117,6 @@
       "start_month": 9,
       "end_month": 10
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 38.1
 }

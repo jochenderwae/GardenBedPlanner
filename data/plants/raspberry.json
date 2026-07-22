@@ -4,7 +4,6 @@
   "botanical_name": "Rubus idaeus",
   "row_spacing_cm": 76.2,
   "sun_level": "full_sun",
-  "water_needs": "~1.0 in/week",
   "family": "Rosaceae",
   "genus": "Rubus",
   "days_to_maturity": 365,
@@ -139,5 +138,6 @@
       "start_month": 3,
       "end_month": 3
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 25.4
 }

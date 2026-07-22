@@ -8,7 +8,6 @@
   "row_spacing_cm": 38.1,
   "height_cm": 30,
   "sun_level": "full_sun",
-  "water_needs": "~1.5 in/week",
   "family": "Rosaceae",
   "genus": "Fragaria",
   "days_to_maturity": 60,
@@ -190,5 +189,6 @@
       "start_month": 3,
       "end_month": 3
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 38.1
 }

@@ -8,7 +8,6 @@
   "row_spacing_cm": 120,
   "height_cm": 40,
   "sun_level": "full_sun",
-  "water_needs": "~1.5 in/week",
   "family": "Cucurbitaceae",
   "genus": "Cucumis",
   "days_to_maturity": 80,
@@ -116,5 +115,6 @@
       "start_month": 8,
       "end_month": 8
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 38.1
 }

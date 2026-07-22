@@ -8,7 +8,6 @@
   "row_spacing_cm": 10,
   "height_cm": 25,
   "sun_level": "full_sun",
-  "water_needs": "~0.5 in/week",
   "family": "Amaranthaceae",
   "genus": "Beta",
   "days_to_maturity": 58,
@@ -197,5 +196,6 @@
       "start_month": 12,
       "end_month": 12
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 12.7
 }

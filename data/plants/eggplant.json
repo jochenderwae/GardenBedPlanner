@@ -8,7 +8,6 @@
   "row_spacing_cm": 53.3,
   "height_cm": 50,
   "sun_level": "full_sun",
-  "water_needs": "~1.0 in/week",
   "family": "Solanaceae",
   "genus": "Solanum",
   "days_to_maturity": 80,
@@ -150,5 +149,6 @@
       "start_month": 3,
       "end_month": 5
     }
-  ]
+  ],
+  "water_needs_mm_per_week": 25.4
 }

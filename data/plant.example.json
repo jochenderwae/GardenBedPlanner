@@ -13,7 +13,7 @@
   "fertilizer_needs": "Balanced fertilizer at planting, potassium-rich feed once fruiting starts",
   "needs_wind_cover": false,
   "needs_rain_cover": true,
-  "water_needs": "Consistent moisture; avoid wetting foliage",
+  "water_needs_mm_per_week": 25.4,
   "family": "Solanaceae",
   "genus": "Solanum",
   "min_temperature_c": 10,

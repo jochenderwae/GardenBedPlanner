@@ -4,7 +4,6 @@
   "botanical_name": "Macroptilium gibbosifolium",
   "row_spacing_cm": 12.7,
   "sun_level": "full_sun",
-  "water_needs": "~1 in/week",
   "family": "Fabaceae",
   "genus": "Macroptilium",
   "days_to_maturity": 55,
@@ -174,5 +173,6 @@
   "spread_cm": 7.6,
   "edible_parts": [
     "seeds"
-  ]
+  ],
+  "water_needs_mm_per_week": 25.4
 }
