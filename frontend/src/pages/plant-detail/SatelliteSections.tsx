@@ -621,7 +621,7 @@ export function GrowingInfoSection({ slug: _slug, items }: { slug: string; items
 
       {consolidated ? (
         <div className="flex flex-col gap-1 rounded-md border p-2 text-sm">
-          <p className="text-left whitespace-pre-wrap">{consolidated.text}</p>
+          <p className="whitespace-pre-wrap">{consolidated.text}</p>
           <p className="text-xs text-muted-foreground">
             This text is an AI summary.
             {sources.length > 0 && (
@@ -644,7 +644,7 @@ export function GrowingInfoSection({ slug: _slug, items }: { slug: string; items
         // original text instead of a plain label.
         sources.map((item) => (
           <div key={item.id} className="flex flex-col gap-1 rounded-md border p-2 text-sm">
-            <p className="text-left whitespace-pre-wrap">{item.text}</p>
+            <p className="whitespace-pre-wrap">{item.text}</p>
             {item.attribution && (
               <p className="text-xs text-muted-foreground">
                 {item.source_url ? (
@@ -664,7 +664,7 @@ export function GrowingInfoSection({ slug: _slug, items }: { slug: string; items
         <AlertDialog open={sourcesOpen} onOpenChange={setSourcesOpen}>
           <AlertDialogPopup className="max-w-lg">
             <AlertDialogTitle>Sources</AlertDialogTitle>
-            <div className="mt-2 flex max-h-96 flex-col gap-3 overflow-y-auto text-left text-sm">
+            <div className="mt-2 flex max-h-96 flex-col gap-3 overflow-y-auto text-sm">
               {sources.map((item) => (
                 <div key={item.id} className="border-t pt-2 first:border-t-0 first:pt-0">
                   <p className="whitespace-pre-wrap">{item.text}</p>

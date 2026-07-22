@@ -42,6 +42,11 @@ export function PlantSearchList({ plants, onPick, autoFocus = true }: PlantSearc
           <button
             key={plant.slug}
             type="button"
+            // text-left here isn't canceling out index.css's old #root
+            // text-align:center scaffold rule (see #141) - browsers center
+            // <button> text by default regardless of ancestor alignment, so
+            // this is load-bearing on its own and stays even after that
+            // rule's removal.
             className="flex w-full flex-col rounded px-2 py-1 text-left text-sm hover:bg-accent"
             onClick={() => onPick(plant.slug)}
           >

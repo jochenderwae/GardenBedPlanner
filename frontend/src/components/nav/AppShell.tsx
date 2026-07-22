@@ -5,7 +5,7 @@ import { SnackbarProvider } from "@/components/Snackbar";
 export function AppShell() {
   return (
     <SnackbarProvider>
-      <div className="flex h-svh flex-col text-left">
+      <div className="flex h-svh flex-col">
         <header className="flex items-center gap-2 border-b px-3 py-2">
           <NavDrawer />
           <span className="text-sm font-medium">GardenBedPlanner</span>

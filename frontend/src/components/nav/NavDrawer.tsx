@@ -28,7 +28,7 @@ export function NavDrawer() {
       />
       <Dialog.Portal>
         <Dialog.Backdrop className="fixed inset-0 z-40 bg-foreground/20 transition-opacity data-[ending-style]:opacity-0 data-[starting-style]:opacity-0" />
-        <Dialog.Popup className="fixed inset-y-0 left-0 z-50 flex h-full w-72 max-w-[85vw] flex-col gap-1 bg-background p-4 text-left shadow-xl outline-none transition-transform data-[ending-style]:-translate-x-full data-[starting-style]:-translate-x-full">
+        <Dialog.Popup className="fixed inset-y-0 left-0 z-50 flex h-full w-72 max-w-[85vw] flex-col gap-1 bg-background p-4 shadow-xl outline-none transition-transform data-[ending-style]:-translate-x-full data-[starting-style]:-translate-x-full">
           <Dialog.Title className="mb-3 px-2 text-sm font-medium text-muted-foreground">
             GardenBedPlanner
           </Dialog.Title>

@@ -76,7 +76,7 @@ export function PlantDetail() {
   const { saveField, savePatch } = usePlantAutosave(slug);
 
   return (
-    <div className="mx-auto max-w-3xl p-6 text-left">
+    <div className="mx-auto max-w-3xl p-6">
       <div className="mb-4 flex items-center gap-3">
         <Link to="/plants" className={buttonVariants({ variant: "outline", size: "sm" })}>
           Back

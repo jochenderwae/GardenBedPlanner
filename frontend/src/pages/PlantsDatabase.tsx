@@ -190,7 +190,7 @@ export function PlantsDatabase() {
   }
 
   return (
-    <div className="mx-auto max-w-4xl p-6 text-left">
+    <div className="mx-auto max-w-4xl p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h1 className="text-xl font-medium">Plants database</h1>
         <Button size="sm" onClick={() => setShowAddForm(true)}>

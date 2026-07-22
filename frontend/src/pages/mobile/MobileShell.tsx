@@ -20,7 +20,7 @@ const MOBILE_NAV_ITEMS = [
 export function MobileShell() {
   return (
     <SnackbarProvider>
-      <div className="flex h-svh flex-col text-left">
+      <div className="flex h-svh flex-col">
         <header className="border-b px-4 py-3">
           <span className="text-sm font-medium">GardenBedPlanner</span>
         </header>
