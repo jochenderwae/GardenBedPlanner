@@ -1,7 +1,7 @@
 import type { RefObject } from "react";
 import { Maximize, Plus, Redo2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { RadioToggleGroup, TabToggleGroup } from "@/components/ui/toggle-group";
 import type { Plant } from "@/api/client";
 import type { PlacementMode } from "./PlantPlacementLayer";
 
@@ -23,12 +23,22 @@ const TAB_LABELS: Record<PlacementTab, string> = {
   plants: "Plants",
   equipment: "Equipment",
 };
+const TAB_OPTIONS = (Object.keys(TAB_LABELS) as PlacementTab[]).map((value) => ({ value, label: TAB_LABELS[value] }));
 
 const PLACEMENT_MODE_LABELS: Record<PlacementMode, string> = {
   individual: "Point",
   row: "Row",
   field: "Area",
 };
+const PLACEMENT_MODE_OPTIONS = (Object.keys(PLACEMENT_MODE_LABELS) as PlacementMode[]).map((value) => ({
+  value,
+  label: PLACEMENT_MODE_LABELS[value],
+}));
+
+const VIEW_MODE_OPTIONS: { value: ViewMode; label: string }[] = [
+  { value: "mine", label: "Edit" },
+  { value: "example", label: "View" },
+];
 
 interface ToolbarProps {
   mode: ViewMode;
@@ -93,45 +103,8 @@ export function Toolbar({
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-4">
-          <div className="flex rounded-md border p-0.5">
-            <button
-              type="button"
-              className={cn(
-                "rounded px-2.5 py-1 text-xs font-medium",
-                mode === "mine" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-              )}
-              onClick={() => onModeChange("mine")}
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              className={cn(
-                "rounded px-2.5 py-1 text-xs font-medium",
-                mode === "example" ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-              )}
-              onClick={() => onModeChange("example")}
-            >
-              View
-            </button>
-          </div>
-          {mode === "mine" && (
-            <div className="flex rounded-md border p-0.5">
-              {(Object.keys(TAB_LABELS) as PlacementTab[]).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  className={cn(
-                    "rounded px-2.5 py-1 text-xs font-medium",
-                    tab === t ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-                  )}
-                  onClick={() => onTabChange(t)}
-                >
-                  {TAB_LABELS[t]}
-                </button>
-              ))}
-            </div>
-          )}
+          <RadioToggleGroup ariaLabel="View mode" value={mode} onChange={onModeChange} options={VIEW_MODE_OPTIONS} />
+          {mode === "mine" && <TabToggleGroup value={tab} onChange={onTabChange} options={TAB_OPTIONS} />}
         </div>
         <div className="flex items-center gap-2">
           {mode === "mine" && (
@@ -179,21 +152,12 @@ export function Toolbar({
             </div>
             {armedPlant && (
               <>
-                <div className="flex rounded-md border p-0.5">
-                  {(Object.keys(PLACEMENT_MODE_LABELS) as PlacementMode[]).map((m) => (
-                    <button
-                      key={m}
-                      type="button"
-                      className={cn(
-                        "rounded px-2.5 py-1 text-xs font-medium",
-                        placementMode === m ? "bg-primary text-primary-foreground" : "text-muted-foreground",
-                      )}
-                      onClick={() => onPlacementModeChange(m)}
-                    >
-                      {PLACEMENT_MODE_LABELS[m]}
-                    </button>
-                  ))}
-                </div>
+                <RadioToggleGroup
+                  ariaLabel="Placement mode"
+                  value={placementMode}
+                  onChange={onPlacementModeChange}
+                  options={PLACEMENT_MODE_OPTIONS}
+                />
                 <Button size="sm" variant="ghost" onClick={onClearArmedPlant}>
                   Clear
                 </Button>
