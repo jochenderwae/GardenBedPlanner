@@ -92,14 +92,29 @@ export function DataSourcesSection({ slug, items }: { slug: string; items: Plant
   const { add, remove } = useSatelliteMutations<PlantDataSource>(slug, "data_sources", dataSourceApi);
   const [draft, setDraft] = useState({ source_url: "", attribution: "", notes: "" });
 
+  // ollama-*-inference entries are this project's naming convention for a
+  // field's internal AI-inference provenance (see data/etl/
+  // populate_growth_habit.py / populate_life_cycle.py), not a real external
+  // source a user would want to see or click through to - hidden from the
+  // displayed list only. `items` (and this section's own remove/undo
+  // plumbing below) still operates on the full, untouched list; the
+  // underlying data stays intact for anyone reading the raw JSON/DB.
+  const visibleItems = items.filter((item) => !item.attribution?.startsWith("ollama-"));
+
   return (
     <section className={sectionClass}>
       <h2 className="text-sm font-semibold" title="Where this plant's data came from - for attribution and provenance.">
         Data sources
       </h2>
-      {items.map((item) => (
+      {visibleItems.map((item) => (
         <div key={item.id} className={rowClass}>
-          <span className="flex-1 truncate">{item.attribution || item.source_url || "(untitled)"}</span>
+          {item.source_url ? (
+            <a href={item.source_url} target="_blank" rel="noopener noreferrer" className="flex-1 truncate underline">
+              {item.attribution || item.source_url}
+            </a>
+          ) : (
+            <span className="flex-1 truncate">{item.attribution || "(untitled)"}</span>
+          )}
           <Button
             variant="ghost"
             size="icon-sm"
