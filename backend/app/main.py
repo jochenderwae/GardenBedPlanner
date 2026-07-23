@@ -21,7 +21,7 @@ from app.api.routes import (
     rotation,
     seed_inventory_items,
 )
-from app.core.config import settings
+from app.core.config import Settings, settings
 from app.core.scheduler import register_jobs, scheduler
 
 
@@ -33,8 +33,20 @@ async def lifespan(app: FastAPI):
     scheduler.shutdown()
 
 
-def create_app() -> FastAPI:
-    app = FastAPI(title="GardenBedPlanner API", lifespan=lifespan)
+def create_app(app_settings: Settings | None = None) -> FastAPI:
+    app_settings = app_settings or settings
+    # Interactive docs are only ever meant to be reachable on the LAN today
+    # (no auth in front of the backend's own directly-bound port). Disable
+    # them outright when ENVIRONMENT=production, as defense in depth for
+    # internet-facing deployments - see #176.
+    is_production = app_settings.environment == "production"
+    app = FastAPI(
+        title="GardenBedPlanner API",
+        lifespan=lifespan,
+        docs_url=None if is_production else "/docs",
+        redoc_url=None if is_production else "/redoc",
+        openapi_url=None if is_production else "/openapi.json",
+    )
 
     app.add_middleware(
         CORSMiddleware,
