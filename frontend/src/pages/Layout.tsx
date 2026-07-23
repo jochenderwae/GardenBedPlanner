@@ -1,7 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stage, Layer, Line, Rect } from "react-konva";
-import type Konva from "konva";
+import Konva from "konva";
+
+// Konva defaults `dragButtons` to `[0, 1]` (left AND middle) - see
+// Konva.Node's `_startDrag`, which only skips a mousedown-turned-drag when
+// the button ISN'T in this list. That meant every draggable node here (bed
+// Rects, polygon vertex Circles/Lines, planting markers) would start its own
+// Konva-level drag on a middle-mouse-down too, racing the app's own
+// window-level pan handling below (`handlePanMouseDown`/`isPanning`) - a
+// middle-drag starting on top of a bed would nudge it by one grid-snap step
+// before the pan took over (backlog #14's follow-up bug). Restricting to
+// button 0 (left) only, once, module-wide, is the one-line fix; per-node
+// button filtering isn't needed since nothing here wants middle-button drag
+// on shapes, only the app-level pan.
+Konva.dragButtons = [0];
 import {
   createPlanting,
   getExampleGarden,

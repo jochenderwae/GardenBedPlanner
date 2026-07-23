@@ -202,7 +202,19 @@ export function BedNode({
             lastValidPosRef.current = snapped;
             return worldToScreen(snapped, viewport);
           }}
-          onClick={onSelect}
+          onClick={(e) => {
+            // Konva fires `click` for whichever button released over the
+            // same shape it went down on, regardless of button - it isn't
+            // restricted to left-click the way `dragButtons` now restricts
+            // dragging (see Layout.tsx's module-level `Konva.dragButtons`
+            // comment). Without this check, a middle-mouse-drag that starts
+            // and ends over a bed (no longer registering as a Konva drag at
+            // all once dragButtons excludes button 1) falls through to a
+            // plain "click", opening this bed's panel - exactly the
+            // middle-drag-should-only-pan regression this guards against.
+            if (e.evt.button !== 0) return;
+            onSelect();
+          }}
           onTap={onSelect}
           onDragEnd={(e) => {
             setShowDimensions(false);

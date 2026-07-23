@@ -117,20 +117,21 @@ test.describe("Bed canvas drag/pan/marquee-select (#14)", () => {
     expect(fetched.border_geometry.y).toBe(140);
   });
 
-  // KNOWN REAL BUG (reported back on #14, not fixed here - see this repo's
-  // tester agent's boundary: it verifies, it doesn't patch production code):
-  // a middle-mouse-button drag that *starts on top of a bed* still nudges
-  // that bed a little (observed x moving 40 -> 50, a single 10cm grid-snap
-  // step) before the app's own `isPanning` pan logic takes over, because
-  // Konva's `draggable` Rect responds to a mousedown of *any* button by
-  // default - it isn't restricted to button 0 (left). `BedNode.tsx`'s Rect
-  // has no button filter, so Konva's own drag-start races the app-level
-  // `handlePanMouseDown` (which does correctly check `e.evt.button !== 1`).
-  // 100% reproducible (confirmed across 3 repeat runs) when the gesture
-  // starts directly over a bed; a middle-drag starting on empty canvas is
-  // unaffected. Left failing (not skipped) so it stays visible until a
-  // frontend-developer pass adds a button filter to BedNode's (and
-  // PolygonEditor's, likely the same root cause) draggable nodes.
+  // Regression coverage for the real bug the tester found and left this
+  // test failing on purpose to expose: a middle-mouse-button drag that
+  // *starts on top of a bed* used to nudge that bed a little (x moving
+  // 40 -> 50, a single 10cm grid-snap step) before the app's own
+  // `isPanning` pan logic took over, because Konva's `draggable` Rect
+  // responded to a mousedown of *any* button by default (`Konva.dragButtons`
+  // defaults to `[0, 1]`, left AND middle), racing the app-level
+  // `handlePanMouseDown` (which only governs the app's own pan-tracking, not
+  // whether the underlying Konva node itself starts dragging). Fixed by
+  // restricting `Konva.dragButtons` to `[0]` (left only) module-wide in
+  // Layout.tsx, plus a matching `e.evt.button !== 0` guard on BedNode's (and
+  // PolygonEditor's) `onClick`, since removing the drag exposed a second-
+  // order issue: Konva's `click` event also isn't button-filtered, so a
+  // middle-drag that no longer counts as a Konva drag was falling through to
+  // a plain "click" and opening the bed panel instead.
   test("middle-mouse-drag pans the canvas without moving or selecting any bed", async ({ page, request }) => {
     const bedA = await createBed(request, "E2E Bed A", rect(40, 40, 150, 100));
     createdBedIds.push(bedA.id);

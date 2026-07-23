@@ -169,7 +169,15 @@ export function PolygonEditor({
         strokeWidth={(isSelected ? 2.5 : 1.5) * (raised ? 2 : 1)}
         draggable={interactive}
         listening={interactive}
-        onClick={onSelect}
+        onClick={(e) => {
+          // Same guard as BedNode.tsx's Rect onClick - Konva fires `click`
+          // for any mouse button, not just left, so without this a
+          // middle-mouse-drag that starts and ends over the shape (no
+          // longer a Konva drag at all now that `dragButtons` excludes
+          // button 1) would fall through to a plain "click" and select it.
+          if (e.evt.button !== 0) return;
+          onSelect();
+        }}
         onTap={onSelect}
         onDblClick={handleEdgeInsert}
         onDragEnd={handleShapeDragEnd}
