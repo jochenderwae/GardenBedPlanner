@@ -114,6 +114,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['leaves', 'stems'] inferred by Ollama; reasoning: The description mentions that both the stalks and leaves of celery can be eaten."
+    },
+    {
+      "attribution": "manual-sowing-period-derivation",
+      "notes": "sowing period (month 4-6) derived from sowing_method ('Sow seeds indoors 10-12 weeks before transplanting outdoors') and this plant's own existing planting period - see etl/backfill_sowing_period.py's module docstring for the derivation logic (GitHub issue #153)."
     }
   ],
   "growing_information": [
@@ -209,6 +213,11 @@
       "period_type": "fertilizing",
       "start_month": 1,
       "end_month": 12
+    },
+    {
+      "period_type": "sowing",
+      "start_month": 4,
+      "end_month": 6
     }
   ],
   "edible_parts": [

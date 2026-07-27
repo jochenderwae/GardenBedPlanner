@@ -57,6 +57,10 @@
     {
       "attribution": "manual-research",
       "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['fruit'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
+    },
+    {
+      "attribution": "manual-sowing-period-derivation",
+      "notes": "sowing period (month 1-2) derived from sowing_method ('Start indoors in a warm, well-lighted area 8-10 weeks before last frost. Sow seeds in a seed starting formula in individual containers. Sow 1cm deep, firm lightly and keep evenly moist. Seedlings emerge 10-21 days.') and this plant's own existing planting period - see etl/backfill_sowing_period.py's module docstring for the derivation logic (GitHub issue #153)."
     }
   ],
   "growing_information": [
@@ -126,6 +130,11 @@
       "period_type": "planting",
       "start_month": 3,
       "end_month": 4
+    },
+    {
+      "period_type": "sowing",
+      "start_month": 1,
+      "end_month": 2
     }
   ],
   "parent_plant_slug": "eggplant",
