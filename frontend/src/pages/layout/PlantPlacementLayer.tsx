@@ -8,10 +8,12 @@ import {
   colorForSlug,
   DEFAULT_PLANTING_DIAMETER_CM,
   fieldGeometryFromDrag,
+  fieldMarkerPositions,
   normalizedRect,
   rectanglesOverlap,
   rectRenderProps,
   rowGeometryFromDrag,
+  rowMarkerPositions,
   snapToGrid,
 } from "./geometry";
 import { PlantFootprint } from "./PlantFootprint";
@@ -491,6 +493,17 @@ function PlantingMarker({
 
   if (planting.placement_type === "row" || planting.placement_type === "field") {
     const props = rectRenderProps(planting.geometry);
+    // The plant's own default spacing, overridable per-placement (#154's
+    // `spacing_cm`, edited in PlantingPanel.tsx) - matches the same
+    // fallback `PlantPlacementLayer`'s own draw-time `thicknessCm` uses.
+    const effectiveSpacing = planting.spacing_cm ?? plant?.spread_cm ?? DEFAULT_PLANTING_DIAMETER_CM;
+    const markerRadius = Math.max(3, effectiveSpacing / 2);
+    // The drawn rectangle is only ever the placement's own drag/select/
+    // delete hit-target (see this branch's `Rect` below) - what actually
+    // reads as "the plants" is this grid/line of individual markers filling
+    // it at `effectiveSpacing` (#155), not the rectangle itself.
+    const markerPositions =
+      planting.placement_type === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);
 
     function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
       onGroupDragEnd();
@@ -517,8 +530,12 @@ function PlantingMarker({
           width={props.width}
           height={props.height}
           rotation={props.rotation}
+          // Faint fill + a real stroke - this rectangle is only the drawing
+          // gesture's own drag/select/delete hit-target now (#155), not the
+          // thing meant to read as "the plants" (the individual markers
+          // below are).
           fill={color}
-          opacity={0.5}
+          opacity={0.15}
           stroke={selected ? SELECTION_HIGHLIGHT_COLOR : color}
           strokeWidth={selected ? 3 : 1.5}
           draggable={active}
@@ -529,6 +546,20 @@ function PlantingMarker({
           onClick={(e) => onSelect(e.evt.shiftKey)}
           onTap={() => onSelect(false)}
         />
+        {markerPositions.map((pos, i) => (
+          <PlantFootprint
+            key={i}
+            growthHabit={plant?.growth_habit}
+            x={pos.x}
+            y={pos.y}
+            radius={markerRadius}
+            fill={color}
+            opacity={0.85}
+            stroke="#00000040"
+            strokeWidth={1}
+            listening={false}
+          />
+        ))}
         {active && (
           <Text x={props.x + 4} y={props.y - 14} text={label} fontSize={10} fill="#1f2937" listening={false} />
         )}

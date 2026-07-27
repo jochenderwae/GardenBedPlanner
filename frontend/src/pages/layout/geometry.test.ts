@@ -8,6 +8,7 @@ import {
   colorsForBedCategory,
   distanceBetweenPoints,
   fieldGeometryFromDrag,
+  fieldMarkerPositions,
   findAlignmentSnap,
   formatDistanceCm,
   normalizedRect,
@@ -19,6 +20,7 @@ import {
   rotationFromGardenRelative,
   rotationRelativeToGarden,
   rowGeometryFromDrag,
+  rowMarkerPositions,
   snapToGrid,
   translateGeometry,
 } from "./geometry";
@@ -114,6 +116,57 @@ describe("fieldGeometryFromDrag", () => {
   it("normalizes corner order regardless of drag direction", () => {
     const geometry = fieldGeometryFromDrag({ x: 100, y: 100 }, { x: 0, y: 0 });
     expect(geometry).toEqual({ type: "rectangle", x: 0, y: 0, width: 100, height: 100, rotation: 0 });
+  });
+});
+
+describe("rowMarkerPositions", () => {
+  it("evenly centers points along an unrotated row's length", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: -10, width: 90, height: 20, rotation: 0 };
+    const points = rowMarkerPositions(geometry, 30);
+    expect(points).toHaveLength(3);
+    expect(points.map((p) => p.x)).toEqual([15, 45, 75]);
+    // Centered on the row's own thickness (height / 2), offset by the
+    // rectangle's own y.
+    expect(points.every((p) => p.y === 0)).toBe(true);
+  });
+
+  it("always returns at least one point, even narrower than one spacing interval", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 10, height: 20, rotation: 0 };
+    const points = rowMarkerPositions(geometry, 30);
+    expect(points).toHaveLength(1);
+    expect(points[0]).toEqual({ x: 5, y: 10 });
+  });
+
+  it("accounts for the row's own rotation", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 100, height: 20, rotation: 90 };
+    const points = rowMarkerPositions(geometry, 50);
+    // Rotated 90deg: local +x becomes world +y, local +y (the thickness
+    // offset) becomes world -x.
+    for (const p of points) {
+      expect(p.x).toBeCloseTo(-10);
+    }
+    expect(points.map((p) => p.y).sort((a, b) => a - b)).toEqual([25, 75]);
+  });
+});
+
+describe("fieldMarkerPositions", () => {
+  it("fills a grid across both axes", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 60, height: 60, rotation: 0 };
+    const points = fieldMarkerPositions(geometry, 30);
+    expect(points).toHaveLength(4);
+    expect(points).toEqual(
+      expect.arrayContaining([
+        { x: 15, y: 15 },
+        { x: 45, y: 15 },
+        { x: 15, y: 45 },
+        { x: 45, y: 45 },
+      ]),
+    );
+  });
+
+  it("always returns at least one point for a field smaller than one spacing interval on either axis", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 10, height: 10, rotation: 0 };
+    expect(fieldMarkerPositions(geometry, 30)).toEqual([{ x: 5, y: 5 }]);
   });
 });
 

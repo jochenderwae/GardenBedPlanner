@@ -128,6 +128,23 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
           />
         </label>
 
+        {(draft.placement_type === "row" || draft.placement_type === "field") && (
+          <label className="flex flex-col gap-1">
+            <span className="text-xs font-medium text-muted-foreground">
+              Plant spacing (cm){plant?.spread_cm != null && !draft.spacing_cm && ` - default ${plant.spread_cm}`}
+            </span>
+            <Input
+              type="number"
+              min={1}
+              step={1}
+              placeholder={plant?.spread_cm != null ? String(plant.spread_cm) : undefined}
+              value={draft.spacing_cm ?? ""}
+              onChange={(e) => setDraft((prev) => ({ ...prev, spacing_cm: e.target.value === "" ? null : Number(e.target.value) }))}
+              onBlur={() => draft.spacing_cm !== planting.spacing_cm && commit({ spacing_cm: draft.spacing_cm })}
+            />
+          </label>
+        )}
+
         <Button variant="destructive" size="sm" onClick={() => setConfirmDeleteOpen(true)}>
           <Trash2 /> Remove planting
         </Button>

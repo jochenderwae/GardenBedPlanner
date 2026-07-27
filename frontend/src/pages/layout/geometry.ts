@@ -116,6 +116,80 @@ export function fieldGeometryFromDrag(
   return { type: "rectangle", x: Math.min(start.x, end.x), y: Math.min(start.y, end.y), width, height, rotation: 0 };
 }
 
+/** Plain x/y/width/height/rotation, deliberately not `RectangleGeometry`
+ * itself (no `type: "rectangle"` discriminant required) - matches what
+ * `rectRenderProps` already returns, so `rowMarkerPositions`/
+ * `fieldMarkerPositions` below can be called directly with its output at
+ * their call site without reconstructing a full `RectangleGeometry`. */
+type RectShape = { x: number; y: number; width: number; height: number; rotation: number };
+
+/** Converts a point in a rectangle's own local (unrotated, origin at the
+ * rectangle's x/y corner) coordinate space to the same world/bed-local
+ * space `geometry.x`/`geometry.y` itself lives in - shared by
+ * `rowMarkerPositions`/`fieldMarkerPositions` below so each only has to
+ * reason about laying points out along an unrotated width/height, not
+ * rotation math too. */
+function localPointToGeometrySpace(geometry: RectShape, local: { x: number; y: number }): { x: number; y: number } {
+  const rad = (geometry.rotation * Math.PI) / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+  return {
+    x: geometry.x + local.x * cos - local.y * sin,
+    y: geometry.y + local.x * sin + local.y * cos,
+  };
+}
+
+/** Evenly spaces `count` points across `[0, length]`, each centered in its
+ * own `length / count` segment - e.g. `count=3` on a length-90 span
+ * returns 15/45/75, not 0/45/90 (no point sitting exactly on the row's own
+ * edge) or a fixed-step layout that leaves uneven leftover space at one
+ * end. Shared by both axes of `fieldMarkerPositions` and the single axis
+ * `rowMarkerPositions` fills. */
+function centeredSegments(length: number, count: number): number[] {
+  const step = length / count;
+  return Array.from({ length: count }, (_, i) => step * (i + 0.5));
+}
+
+/** How many spacing-sized segments fit across `length` - always at least 1,
+ * so even a placement narrower than one spacing interval still renders its
+ * single center point rather than nothing. */
+function segmentCount(length: number, spacingCm: number): number {
+  return Math.max(1, Math.round(length / Math.max(1, spacingCm)));
+}
+
+/** Individual plant marker positions (world/bed-local cm, matching
+ * `planting.geometry`'s own coordinate space) for a `row` placement's
+ * bounding rectangle at `spacingCm` intervals - the drawn rectangle itself
+ * is just the placement's own drag/select/delete hit-target (see
+ * PlantPlacementLayer.tsx's `PlantingMarker`), this is what actually paints
+ * as individual plants inside it. One line of points along the rectangle's
+ * own local +x axis (its length/`width`), centered on the thickness
+ * (`height / 2`) and accounting for the rectangle's own `rotation` (a
+ * row's drawn angle) via `localPointToGeometrySpace`. */
+export function rowMarkerPositions(geometry: RectShape, spacingCm: number): { x: number; y: number }[] {
+  const count = segmentCount(geometry.width, spacingCm);
+  return centeredSegments(geometry.width, count).map((x) =>
+    localPointToGeometrySpace(geometry, { x, y: geometry.height / 2 }),
+  );
+}
+
+/** Same idea as `rowMarkerPositions`, for a `field` placement - a grid
+ * filling both axes rather than a single line. `field` geometry is always
+ * axis-aligned (`fieldGeometryFromDrag` never sets a rotation), but this
+ * still routes through `localPointToGeometrySpace` for consistency (a
+ * no-op at `rotation: 0`). */
+export function fieldMarkerPositions(geometry: RectShape, spacingCm: number): { x: number; y: number }[] {
+  const xs = centeredSegments(geometry.width, segmentCount(geometry.width, spacingCm));
+  const ys = centeredSegments(geometry.height, segmentCount(geometry.height, spacingCm));
+  const points: { x: number; y: number }[] = [];
+  for (const y of ys) {
+    for (const x of xs) {
+      points.push(localPointToGeometrySpace(geometry, { x, y }));
+    }
+  }
+  return points;
+}
+
 /** Flattens either geometry variant to renderable `Rect` props (x/y/width/
  * height/rotation) - rectangles pass through as-is, polygons fall back to
  * their unrotated bounding box (same simplification `boundingRect` already
