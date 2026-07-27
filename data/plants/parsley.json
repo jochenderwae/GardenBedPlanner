@@ -110,6 +110,10 @@
     {
       "attribution": "manual-plant-spacing-derivation",
       "notes": "plant_spacing_cm=10.2 derived from this plant's own bedding_needs spacing note ('4 inches between each plant') - genuinely distinct from row_spacing_cm, not a fallback. See GitHub issue #170 / etl/backfill_plant_spacing.py."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['needs_thinning'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growing_information": [
@@ -188,5 +192,6 @@
     }
   ],
   "water_needs_mm_per_week": 12.7,
-  "plant_spacing_cm": 10.2
+  "plant_spacing_cm": 10.2,
+  "needs_thinning": true
 }

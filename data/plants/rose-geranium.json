@@ -27,8 +27,14 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Rose Geranium is typically grown as an annual in temperate climates like Belgium because it is not cold-hardy and does not survive the winter outdoors."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['sow_direct', 'sow_indoors'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "annual"
+  "life_cycle": "annual",
+  "sow_indoors": true,
+  "sow_direct": true
 }

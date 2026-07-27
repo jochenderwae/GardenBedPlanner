@@ -51,6 +51,10 @@
     {
       "attribution": "manual-research",
       "notes": "edible_parts widened from ['fruit'] to ['fruit', 'seeds'] (GitHub issue #165): this plant's own description text explicitly states seeds is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['sow_direct', 'sow_indoors'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growth_habit": "spreading",
@@ -58,5 +62,7 @@
   "edible_parts": [
     "fruit",
     "seeds"
-  ]
+  ],
+  "sow_indoors": true,
+  "sow_direct": true
 }

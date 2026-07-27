@@ -74,6 +74,10 @@
     {
       "attribution": "manual-plant-spacing-derivation",
       "notes": "plant_spacing_cm=121.9 derived from this plant's own bedding_needs spacing note ('hills at least four feet apart in the row') - genuinely distinct from row_spacing_cm, not a fallback. See GitHub issue #170 / etl/backfill_plant_spacing.py."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['needs_thinning', 'sow_indoors'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growing_information": [
@@ -126,5 +130,7 @@
   ],
   "water_needs_mm_per_week": 38.1,
   "is_edible": true,
-  "plant_spacing_cm": 121.9
+  "plant_spacing_cm": 121.9,
+  "sow_indoors": true,
+  "needs_thinning": true
 }

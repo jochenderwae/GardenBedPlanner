@@ -29,7 +29,13 @@
     {
       "attribution": "manual-edible-parts-normalization",
       "notes": "edible_parts normalized from ['fruits'] to ['fruit'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['sow_direct', 'sow_indoors'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
-  "growth_habit": "spreading"
+  "growth_habit": "spreading",
+  "sow_indoors": true,
+  "sow_direct": true
 }

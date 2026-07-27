@@ -34,6 +34,10 @@
     {
       "attribution": "manual-plant-spacing-derivation",
       "notes": "plant_spacing_cm=41.9 derived from this plant's own bedding_needs spacing note ('plants 15 to 18 inches within rows') - genuinely distinct from row_spacing_cm, not a fallback. See GitHub issue #170 / etl/backfill_plant_spacing.py."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['needs_thinning', 'sow_direct', 'sow_indoors'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growing_information": [
@@ -90,5 +94,8 @@
     }
   ],
   "parent_plant_slug": "chili-pepper",
-  "plant_spacing_cm": 41.9
+  "plant_spacing_cm": 41.9,
+  "sow_indoors": true,
+  "sow_direct": true,
+  "needs_thinning": true
 }

@@ -65,6 +65,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Squash is typically grown as an annual in temperate climates like Belgium because it completes its life cycle within one growing season."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['needs_thinning', 'sow_direct', 'sow_indoors'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growing_information": [
@@ -131,5 +135,8 @@
   "spread_cm": 30,
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "sow_indoors": true,
+  "sow_direct": true,
+  "needs_thinning": true
 }

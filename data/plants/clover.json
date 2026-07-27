@@ -42,8 +42,13 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Clover is typically grown as a perennial in home gardens in Belgium."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['sow_direct'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growth_habit": "spreading",
-  "life_cycle": "perennial"
+  "life_cycle": "perennial",
+  "sow_direct": true
 }

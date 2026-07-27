@@ -46,6 +46,10 @@
     {
       "attribution": "manual-plant-spacing-fallback",
       "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['sow_direct'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growing_information": [
@@ -81,5 +85,6 @@
     "shoots"
   ],
   "is_edible": true,
-  "plant_spacing_cm": 300
+  "plant_spacing_cm": 300,
+  "sow_direct": true
 }

@@ -41,6 +41,12 @@
     {
       "source_url": "https://trefle.io",
       "attribution": "trefle"
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['sow_direct', 'sow_indoors'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
-  ]
+  ],
+  "sow_indoors": true,
+  "sow_direct": true
 }

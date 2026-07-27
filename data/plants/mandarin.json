@@ -43,6 +43,10 @@
     {
       "attribution": "manual-research",
       "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['fruit'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['sow_direct', 'sow_indoors'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growth_habit": "tree",
@@ -52,5 +56,7 @@
   "edible_parts": [
     "fruit"
   ],
-  "is_edible": true
+  "is_edible": true,
+  "sow_indoors": true,
+  "sow_direct": true
 }

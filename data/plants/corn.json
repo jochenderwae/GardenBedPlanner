@@ -115,6 +115,10 @@
     {
       "attribution": "manual-plant-spacing-fallback",
       "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['needs_thinning', 'sow_direct'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growing_information": [
@@ -217,5 +221,7 @@
     }
   ],
   "water_needs_mm_per_week": 38.1,
-  "plant_spacing_cm": 76
+  "plant_spacing_cm": 76,
+  "sow_direct": true,
+  "needs_thinning": true
 }

@@ -20,7 +20,12 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='tree' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The description mentions that wattles can be trees with multiple trunks and an umbrella shape."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['sow_direct'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "sow_direct": true
 }

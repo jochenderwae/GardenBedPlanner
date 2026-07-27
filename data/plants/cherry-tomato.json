@@ -60,6 +60,10 @@
     {
       "attribution": "manual-plant-spacing-derivation",
       "notes": "plant_spacing_cm=53.3 derived from this plant's own bedding_needs spacing note ('spacing them 18-24 inches apart in rows that are 3.5-4 feet apart') - genuinely distinct from row_spacing_cm, not a fallback. See GitHub issue #170 / etl/backfill_plant_spacing.py."
+    },
+    {
+      "attribution": "manual-sowing-details-derivation",
+      "notes": "['needs_thinning', 'sow_indoors'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
     }
   ],
   "growing_information": [
@@ -141,5 +145,7 @@
     "fruit"
   ],
   "parent_plant_slug": "tomato",
-  "plant_spacing_cm": 53.3
+  "plant_spacing_cm": 53.3,
+  "sow_indoors": true,
+  "needs_thinning": true
 }
