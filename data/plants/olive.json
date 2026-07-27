@@ -41,10 +41,15 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The primary edible part of the olive plant is its fruit."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growth_habit": "tree",
   "edible_parts": [
     "fruit"
-  ]
+  ],
+  "plant_spacing_cm": 500
 }

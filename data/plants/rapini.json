@@ -45,6 +45,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['leaves', 'stems', 'flowers'] inferred by Ollama; reasoning: Rapini is primarily eaten for its leaves and stems, but the immature flower buds are also edible."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growth_habit": "upright",
@@ -53,5 +57,6 @@
     "leaves",
     "stems",
     "flowers"
-  ]
+  ],
+  "plant_spacing_cm": 5
 }

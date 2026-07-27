@@ -86,6 +86,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Tomatoes are typically grown as annuals in Belgium because they are not cold-hardy and are usually started from seed indoors and transplanted outdoors after the last frost."
+    },
+    {
+      "attribution": "manual-plant-spacing-derivation",
+      "notes": "plant_spacing_cm=53.3 derived from this plant's own bedding_needs spacing note ('18-24 inches apart in rows that are 3.5-4 feet apart') - genuinely distinct from row_spacing_cm, not a fallback. See GitHub issue #170 / etl/backfill_plant_spacing.py."
     }
   ],
   "growing_information": [
@@ -165,5 +169,6 @@
       "start_month": 3,
       "end_month": 3
     }
-  ]
+  ],
+  "plant_spacing_cm": 53.3
 }

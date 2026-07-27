@@ -60,6 +60,10 @@
     {
       "attribution": "manual-research",
       "notes": "edible_parts widened from ['seeds', 'pods'] to ['seeds', 'pods', 'leaves', 'stems'] (GitHub issue #165): this plant's own description text explicitly states leaves/stems is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -111,5 +115,6 @@
       "start_month": 3,
       "end_month": 5
     }
-  ]
+  ],
+  "plant_spacing_cm": 25
 }

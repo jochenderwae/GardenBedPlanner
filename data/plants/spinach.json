@@ -96,6 +96,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Spinach is typically grown as an annual in Belgium, as it thrives in cooler weather and is best sown in the autumn and winter months."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -175,5 +179,6 @@
       "end_month": 9
     }
   ],
-  "water_needs_mm_per_week": 12.7
+  "water_needs_mm_per_week": 12.7,
+  "plant_spacing_cm": 12.7
 }

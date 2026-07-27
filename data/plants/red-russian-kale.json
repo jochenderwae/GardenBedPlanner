@@ -33,11 +33,16 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['leaves'] inferred by Ollama; reasoning: Red Russian Kale is primarily eaten for its leafy greens."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growth_habit": "upright",
   "life_cycle": "biennial",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "plant_spacing_cm": 45
 }

@@ -57,6 +57,10 @@
     {
       "attribution": "manual-research",
       "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['roots'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -156,5 +160,6 @@
     "roots"
   ],
   "parent_plant_slug": "potato",
-  "is_edible": true
+  "is_edible": true,
+  "plant_spacing_cm": 90
 }

@@ -50,6 +50,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Bell peppers are typically grown as annuals in Belgium because they are sensitive to frost and need warm temperatures for fruit production."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -107,5 +111,6 @@
       "end_month": 3
     }
   ],
-  "parent_plant_slug": "bell-pepper"
+  "parent_plant_slug": "bell-pepper",
+  "plant_spacing_cm": 45
 }

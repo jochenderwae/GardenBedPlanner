@@ -38,6 +38,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Sorrel is described as a hardy perennial herb that produces greens in both spring and fall, indicating it is typically grown as a perennial in home gardens."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -60,5 +64,6 @@
       "start_month": 3,
       "end_month": 5
     }
-  ]
+  ],
+  "plant_spacing_cm": 30
 }

@@ -100,6 +100,10 @@
     {
       "attribution": "manual-research",
       "notes": "edible_parts widened from ['stems'] to ['stems', 'leaves'] (GitHub issue #165): this plant's own description text explicitly states leaves is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
+    },
+    {
+      "attribution": "manual-plant-spacing-derivation",
+      "notes": "plant_spacing_cm=20.3 derived from this plant's own bedding_needs spacing note ('8 inches apart in rows spaced 18 to 36 inches apart') - genuinely distinct from row_spacing_cm, not a fallback. See GitHub issue #170 / etl/backfill_plant_spacing.py."
     }
   ],
   "growing_information": [
@@ -143,5 +147,6 @@
     "stems",
     "leaves"
   ],
-  "water_needs_mm_per_week": 25.4
+  "water_needs_mm_per_week": 25.4,
+  "plant_spacing_cm": 20.3
 }

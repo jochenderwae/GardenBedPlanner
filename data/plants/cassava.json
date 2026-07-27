@@ -40,7 +40,12 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle-growth-habit",
       "notes": "growth_habit='tree' - Trefle growth_habit='Subshrub, Shrub, Forb/herb, Tree' includes 'Tree'"
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
-  "growth_habit": "tree"
+  "growth_habit": "tree",
+  "plant_spacing_cm": 2
 }

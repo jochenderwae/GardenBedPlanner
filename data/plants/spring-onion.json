@@ -56,6 +56,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['leaves', 'bulbs'] inferred by Ollama; reasoning: Spring onions are harvested and eaten for both their bulbs and greens."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -166,5 +170,6 @@
     "leaves",
     "bulbs"
   ],
-  "parent_plant_slug": "onion"
+  "parent_plant_slug": "onion",
+  "plant_spacing_cm": 32.5
 }

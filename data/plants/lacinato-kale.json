@@ -56,6 +56,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Lacinato Kale is typically grown as a biennial in temperate climates like Belgium, as it can be left in the field over winter and harvested in its second year."
+    },
+    {
+      "attribution": "manual-plant-spacing-derivation",
+      "notes": "plant_spacing_cm=38.1 derived from this plant's own bedding_needs spacing note ('10 to 20 inches apart and rows 12 to 18 inches apart') - genuinely distinct from row_spacing_cm, not a fallback. See GitHub issue #170 / etl/backfill_plant_spacing.py."
     }
   ],
   "growing_information": [
@@ -115,5 +119,6 @@
       "end_month": 12
     }
   ],
-  "parent_plant_slug": "kale"
+  "parent_plant_slug": "kale",
+  "plant_spacing_cm": 38.1
 }

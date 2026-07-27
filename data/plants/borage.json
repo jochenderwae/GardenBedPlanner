@@ -89,9 +89,14 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Borage is typically grown as an annual in temperate climates like Belgium, completing its life cycle within one growing season."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growth_habit": "upright",
   "life_cycle": "annual",
-  "water_needs_mm_per_week": 12.7
+  "water_needs_mm_per_week": 12.7,
+  "plant_spacing_cm": 45.7
 }

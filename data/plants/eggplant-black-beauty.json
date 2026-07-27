@@ -61,6 +61,10 @@
     {
       "attribution": "manual-sowing-period-derivation",
       "notes": "sowing period (month 1-2) derived from sowing_method ('Start indoors in a warm, well-lighted area 8-10 weeks before last frost. Sow seeds in a seed starting formula in individual containers. Sow 1cm deep, firm lightly and keep evenly moist. Seedlings emerge 10-21 days.') and this plant's own existing planting period - see etl/backfill_sowing_period.py's module docstring for the derivation logic (GitHub issue #153)."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -138,5 +142,6 @@
     }
   ],
   "parent_plant_slug": "eggplant",
-  "is_edible": true
+  "is_edible": true,
+  "plant_spacing_cm": 61
 }

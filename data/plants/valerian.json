@@ -38,9 +38,14 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Valerian (Valeriana dioica) is typically grown as a perennial in home gardens in Belgium."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growth_habit": "upright",
   "life_cycle": "perennial",
-  "water_needs_mm_per_week": 19.0
+  "water_needs_mm_per_week": 19.0,
+  "plant_spacing_cm": 76.2
 }

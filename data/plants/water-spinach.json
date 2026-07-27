@@ -31,6 +31,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['leaves', 'shoots'] inferred by Ollama; reasoning: Water spinach is primarily grown for its tender shoots and leaves."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growth_habit": "spreading",
@@ -38,5 +42,6 @@
   "edible_parts": [
     "leaves",
     "shoots"
-  ]
+  ],
+  "plant_spacing_cm": 10
 }

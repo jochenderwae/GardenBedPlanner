@@ -32,6 +32,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The edible part of the Green Serrano Pepper is the fruit, which is commonly eaten raw or used in various dishes."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growth_habit": "spreading",
@@ -39,5 +43,6 @@
   "edible_parts": [
     "fruit"
   ],
-  "parent_plant_slug": "serrano-pepper"
+  "parent_plant_slug": "serrano-pepper",
+  "plant_spacing_cm": 45
 }

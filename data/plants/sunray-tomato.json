@@ -56,6 +56,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Tomatoes are typically grown as annuals in Belgium's temperate climate."
+    },
+    {
+      "attribution": "manual-plant-spacing-derivation",
+      "notes": "plant_spacing_cm=53.3 derived from this plant's own bedding_needs spacing note ('18 inches to 2 feet apart in rows 3½ to 4 feet apart') - genuinely distinct from row_spacing_cm, not a fallback. See GitHub issue #170 / etl/backfill_plant_spacing.py."
     }
   ],
   "growing_information": [
@@ -150,5 +154,6 @@
       "end_month": 6
     }
   ],
-  "parent_plant_slug": "tomato"
+  "parent_plant_slug": "tomato",
+  "plant_spacing_cm": 53.3
 }

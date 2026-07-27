@@ -150,6 +150,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Peas are typically grown as annuals in temperate climates like Belgium, as they complete their life cycle within one growing season."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -221,5 +225,6 @@
   "edible_parts": [
     "seeds"
   ],
-  "water_needs_mm_per_week": 12.7
+  "water_needs_mm_per_week": 12.7,
+  "plant_spacing_cm": 30
 }

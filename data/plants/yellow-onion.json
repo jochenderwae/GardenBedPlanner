@@ -59,6 +59,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: Yellow onions are typically grown from seed in a single season in Belgium's temperate climate."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -159,5 +163,6 @@
       "end_month": 9
     }
   ],
-  "parent_plant_slug": "onion"
+  "parent_plant_slug": "onion",
+  "plant_spacing_cm": 10
 }

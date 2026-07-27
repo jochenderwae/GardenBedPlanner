@@ -25,6 +25,11 @@
       "source_url": "https://trefle.io",
       "attribution": "trefle",
       "notes": "botanical_name/genus corrected 2026-07-27 (manual-research): the original ETL run's Trefle per-plant name search matched the unrelated species Acacia maconochieana (an Australian wattle tree) for the query 'ferry-morse-contender-bush-bean', which then propagated genus='Acacia' with family='Fabaceae' (Fabaceae happens to be correct for both wattles and beans, so family was coincidentally right despite the wrong species/genus). Multiple downstream Ollama inference passes (life_cycle, edible_parts, growth_habit) correctly refused to infer values because the botanical_name didn't match the common name - the eventual symptom that surfaced this issue. Corrected to the real bean species Phaseolus vulgaris, genus Phaseolus; family Fabaceae left as-is (already correct)."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
-  ]
+  ],
+  "plant_spacing_cm": 4
 }

@@ -34,6 +34,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='biennial' inferred by Ollama; reasoning: Collards are typically grown as a biennial in home gardens, as they are often harvested in the first year for their leaves but can be left to flower and produce seed in the second year."
+    },
+    {
+      "attribution": "manual-plant-spacing-fallback",
+      "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
     }
   ],
   "growing_information": [
@@ -49,5 +53,6 @@
   "life_cycle": "biennial",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "plant_spacing_cm": 15
 }
