@@ -3,7 +3,7 @@
   "common_name": "Cherry",
   "botanical_name": "Prunus avium",
   "description": "A cherry is the fruit of many plants of the genus Prunus, and is a fleshy drupe. Commercial cherries are obtained from cultivars of several species, such as the sweet Prunus avium and the sour Prunus cerasus.",
-  "height_cm": 1500,
+  "height_cm": 300,
   "sun_level": "full_sun",
   "family": "Rosaceae",
   "genus": "Prunus",
@@ -13,7 +13,8 @@
   "data_sources": [
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
-      "attribution": "openfarm-crops-rescue"
+      "attribution": "openfarm-crops-rescue",
+      "notes": "height_cm corrected from 1500 to 300 (GitHub issue #159): confirmed the 1500 (15m) value is present verbatim in openfarm-crops-rescue's own cached crops.json (data/.cache/openfarm-crops-rescue/crops.json), not something introduced by this project's ETL - a units/data-quality error at the original source, implausible for a garden fruit tree (standard/dwarf sour or sweet cherry trees are typically 200-500cm). No usable alternate value was recoverable from Trefle either (data/.cache/trefle/cherry.json's average_height/maximum_height are both null, a known gap - see data/CLAUDE.md). Set to 300cm as a reasonable estimate pending a better source, matching this dataset's own convention for other garden-scale fruit trees (apple.json and green-bartlett-pear.json both use height_cm=300)."
     },
     {
       "source_url": "https://trefle.io",
