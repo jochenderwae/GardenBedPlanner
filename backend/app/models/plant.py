@@ -132,7 +132,7 @@ class PlantDataSource(SQLModel, table=True):
     __tablename__ = "plant_data_source"
 
     id: int | None = Field(default=None, primary_key=True)
-    plant_slug: str = Field(foreign_key="plant.slug")
+    plant_slug: str = Field(foreign_key="plant.slug", index=True)
     source_url: str | None = None
     attribution: str | None = None
     notes: str | None = None
@@ -164,7 +164,7 @@ class PlantPeriod(SQLModel, table=True):
     __tablename__ = "plant_period"
 
     id: int | None = Field(default=None, primary_key=True)
-    plant_slug: str = Field(foreign_key="plant.slug")
+    plant_slug: str = Field(foreign_key="plant.slug", index=True)
     period_type: str = Field(foreign_key="period_type.code")
     # Month-only (1-12), not a calendar date: these are species-level windows
     # that recur every year (e.g. "sow Feb-Mar"), not a one-off event tied to
@@ -189,7 +189,7 @@ class PlantBeddingNeed(SQLModel, table=True):
     __tablename__ = "plant_bedding_need"
 
     id: int | None = Field(default=None, primary_key=True)
-    plant_slug: str = Field(foreign_key="plant.slug")
+    plant_slug: str = Field(foreign_key="plant.slug", index=True)
     # Open-ended (ground_cover | hilling | staking | ...) per the domain
     # model - not a closed enum like SunLevel/PeriodType.
     need_type: str
@@ -203,7 +203,7 @@ class PlantPestInteraction(SQLModel, table=True):
     __tablename__ = "plant_pest_interaction"
 
     id: int | None = Field(default=None, primary_key=True)
-    plant_slug: str = Field(foreign_key="plant.slug")
+    plant_slug: str = Field(foreign_key="plant.slug", index=True)
     interaction_type: PestInteractionType
     # Free text (e.g. "aphids", "ladybugs", "tomato hornworm") - pest/insect
     # names aren't a fixed enum.
@@ -223,7 +223,7 @@ class PlantGrowingInformation(SQLModel, table=True):
     __tablename__ = "plant_growing_information"
 
     id: int | None = Field(default=None, primary_key=True)
-    plant_slug: str = Field(foreign_key="plant.slug")
+    plant_slug: str = Field(foreign_key="plant.slug", index=True)
     text: str
     source_url: str | None = None
     attribution: str | None = None
