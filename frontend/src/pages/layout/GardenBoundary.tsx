@@ -12,10 +12,13 @@ const MIN_SIZE_CM = 100;
 const GARDEN_COLORS = { fill: "transparent", stroke: "#166534" };
 const GARDEN_LABEL_FONT_SIZE = 12;
 
-// Same fix as BedNode.tsx's identical Transformer setup (see that file's
-// comment for the full explanation) - divide the handle sizes by
-// viewport.scale so they stay a constant size on screen regardless of zoom,
-// instead of shrinking to near-invisible dots when zoomed out.
+// Same Transformer setup as BedNode.tsx - see that file's own comment for
+// the full explanation of why these are passed as plain, literal on-screen
+// pixel values with no manual `/ viewport.scale` compensation (Konva's
+// `Transformer` already renders at a constant size regardless of ambient
+// zoom; #129 removed a previous manual division that was actually
+// double-compensating and made the handles balloon/shrink with zoom
+// instead of staying constant).
 const TRANSFORMER_ANCHOR_SIZE_PX = 10;
 const TRANSFORMER_ANCHOR_STROKE_WIDTH_PX = 1;
 const TRANSFORMER_BORDER_STROKE_WIDTH_PX = 1;
@@ -174,10 +177,10 @@ export function GardenBoundary({
             if (newBox.width < MIN_SIZE_CM || newBox.height < MIN_SIZE_CM) return oldBox;
             return newBox;
           }}
-          anchorSize={TRANSFORMER_ANCHOR_SIZE_PX / viewport.scale}
-          anchorStrokeWidth={TRANSFORMER_ANCHOR_STROKE_WIDTH_PX / viewport.scale}
-          borderStrokeWidth={TRANSFORMER_BORDER_STROKE_WIDTH_PX / viewport.scale}
-          rotateAnchorOffset={TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX / viewport.scale}
+          anchorSize={TRANSFORMER_ANCHOR_SIZE_PX}
+          anchorStrokeWidth={TRANSFORMER_ANCHOR_STROKE_WIDTH_PX}
+          borderStrokeWidth={TRANSFORMER_BORDER_STROKE_WIDTH_PX}
+          rotateAnchorOffset={TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX}
         />
       )}
     </>

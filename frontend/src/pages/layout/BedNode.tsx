@@ -22,20 +22,27 @@ import { DEFAULT_VIEWPORT, screenToWorld, worldToScreen, type Viewport } from ".
 const MIN_SIZE_CM = 20;
 const BED_LABEL_FONT_SIZE = 12;
 
-// Konva's Transformer's handle sizes (anchorSize/anchorStrokeWidth/
-// borderStrokeWidth/rotateAnchorOffset) are all specified in the same local
-// coordinate space the Rect itself lives in, which - since this Rect sits
-// directly under the Stage's own scaleX/scaleY (the pan/zoom this canvas
-// added later, see the "Canvas pan/zoom" backlog item) - means they render
-// at `value * viewport.scale` actual screen pixels: shrinking to
-// near-invisible, hard-to-grab dots once the user zooms out to fit a garden
-// bigger than the default view (a very likely real usage pattern), and
-// oversized up close. Dividing each by `viewport.scale` below keeps them a
-// constant ~10/50px on screen regardless of zoom - same values Konva
-// defaults to, so this is a no-op at the Stage's default 100% zoom and only
-// changes behavior away from it. Root cause of the "rotate handle isn't
-// working/discoverable enough" report - the handle was always there, just
-// unusably tiny whenever the garden required zooming out to see fully.
+// Konva's `Transformer` overrides `getAbsoluteTransform()` to just return
+// `this.getTransform()` (see node_modules/konva/lib/shapes/Transformer.js) -
+// i.e. it deliberately does NOT compose with its parent Layer/Stage's own
+// transform the way every other node does, specifically so it renders at a
+// constant on-screen size regardless of any ambient zoom. anchorSize/
+// anchorStrokeWidth/borderStrokeWidth/rotateAnchorOffset below are meant to
+// be passed as plain, literal on-screen pixel values - Konva already
+// handles the "stay constant regardless of `viewport.scale`" part
+// internally (these values below are, not coincidentally, exactly Konva's
+// own defaults for each - so it's still a no-op at 100% zoom either way,
+// same as before). A previous fix (#71/#129's own earlier attempt) divided
+// each by `viewport.scale` on the theory that this Rect sitting under the
+// Stage's scale meant the handles needed manual compensation like any other
+// shape - that was backwards: dividing an already-constant value by scale
+// doesn't fix anything at 100% zoom, but at any *other* zoom it reintroduces
+// exactly the size-varies-with-zoom bug in the opposite direction (handles
+// ballooning huge when zoomed out, shrinking tiny zoomed in - #129's actual
+// report). Root cause of the *original* "rotate handle isn't working/
+// discoverable enough" report predating either fix was something else
+// entirely (never conclusively diagnosed) - not a missing scale
+// compensation Konva doesn't already provide.
 const TRANSFORMER_ANCHOR_SIZE_PX = 10;
 const TRANSFORMER_ANCHOR_STROKE_WIDTH_PX = 1;
 const TRANSFORMER_BORDER_STROKE_WIDTH_PX = 1;
@@ -348,10 +355,10 @@ export function BedNode({
           ref={trRef}
           rotateEnabled
           keepRatio={false}
-          anchorSize={TRANSFORMER_ANCHOR_SIZE_PX / viewport.scale}
-          anchorStrokeWidth={TRANSFORMER_ANCHOR_STROKE_WIDTH_PX / viewport.scale}
-          borderStrokeWidth={TRANSFORMER_BORDER_STROKE_WIDTH_PX / viewport.scale}
-          rotateAnchorOffset={TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX / viewport.scale}
+          anchorSize={TRANSFORMER_ANCHOR_SIZE_PX}
+          anchorStrokeWidth={TRANSFORMER_ANCHOR_STROKE_WIDTH_PX}
+          borderStrokeWidth={TRANSFORMER_BORDER_STROKE_WIDTH_PX}
+          rotateAnchorOffset={TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX}
           boundBoxFunc={(oldBox, newBox) => {
             if (newBox.width < MIN_SIZE_CM || newBox.height < MIN_SIZE_CM) return oldBox;
             return newBox;
