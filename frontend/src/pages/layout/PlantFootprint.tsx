@@ -30,12 +30,24 @@ interface PlantFootprintProps {
   strokeWidth: number;
   draggable?: boolean;
   listening?: boolean;
+  onDragStart?: (e: Konva.KonvaEventObject<DragEvent>) => void;
+  onDragMove?: (e: Konva.KonvaEventObject<DragEvent>) => void;
   onDragEnd?: (e: Konva.KonvaEventObject<DragEvent>) => void;
   onClick?: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   onTap?: () => void;
   onMouseEnter?: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   onMouseMove?: (e: Konva.KonvaEventObject<MouseEvent>) => void;
   onMouseLeave?: () => void;
+  /** Escape hatch to grab the underlying Konva node regardless of which
+   * shape variant this renders as - callers use it to imperatively
+   * reposition *other* markers during a multi-select group drag (see
+   * PlantPlacementLayer.tsx's `registerNode`/live group-follow, #19). A
+   * plain callback rather than `forwardRef` since each growth-habit variant
+   * below is a different concrete Konva shape type (Circle/Star/Group/...)
+   * - a callback typed against the common `Konva.Node` base sidesteps the
+   * ref-object variance issues a single `forwardRef<T>` would hit trying to
+   * union all of them. */
+  nodeRef?: (node: Konva.Node | null) => void;
 }
 
 /** A point-placed plant's canvas footprint, shaped distinctly per
@@ -50,7 +62,7 @@ interface PlantFootprintProps {
  * replaces) regardless of which case below renders - callers that read the
  * dragged position back off a Konva node (`node.x()`/`node.y()`) don't need
  * to know or care which shape is currently on screen. */
-export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, stroke, strokeWidth, ...events }: PlantFootprintProps) {
+export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, stroke, strokeWidth, nodeRef, ...events }: PlantFootprintProps) {
   const habit = normalizeHabit(growthHabit);
 
   switch (habit) {
@@ -59,6 +71,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
       // than spreading out to fill its footprint (e.g. staked tomatoes, corn).
       return (
         <RegularPolygon
+          ref={nodeRef}
           x={x}
           y={y}
           sides={4}
@@ -76,6 +89,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
       // instead of occupying its footprint evenly (e.g. peas, pole beans).
       return (
         <RegularPolygon
+          ref={nodeRef}
           x={x}
           y={y}
           sides={3}
@@ -92,6 +106,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
       // sprawling stems) rather than staying compact (e.g. squash, strawberries).
       return (
         <Star
+          ref={nodeRef}
           x={x}
           y={y}
           numPoints={8}
@@ -109,6 +124,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
       // (e.g. lettuce, cabbage before it heads up).
       return (
         <Ring
+          ref={nodeRef}
           x={x}
           y={y}
           innerRadius={radius * 0.4}
@@ -128,7 +144,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
       // down and the canopy sits above, same as a real tree would from its
       // base position.
       return (
-        <Group x={x} y={y} {...events}>
+        <Group ref={nodeRef} x={x} y={y} {...events}>
           <Rect x={-radius * 0.12} y={0} width={radius * 0.24} height={radius} fill={stroke} listening={false} />
           <Circle y={-radius * 0.15} radius={radius * 0.75} fill={fill} opacity={opacity} stroke={stroke} strokeWidth={strokeWidth} />
         </Group>
@@ -136,6 +152,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
     default:
       return (
         <Circle
+          ref={nodeRef}
           x={x}
           y={y}
           radius={radius}

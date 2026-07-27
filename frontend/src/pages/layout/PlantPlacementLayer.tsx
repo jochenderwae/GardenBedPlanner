@@ -1,5 +1,5 @@
 import type Konva from "konva";
-import { useMemo, useState } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Group, Layer, Rect, Text } from "react-konva";
 import type { Bed, Geometry, PlacementType, Plant, Planting } from "@/api/client";
 import {
@@ -53,6 +53,23 @@ interface PlantPlacementLayerProps {
   onMarqueeSelect: (ids: number[], additive: boolean) => void;
 }
 
+/** Imperative escape hatch for Layout.tsx's Stage-level mouse handlers to
+ * drive an in-progress draw/marquee drag - see the big comment on `draw`/
+ * `marquee` state below for why this exists (a plain per-bed-shape
+ * mousemove/mouseup, the previous approach, stops firing the instant the
+ * pointer leaves the bed it started in, which is exactly what made the
+ * marquee/row/field drag preview freeze or vanish mid-gesture - #19). */
+export interface PlantPlacementLayerHandle {
+  /** `worldPos` is Stage-local (garden-space cm) - whatever
+   * `stage.getRelativePointerPosition()` returns, same coordinate space
+   * Layout.tsx's own `bedMarquee` already uses. No-op unless a draw/marquee
+   * gesture is actually in progress. */
+  handleStageMouseMove: (worldPos: { x: number; y: number }) => void;
+  /** Same rationale, for the Stage's own mouseup - completes whichever
+   * gesture (draw or marquee) is in progress, if any. */
+  handleStageMouseUp: (worldPos: { x: number; y: number }) => void;
+}
+
 /** Pick a plant first (Layout.tsx's toolbar), then draw where it goes:
  * single-click for a point placement, click-drag-release for a row (thin
  * rectangle along the drag line) or a field/area (the drawn rectangle
@@ -63,25 +80,48 @@ interface PlantPlacementLayerProps {
  * the Plants tab is active (the `active` prop - see Layout.tsx's tab
  * switcher, the same "locked while on another tab" mechanism used for
  * beds). */
-export function PlantPlacementLayer({
-  beds,
-  plantings,
-  plantsBySlug,
-  active,
-  armedPlant,
-  placementMode,
-  onPlace,
-  onMove,
-  onSelect,
-  selectedIds,
-  onMarqueeSelect,
-}: PlantPlacementLayerProps) {
+export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPlacementLayerProps>(function PlantPlacementLayer(
+  {
+    beds,
+    plantings,
+    plantsBySlug,
+    active,
+    armedPlant,
+    placementMode,
+    onPlace,
+    onMove,
+    onSelect,
+    selectedIds,
+    onMarqueeSelect,
+  },
+  ref,
+) {
+  // `start`/`current` are always in the *drag's own bed*'s local
+  // coordinates (bed-group-relative, matching `boundingRect(bed.geometry)`'s
+  // offset) - `bedId` is captured once at mousedown (see handleMouseDown,
+  // still per-bed-shape: hit-testing *which* bed a gesture starts in is
+  // exactly what a per-shape listener is reliable for) so later
+  // Stage-forwarded updates know which bed's offset to convert through.
   const [draw, setDraw] = useState<{ bedId: number; start: { x: number; y: number }; current: { x: number; y: number } } | null>(
     null,
   );
   const [marquee, setMarquee] = useState<
     { bedId: number; start: { x: number; y: number }; current: { x: number; y: number }; additive: boolean } | null
   >(null);
+
+  // Konva node registry (planting id -> its live Rect/PlantFootprint node),
+  // used only for the multi-select group-drag-follow effect below - lets
+  // `handleGroupDragMove` imperatively reposition every *other* selected
+  // marker's node while one of them is being natively dragged, the same
+  // per-tick-ref-update-without-a-React-render pattern BedNode.tsx's own
+  // dimension-label-follow already uses.
+  const nodeRefs = useRef<Map<number, Konva.Node>>(new Map());
+  const dragGroupRef = useRef<{
+    draggedId: number;
+    startX: number;
+    startY: number;
+    startPositions: Map<number, { x: number; y: number }>;
+  } | null>(null);
 
   const plantingsByBed = useMemo(() => {
     const map = new Map<number, Planting[]>();
@@ -134,39 +174,137 @@ export function PlantPlacementLayer({
     }
   }
 
-  function handleMouseMove(bedId: number, e: Konva.KonvaEventObject<MouseEvent>) {
-    const pos = localPoint(e);
-    if (!pos) return;
-    if (draw && draw.bedId === bedId) {
-      setDraw({ ...draw, current: pos });
-      return;
-    }
-    if (marquee && marquee.bedId === bedId) setMarquee({ ...marquee, current: pos });
-  }
+  /** Converts a Stage-local (world/garden-space cm) point to the given bed's
+   * own local coordinates - what `draw`/`marquee.current` are tracked in -
+   * by subtracting that bed's own bounding-rect offset. Mirrors what
+   * `localPoint`'s `getRelativePointerPosition()` already did implicitly
+   * when called on a bed-Group-child shape. */
+  const bedLocalPoint = useCallback(
+    (bedId: number, worldPos: { x: number; y: number }): { x: number; y: number } | null => {
+      const bed = beds.find((b) => b.id === bedId);
+      if (!bed) return null;
+      const bedRect = boundingRect(bed.border_geometry);
+      return { x: worldPos.x - bedRect.x, y: worldPos.y - bedRect.y };
+    },
+    [beds],
+  );
 
-  function handleMouseUp(bedId: number, e: Konva.KonvaEventObject<MouseEvent>) {
-    if (draw && draw.bedId === bedId) {
+  const completeDraw = useCallback(
+    (pos: { x: number; y: number }) => {
+      if (!draw) return;
       if (armedPlant) {
-        const pos = localPoint(e) ?? draw.current;
         const geometry =
           placementMode === "row"
             ? rowGeometryFromDrag(draw.start, pos, thicknessCm)
             : fieldGeometryFromDrag(draw.start, pos);
-        if (geometry) onPlace(bedId, geometry, placementMode);
+        if (geometry) onPlace(draw.bedId, geometry, placementMode);
       }
       setDraw(null);
-      return;
-    }
-    if (marquee && marquee.bedId === bedId) {
-      const pos = localPoint(e) ?? marquee.current;
+    },
+    [draw, armedPlant, placementMode, thicknessCm, onPlace],
+  );
+
+  const completeMarquee = useCallback(
+    (pos: { x: number; y: number }) => {
+      if (!marquee) return;
       const marqueeRect = normalizedRect(marquee.start, pos);
-      const bedPlantings = plantingsByBed.get(bedId) ?? [];
+      const bedPlantings = plantingsByBed.get(marquee.bedId) ?? [];
       const hitIds = bedPlantings
         .filter((p) => p.id != null && rectanglesOverlap(marqueeRect, boundingRect(p.geometry)))
         .map((p) => p.id as number);
       onMarqueeSelect(hitIds, marquee.additive);
       setMarquee(null);
+    },
+    [marquee, plantingsByBed, onMarqueeSelect],
+  );
+
+  // See PlantPlacementLayerHandle's own doc - Layout.tsx's Stage-level
+  // onMouseMove/onMouseUp forward here instead of relying on a per-bed-shape
+  // listener, so an in-progress draw/marquee keeps tracking (and stays
+  // visible) even once the drag crosses outside the bed it started in.
+  useImperativeHandle(
+    ref,
+    () => ({
+      handleStageMouseMove(worldPos) {
+        if (draw) {
+          const pos = bedLocalPoint(draw.bedId, worldPos);
+          if (pos) setDraw((prev) => (prev ? { ...prev, current: pos } : prev));
+          return;
+        }
+        if (marquee) {
+          const pos = bedLocalPoint(marquee.bedId, worldPos);
+          if (pos) setMarquee((prev) => (prev ? { ...prev, current: pos } : prev));
+        }
+      },
+      handleStageMouseUp(worldPos) {
+        if (draw) {
+          completeDraw(bedLocalPoint(draw.bedId, worldPos) ?? draw.current);
+          return;
+        }
+        if (marquee) {
+          completeMarquee(bedLocalPoint(marquee.bedId, worldPos) ?? marquee.current);
+        }
+      },
+    }),
+    [draw, marquee, bedLocalPoint, completeDraw, completeMarquee],
+  );
+
+  /** Registers (or, called with `null`, deregisters on unmount) a planting
+   * marker's live Konva node, keyed by planting id - see `nodeRefs` above. */
+  function registerNode(plantingId: number | null | undefined, node: Konva.Node | null) {
+    if (plantingId == null) return;
+    if (node) nodeRefs.current.set(plantingId, node);
+    else nodeRefs.current.delete(plantingId);
+  }
+
+  /** Snapshots every *other* selected marker's current on-screen position at
+   * the start of a drag gesture - the baseline `handleGroupDragMove` below
+   * translates from on every subsequent tick. A no-op (leaves
+   * `dragGroupRef` unset) unless this drag is actually part of a 2+-member
+   * selection, matching `Layout.tsx`'s `handlePlantingMove`'s own identical
+   * threshold for when a drag becomes a group move. */
+  function handleGroupDragStart(plantingId: number | null | undefined, e: Konva.KonvaEventObject<DragEvent>) {
+    if (plantingId == null || selectedIds.size <= 1 || !selectedIds.has(plantingId)) {
+      // Explicitly clear rather than leave whatever a previous gesture left
+      // behind - guards against a stale `dragGroupRef` (e.g. an interrupted
+      // prior drag that skipped its own onDragEnd) being mistaken for this
+      // one if this same planting is ever dragged again later while *not*
+      // part of a multi-selection.
+      dragGroupRef.current = null;
+      return;
     }
+    const startPositions = new Map<number, { x: number; y: number }>();
+    for (const id of selectedIds) {
+      if (id === plantingId) continue;
+      const node = nodeRefs.current.get(id);
+      if (node) startPositions.set(id, { x: node.x(), y: node.y() });
+    }
+    dragGroupRef.current = { draggedId: plantingId, startX: e.target.x(), startY: e.target.y(), startPositions };
+  }
+
+  /** Live-follow: every other selected marker's Konva node is imperatively
+   * repositioned by the same delta the actively-dragged node has moved so
+   * far, each frame - purely visual (Konva ref mutation + `batchDraw`, no
+   * React state touched), matching BedNode.tsx's own live-dimension-label
+   * pattern. The *real* geometry commit for all of them still happens once,
+   * on drag-end, via `onMove` -> `Layout.tsx`'s `handlePlantingMove`, which
+   * already derives the same delta from before/after geometry and applies
+   * it to every selected planting as a single combined undo/redo entry -
+   * this only fixes the previously-missing live visual, not the eventual
+   * commit logic (already correct). */
+  function handleGroupDragMove(plantingId: number | null | undefined, e: Konva.KonvaEventObject<DragEvent>) {
+    const group = dragGroupRef.current;
+    if (!group || plantingId == null || group.draggedId !== plantingId) return;
+    const dx = e.target.x() - group.startX;
+    const dy = e.target.y() - group.startY;
+    for (const [id, pos] of group.startPositions) {
+      nodeRefs.current.get(id)?.position({ x: pos.x + dx, y: pos.y + dy });
+    }
+    e.target.getLayer()?.batchDraw();
+  }
+
+  function handleGroupDragEnd() {
+    dragGroupRef.current = null;
   }
 
   return (
@@ -190,8 +328,6 @@ export function PlantPlacementLayer({
               listening={canDraw || canSelect}
               onClick={(e) => handleClick(bed.id as number, e)}
               onMouseDown={(e) => handleMouseDown(bed.id as number, e)}
-              onMouseMove={(e) => handleMouseMove(bed.id as number, e)}
-              onMouseUp={(e) => handleMouseUp(bed.id as number, e)}
             />
             {preview && (
               <Rect
@@ -222,6 +358,10 @@ export function PlantPlacementLayer({
                 selected={planting.id != null && selectedIds.has(planting.id)}
                 onMove={(geometry) => onMove(planting, geometry)}
                 onSelect={(additive) => onSelect(planting, additive)}
+                registerNode={(node) => registerNode(planting.id, node)}
+                onGroupDragStart={(e) => handleGroupDragStart(planting.id, e)}
+                onGroupDragMove={(e) => handleGroupDragMove(planting.id, e)}
+                onGroupDragEnd={handleGroupDragEnd}
               />
             ))}
           </Group>
@@ -229,7 +369,7 @@ export function PlantPlacementLayer({
       })}
     </Layer>
   );
-}
+});
 
 // Multi-selection highlight - same blue BedNode/GardenBoundary already use
 // for their own single-selection state.
@@ -242,6 +382,10 @@ function PlantingMarker({
   selected,
   onMove,
   onSelect,
+  registerNode,
+  onGroupDragStart,
+  onGroupDragMove,
+  onGroupDragEnd,
 }: {
   planting: Planting;
   plant: Plant | undefined;
@@ -254,6 +398,16 @@ function PlantingMarker({
    * multi-selection) and false for a plain click (open the single-planting
    * edit panel instead) - see PlantPlacementLayerProps.onSelect. */
   onSelect: (additive: boolean) => void;
+  /** See PlantPlacementLayer's `nodeRefs`/`registerNode` - lets a *sibling*
+   * marker's drag imperatively reposition this one during a multi-select
+   * group drag. */
+  registerNode: (node: Konva.Node | null) => void;
+  /** See PlantPlacementLayer's `handleGroupDragStart`/`Move`/`End` - wired
+   * onto this marker's own drag events so dragging *any* selected marker
+   * (not just this one) drives the whole group's live visual follow. */
+  onGroupDragStart: (e: Konva.KonvaEventObject<DragEvent>) => void;
+  onGroupDragMove: (e: Konva.KonvaEventObject<DragEvent>) => void;
+  onGroupDragEnd: () => void;
 }) {
   const label = plant?.common_name ?? planting.plant_slug;
   const color = colorForSlug(planting.plant_slug);
@@ -262,6 +416,7 @@ function PlantingMarker({
     const props = rectRenderProps(planting.geometry);
 
     function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
+      onGroupDragEnd();
       const node = e.target;
       // Grid-snap the drag's final position - see BedNode.tsx's identical
       // snapToGrid usage; planting drag didn't snap at all before (see the
@@ -279,6 +434,7 @@ function PlantingMarker({
     return (
       <>
         <Rect
+          ref={registerNode}
           x={props.x}
           y={props.y}
           width={props.width}
@@ -290,6 +446,8 @@ function PlantingMarker({
           strokeWidth={selected ? 3 : 1.5}
           draggable={active}
           listening={active}
+          onDragStart={onGroupDragStart}
+          onDragMove={onGroupDragMove}
           onDragEnd={handleDragEnd}
           onClick={(e) => onSelect(e.evt.shiftKey)}
           onTap={() => onSelect(false)}
@@ -307,6 +465,7 @@ function PlantingMarker({
   const centerY = rect.y + rect.height / 2;
 
   function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
+    onGroupDragEnd();
     const node = e.target;
     onMove({
       type: "rectangle",
@@ -331,6 +490,9 @@ function PlantingMarker({
         strokeWidth={selected ? 2.5 : 1}
         draggable={active}
         listening={active}
+        nodeRef={registerNode}
+        onDragStart={onGroupDragStart}
+        onDragMove={onGroupDragMove}
         onDragEnd={handleDragEnd}
         onClick={(e) => onSelect(e.evt.shiftKey)}
         onTap={() => onSelect(false)}

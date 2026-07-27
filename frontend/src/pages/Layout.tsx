@@ -51,7 +51,7 @@ import { GardenPanel } from "./layout/GardenPanel";
 import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPanel";
 import { OnboardingPrompt } from "./layout/OnboardingPrompt";
-import { PlantPlacementLayer, type PlacementMode } from "./layout/PlantPlacementLayer";
+import { PlantPlacementLayer, type PlacementMode, type PlantPlacementLayerHandle } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel, type PlantingPanelHandle } from "./layout/PlantingPanel";
 import { RulerLayer } from "./layout/RulerLayer";
@@ -159,6 +159,7 @@ export function Layout() {
   const bedPanelRef = useRef<BedPanelHandle>(null);
   const plantingPanelRef = useRef<PlantingPanelHandle>(null);
   const bulkPlantingPanelRef = useRef<BulkPlantingPanelHandle>(null);
+  const plantPlacementRef = useRef<PlantPlacementLayerHandle>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
   // The canvas Stage tracks whichever wrapper div is currently mounted
   // ("mine" mode or "example" mode - only one renders at a time, see the
@@ -369,7 +370,7 @@ export function Layout() {
    * handlePanMouseDown); a left-button mousedown that lands on empty canvas
    * (not on a bed or any other interactive node - `e.target === stage`)
    * clears the current bed selection and, on the Planters tab, starts a
-   * marquee-select drag (see handleBedMarqueeMouseMove/Up below). */
+   * marquee-select drag (see handleStageMouseMove/Up below). */
   function handleMineStageMouseDown(e: Konva.KonvaEventObject<MouseEvent>) {
     if (handlePanMouseDown(e)) return;
     if (e.evt.button !== 0) return;
@@ -383,34 +384,48 @@ export function Layout() {
     }
   }
 
-  function handleBedMarqueeMouseMove(e: Konva.KonvaEventObject<MouseEvent>) {
-    if (!bedMarquee) return;
+  /** The "mine" Stage's own onMouseMove - drives whichever drag-in-progress
+   * actually owns it: a bed marquee (Planters tab, tracked here directly) or
+   * a planting draw/marquee (Plants tab, forwarded to
+   * `PlantPlacementLayer`'s own imperative handle - see its doc for why a
+   * plain per-bed-shape listener wasn't reliable enough, #19). Attached
+   * directly to the Stage rather than any one shape so it keeps firing
+   * (and the drag rectangle stays visible/tracking) even once the pointer
+   * crosses outside whatever shape the drag started on. */
+  function handleStageMouseMove(e: Konva.KonvaEventObject<MouseEvent>) {
     const stage = e.target.getStage();
     const pos = stage?.getRelativePointerPosition();
-    if (pos) setBedMarquee((prev) => (prev ? { ...prev, current: pos } : prev));
+    if (!pos) return;
+    if (bedMarquee) setBedMarquee((prev) => (prev ? { ...prev, current: pos } : prev));
+    plantPlacementRef.current?.handleStageMouseMove(pos);
   }
 
-  /** Completes a bed marquee drag - every bed whose bounding box overlaps
-   * the drawn rectangle gets selected. A single hit goes through the normal
-   * `selectedId` (so BedPanel opens, matching a plain click); 2+ hits are
+  /** Same rationale as `handleStageMouseMove` for the Stage's own mouseup -
+   * completes a bed marquee (every bed whose bounding box overlaps the
+   * drawn rectangle gets selected: a single hit goes through the normal
+   * `selectedId` so BedPanel opens, matching a plain click; 2+ hits are
    * highlighted via `selectedBedIds` instead, since there's no bulk-bed-edit
-   * panel yet (see the state's own doc above). */
-  function handleBedMarqueeMouseUp(e: Konva.KonvaEventObject<MouseEvent>) {
-    if (!bedMarquee) return;
+   * panel yet) or forwards to `PlantPlacementLayer` to complete its own
+   * draw/marquee. */
+  function handleStageMouseUp(e: Konva.KonvaEventObject<MouseEvent>) {
     const stage = e.target.getStage();
-    const pos = stage?.getRelativePointerPosition() ?? bedMarquee.current;
-    const rect = normalizedRect(bedMarquee.start, pos);
-    const hitIds = beds
-      .filter((b) => b.id != null && rectanglesOverlap(rect, boundingRect(b.border_geometry)))
-      .map((b) => b.id as number);
-    setBedMarquee(null);
-    if (hitIds.length === 1) {
-      setSelectedId(hitIds[0]);
-      setSelectedBedIds(new Set());
-    } else if (hitIds.length > 1) {
-      setSelectedId(null);
-      setSelectedBedIds(new Set(hitIds));
+    const pos = stage?.getRelativePointerPosition();
+    if (bedMarquee) {
+      const resolvedPos = pos ?? bedMarquee.current;
+      const rect = normalizedRect(bedMarquee.start, resolvedPos);
+      const hitIds = beds
+        .filter((b) => b.id != null && rectanglesOverlap(rect, boundingRect(b.border_geometry)))
+        .map((b) => b.id as number);
+      setBedMarquee(null);
+      if (hitIds.length === 1) {
+        setSelectedId(hitIds[0]);
+        setSelectedBedIds(new Set());
+      } else if (hitIds.length > 1) {
+        setSelectedId(null);
+        setSelectedBedIds(new Set(hitIds));
+      }
     }
+    if (pos) plantPlacementRef.current?.handleStageMouseUp(pos);
   }
 
   /** "Fit to garden": frame the garden boundary + every bed (falling back
@@ -885,8 +900,8 @@ export function Layout() {
               scaleY={viewport.scale}
               onWheel={handleWheel}
               onMouseDown={handleMineStageMouseDown}
-              onMouseMove={handleBedMarqueeMouseMove}
-              onMouseUp={handleBedMarqueeMouseUp}
+              onMouseMove={handleStageMouseMove}
+              onMouseUp={handleStageMouseUp}
             >
               <Layer listening={false}>
                 <GridLines canvasSize={canvasSize} viewport={viewport} />
@@ -950,6 +965,7 @@ export function Layout() {
               {tab === "equipment" && <EquipmentLayer beds={beds} equipment={equipmentList} />}
               {tab === "plants" && (
                 <PlantPlacementLayer
+                  ref={plantPlacementRef}
                   beds={beds}
                   plantings={plantings}
                   plantsBySlug={plantsBySlug}
