@@ -39,12 +39,17 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['seeds', 'pods'] inferred by Ollama; reasoning: Runner Beans are primarily grown for their edible beans, which can be eaten as pods when immature and as seeds when mature."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "edible_parts widened from ['seeds', 'pods'] to ['seeds', 'pods', 'roots'] (GitHub issue #165): this plant's own description text explicitly states roots is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
     }
   ],
   "growth_habit": "climbing",
   "life_cycle": "annual",
   "edible_parts": [
     "seeds",
-    "pods"
+    "pods",
+    "roots"
   ]
 }

@@ -53,6 +53,10 @@
     {
       "attribution": "manual-edible-parts-normalization",
       "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['roots'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growing_information": [
@@ -146,5 +150,6 @@
       "end_month": 2
     }
   ],
-  "parent_plant_slug": "potato"
+  "parent_plant_slug": "potato",
+  "is_edible": true
 }

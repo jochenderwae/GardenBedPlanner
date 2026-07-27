@@ -104,6 +104,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Chives are explicitly described as 'hardy perennial' and are grown for their tops throughout the season."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "edible_parts widened from ['leaves'] to ['leaves', 'flowers'] (GitHub issue #165): this plant's own description text explicitly states flowers is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
     }
   ],
   "growing_information": [
@@ -138,7 +142,8 @@
   "life_cycle": "perennial",
   "soil_type": "well-drained soil",
   "edible_parts": [
-    "leaves"
+    "leaves",
+    "flowers"
   ],
   "periods": [
     {

@@ -30,11 +30,16 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['leaves'] inferred by Ollama; reasoning: Salad Burnet is primarily used for its young leaves in salads and other dishes."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['leaves'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growth_habit": "upright",
   "life_cycle": "perennial",
   "edible_parts": [
     "leaves"
-  ]
+  ],
+  "is_edible": true
 }

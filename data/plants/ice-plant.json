@@ -11,7 +11,7 @@
   "genus": "Carpobrotus",
   "soil_ph_min": 7.0,
   "soil_ph_max": 7.5,
-  "is_edible": false,
+  "is_edible": true,
   "data_sources": [
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
@@ -29,6 +29,14 @@
     {
       "attribution": "ollama-growth-habit-inference",
       "notes": "growth_habit='spreading' inferred by Ollama (no Trefle growth_habit data (no cached match or null field)); reasoning: The Ice Plant is described as a ground-creeping plant that spreads readily through seed and segmentation."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['leaves'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "edible_parts widened from ['leaves'] to ['leaves', 'fruit'] (GitHub issue #165): this plant's own description text explicitly states fruit is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
     }
   ],
   "growing_information": [
@@ -42,6 +50,7 @@
   ],
   "growth_habit": "spreading",
   "edible_parts": [
-    "leaves"
+    "leaves",
+    "fruit"
   ]
 }

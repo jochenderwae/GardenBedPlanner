@@ -31,12 +31,17 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['leaves', 'flowers'] inferred by Ollama; reasoning: Garlic chives are primarily used for their leaves and immature flower buds in cooking."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "edible_parts widened from ['leaves', 'flowers'] to ['leaves', 'flowers', 'stems'] (GitHub issue #165): this plant's own description text explicitly states stems is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
     }
   ],
   "growth_habit": "upright",
   "life_cycle": "perennial",
   "edible_parts": [
     "leaves",
-    "flowers"
+    "flowers",
+    "stems"
   ]
 }

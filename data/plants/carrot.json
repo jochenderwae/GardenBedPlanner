@@ -102,6 +102,10 @@
     {
       "attribution": "manual-edible-parts-normalization",
       "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "edible_parts widened from ['roots'] to ['roots', 'leaves'] (GitHub issue #165): this plant's own description text explicitly states leaves is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
     }
   ],
   "growing_information": [
@@ -173,7 +177,8 @@
   "life_cycle": "biennial",
   "soil_type": "deep, warm, sandy soil or light loam",
   "edible_parts": [
-    "roots"
+    "roots",
+    "leaves"
   ],
   "periods": [
     {

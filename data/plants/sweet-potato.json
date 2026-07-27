@@ -13,7 +13,8 @@
   "is_edible": true,
   "edible_parts": [
     "roots",
-    "tubers"
+    "tubers",
+    "leaves"
   ],
   "companions": [
     {
@@ -82,6 +83,10 @@
     {
       "attribution": "manual-edible-parts-normalization",
       "notes": "edible_parts normalized from ['root', 'roots', 'tubers'] to ['roots', 'tubers'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "edible_parts widened from ['roots', 'tubers'] to ['roots', 'tubers', 'leaves'] (GitHub issue #165): this plant's own description text explicitly states leaves is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
     }
   ],
   "growing_information": [

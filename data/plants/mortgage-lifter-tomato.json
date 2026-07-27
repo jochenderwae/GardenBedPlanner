@@ -49,6 +49,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='annual' inferred by Ollama; reasoning: The Mortgage Lifter Tomato is grown as an annual in temperate climates like Belgium, as it is typically started from seed each year and does not survive the winter."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['fruit'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growing_information": [
@@ -144,5 +148,6 @@
       "end_month": 5
     }
   ],
-  "parent_plant_slug": "tomato"
+  "parent_plant_slug": "tomato",
+  "is_edible": true
 }

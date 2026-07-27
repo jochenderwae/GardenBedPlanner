@@ -37,6 +37,10 @@
     {
       "attribution": "ollama-life-cycle-inference",
       "notes": "life_cycle='perennial' inferred by Ollama; reasoning: Green Bartlett Pear trees are typically grown as long-lived fruit trees in home gardens."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['fruit'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growing_information": [
@@ -92,5 +96,6 @@
       "end_month": 9
     }
   ],
-  "parent_plant_slug": "pear"
+  "parent_plant_slug": "pear",
+  "is_edible": true
 }

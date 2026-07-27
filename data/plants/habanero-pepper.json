@@ -10,7 +10,7 @@
   "sun_level": "full_sun",
   "family": "Solanaceae",
   "genus": "Capsicum",
-  "is_edible": false,
+  "is_edible": true,
   "data_sources": [
     {
       "source_url": "https://github.com/thefullnacho/openfarm-crops-rescue",
@@ -31,6 +31,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The habanero pepper is primarily grown for its fruit, which is the edible part of the plant."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['fruit'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growth_habit": "upright",

@@ -76,6 +76,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['pods'] inferred by Ollama; reasoning: Pole beans are typically eaten as pods when they are immature and tender."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['pods'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growth_habit": "climbing",
@@ -85,5 +89,6 @@
   "edible_parts": [
     "pods"
   ],
-  "water_needs_mm_per_week": 25.4
+  "water_needs_mm_per_week": 25.4,
+  "is_edible": true
 }

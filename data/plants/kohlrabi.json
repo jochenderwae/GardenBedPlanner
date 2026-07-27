@@ -96,6 +96,10 @@
     {
       "attribution": "manual-edible-parts-normalization",
       "notes": "edible_parts normalized from ['stem'] to ['stems'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "edible_parts widened from ['stems'] to ['stems', 'leaves'] (GitHub issue #165): this plant's own description text explicitly states leaves is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
     }
   ],
   "growing_information": [
@@ -136,7 +140,8 @@
   "growth_habit": "upright",
   "life_cycle": "annual",
   "edible_parts": [
-    "stems"
+    "stems",
+    "leaves"
   ],
   "water_needs_mm_per_week": 25.4
 }

@@ -10,7 +10,7 @@
   "sun_level": "full_sun",
   "family": "Oxalidaceae",
   "genus": "Averrhoa",
-  "is_edible": false,
+  "is_edible": true,
   "companions": [
     {
       "companion_slug": "breadfruit",
@@ -40,6 +40,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['fruit'] inferred by Ollama; reasoning: The edible part of the Star Fruit plant is its fruit."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['fruit'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growth_habit": "tree",

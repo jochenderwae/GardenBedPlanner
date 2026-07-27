@@ -13,7 +13,7 @@
   "days_to_maturity": 58,
   "soil_ph_min": 7.5,
   "soil_ph_max": 8.0,
-  "is_edible": false,
+  "is_edible": true,
   "succession_enabled": true,
   "succession_interval_days": 3,
   "succession_max_sowings": 4,
@@ -110,6 +110,14 @@
     {
       "attribution": "manual-edible-parts-normalization",
       "notes": "edible_parts normalized from ['root'] to ['roots'] - closed category list defined for backlog #133 (see plant.schema.json's edible_parts description)"
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['roots'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "edible_parts widened from ['roots'] to ['roots', 'leaves'] (GitHub issue #165): this plant's own description text explicitly states leaves is/are also eaten, not just the originally-listed part(s) - a completeness gap in an already-populated (pre-backlog-#133) edible_parts value, not a wrong value."
     }
   ],
   "growing_information": [
@@ -183,7 +191,8 @@
   "life_cycle": "annual",
   "soil_type": "well-drained, rich soil",
   "edible_parts": [
-    "roots"
+    "roots",
+    "leaves"
   ],
   "periods": [
     {

@@ -28,6 +28,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['roots'] inferred by Ollama; reasoning: Purple daikon is a type of radish, and like other radishes, the edible part is the root."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['roots'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growth_habit": "rosette",
@@ -37,5 +41,6 @@
   "edible_parts": [
     "roots"
   ],
-  "parent_plant_slug": "daikon"
+  "parent_plant_slug": "daikon",
+  "is_edible": true
 }

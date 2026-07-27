@@ -12,7 +12,7 @@
   "genus": "Matricaria",
   "soil_ph_min": 5.0,
   "soil_ph_max": 5.5,
-  "is_edible": false,
+  "is_edible": true,
   "companions": [
     {
       "companion_slug": "choy-sum",
@@ -59,6 +59,10 @@
     {
       "attribution": "ollama-edible-parts-inference",
       "notes": "edible_parts=['flowers'] inferred by Ollama; reasoning: German Chamomile is primarily used for its flowers, which are often dried and used to make tea."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['flowers'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
     }
   ],
   "growth_habit": "upright",
