@@ -274,6 +274,25 @@ export function deleteSeedInfo(slug: string): Promise<void> {
   return apiFetch(satellitePath(slug, "seed-info"), { method: "DELETE" });
 }
 
+export type RotationWarning = components["schemas"]["RotationWarning"];
+
+/** Same-family crop-rotation check for a candidate plant in a given bed -
+ * see backend/app/services/rotation.py's own docstring for the exact
+ * semantics (family-based, not exact-species; ignores undated plantings).
+ * `asOf`/`lookbackDaysOverride` are optional - the backend defaults `as_of`
+ * to today and `lookback_days` to `DEFAULT_LOOKBACK_DAYS` (730) when
+ * omitted, matching what most callers want. */
+export function checkRotation(
+  bedId: number,
+  plantSlug: string,
+  options?: { asOf?: string; lookbackDaysOverride?: number },
+): Promise<RotationWarning> {
+  const params = new URLSearchParams({ plant_slug: plantSlug });
+  if (options?.asOf) params.set("as_of", options.asOf);
+  if (options?.lookbackDaysOverride != null) params.set("lookback_days", String(options.lookbackDaysOverride));
+  return apiFetch(`/api/beds/${bedId}/rotation-check?${params.toString()}`);
+}
+
 export type PushSubscription = components["schemas"]["PushSubscription"];
 export type PushSubscriptionRegister = components["schemas"]["PushSubscriptionRegister"];
 

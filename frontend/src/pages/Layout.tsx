@@ -16,6 +16,7 @@ import Konva from "konva";
 // on shapes, only the app-level pan.
 Konva.dragButtons = [0];
 import {
+  checkRotation,
   createPlanting,
   getExampleGarden,
   getGarden,
@@ -39,6 +40,7 @@ import {
   type Planting,
   type PlantingUpdate,
   type PolygonGeometry,
+  type RotationWarning,
 } from "@/api/client";
 import { BedNode } from "./layout/BedNode";
 import { BedPanel, type BedPanelHandle } from "./layout/BedPanel";
@@ -152,6 +154,14 @@ export function Layout() {
   // Non-empty whenever BulkPlantingPanel is showing instead of PlantingPanel.
   const [selectedPlantingIds, setSelectedPlantingIds] = useState<Set<number>>(new Set());
   const [tooltip, setTooltip] = useState<PlantingTooltipState | null>(null);
+  // Same-family crop-rotation warnings (#26), keyed by planting id - only
+  // populated for a planting right after it's freshly placed (see
+  // plantingCreateMutation's onSuccess below), not proactively checked for
+  // every existing planting on load. A minimal version of the full
+  // arm-a-candidate-and-see-every-conflict interaction #174 designs -
+  // scoped here to "the thing you just planted gets flagged if it repeats a
+  // recent family," matching this ticket's own "How to test" steps.
+  const [rotationWarnings, setRotationWarnings] = useState<Map<number, RotationWarning>>(new Map());
   // Imperative handles onto the currently-open panel so the global
   // Delete-key handler below can trigger the exact same confirm-dialog-open
   // action as that panel's own trash button - see the "Keyboard shortcuts"
@@ -291,6 +301,19 @@ export function Layout() {
       createPlanting({ ...payload, planted_date: null, removed_date: null }),
     onSuccess: (created) => {
       queryClient.setQueryData<Planting[]>(["plantings"], (old) => (old ? [...old, created] : [created]));
+      // Fire-and-forget: flag the just-placed planting if it repeats a
+      // same-family crop recently grown in this bed (#26). A failed check
+      // (network hiccup, etc.) just means no warning shows - not worth
+      // surfacing as an error for a purely advisory indicator.
+      if (created.id != null) {
+        const plantingId = created.id;
+        checkRotation(created.bed_id, created.plant_slug)
+          .then((warning) => {
+            if (!warning.has_warning) return;
+            setRotationWarnings((prev) => new Map(prev).set(plantingId, warning));
+          })
+          .catch(() => {});
+      }
     },
   });
   const plantingUpdateMutation = useMutation({
@@ -977,6 +1000,8 @@ export function Layout() {
                   onSelect={handlePlantingSelect}
                   selectedIds={selectedPlantingIds}
                   onMarqueeSelect={handleMarqueeSelect}
+                  rotationWarnings={rotationWarnings}
+                  onHoverWarning={setTooltip}
                 />
               )}
               {/* Drawn last (topmost Konva Layer) so opaque bed/garden-boundary

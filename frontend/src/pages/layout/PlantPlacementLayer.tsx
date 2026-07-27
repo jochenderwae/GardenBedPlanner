@@ -1,7 +1,8 @@
 import type Konva from "konva";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Group, Layer, Rect, Text } from "react-konva";
-import type { Bed, Geometry, PlacementType, Plant, Planting } from "@/api/client";
+import { Group, Layer, Rect, RegularPolygon, Text } from "react-konva";
+import type { Bed, Geometry, PlacementType, Plant, Planting, RotationWarning } from "@/api/client";
+import type { PlantingTooltipState } from "./ExampleGardenView";
 import {
   boundingRect,
   colorForSlug,
@@ -51,6 +52,19 @@ interface PlantPlacementLayerProps {
    * replace it outright (plain drag, including an empty/same-point drag -
    * the "click empty space to clear the selection" case). */
   onMarqueeSelect: (ids: number[], additive: boolean) => void;
+  /** Same-family crop-rotation warnings (#26), keyed by planting id - a
+   * present entry (always `has_warning: true`, see Layout.tsx's own
+   * `rotationWarnings` state doc) renders a small warning triangle
+   * overlaid on that planting's own footprint instead of a blocking popup,
+   * per #174's interaction design (this is the minimal rotation-only slice
+   * of it - #174 itself covers the fuller arm-a-candidate/companion-check
+   * version once a UI/UX pass settles the final icon design). */
+  rotationWarnings: Map<number, RotationWarning>;
+  /** Hover/leave on a warning triangle - rendered by the caller via the
+   * same `PlantingTooltip` component/state this file's own plant-name
+   * hover (BedNode.tsx-style) and ExampleGardenView's planting-dot hover
+   * already reuse, rather than a new tooltip primitive. */
+  onHoverWarning: (tooltip: PlantingTooltipState | null) => void;
 }
 
 /** Imperative escape hatch for Layout.tsx's Stage-level mouse handlers to
@@ -93,6 +107,8 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
     onSelect,
     selectedIds,
     onMarqueeSelect,
+    rotationWarnings,
+    onHoverWarning,
   },
   ref,
 ) {
@@ -362,6 +378,8 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
                 onGroupDragStart={(e) => handleGroupDragStart(planting.id, e)}
                 onGroupDragMove={(e) => handleGroupDragMove(planting.id, e)}
                 onGroupDragEnd={handleGroupDragEnd}
+                rotationWarning={planting.id != null ? rotationWarnings.get(planting.id) : undefined}
+                onHoverWarning={onHoverWarning}
               />
             ))}
           </Group>
@@ -375,6 +393,59 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
 // for their own single-selection state.
 const SELECTION_HIGHLIGHT_COLOR = "#1d4ed8";
 
+// Matches this app's existing warning color language (see
+// seed-guide/SeedGuideView.tsx's amber "sow" styling) - Tailwind's
+// amber-600.
+const WARNING_TRIANGLE_COLOR = "#d97706";
+const WARNING_TRIANGLE_RADIUS_CM = 7;
+
+/** Small filled triangle flagging a same-family crop-rotation conflict
+ * (#26) - anchored at a marker's own corner, hover-only (no click target of
+ * its own, distinct from the marker's click-to-edit/shift-click-to-select
+ * interactions) via the shared `PlantingTooltip`. Deliberately minimal:
+ * #174 owns the fuller warning/good-companion-checkmark icon design once a
+ * UI/UX pass settles on it; this is the rotation-only slice #26 itself
+ * authorizes ("building the minimal version of it if #174 hasn't landed
+ * yet"), not a second indicator system. */
+function WarningTriangle({
+  x,
+  y,
+  warning,
+  onHover,
+}: {
+  x: number;
+  y: number;
+  warning: RotationWarning;
+  onHover: (tooltip: PlantingTooltipState | null) => void;
+}) {
+  function showTooltip(e: Konva.KonvaEventObject<MouseEvent>) {
+    const stageBox = e.target.getStage()?.container().getBoundingClientRect();
+    if (!stageBox) return;
+    const conflictName = warning.conflicting_plant_common_name ?? warning.conflicting_plant_slug ?? "a recent planting";
+    onHover({
+      x: e.evt.clientX - stageBox.left,
+      y: e.evt.clientY - stageBox.top,
+      title: `Rotation warning: ${warning.family_name ?? "same family"}`,
+      subtitle: `Follows ${conflictName} in this bed - same family, disease-carryover risk.`,
+    });
+  }
+
+  return (
+    <RegularPolygon
+      x={x}
+      y={y}
+      sides={3}
+      radius={WARNING_TRIANGLE_RADIUS_CM}
+      fill={WARNING_TRIANGLE_COLOR}
+      stroke="#ffffff"
+      strokeWidth={1}
+      onMouseEnter={showTooltip}
+      onMouseMove={showTooltip}
+      onMouseLeave={() => onHover(null)}
+    />
+  );
+}
+
 function PlantingMarker({
   planting,
   plant,
@@ -386,6 +457,8 @@ function PlantingMarker({
   onGroupDragStart,
   onGroupDragMove,
   onGroupDragEnd,
+  rotationWarning,
+  onHoverWarning,
 }: {
   planting: Planting;
   plant: Plant | undefined;
@@ -408,6 +481,10 @@ function PlantingMarker({
   onGroupDragStart: (e: Konva.KonvaEventObject<DragEvent>) => void;
   onGroupDragMove: (e: Konva.KonvaEventObject<DragEvent>) => void;
   onGroupDragEnd: () => void;
+  /** See PlantPlacementLayerProps.rotationWarnings - undefined means no
+   * conflict (or none checked yet), in which case no triangle renders. */
+  rotationWarning: RotationWarning | undefined;
+  onHoverWarning: (tooltip: PlantingTooltipState | null) => void;
 }) {
   const label = plant?.common_name ?? planting.plant_slug;
   const color = colorForSlug(planting.plant_slug);
@@ -455,6 +532,9 @@ function PlantingMarker({
         {active && (
           <Text x={props.x + 4} y={props.y - 14} text={label} fontSize={10} fill="#1f2937" listening={false} />
         )}
+        {rotationWarning && (
+          <WarningTriangle x={props.x + props.width} y={props.y} warning={rotationWarning} onHover={onHoverWarning} />
+        )}
       </>
     );
   }
@@ -499,6 +579,14 @@ function PlantingMarker({
       />
       {active && (
         <Text x={centerX + radius + 3} y={centerY - 5} text={label} fontSize={10} fill="#1f2937" listening={false} />
+      )}
+      {rotationWarning && (
+        <WarningTriangle
+          x={centerX + radius * 0.7}
+          y={centerY - radius * 0.7}
+          warning={rotationWarning}
+          onHover={onHoverWarning}
+        />
       )}
     </>
   );
