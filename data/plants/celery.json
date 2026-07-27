@@ -54,7 +54,7 @@
   "pest_interactions": [
     {
       "interaction_type": "repels",
-      "pest_or_insect": "whiteflies [ 47 ]"
+      "pest_or_insect": "whiteflies"
     }
   ],
   "data_sources": [

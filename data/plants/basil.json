@@ -59,7 +59,11 @@
     },
     {
       "interaction_type": "attracts",
-      "pest_or_insect": "snails. [ 39 ] butterflies"
+      "pest_or_insect": "snails"
+    },
+    {
+      "interaction_type": "attracts",
+      "pest_or_insect": "butterflies"
     },
     {
       "interaction_type": "repels",
@@ -71,15 +75,15 @@
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] mosquitoes"
+      "pest_or_insect": "mosquitoes"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] thrips"
+      "pest_or_insect": "thrips"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "flies [ 6 ]"
+      "pest_or_insect": "flies"
     }
   ],
   "data_sources": [

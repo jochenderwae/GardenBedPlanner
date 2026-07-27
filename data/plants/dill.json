@@ -97,11 +97,11 @@
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] spider mites"
+      "pest_or_insect": "spider mites"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] squash bugs"
+      "pest_or_insect": "squash bugs"
     },
     {
       "interaction_type": "repels",

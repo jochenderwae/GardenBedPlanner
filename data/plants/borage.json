@@ -58,7 +58,7 @@
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "tomato worm [ 6 ]"
+      "pest_or_insect": "tomato worm"
     }
   ],
   "data_sources": [

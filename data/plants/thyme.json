@@ -62,7 +62,7 @@
   "pest_interactions": [
     {
       "interaction_type": "attracts",
-      "pest_or_insect": "hoverflies/syrphidae [ 65 ]"
+      "pest_or_insect": "hoverflies/syrphidae"
     },
     {
       "interaction_type": "repels",
@@ -70,19 +70,15 @@
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] [ 28 ] cabbage weevil"
+      "pest_or_insect": "cabbage weevil"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 28 ] cabbage looper"
+      "pest_or_insect": "cabbage looper"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 28 ] aphids"
-    },
-    {
-      "interaction_type": "repels",
-      "pest_or_insect": "[ 65 ]"
+      "pest_or_insect": "aphids"
     }
   ],
   "data_sources": [

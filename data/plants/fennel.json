@@ -53,11 +53,11 @@
     },
     {
       "interaction_type": "attracts",
-      "pest_or_insect": "[ 65 ] tachinid fly"
+      "pest_or_insect": "tachinid fly"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "aphids [ 65 ]"
+      "pest_or_insect": "aphids"
     }
   ],
   "data_sources": [

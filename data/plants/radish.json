@@ -29,7 +29,7 @@
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "cucumber beetles [ 6 ]"
+      "pest_or_insect": "cucumber beetles"
     }
   ],
   "data_sources": [

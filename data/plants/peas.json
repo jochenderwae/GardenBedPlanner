@@ -97,7 +97,7 @@
   "pest_interactions": [
     {
       "interaction_type": "repels",
-      "pest_or_insect": "colorado potato beetle [ 13 ]"
+      "pest_or_insect": "colorado potato beetle"
     }
   ],
   "data_sources": [

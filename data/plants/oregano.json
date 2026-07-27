@@ -32,11 +32,11 @@
   "pest_interactions": [
     {
       "interaction_type": "attracts",
-      "pest_or_insect": "hoverflies/syrphidae [ 65 ]"
+      "pest_or_insect": "hoverflies/syrphidae"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "aphids [ 65 ]"
+      "pest_or_insect": "aphids"
     }
   ],
   "data_sources": [

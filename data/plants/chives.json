@@ -63,11 +63,11 @@
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] mites"
+      "pest_or_insect": "mites"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] nematodes [ 6 ]"
+      "pest_or_insect": "nematodes"
     }
   ],
   "data_sources": [

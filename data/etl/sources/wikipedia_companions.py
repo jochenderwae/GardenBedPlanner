@@ -13,13 +13,29 @@ PAGE_URL = "https://en.wikipedia.org/wiki/List_of_companion_plants"
 
 _limiter = RateLimiter(min_interval_seconds=2.0)
 
-_SPLIT_RE = re.compile(r",|;|\band\b")
+# Wikipedia's own <sup> reference-citation markers (e.g. "[6]", "[39]")
+# leak into a table cell's plain text via BeautifulSoup's get_text() - they
+# aren't part of the plant/pest name. Most of the time the citation sits
+# right next to a name with a comma already separating it from its
+# neighbour, so plain _CITATION_RE stripping is enough; but the source
+# HTML occasionally glues a citation onto a list item that ends a sentence
+# with no comma (e.g. "Slugs and snails.[39] butterflies") - the extra
+# alternative below splits on ".<citation> " too, so that case is treated
+# as two list items instead of leaving a mangled "snails. [ 39 ]
+# butterflies" string. See GitHub issue #151.
+_SPLIT_RE = re.compile(r",|;|\band\b|\.\s*\[\s*\d+\s*\]\s+")
+_CITATION_RE = re.compile(r"\[\s*\d+\s*\]")
 
 
 def _split_names(cell_text: str) -> list[str]:
     if not cell_text or cell_text.strip() in ("", "-", "—", "none"):
         return []
-    return [n.strip() for n in _SPLIT_RE.split(cell_text) if n.strip()]
+    names = []
+    for n in _SPLIT_RE.split(cell_text):
+        cleaned = _CITATION_RE.sub("", n).strip(" .")
+        if cleaned:
+            names.append(cleaned)
+    return names
 
 
 def fetch_and_parse() -> dict[str, dict]:

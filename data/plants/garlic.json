@@ -86,15 +86,15 @@
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] japanese beetles"
+      "pest_or_insect": "japanese beetles"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] mites"
+      "pest_or_insect": "mites"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "[ 6 ] cabbage looper"
+      "pest_or_insect": "cabbage looper"
     },
     {
       "interaction_type": "repels",
@@ -114,7 +114,7 @@
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "slugs [ 89 ]"
+      "pest_or_insect": "slugs"
     }
   ],
   "data_sources": [

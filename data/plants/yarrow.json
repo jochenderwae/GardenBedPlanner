@@ -35,11 +35,11 @@
     },
     {
       "interaction_type": "attracts",
-      "pest_or_insect": "[ 65 ] damselbugs"
+      "pest_or_insect": "damselbugs"
     },
     {
       "interaction_type": "repels",
-      "pest_or_insect": "aphids [ 65 ]"
+      "pest_or_insect": "aphids"
     }
   ],
   "data_sources": [
