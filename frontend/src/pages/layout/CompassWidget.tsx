@@ -11,10 +11,6 @@ export const COMPASS_RADIUS_CM = 36;
  * center, in world cm - "a fixed offset just outside the garden boundary's
  * edge" per the backlog item. */
 export const COMPASS_MARGIN_CM = 50;
-/** Extra headroom (world cm) above the ring reserved for the "N" label, so
- * `compassBoundingBox` below doesn't clip it out of "fit to garden"
- * framing. */
-const COMPASS_LABEL_MARGIN_CM = 20;
 
 const RING_COLOR = "#166534";
 const NEEDLE_FRONT_COLOR = "#dc2626";
@@ -30,11 +26,6 @@ const NEEDLE_BACK_COLOR = "#fecaca";
  * canvas 1:1. */
 const TRANSFORMER_ANCHOR_SIZE_PX = 12;
 const TRANSFORMER_ANCHOR_STROKE_WIDTH_PX = 1;
-/** The handle's *position* (as opposed to its size above) is deliberately
- * NOT divided by `viewport.scale` - it should sit at the ring's own edge and
- * scale together with the ring as the view zooms, not stay a fixed screen
- * distance away regardless of how big the ring itself is currently drawn. */
-const ROTATE_ANCHOR_OFFSET_CM = COMPASS_RADIUS_CM;
 /** Radius (world cm) of the invisible proxy node the `Transformer` actually
  * wraps - deliberately a tiny *symmetric* shape (a circle, whose bounding
  * box is always centered on its own x/y) rather than the needle artwork
@@ -45,6 +36,47 @@ const ROTATE_ANCHOR_OFFSET_CM = COMPASS_RADIUS_CM;
  * bounding-box center fixed on screen, visibly detaching the needle from
  * the ring as it rotates - the proxy sidesteps that entirely. */
 const HANDLE_PROXY_RADIUS_CM = 4;
+
+/** Gap (world cm) between the ring's own top edge and the "N" label's top
+ * edge, and the label's own approximate rendered height (Konva's default
+ * ~1.2x-fontSize line-height factor) - both used only to figure out how far
+ * out the rotate handle needs to sit to clear the label entirely, and to
+ * size `compassBoundingBox`'s headroom. Keep in sync with the "N" `Text`'s
+ * own `y`/`fontSize` props below if either ever changes. */
+const LABEL_GAP_ABOVE_RING_CM = 15;
+const LABEL_FONT_SIZE_CM = 12;
+const LABEL_HEIGHT_CM = LABEL_FONT_SIZE_CM * 1.2;
+/** Extra daylight (world cm) kept between the rotate handle and the "N"
+ * label's own top edge, so the handle sits clearly above/outside it rather
+ * than just grazing it - the previous fixed `ROTATE_ANCHOR_OFFSET_CM`
+ * placed the handle *inside* the label's own vertical span (#70). */
+const HANDLE_LABEL_CLEARANCE_CM = 10;
+/** Total distance (world cm) from the ring's own center to the rotate
+ * handle - the ring's radius, plus the label's own full headroom above the
+ * ring, plus a bit more clearance so the handle clears the label instead of
+ * overlapping it. */
+const ROTATE_HANDLE_DISTANCE_CM = COMPASS_RADIUS_CM + LABEL_GAP_ABOVE_RING_CM + LABEL_HEIGHT_CM + HANDLE_LABEL_CLEARANCE_CM;
+/** The handle's *position* (as opposed to its size above) is deliberately
+ * NOT divided by `viewport.scale` - it should sit at the ring's own edge and
+ * scale together with the ring as the view zooms, not stay a fixed screen
+ * distance away regardless of how big the ring itself is currently drawn.
+ * Konva's `Transformer.rotateAnchorOffset` is measured from the wrapped
+ * node's own bounding-box edge, not its center, hence subtracting the
+ * proxy's own radius to land the handle at exactly `ROTATE_HANDLE_DISTANCE_CM`
+ * from the ring's center. */
+const ROTATE_ANCHOR_OFFSET_CM = ROTATE_HANDLE_DISTANCE_CM - HANDLE_PROXY_RADIUS_CM;
+/** Small buffer (world cm) added on top of the handle's own reach when
+ * sizing `compassBoundingBox`'s headroom, covering the handle's own small
+ * rendered footprint (`TRANSFORMER_ANCHOR_SIZE_PX`) so "fit to garden"
+ * frames the handle fully rather than clipping its edge - the exact class
+ * of bug this widget already had fixed once for the ring/needle
+ * themselves. */
+const HANDLE_VISUAL_BUFFER_CM = 8;
+/** Total headroom (world cm) `compassBoundingBox` reserves above the ring -
+ * driven by the rotate handle's own reach (the larger of the two, now that
+ * the handle sits further out than the label to clear it) plus a small
+ * visual buffer. */
+const ABOVE_RING_HEADROOM_CM = ROTATE_HANDLE_DISTANCE_CM - COMPASS_RADIUS_CM + HANDLE_VISUAL_BUFFER_CM;
 
 /** The compass widget's own center (world cm), positioned a fixed
  * `COMPASS_MARGIN_CM` outside the garden boundary's right edge, with its
@@ -69,9 +101,9 @@ export function compassBoundingBox(gardenBounds: Box): Box {
   const center = compassCenter(gardenBounds);
   return {
     x: center.x - COMPASS_RADIUS_CM,
-    y: center.y - COMPASS_RADIUS_CM - COMPASS_LABEL_MARGIN_CM,
+    y: center.y - COMPASS_RADIUS_CM - ABOVE_RING_HEADROOM_CM,
     width: COMPASS_RADIUS_CM * 2,
-    height: COMPASS_RADIUS_CM * 2 + COMPASS_LABEL_MARGIN_CM,
+    height: COMPASS_RADIUS_CM * 2 + ABOVE_RING_HEADROOM_CM,
   };
 }
 
@@ -179,9 +211,9 @@ export function CompassWidget({
       })}
       <Text
         x={center.x - 5}
-        y={center.y - COMPASS_RADIUS_CM - 15}
+        y={center.y - COMPASS_RADIUS_CM - LABEL_GAP_ABOVE_RING_CM}
         text="N"
-        fontSize={12}
+        fontSize={LABEL_FONT_SIZE_CM}
         fontStyle="bold"
         fill={RING_COLOR}
         listening={false}
