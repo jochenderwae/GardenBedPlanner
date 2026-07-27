@@ -27,3 +27,10 @@ class Planting(SQLModel, table=True):
     geometry: dict = Field(sa_column=Column(JSONB, nullable=False))
     planted_date: date | None = None
     removed_date: date | None = None
+    # Per-placement spacing override (cm) for row/field placements - None
+    # means "use the plant's own spread_cm". The individual plant instances
+    # within a row/field placement are still computed/drawn client-side
+    # (see #150); this just lets that computation be overridden and
+    # remembered per-placement instead of always falling back to the
+    # plant's default spread.
+    spacing_cm: float | None = None

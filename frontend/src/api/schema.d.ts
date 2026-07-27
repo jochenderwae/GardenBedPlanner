@@ -1953,6 +1953,8 @@ export interface components {
             planted_date?: string | null;
             /** Removed Date */
             removed_date?: string | null;
+            /** Spacing Cm */
+            spacing_cm?: number | null;
             /** Geometry */
             geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
         };
@@ -1968,6 +1970,8 @@ export interface components {
             planted_date?: string | null;
             /** Removed Date */
             removed_date?: string | null;
+            /** Spacing Cm */
+            spacing_cm?: number | null;
             /** Geometry */
             geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
         };
@@ -1982,6 +1986,8 @@ export interface components {
             planted_date?: string | null;
             /** Removed Date */
             removed_date?: string | null;
+            /** Spacing Cm */
+            spacing_cm?: number | null;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
