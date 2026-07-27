@@ -1,13 +1,13 @@
 {
   "slug": "ferry-morse-contender-bush-bean",
   "common_name": "Ferry-Morse Contender Bush Bean",
-  "botanical_name": "Acacia maconochieana",
+  "botanical_name": "Phaseolus vulgaris",
   "sowing_method": "3-4 cm deep",
   "spread_cm": 50,
   "row_spacing_cm": 4,
   "height_cm": 45,
   "family": "Fabaceae",
-  "genus": "Acacia",
+  "genus": "Phaseolus",
   "is_edible": false,
   "companions": [
     {
@@ -23,7 +23,8 @@
     },
     {
       "source_url": "https://trefle.io",
-      "attribution": "trefle"
+      "attribution": "trefle",
+      "notes": "botanical_name/genus corrected 2026-07-27 (manual-research): the original ETL run's Trefle per-plant name search matched the unrelated species Acacia maconochieana (an Australian wattle tree) for the query 'ferry-morse-contender-bush-bean', which then propagated genus='Acacia' with family='Fabaceae' (Fabaceae happens to be correct for both wattles and beans, so family was coincidentally right despite the wrong species/genus). Multiple downstream Ollama inference passes (life_cycle, edible_parts, growth_habit) correctly refused to infer values because the botanical_name didn't match the common name - the eventual symptom that surfaced this issue. Corrected to the real bean species Phaseolus vulgaris, genus Phaseolus; family Fabaceae left as-is (already correct)."
     }
   ]
 }

@@ -1,11 +1,11 @@
 {
   "slug": "watermelon",
   "common_name": "Watermelon",
-  "botanical_name": "Dischidia ovata",
+  "botanical_name": "Citrullus lanatus",
   "row_spacing_cm": 106.7,
   "sun_level": "full_sun",
-  "family": "Apocynaceae",
-  "genus": "Dischidia",
+  "family": "Cucurbitaceae",
+  "genus": "Citrullus",
   "days_to_maturity": 85,
   "is_edible": false,
   "succession_enabled": true,
@@ -44,7 +44,8 @@
     },
     {
       "source_url": "https://trefle.io",
-      "attribution": "trefle"
+      "attribution": "trefle",
+      "notes": "botanical_name/family/genus corrected 2026-07-27 (manual-research): the original ETL run's Trefle per-plant name search matched the unrelated species Dischidia ovata (an epiphytic 'Ant Plant', family Apocynaceae) for the query 'watermelon', and that wrong value then won an Ollama-mediated conflicts_log conflict against usda-plants' correct 'Cucurbitaceae' family candidate (Ollama's own reasoning cited Dischidia ovata by name, i.e. it correctly reasoned about the wrong species it was handed - a source-matching bug upstream of resolution, not a resolution-quality bug). Corrected to the real watermelon species Citrullus lanatus, family Cucurbitaceae, genus Citrullus (well-established taxonomy, no lookup needed)."
     },
     {
       "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
