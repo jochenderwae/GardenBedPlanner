@@ -64,6 +64,37 @@ _LOWERCASE_CONNECTORS = {"of", "and", "the", "in", "on", "de", "la"}
 _WORD_SPLIT_RE = re.compile(r"(\s+|-|/)")
 _FIRST_LETTER_RE = re.compile(r"[a-zA-Z]")
 
+# GitHub issue #161: title_case_plant_name's default lowercase-then-
+# recapitalize-first-letter behavior can't tell "source typed this in caps
+# because it's an intentional acronym" from "source typed this in caps for
+# no particular reason" - the whole ambiguity the function exists to
+# resolve for the general case. Both are curated exception lists rather
+# than a heuristic, and deliberately small/easy to extend as new plants
+# surface more cases (both are currently single-plant-family occurrences
+# in real data - "SFG" for the "Square Foot Gardening" cultivar line,
+# "UF" for a University of Florida-bred tomato cultivar).
+_ACRONYMS = {"SFG", "UF"}
+
+# Same reasoning, for the OTHER direction str.title()-style logic gets
+# wrong: a word after an apostrophe defaults to staying lowercase (correct
+# for the common possessive case, "bishop's cap" -> "Bishop's cap"), but a
+# real proper noun after an apostrophe ("D'Anjou", a pear cultivar named
+# for the Anjou region of France) needs its own capital letter too. Keyed
+# lowercase for case-insensitive matching against the token as it comes
+# out of the default lowercase-then-recapitalize pass.
+_APOSTROPHE_PROPER_NOUNS = {"anjou": "Anjou"}
+
+
+def _fix_apostrophe_proper_nouns(word: str) -> str:
+    if "'" not in word:
+        return word
+    segments = word.split("'")
+    fixed = [segments[0]]
+    for segment in segments[1:]:
+        canonical = _APOSTROPHE_PROPER_NOUNS.get(segment.lower())
+        fixed.append(canonical if canonical is not None else segment)
+    return "'".join(fixed)
+
 
 def _capitalize_word(lowered: str) -> str:
     """Capitalizes the first *letter* in the token, not literally index 0 -
@@ -94,7 +125,11 @@ def title_case_plant_name(name: str) -> str:
     after a hyphen the way a cultivar name like "wai-iti" -> "Wai-Iti"
     needs (and after a slash - "honeydew/specialty" -> "Honeydew/Specialty" -
     found needed against real data: "Melon (Honeydew/Specialty)" would
-    otherwise come out "...(Honeydew/specialty)")."""
+    otherwise come out "...(Honeydew/specialty)"). Also consults
+    _ACRONYMS (preserved uppercase, e.g. "SFG") and
+    _APOSTROPHE_PROPER_NOUNS (e.g. "D'Anjou", not "D'anjou") - see GitHub
+    issue #161 and those two constants' own comments for why a curated
+    exception list, not a heuristic, is the right fix for both."""
     if not name:
         return name
     parts = _WORD_SPLIT_RE.split(name.strip())
@@ -107,7 +142,9 @@ def title_case_plant_name(name: str) -> str:
         lowered = part.lower()
         if word_index > 0 and lowered in _LOWERCASE_CONNECTORS:
             out.append(lowered)
+        elif part.upper() in _ACRONYMS and part.isalpha():
+            out.append(part.upper())
         else:
-            out.append(_capitalize_word(lowered))
+            out.append(_fix_apostrophe_proper_nouns(_capitalize_word(lowered)))
         word_index += 1
     return "".join(out)
