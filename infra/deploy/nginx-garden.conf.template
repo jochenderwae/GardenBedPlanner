@@ -13,6 +13,14 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
 
+    # nginx's built-in mime.types has no .webmanifest entry, so it falls back
+    # to application/octet-stream - browsers tolerate that in practice, but
+    # the correct type is application/manifest+json (#156).
+    location = /manifest.webmanifest {
+        default_type application/manifest+json;
+        try_files $uri =404;
+    }
+
     location / {
         try_files $uri /index.html;
     }
