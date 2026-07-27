@@ -6,6 +6,16 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
  * build/lint/vitest passing but no interactive verification of the new
  * checkbox-group `FieldInput.tsx` branch. Drives real checkbox clicks
  * against the plant-detail page and confirms each commits a real PATCH.
+ *
+ * Updated for #134's own second pass: the checkbox group now lives inside a
+ * collapsed popover (`components/ui/popover.tsx`) instead of rendering
+ * permanently expanded inline - opens it once (`PopoverTrigger` has
+ * `aria-label={field.label}`, i.e. "Edible parts", so this doesn't depend
+ * on the trigger's own summary text, which changes as selections change)
+ * before the checkbox interactions below, which is otherwise unchanged:
+ * Base UI's popover stays open while clicking checkboxes inside it (only
+ * outside-click/Escape/another-trigger closes it), so a single open is
+ * enough for the whole sequence.
  */
 
 async function createPlant(
@@ -35,6 +45,10 @@ test.describe("Plant-detail edible_parts checkbox multiselect (#134)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Edible Parts Plant" })).toBeVisible();
+
+      // Checkboxes live inside a collapsed popover now (#134) - open it
+      // once before interacting with anything inside.
+      await page.getByRole("button", { name: "Edible parts" }).click();
 
       const fruitCheckbox = page.getByRole("checkbox", { name: "Fruit" });
       const seedsCheckbox = page.getByRole("checkbox", { name: "Seeds" });

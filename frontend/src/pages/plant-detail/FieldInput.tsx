@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
-import { Input, Select, Textarea } from "@/components/ui/input";
+import { ChevronDown } from "lucide-react";
+import { Input, inputVariants, Select, Textarea } from "@/components/ui/input";
+import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
 import { FieldHint } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 import type { FieldConfig, FieldValue } from "./fields";
 
 interface FieldInputProps {
@@ -86,33 +89,51 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   if (field.type === "multiselect") {
     const selected = Array.isArray(value) ? value : [];
     const options = field.options ?? [];
+    // Comma-joined summary of the current selection, in the options' own
+    // declared order (not raw value/insertion order) - "None selected"
+    // when empty, matching a typical closed multi-select combobox rather
+    // than the previous always-expanded checkbox group.
+    const summary = options
+      .filter((opt) => selected.includes(opt.value))
+      .map((opt) => opt.label)
+      .join(", ");
 
     return (
-      <fieldset className="flex flex-col gap-1">
-        <legend className="mb-1">
-          <FieldLabel field={field} />
-        </legend>
-        <div className="flex flex-wrap gap-x-3 gap-y-1.5">
-          {options.map((opt) => {
-            const checked = selected.includes(opt.value);
-            return (
-              <label key={opt.value} className="flex items-center gap-1.5 text-sm">
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={(e) => {
-                    const next = e.target.checked
-                      ? [...selected, opt.value]
-                      : selected.filter((v) => v !== opt.value);
-                    onCommit(next, value);
-                  }}
-                />
-                {opt.label}
-              </label>
-            );
-          })}
-        </div>
-      </fieldset>
+      <div className="flex flex-col gap-1">
+        <FieldLabel field={field} />
+        <Popover>
+          <PopoverTrigger
+            aria-label={field.label}
+            className={cn(inputVariants({ className: "flex items-center justify-between gap-2 text-left" }))}
+          >
+            <span className={cn("truncate", !summary && "text-muted-foreground")}>{summary || "None selected"}</span>
+            <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+          </PopoverTrigger>
+          <PopoverPopup>
+            <fieldset className="flex flex-col gap-1.5">
+              <legend className="sr-only">{field.label}</legend>
+              {options.map((opt) => {
+                const checked = selected.includes(opt.value);
+                return (
+                  <label key={opt.value} className="flex items-center gap-1.5 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={(e) => {
+                        const next = e.target.checked
+                          ? [...selected, opt.value]
+                          : selected.filter((v) => v !== opt.value);
+                        onCommit(next, value);
+                      }}
+                    />
+                    {opt.label}
+                  </label>
+                );
+              })}
+            </fieldset>
+          </PopoverPopup>
+        </Popover>
+      </div>
     );
   }
 
