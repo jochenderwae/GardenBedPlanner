@@ -15,27 +15,27 @@
       "height_cm": 70,
       "has_greenhouse": true,
       "is_raised": true,
-      "notes": "Heat-loving nightshades - the greenhouse gives tomatoes/peppers a real head start and season extension in Belgium's climate. (spacing defaulted to 40cm for: brandywine-tomato - no spread_cm/row_spacing_cm in their data yet)",
+      "notes": "Heat-loving nightshades - the greenhouse gives tomatoes/peppers a real head start and season extension in Belgium's climate.",
       "plantings": [
         {
           "plant_slug": "brandywine-tomato",
-          "x_cm": 15.0,
-          "y_cm": 5.0
+          "x_cm": 10.0,
+          "y_cm": 0.0
         },
         {
           "plant_slug": "brandywine-tomato",
-          "x_cm": 55.0,
-          "y_cm": 5.0
+          "x_cm": 60.0,
+          "y_cm": 0.0
         },
         {
           "plant_slug": "brandywine-tomato",
-          "x_cm": 15.0,
-          "y_cm": 45.0
+          "x_cm": 10.0,
+          "y_cm": 50.0
         },
         {
           "plant_slug": "brandywine-tomato",
-          "x_cm": 55.0,
-          "y_cm": 45.0
+          "x_cm": 60.0,
+          "y_cm": 50.0
         },
         {
           "plant_slug": "cherry-tomato",
@@ -117,47 +117,62 @@
       "plantings": [
         {
           "plant_slug": "cucumber",
-          "x_cm": 1.7,
-          "y_cm": 0.0
+          "x_cm": 5.0,
+          "y_cm": 18.3
         },
         {
           "plant_slug": "cucumber",
-          "x_cm": 68.3,
-          "y_cm": 0.0
-        },
-        {
-          "plant_slug": "cucumber",
-          "x_cm": 1.7,
-          "y_cm": 66.7
-        },
-        {
-          "plant_slug": "cucumber",
-          "x_cm": 68.3,
-          "y_cm": 66.7
-        },
-        {
-          "plant_slug": "beans-bush",
-          "x_cm": 9.6,
-          "y_cm": 100.0
-        },
-        {
-          "plant_slug": "beans-bush",
-          "x_cm": 22.3,
-          "y_cm": 100.0
-        },
-        {
-          "plant_slug": "beans-bush",
           "x_cm": 35.0,
+          "y_cm": 18.3
+        },
+        {
+          "plant_slug": "cucumber",
+          "x_cm": 65.0,
+          "y_cm": 18.3
+        },
+        {
+          "plant_slug": "cucumber",
+          "x_cm": 5.0,
+          "y_cm": 48.3
+        },
+        {
+          "plant_slug": "cucumber",
+          "x_cm": 35.0,
+          "y_cm": 48.3
+        },
+        {
+          "plant_slug": "cucumber",
+          "x_cm": 65.0,
+          "y_cm": 48.3
+        },
+        {
+          "plant_slug": "beans-bush",
+          "x_cm": 16.0,
           "y_cm": 100.0
         },
         {
           "plant_slug": "beans-bush",
-          "x_cm": 47.7,
+          "x_cm": 23.6,
           "y_cm": 100.0
         },
         {
           "plant_slug": "beans-bush",
-          "x_cm": 60.4,
+          "x_cm": 31.2,
+          "y_cm": 100.0
+        },
+        {
+          "plant_slug": "beans-bush",
+          "x_cm": 38.8,
+          "y_cm": 100.0
+        },
+        {
+          "plant_slug": "beans-bush",
+          "x_cm": 46.4,
+          "y_cm": 100.0
+        },
+        {
+          "plant_slug": "beans-bush",
+          "x_cm": 54.0,
           "y_cm": 100.0
         },
         {
@@ -288,23 +303,33 @@
       "plantings": [
         {
           "plant_slug": "acorn-squash",
-          "x_cm": 0.0,
-          "y_cm": 15.0
+          "x_cm": 5.0,
+          "y_cm": 35.0
         },
         {
           "plant_slug": "acorn-squash",
-          "x_cm": 70.0,
-          "y_cm": 15.0
+          "x_cm": 35.0,
+          "y_cm": 35.0
         },
         {
           "plant_slug": "acorn-squash",
-          "x_cm": 0.0,
-          "y_cm": 85.0
+          "x_cm": 65.0,
+          "y_cm": 35.0
         },
         {
           "plant_slug": "acorn-squash",
-          "x_cm": 70.0,
-          "y_cm": 85.0
+          "x_cm": 5.0,
+          "y_cm": 65.0
+        },
+        {
+          "plant_slug": "acorn-squash",
+          "x_cm": 35.0,
+          "y_cm": 65.0
+        },
+        {
+          "plant_slug": "acorn-squash",
+          "x_cm": 65.0,
+          "y_cm": 65.0
         },
         {
           "plant_slug": "borage",
@@ -346,28 +371,33 @@
       "plantings": [
         {
           "plant_slug": "carrot",
-          "x_cm": 5.0,
-          "y_cm": 11.7
-        },
-        {
-          "plant_slug": "carrot",
-          "x_cm": 10.0,
-          "y_cm": 11.7
+          "x_cm": 6.4,
+          "y_cm": 7.4
         },
         {
           "plant_slug": "carrot",
           "x_cm": 15.0,
-          "y_cm": 11.7
+          "y_cm": 7.4
         },
         {
           "plant_slug": "carrot",
-          "x_cm": 20.0,
-          "y_cm": 11.7
+          "x_cm": 23.6,
+          "y_cm": 7.4
         },
         {
           "plant_slug": "carrot",
-          "x_cm": 25.0,
-          "y_cm": 11.7
+          "x_cm": 6.4,
+          "y_cm": 16.0
+        },
+        {
+          "plant_slug": "carrot",
+          "x_cm": 15.0,
+          "y_cm": 16.0
+        },
+        {
+          "plant_slug": "carrot",
+          "x_cm": 23.6,
+          "y_cm": 16.0
         },
         {
           "plant_slug": "french-breakfast-radish",
@@ -391,33 +421,23 @@
         },
         {
           "plant_slug": "chives",
-          "x_cm": 5.0,
-          "y_cm": 53.4
+          "x_cm": 3.3,
+          "y_cm": 46.7
         },
         {
           "plant_slug": "chives",
-          "x_cm": 15.0,
-          "y_cm": 53.4
+          "x_cm": 26.7,
+          "y_cm": 46.7
         },
         {
           "plant_slug": "chives",
-          "x_cm": 25.0,
-          "y_cm": 53.4
+          "x_cm": 3.3,
+          "y_cm": 70.0
         },
         {
           "plant_slug": "chives",
-          "x_cm": 5.0,
-          "y_cm": 63.4
-        },
-        {
-          "plant_slug": "chives",
-          "x_cm": 15.0,
-          "y_cm": 63.4
-        },
-        {
-          "plant_slug": "chives",
-          "x_cm": 25.0,
-          "y_cm": 63.4
+          "x_cm": 26.7,
+          "y_cm": 70.0
         }
       ]
     },
@@ -517,23 +537,23 @@
       "plantings": [
         {
           "plant_slug": "beet",
-          "x_cm": 5.0,
-          "y_cm": 1.7
+          "x_cm": 6.2,
+          "y_cm": 2.9
         },
         {
           "plant_slug": "beet",
-          "x_cm": 25.0,
-          "y_cm": 1.7
+          "x_cm": 23.8,
+          "y_cm": 2.9
         },
         {
           "plant_slug": "beet",
-          "x_cm": 5.0,
-          "y_cm": 21.7
+          "x_cm": 6.2,
+          "y_cm": 20.4
         },
         {
           "plant_slug": "beet",
-          "x_cm": 25.0,
-          "y_cm": 21.7
+          "x_cm": 23.8,
+          "y_cm": 20.4
         },
         {
           "plant_slug": "golden-beet",
@@ -627,23 +647,23 @@
       "plantings": [
         {
           "plant_slug": "raspberry",
-          "x_cm": 1.9,
-          "y_cm": 21.9
+          "x_cm": 0.0,
+          "y_cm": 20.0
         },
         {
           "plant_slug": "raspberry",
-          "x_cm": 78.1,
-          "y_cm": 21.9
+          "x_cm": 80.0,
+          "y_cm": 20.0
         },
         {
           "plant_slug": "raspberry",
-          "x_cm": 1.9,
-          "y_cm": 98.1
+          "x_cm": 0.0,
+          "y_cm": 100.0
         },
         {
           "plant_slug": "raspberry",
-          "x_cm": 78.1,
-          "y_cm": 98.1
+          "x_cm": 80.0,
+          "y_cm": 100.0
         },
         {
           "plant_slug": "blueberry",
@@ -741,10 +761,10 @@
       "height_cm": 0,
       "has_greenhouse": false,
       "is_raised": false,
-      "notes": "Sour cherry - no dedicated sour-cherry cultivar record exists yet; using data/plants/cherry.json (generic Prunus avium record whose own text also covers Prunus cerasus/sour varieties) as the closest real match. See suggestions.md. (spacing defaulted to 40cm for: cherry - no spread_cm/row_spacing_cm in their data yet)",
+      "notes": "Sour cherry - data/plants/sour-cherry.json (Prunus cerasus, added for GitHub issue #158) is a direct match, replacing the earlier placeholder use of the generic cherry.json (sweet cherry) record. (spacing defaulted to 40cm for: sour-cherry - no spread_cm/row_spacing_cm in their data yet)",
       "plantings": [
         {
-          "plant_slug": "cherry",
+          "plant_slug": "sour-cherry",
           "x_cm": 75.0,
           "y_cm": 75.0
         }
@@ -764,7 +784,7 @@
       "height_cm": 0,
       "has_greenhouse": false,
       "is_raised": false,
-      "notes": "Pear - data/plants/pear.json (Pyrus communis) is a direct match. (spacing defaulted to 40cm for: pear - no spread_cm/row_spacing_cm in their data yet)",
+      "notes": "Pear - data/plants/pear.json (Pyrus communis) is a direct match.",
       "plantings": [
         {
           "plant_slug": "pear",

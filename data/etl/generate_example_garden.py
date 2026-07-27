@@ -95,13 +95,13 @@ check) - no bed combines two plants with a declared 'bad' relationship, and
 several combinations are backed by an explicit 'good' entry in real data
 (tomato+basil, acorn-squash+borage, cucumber+beans-bush, spinach+lettuce).
 
-One data gap worth flagging: there is no dedicated "sour cherry" cultivar
-record (root CLAUDE.md's actual tree) - data/plants/cherry.json is a
-generic Prunus avium (sweet cherry) record whose own text/growing_information
-discusses sour Prunus cerasus varieties too. Used here as the closest real
-match rather than inventing a new plant record (out of this task's scope) -
-flagged in suggestions.md. Also flagged there: cherry.json's height_cm of
-1500 (15m) looks like a units/data error, not used for this bed's sizing.
+Updated 2026-07-27 (GitHub issue #158): the "Sour Cherry Tree" bed now uses
+a real dedicated data/plants/sour-cherry.json (Prunus cerasus) record
+instead of the earlier placeholder use of the generic cherry.json (sweet
+cherry, Prunus avium). cherry.json's own height_cm=1500 units error
+(GitHub issue #159) was also fixed separately - neither bed's sizing was
+ever affected by it, since this generator's fruit_tree beds are sized by
+the bed's own fixed footprint, not a plant's height_cm.
 
 ## Planting placement algorithm
 
@@ -109,7 +109,7 @@ For each bed, plants share the bed's long axis in equal-length strips (one
 strip per distinct plant), and within its strip each plant is arranged in a
 small centered grid using max(spread_cm, row_spacing_cm) as the spacing
 (falling back to a conservative 40cm default for the handful of plants with
-neither - e.g. brandywine-tomato, cherry, pear - flagged in the per-bed
+neither - e.g. brandywine-tomato, sour-cherry, pear - flagged in the per-bed
 notes). Instance count per plant is capped at 6 - this is an illustrative
 fixture, not an attempt to fill every possible cm, so a bed reads clearly as
 "there's a stand of X here" without the file (or the canvas) getting
@@ -196,11 +196,10 @@ _BEDS = [
     ),
     (
         "Sour Cherry Tree", "fruit_tree", 150, 150, 0, False, 0, 500,
-        "Sour cherry - no dedicated sour-cherry cultivar record exists yet; "
-        "using data/plants/cherry.json (generic Prunus avium record whose "
-        "own text also covers Prunus cerasus/sour varieties) as the closest "
-        "real match. See suggestions.md.",
-        ["cherry"],
+        "Sour cherry - data/plants/sour-cherry.json (Prunus cerasus, added for "
+        "GitHub issue #158) is a direct match, replacing the earlier "
+        "placeholder use of the generic cherry.json (sweet cherry) record.",
+        ["sour-cherry"],
     ),
     (
         "Pear Tree", "fruit_tree", 150, 150, 0, False, 300, 500,

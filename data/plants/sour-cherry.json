@@ -1,0 +1,80 @@
+{
+  "slug": "sour-cherry",
+  "common_name": "Sour Cherry",
+  "botanical_name": "Prunus cerasus",
+  "description": "Sour cherry (also called tart cherry or dwarf cherry) is an Old World species of Prunus closely related to sweet cherry (Prunus avium), with more acidic fruit and a naturally smaller tree. Its two main cultivar groups are the dark-red Morello cherry and the lighter-red Amarelle cherry. Long cultivated in Belgium specifically - a Morello-type sour cherry was already grown in the Schaerbeek region by the 12th century, historically a defining ingredient of Kriek lambic beer.",
+  "height_cm": 300,
+  "sun_level": "full_sun",
+  "family": "Rosaceae",
+  "genus": "Prunus",
+  "is_edible": true,
+  "data_sources": [
+    {
+      "source_url": "https://trefle.io",
+      "attribution": "trefle",
+      "notes": "family/genus/botanical_name confirmed via a live Trefle search for 'Prunus cerasus' (species id 266279, common_name 'Morello cherry') - GitHub issue #158. Trefle's own growth/specifications data for this species is entirely null (no spacing/height/sun data), same known-gap pattern documented elsewhere in data/CLAUDE.md."
+    },
+    {
+      "source_url": "https://plants.sc.egov.usda.gov/DocumentLibrary/Txt/plantlst.txt",
+      "attribution": "usda-plants",
+      "notes": "confirms symbol PRCE, 'Prunus cerasus L.', common name 'sour cherry', family Rosaceae."
+    },
+    {
+      "source_url": "https://en.wikipedia.org/wiki/Prunus_cerasus",
+      "attribution": "manual-research",
+      "notes": "description paraphrased from Wikipedia's Prunus cerasus article (2026-07-27), which also confirms the species grows smaller than sweet cherry in the wild (4-10m) - no cultivated/garden-scale height figure was available from any source, so height_cm is still an estimate (see next note), not derived from this citation directly."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "New dedicated record created for GitHub issue #158, replacing the generic cherry.json (Prunus avium, sweet cherry) previously used as example_garden.json's closest-available match for the garden's real sour cherry tree. No source (openfarm-crops-rescue, Homesteader Labs, Permapeople, Trefle) has cultivation-specific data (spacing/height/sun/edible_parts) for this species distinct from the generic 'cherry' record - checked all four directly, live for Trefle/Permapeople, offline cache for openfarm/Homesteader (neither has any Prunus cerasus-specific entry at all, only the generic cherry.json's own description mentions it in passing). growth_habit='tree', life_cycle='perennial', is_edible=true, and edible_parts=['fruit'] are asserted directly rather than run through Ollama inference - unambiguous for any cultivated cherry tree, same as cherry.json's own values. sun_level='full_sun' and height_cm=300 mirror this dataset's existing convention for every other garden-scale fruit tree (apple.json, green-bartlett-pear.json, cherry.json all use the same two values) - genuine estimates pending a better source, not independently confirmed for this species specifically."
+    },
+    {
+      "attribution": "Home Vegetable Gardening",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html",
+      "notes": "growing_information text copied from cherry.json (generic_for_species: true) - this source text explicitly discusses both sweet AND sour cherry cultivars by name ('The sour type is hardier... Early Richmond... Montmorency and English Morello'), so it applies here directly, not just by species-level inference."
+    }
+  ],
+  "growing_information": [
+    {
+      "text": "Cherries have one advantage over the other fruits—they give quicker returns. But, as far as my experience goes, they are not as long-lived. The sour type is hardier, at least north of New Jersey, than the sweet. It will probably pay to try a few of the new and highly recommended varieties. Of the established sorts Early Richmond is a good early, to be followed by Montmorency and English Morello. Windsor is a good sweet cherry, as are also Black Tartarian, Sox, Wood and Yellow Spanish.\n\nAll the varieties mentioned above are proved sorts. But the lists are being added to constantly, and where there is a novelty strongly recommended by a reliable nurseryman it will often pay to try it out—on a very small scale at first.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00614",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Sour cherries are more easily grown than the sweet varieties, and are less subject to the attacks of fruit enemies. Sweet cherries are troubled by the curculio, or fruit-worm, which attacks also peaches and plums. Cherries and plums may be sprayed, when most of the blossoms are off, with a strong arsenate of lead solution, 5 to 8 lbs. to 100 gals. water. In addition to this treatment, where the worms have once got a start, the beetles may be destroyed by spreading a sheet around and beneath the tree, and every day or so shaking or jarring them off into it, as described below.",
+      "record_type": "raw",
+      "source_url": "https://www.gutenberg.org/cache/epub/7123/pg7123-images.html#id00656",
+      "attribution": "Home Vegetable Gardening",
+      "copyright_status": "Public domain in the USA.",
+      "generic_for_species": true
+    },
+    {
+      "text": "Cherries offer quicker returns compared to other fruits but may have a shorter lifespan. Sour cherries are hardier and easier to grow north of New Jersey, particularly varieties like Early Richmond (good early variety), Montmorency, and English Morello. For sweet cherries, consider Windsor, Black Tartarian, Sox, Wood, and Yellow Spanish. When selecting varieties, it's beneficial to try new recommendations from reliable nurserymen on a small scale initially. Sour cherries are less susceptible to pests compared to sweet varieties, which can be troubled by the curculio or fruit-worm. To manage this pest, spray trees with a strong arsenate of lead solution (5-8 kg per 379 L water) after most blossoms have fallen. Additionally, place a sheet around and beneath the tree, shaking it daily to dislodge beetles into the sheet for disposal.",
+      "record_type": "consolidated",
+      "attribution": "Ollama synthesis of Home Vegetable Gardening",
+      "copyright_status": "derived from public-domain sources; synthesis itself not independently copyrighted",
+      "generic_for_species": true
+    }
+  ],
+  "bedding_needs": [
+    {
+      "need_type": "sheet",
+      "notes": "around and beneath the tree to shake off and collect beetles"
+    }
+  ],
+  "growth_habit": "tree",
+  "life_cycle": "perennial",
+  "edible_parts": [
+    "fruit"
+  ],
+  "periods": [
+    {
+      "period_type": "harvesting",
+      "start_month": 6,
+      "end_month": 8
+    }
+  ]
+}
