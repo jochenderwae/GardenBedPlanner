@@ -2,7 +2,11 @@ import type Konva from "konva";
 import { Group, Layer, Rect, Text } from "react-konva";
 import type { ExampleBed, ExamplePlanting, Plant } from "@/api/client";
 import { boundingRect, colorForSlug, colorsForBedCategory, DEFAULT_PLANTING_DIAMETER_CM } from "./geometry";
+import { clampLabelYBelowRuler, LABEL_PADDING_CM, measureTextWidth } from "./labels";
 import { PlantFootprint } from "./PlantFootprint";
+import { DEFAULT_VIEWPORT, type Viewport } from "./viewport";
+
+const BED_LABEL_FONT_SIZE = 12;
 
 export interface PlantingTooltipState {
   x: number;
@@ -26,15 +30,21 @@ export function ExampleGardenLayer({
   beds,
   plantsBySlug,
   onHover,
+  viewport = DEFAULT_VIEWPORT,
 }: {
   beds: ExampleBed[];
   plantsBySlug: Map<string, Plant>;
   onHover: (tooltip: PlantingTooltipState | null) => void;
+  /** See BedNode's identical prop doc - needed so a bed name label near the
+   * top of the current pan/zoom stays clear of RulerLayer's tick-label row
+   * (see #166). Defaults to the identity viewport for callers that don't
+   * pan/zoom. */
+  viewport?: Viewport;
 }) {
   return (
     <Layer>
       {beds.map((bed, i) => (
-        <ExampleBedGroup key={`${bed.name}-${i}`} bed={bed} plantsBySlug={plantsBySlug} onHover={onHover} />
+        <ExampleBedGroup key={`${bed.name}-${i}`} bed={bed} plantsBySlug={plantsBySlug} onHover={onHover} viewport={viewport} />
       ))}
     </Layer>
   );
@@ -59,13 +69,32 @@ function ExampleBedGroup({
   bed,
   plantsBySlug,
   onHover,
+  viewport,
 }: {
   bed: ExampleBed;
   plantsBySlug: Map<string, Plant>;
   onHover: (tooltip: PlantingTooltipState | null) => void;
+  viewport: Viewport;
 }) {
   const colors = colorsForBedCategory(bed.category);
   const rect = boundingRect(bed.border_geometry);
+
+  // Same width-clamp + truncation-gated hover tooltip as BedNode's own name
+  // label (see #166) - this read-only preview has the identical
+  // adjacent-beds-collide-with-each-other's-labels problem. Label position
+  // is in this Group's bed-local coordinates (the Group itself sits at
+  // rect.x/rect.y in world space), so the ruler-clearance clamp has to
+  // convert to world space and back.
+  const labelAvailableWidth = Math.max(0, rect.width - 2 * LABEL_PADDING_CM);
+  const isNameTruncated = measureTextWidth(bed.name, BED_LABEL_FONT_SIZE) > labelAvailableWidth;
+  const labelLocalY = clampLabelYBelowRuler(rect.y + LABEL_PADDING_CM, viewport) - rect.y;
+
+  function showLabelTooltip(e: Konva.KonvaEventObject<MouseEvent>) {
+    if (!isNameTruncated) return;
+    const stageBox = e.target.getStage()?.container().getBoundingClientRect();
+    if (!stageBox) return;
+    onHover({ x: e.evt.clientX - stageBox.left, y: e.evt.clientY - stageBox.top, title: bed.name, subtitle: "" });
+  }
 
   return (
     <Group x={rect.x} y={rect.y}>
@@ -77,7 +106,20 @@ function ExampleBedGroup({
         strokeWidth={1.5}
         opacity={0.85}
       />
-      <Text x={4} y={4} text={bed.name} fontSize={12} fill="#1f2937" listening={false} />
+      <Text
+        x={LABEL_PADDING_CM}
+        y={labelLocalY}
+        text={bed.name}
+        width={labelAvailableWidth}
+        wrap="none"
+        ellipsis
+        fontSize={BED_LABEL_FONT_SIZE}
+        fill="#1f2937"
+        listening={isNameTruncated}
+        onMouseEnter={showLabelTooltip}
+        onMouseMove={showLabelTooltip}
+        onMouseLeave={() => onHover(null)}
+      />
       {bed.plantings.map((planting, i) => (
         <PlantingDot
           key={`${planting.plant_slug}-${i}`}

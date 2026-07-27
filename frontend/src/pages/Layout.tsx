@@ -901,6 +901,7 @@ export function Layout() {
                     onChange={handleGardenGeometryChange}
                     interactive={tab === "garden"}
                     viewport={viewport}
+                    onHoverLabel={setTooltip}
                   />
                 )}
                 {garden && gardenBounds && (
@@ -928,6 +929,7 @@ export function Layout() {
                     viewport={viewport}
                     bounds={gardenBounds}
                     otherBedRects={[...bedRectsById.entries()].filter(([id]) => id !== bed.id).map(([, rect]) => rect)}
+                    onHoverLabel={setTooltip}
                   />
                 ))}
                 {bedMarquee &&
@@ -969,6 +971,7 @@ export function Layout() {
                   top visually. */}
               <RulerLayer canvasSize={canvasSize} viewport={viewport} />
             </Stage>
+            <PlantingTooltip tooltip={tooltip} />
           </div>
 
           {/* Side panels get their own scroll region (`overflow-y-auto`,
@@ -1042,7 +1045,7 @@ export function Layout() {
             <Layer listening={false}>
               <GridLines canvasSize={canvasSize} viewport={viewport} />
             </Layer>
-            <ExampleGardenLayer beds={exampleBeds} plantsBySlug={plantsBySlug} onHover={setTooltip} />
+            <ExampleGardenLayer beds={exampleBeds} plantsBySlug={plantsBySlug} onHover={setTooltip} viewport={viewport} />
             {/* Topmost layer - see the "mine" Stage's identical comment above. */}
             <RulerLayer canvasSize={canvasSize} viewport={viewport} />
           </Stage>

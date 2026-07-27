@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Group, Rect, Text, Transformer } from "react-konva";
 import type Konva from "konva";
 import type { Bed, Geometry, PolygonGeometry } from "@/api/client";
+import type { PlantingTooltipState } from "./ExampleGardenView";
 import {
   ALIGNMENT_SNAP_THRESHOLD_PX,
   boundingRect,
@@ -14,10 +15,12 @@ import {
   rectanglesOverlap,
   snapToGrid,
 } from "./geometry";
+import { clampLabelYBelowRuler, LABEL_PADDING_CM, measureTextWidth } from "./labels";
 import { PolygonEditor } from "./PolygonEditor";
 import { DEFAULT_VIEWPORT, screenToWorld, worldToScreen, type Viewport } from "./viewport";
 
 const MIN_SIZE_CM = 20;
+const BED_LABEL_FONT_SIZE = 12;
 
 // Konva's Transformer's handle sizes (anchorSize/anchorStrokeWidth/
 // borderStrokeWidth/rotateAnchorOffset) are all specified in the same local
@@ -66,6 +69,12 @@ interface BedNodeProps {
    * polygon path reject the whole gesture and revert on overlap, since a
    * live partial-resize/partial-reshape push-out is out of scope here. */
   otherBedRects?: Bounds[];
+  /** Reports hover state for this bed's own name label - only fired while
+   * the label is actually ellipsis-truncated (see `measureTextWidth`), so
+   * hovering a fully-visible name is a no-op. Rendered by the caller via
+   * `ExampleGardenView.tsx`'s existing `PlantingTooltip`, reused here rather
+   * than building a second tooltip primitive. */
+  onHoverLabel?: (tooltip: PlantingTooltipState | null) => void;
 }
 
 /** Rectangle path: drag/resize/rotate via Konva's Transformer. Polygon
@@ -80,6 +89,7 @@ export function BedNode({
   viewport = DEFAULT_VIEWPORT,
   bounds,
   otherBedRects,
+  onHoverLabel,
 }: BedNodeProps) {
   const shapeRef = useRef<Konva.Rect>(null);
   const trRef = useRef<Konva.Transformer>(null);
@@ -113,6 +123,25 @@ export function BedNode({
   // difference in how the bed itself is drawn on the canvas.
   const isRaised = bed.height_cm > 0;
 
+  // Truncation and hover-tooltip decision, shared by both the rectangle and
+  // polygon render paths below - a label's width is clamped to its own
+  // bed's screen-space footprint (see #166) so it never overlaps a
+  // neighboring bed's label or the ruler, with a tooltip on hover for
+  // whatever got cut off.
+  const labelAvailableWidth = Math.max(0, boundingRect(geometry).width - 2 * LABEL_PADDING_CM);
+  const isNameTruncated = measureTextWidth(bed.name, BED_LABEL_FONT_SIZE) > labelAvailableWidth;
+
+  function showLabelTooltip(e: Konva.KonvaEventObject<MouseEvent>) {
+    if (!isNameTruncated || !onHoverLabel) return;
+    const stageBox = e.target.getStage()?.container().getBoundingClientRect();
+    if (!stageBox) return;
+    onHoverLabel({ x: e.evt.clientX - stageBox.left, y: e.evt.clientY - stageBox.top, title: bed.name, subtitle: "" });
+  }
+
+  function hideLabelTooltip() {
+    onHoverLabel?.(null);
+  }
+
   if (geometry.type !== "rectangle") {
     const rect = boundingRect(geometry);
     function handlePolygonChange(next: PolygonGeometry) {
@@ -137,7 +166,20 @@ export function BedNode({
           interactive={interactive}
           raised={isRaised}
         />
-        <Text x={rect.x + 4} y={rect.y + 4} text={bed.name} fontSize={12} fill="#1f2937" listening={false} />
+        <Text
+          x={rect.x + LABEL_PADDING_CM}
+          y={clampLabelYBelowRuler(rect.y + LABEL_PADDING_CM, viewport)}
+          text={bed.name}
+          width={labelAvailableWidth}
+          wrap="none"
+          ellipsis
+          fontSize={BED_LABEL_FONT_SIZE}
+          fill="#1f2937"
+          listening={isNameTruncated}
+          onMouseEnter={showLabelTooltip}
+          onMouseMove={showLabelTooltip}
+          onMouseLeave={hideLabelTooltip}
+        />
       </>
     );
   }
@@ -264,7 +306,20 @@ export function BedNode({
             onChange({ type: "rectangle", x, y, width, height, rotation: node.rotation() });
           }}
         />
-        <Text x={geometry.x + 4} y={geometry.y + 4} text={bed.name} fontSize={12} fill="#1f2937" listening={false} />
+        <Text
+          x={geometry.x + LABEL_PADDING_CM}
+          y={clampLabelYBelowRuler(geometry.y + LABEL_PADDING_CM, viewport)}
+          text={bed.name}
+          width={labelAvailableWidth}
+          wrap="none"
+          ellipsis
+          fontSize={BED_LABEL_FONT_SIZE}
+          fill="#1f2937"
+          listening={isNameTruncated}
+          onMouseEnter={showLabelTooltip}
+          onMouseMove={showLabelTooltip}
+          onMouseLeave={hideLabelTooltip}
+        />
         {bed.has_greenhouse && (
           <Text
             x={geometry.x + 4}

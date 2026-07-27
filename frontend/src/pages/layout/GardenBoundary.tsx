@@ -2,12 +2,15 @@ import { useEffect, useRef } from "react";
 import { Rect, Text, Transformer } from "react-konva";
 import type Konva from "konva";
 import type { Geometry } from "@/api/client";
-import { snapToGrid } from "./geometry";
+import type { PlantingTooltipState } from "./ExampleGardenView";
+import { boundingRect, snapToGrid } from "./geometry";
+import { clampLabelYBelowRuler, LABEL_PADDING_CM, measureTextWidth } from "./labels";
 import { PolygonEditor } from "./PolygonEditor";
 import { DEFAULT_VIEWPORT, screenToWorld, worldToScreen, type Viewport } from "./viewport";
 
 const MIN_SIZE_CM = 100;
 const GARDEN_COLORS = { fill: "transparent", stroke: "#166534" };
+const GARDEN_LABEL_FONT_SIZE = 12;
 
 // Same fix as BedNode.tsx's identical Transformer setup (see that file's
 // comment for the full explanation) - divide the handle sizes by
@@ -31,6 +34,9 @@ interface GardenBoundaryProps {
   /** See BedNode's identical prop doc - `dragBoundFunc` needs the current
    * pan/zoom to snap correctly. */
   viewport?: Viewport;
+  /** See BedNode's identical prop doc - only fires while the garden name
+   * label is actually ellipsis-truncated. */
+  onHoverLabel?: (tooltip: PlantingTooltipState | null) => void;
 }
 
 /** The overarching garden's own boundary - same rectangle-Transformer /
@@ -44,6 +50,7 @@ export function GardenBoundary({
   onChange,
   interactive = true,
   viewport = DEFAULT_VIEWPORT,
+  onHoverLabel,
 }: GardenBoundaryProps) {
   const shapeRef = useRef<Konva.Rect>(null);
   const trRef = useRef<Konva.Transformer>(null);
@@ -54,6 +61,23 @@ export function GardenBoundary({
       trRef.current.getLayer()?.batchDraw();
     }
   }, [interactive, isSelected, geometry.type]);
+
+  // Same width-clamp + truncation-gated hover tooltip as BedNode's own name
+  // label (see #166) - the garden's own name is just as capable of running
+  // into a neighboring bed's label or the ruler's tick-label row.
+  const labelAvailableWidth = Math.max(0, boundingRect(geometry).width - 2 * LABEL_PADDING_CM);
+  const isNameTruncated = measureTextWidth(name, GARDEN_LABEL_FONT_SIZE) > labelAvailableWidth;
+
+  function showLabelTooltip(e: Konva.KonvaEventObject<MouseEvent>) {
+    if (!isNameTruncated || !onHoverLabel) return;
+    const stageBox = e.target.getStage()?.container().getBoundingClientRect();
+    if (!stageBox) return;
+    onHoverLabel({ x: e.evt.clientX - stageBox.left, y: e.evt.clientY - stageBox.top, title: name, subtitle: "" });
+  }
+
+  function hideLabelTooltip() {
+    onHoverLabel?.(null);
+  }
 
   if (geometry.type !== "rectangle") {
     return (
@@ -67,7 +91,20 @@ export function GardenBoundary({
           stroke={GARDEN_COLORS.stroke}
           interactive={interactive}
         />
-        <Text x={geometry.points[0]?.x ?? 0} y={(geometry.points[0]?.y ?? 0) - 16} text={name} fontSize={12} fill="#166534" listening={false} />
+        <Text
+          x={geometry.points[0]?.x ?? 0}
+          y={clampLabelYBelowRuler((geometry.points[0]?.y ?? 0) - 16, viewport)}
+          text={name}
+          width={labelAvailableWidth}
+          wrap="none"
+          ellipsis
+          fontSize={GARDEN_LABEL_FONT_SIZE}
+          fill="#166534"
+          listening={isNameTruncated}
+          onMouseEnter={showLabelTooltip}
+          onMouseMove={showLabelTooltip}
+          onMouseLeave={hideLabelTooltip}
+        />
       </>
     );
   }
@@ -114,7 +151,20 @@ export function GardenBoundary({
           });
         }}
       />
-      <Text x={geometry.x + 4} y={geometry.y - 16} text={name} fontSize={12} fill="#166534" listening={false} />
+      <Text
+        x={geometry.x + LABEL_PADDING_CM}
+        y={clampLabelYBelowRuler(geometry.y - 16, viewport)}
+        text={name}
+        width={labelAvailableWidth}
+        wrap="none"
+        ellipsis
+        fontSize={GARDEN_LABEL_FONT_SIZE}
+        fill="#166534"
+        listening={isNameTruncated}
+        onMouseEnter={showLabelTooltip}
+        onMouseMove={showLabelTooltip}
+        onMouseLeave={hideLabelTooltip}
+      />
       {interactive && isSelected && (
         <Transformer
           ref={trRef}
