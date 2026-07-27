@@ -17,7 +17,7 @@
       "relationship": "good"
     },
     {
-      "companion_slug": "pepper-bell",
+      "companion_slug": "bell-pepper",
       "relationship": "good"
     },
     {
@@ -25,7 +25,7 @@
       "relationship": "good"
     },
     {
-      "companion_slug": "marigold",
+      "companion_slug": "african-marigold",
       "relationship": "good"
     },
     {
@@ -61,6 +61,10 @@
     {
       "attribution": "manual-plant-spacing-fallback",
       "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
+    },
+    {
+      "attribution": "manual-companion-slug-normalization",
+      "notes": "2 companion_slug reference(s) corrected to the real plant slug (GitHub issue #164) - see etl/normalize_companion_slugs.py's ALIAS_MAP."
     }
   ],
   "growth_habit": "upright",

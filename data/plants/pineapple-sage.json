@@ -33,7 +33,7 @@
       "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
     },
     {
-      "companion_slug": "kale-1",
+      "companion_slug": "kale",
       "relationship": "good",
       "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
     },
@@ -85,6 +85,10 @@
     {
       "attribution": "manual-plant-spacing-fallback",
       "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
+    },
+    {
+      "attribution": "manual-companion-slug-normalization",
+      "notes": "1 companion_slug reference(s) corrected to the real plant slug (GitHub issue #164) - see etl/normalize_companion_slugs.py's ALIAS_MAP."
     }
   ],
   "growth_habit": "upright",

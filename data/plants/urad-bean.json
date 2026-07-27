@@ -12,7 +12,7 @@
   "is_edible": true,
   "companions": [
     {
-      "companion_slug": "groundnut-1",
+      "companion_slug": "groundnut",
       "relationship": "good",
       "notes": "openfarm-crops-rescue lists this as a companion without indicating polarity; assumed 'good' per common convention"
     }
@@ -50,6 +50,10 @@
     {
       "attribution": "manual-sowing-details-derivation",
       "notes": "['sow_direct'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
+    },
+    {
+      "attribution": "manual-companion-slug-normalization",
+      "notes": "1 companion_slug reference(s) corrected to the real plant slug (GitHub issue #164) - see etl/normalize_companion_slugs.py's ALIAS_MAP."
     }
   ],
   "growth_habit": "climbing",

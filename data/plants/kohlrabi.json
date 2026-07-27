@@ -28,7 +28,7 @@
       "relationship": "good"
     },
     {
-      "companion_slug": "beets",
+      "companion_slug": "beet",
       "relationship": "good"
     },
     {
@@ -41,7 +41,7 @@
       "relationship": "bad"
     },
     {
-      "companion_slug": "pepper-bell",
+      "companion_slug": "bell-pepper",
       "relationship": "bad"
     },
     {
@@ -108,6 +108,10 @@
     {
       "attribution": "manual-sowing-details-derivation",
       "notes": "['needs_thinning', 'sow_direct'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
+    },
+    {
+      "attribution": "manual-companion-slug-normalization",
+      "notes": "2 companion_slug reference(s) corrected to the real plant slug (GitHub issue #164) - see etl/normalize_companion_slugs.py's ALIAS_MAP."
     }
   ],
   "growing_information": [
