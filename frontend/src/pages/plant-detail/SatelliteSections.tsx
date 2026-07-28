@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Popover } from "@base-ui/react/popover";
 import { Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -481,9 +482,15 @@ export function PestInteractionsSection({ slug, items }: { slug: string; items: 
 }
 
 /** One "Good"/"Bad" column of the Companions table below - its own current
- * companions plus an always-open `PlantSearchList` that adds a companion
- * immediately on pick (no separate "Add" button), staying mounted (and so
- * keeping its search text) across picks so several can be added in a row. */
+ * companions plus a small "+ Add plant" row (à la GitHub Projects' own
+ * "+ Add item" kanban-column affordance, per the user's own follow-up on
+ * #122) that opens a `PlantSearchList` popover only on click, rather than
+ * the picker sitting permanently open inline. Closes again once a pick is
+ * made (`onAdd` + `setPickerOpen(false)` together) or on outside-press/
+ * Escape (Base UI's `Popover.Root` `onOpenChange`, same mechanism the
+ * canvas editor's own `layout/PlantPicker.tsx` already uses for the
+ * identical "click a button, search-and-pick, close" interaction - this is
+ * that same shape, just anchored inline instead of to a toolbar button). */
 function CompanionColumn({
   relationship,
   items,
@@ -497,6 +504,9 @@ function CompanionColumn({
   onAdd: (companionSlug: string, relationship: "good" | "bad") => void;
   onRemove: (item: PlantCompanion) => void;
 }) {
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const anchorRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className="flex flex-col gap-2">
       {items.map((item) => (
@@ -512,7 +522,31 @@ function CompanionColumn({
           </Button>
         </div>
       ))}
-      <PlantSearchList plants={candidatePlants} onPick={(companionSlug) => onAdd(companionSlug, relationship)} autoFocus={false} />
+      <div ref={anchorRef}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start text-muted-foreground"
+          onClick={() => setPickerOpen(true)}
+        >
+          <Plus /> Add plant
+        </Button>
+      </div>
+      <Popover.Root open={pickerOpen} onOpenChange={setPickerOpen}>
+        <Popover.Portal>
+          <Popover.Positioner anchor={anchorRef} side="bottom" align="start" sideOffset={4}>
+            <Popover.Popup className="w-64 rounded-md border bg-popover p-2 text-popover-foreground shadow-md outline-none">
+              <PlantSearchList
+                plants={candidatePlants}
+                onPick={(companionSlug) => {
+                  onAdd(companionSlug, relationship);
+                  setPickerOpen(false);
+                }}
+              />
+            </Popover.Popup>
+          </Popover.Positioner>
+        </Popover.Portal>
+      </Popover.Root>
     </div>
   );
 }
