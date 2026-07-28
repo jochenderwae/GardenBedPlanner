@@ -841,6 +841,43 @@ export interface paths {
         patch: operations["update_irrigation_zone_api_irrigation_zones__zone_id__patch"];
         trace?: never;
     };
+    "/api/compost-fertilization-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Compost Fertilization Logs */
+        get: operations["list_compost_fertilization_logs_api_compost_fertilization_logs_get"];
+        put?: never;
+        /** Create Compost Fertilization Log */
+        post: operations["create_compost_fertilization_log_api_compost_fertilization_logs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/compost-fertilization-logs/{log_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Compost Fertilization Log */
+        get: operations["get_compost_fertilization_log_api_compost_fertilization_logs__log_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Compost Fertilization Log */
+        delete: operations["delete_compost_fertilization_log_api_compost_fertilization_logs__log_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Compost Fertilization Log */
+        patch: operations["update_compost_fertilization_log_api_compost_fertilization_logs__log_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1078,6 +1115,94 @@ export interface components {
          * @enum {string}
          */
         CompanionRelationship: "good" | "bad";
+        /**
+         * CompostFertilizationLog
+         * @description A logged compost/fertilization event against a specific Bed - what
+         *     was applied, when, and how much - per root CLAUDE.md's domain note that
+         *     compost/fertilization logs should be linkable to specific beds so
+         *     nutrient history informs next season's crop assignment. Shape matches
+         *     docs/schema.md's COMPOST_FERTILIZATION_LOG table (already sketched
+         *     there, unlike HarvestLog which had no prior table and was designed from
+         *     scratch - see app/models/harvest_log.py).
+         *
+         *     amount is a free-text field (not a fixed numeric+unit pair) - compost
+         *     applications ("2 wheelbarrows", "a 5cm layer") don't reduce to a single
+         *     numeric unit the way HarvestLog's yield_amount/yield_unit pair does for
+         *     produce; forcing structure here would lose information rather than
+         *     normalize it.
+         */
+        CompostFertilizationLog: {
+            /** Id */
+            id?: number | null;
+            /** Bed Id */
+            bed_id: number;
+            /**
+             * Log Date
+             * Format: date
+             */
+            log_date: string;
+            type: components["schemas"]["CompostFertilizationLogType"];
+            /**
+             * Product
+             * @default
+             */
+            product: string;
+            /**
+             * Amount
+             * @default
+             */
+            amount: string;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** CompostFertilizationLogCreate */
+        CompostFertilizationLogCreate: {
+            /** Bed Id */
+            bed_id: number;
+            /**
+             * Log Date
+             * Format: date
+             */
+            log_date: string;
+            type: components["schemas"]["CompostFertilizationLogType"];
+            /**
+             * Product
+             * @default
+             */
+            product: string;
+            /**
+             * Amount
+             * @default
+             */
+            amount: string;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /**
+         * CompostFertilizationLogType
+         * @enum {string}
+         */
+        CompostFertilizationLogType: "compost" | "fertilizer";
+        /** CompostFertilizationLogUpdate */
+        CompostFertilizationLogUpdate: {
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Log Date */
+            log_date?: string | null;
+            type?: components["schemas"]["CompostFertilizationLogType"] | null;
+            /** Product */
+            product?: string | null;
+            /** Amount */
+            amount?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
         /**
          * ExampleBed
          * @description Mirrors the real Bed API shape (app/api/routes/beds.py) - kept as its
@@ -4878,6 +5003,170 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IrrigationZone"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_compost_fertilization_logs_api_compost_fertilization_logs_get: {
+        parameters: {
+            query?: {
+                /** @description Only entries for this bed */
+                bed_id?: number | null;
+                /** @description Only entries logged on/after this date */
+                log_date_from?: string | null;
+                /** @description Only entries logged on/before this date */
+                log_date_to?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompostFertilizationLog"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_compost_fertilization_log_api_compost_fertilization_logs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompostFertilizationLogCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompostFertilizationLog"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_compost_fertilization_log_api_compost_fertilization_logs__log_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                log_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompostFertilizationLog"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_compost_fertilization_log_api_compost_fertilization_logs__log_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                log_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_compost_fertilization_log_api_compost_fertilization_logs__log_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                log_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompostFertilizationLogUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompostFertilizationLog"];
                 };
             };
             /** @description Validation Error */
