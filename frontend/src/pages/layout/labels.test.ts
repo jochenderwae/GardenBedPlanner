@@ -1,5 +1,33 @@
 import { describe, expect, it } from "vitest";
-import { clampLabelYBelowRuler } from "./labels";
+import { clampLabelYBelowRuler, measureTextWidth } from "./labels";
+
+describe("measureTextWidth", () => {
+  it("returns 0 for an empty string", () => {
+    expect(measureTextWidth("", 12)).toBe(0);
+  });
+
+  it("returns a positive width for non-empty text", () => {
+    expect(measureTextWidth("Large Planter 1 (Greenhouse)", 12)).toBeGreaterThan(0);
+  });
+
+  it("is monotonically non-decreasing as text gets longer (same font size)", () => {
+    const short = measureTextWidth("Bed", 12);
+    const long = measureTextWidth("Bed with a much longer name", 12);
+    expect(long).toBeGreaterThan(short);
+  });
+
+  it("is monotonically non-decreasing as font size grows (same text)", () => {
+    const small = measureTextWidth("Sour Cherry Tree", 10);
+    const large = measureTextWidth("Sour Cherry Tree", 24);
+    expect(large).toBeGreaterThan(small);
+  });
+
+  it("doesn't throw on unusual input (very long strings, unicode)", () => {
+    expect(() => measureTextWidth("x".repeat(500), 12)).not.toThrow();
+    expect(() => measureTextWidth("Jardín de Piña 🌱", 12)).not.toThrow();
+    expect(measureTextWidth("x".repeat(500), 12)).toBeGreaterThan(0);
+  });
+});
 
 describe("clampLabelYBelowRuler", () => {
   it("leaves a y already well below the viewport top unchanged", () => {
