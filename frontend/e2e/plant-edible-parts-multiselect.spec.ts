@@ -46,6 +46,12 @@ test.describe("Plant-detail edible_parts checkbox multiselect (#134)", () => {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Edible Parts Plant" })).toBeVisible();
 
+      // Before opening it: the collapsed trigger shows a comma-joined
+      // summary of the current selection, in the options' own declared
+      // order (fruit before seeds, even though this plant was created with
+      // ["fruit", "seeds"] - not necessarily insertion order).
+      await expect(page.getByRole("button", { name: "Edible parts" })).toHaveText("Fruit, Seeds");
+
       // Checkboxes live inside a collapsed popover now (#134) - open it
       // once before interacting with anything inside.
       await page.getByRole("button", { name: "Edible parts" }).click();
@@ -106,12 +112,17 @@ test.describe("Plant-detail edible_parts checkbox multiselect (#134)", () => {
       // Undo (the autosave snackbar's own action) restores the prior value
       // (empty -> back to just ["leaves"], the state right before the last
       // uncheck) and reflects it back in the checkboxes, not just the API.
+      // The Undo button sits outside the popover, so clicking it closes the
+      // popover first (Base UI's own standard outside-click behavior, not
+      // a bug) - unmounting the checkboxes entirely until it's reopened, so
+      // re-open it before checking their restored visual state.
       await page.getByRole("button", { name: "Undo" }).click();
       await expect
         .poll(async () => (await (await request.get(`/api/plants/${slug}`)).json()).edible_parts, {
           message: "Undo never restored the prior edible_parts value",
         })
         .toEqual(["leaves"]);
+      await page.getByRole("button", { name: "Edible parts" }).click();
       await expect(leavesCheckbox).toBeChecked();
       await expect(fruitCheckbox).not.toBeChecked();
     } finally {
