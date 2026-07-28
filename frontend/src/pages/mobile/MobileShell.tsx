@@ -27,7 +27,17 @@ export function MobileShell() {
         <main className="min-h-0 flex-1 overflow-y-auto p-4">
           <Outlet />
         </main>
-        <nav className="flex border-t">
+        {/* pl-/pr- keep every label clear of the physical screen edge (worse
+            under a notch/rounded-corner safe-area inset) - a flat 0.5rem
+            floor, growing further via env(safe-area-inset-*) on a device
+            that reports a bigger inset than that. See #168: at 390px CSS
+            width the five flex-1 columns are ~78px each, and "Notifications"
+            (the longest label, one unbreakable word) doesn't fit - without
+            `min-w-0` on each NavLink below, a flex item never shrinks below
+            its own content's min-content width, so the column itself grows
+            past its share and the overflow runs straight to this nav's own
+            edge with zero margin. */}
+        <nav className="flex border-t pl-[max(0.5rem,env(safe-area-inset-left))] pr-[max(0.5rem,env(safe-area-inset-right))]">
           {MOBILE_NAV_ITEMS.map(({ to, label, icon: Icon }) => (
             <NavLink
               key={to}
@@ -35,7 +45,7 @@ export function MobileShell() {
               end={to === "/"}
               className={({ isActive }) =>
                 cn(
-                  "flex flex-1 flex-col items-center gap-0.5 py-2 text-xs font-medium text-muted-foreground",
+                  "flex min-w-0 flex-1 flex-col items-center gap-0.5 py-2 text-center text-xs leading-tight font-medium text-wrap break-words text-muted-foreground",
                   isActive && "text-primary",
                 )
               }
