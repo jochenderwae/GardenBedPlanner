@@ -17,7 +17,12 @@ def test_get_missing_action_404(client: TestClient) -> None:
 def test_action_crud_round_trip(client: TestClient) -> None:
     create_response = client.post(
         "/api/actions",
-        json={"action_type": "sow", "due_date": "2027-03-15", "notes": "start seeds indoors"},
+        json={
+            "action_type": "sow",
+            "due_date_start": "2027-03-01",
+            "due_date_end": "2027-03-15",
+            "notes": "start seeds indoors",
+        },
     )
     assert create_response.status_code == 201, create_response.text
     action = create_response.json()
@@ -36,7 +41,7 @@ def test_action_crud_round_trip(client: TestClient) -> None:
 
 def test_setting_completed_date_defaults_status_to_completed(client: TestClient) -> None:
     action_id = client.post(
-        "/api/actions", json={"action_type": "harvest", "due_date": "2027-07-01"}
+        "/api/actions", json={"action_type": "harvest", "due_date_end": "2027-07-01"}
     ).json()["id"]
 
     update_response = client.patch(
@@ -50,7 +55,7 @@ def test_setting_completed_date_defaults_status_to_completed(client: TestClient)
 
 def test_explicit_status_overrides_completed_date_default(client: TestClient) -> None:
     action_id = client.post(
-        "/api/actions", json={"action_type": "harvest", "due_date": "2027-07-01"}
+        "/api/actions", json={"action_type": "harvest", "due_date_end": "2027-07-01"}
     ).json()["id"]
 
     update_response = client.patch(
@@ -82,7 +87,8 @@ def test_action_can_reference_a_bed_and_plant(client: TestClient, db_session) ->
         "/api/actions",
         json={
             "action_type": "sow",
-            "due_date": "2027-04-01",
+            "due_date_start": "2027-04-01",
+            "due_date_end": "2027-04-01",
             "bed_id": bed_id,
             "plant_slug": "test-carrot",
         },
@@ -93,11 +99,18 @@ def test_action_can_reference_a_bed_and_plant(client: TestClient, db_session) ->
 
 
 def test_list_actions_filters_by_due_date_range(client: TestClient) -> None:
-    client.post("/api/actions", json={"action_type": "sow", "due_date": "2027-01-01"})
+    client.post(
+        "/api/actions",
+        json={"action_type": "sow", "due_date_start": "2027-01-01", "due_date_end": "2027-01-01"},
+    )
     in_range_id = client.post(
-        "/api/actions", json={"action_type": "harvest", "due_date": "2027-06-15"}
+        "/api/actions",
+        json={"action_type": "harvest", "due_date_start": "2027-06-15", "due_date_end": "2027-06-15"},
     ).json()["id"]
-    client.post("/api/actions", json={"action_type": "clear", "due_date": "2027-12-01"})
+    client.post(
+        "/api/actions",
+        json={"action_type": "clear", "due_date_start": "2027-12-01", "due_date_end": "2027-12-01"},
+    )
 
     response = client.get(
         "/api/actions", params={"due_from": "2027-05-01", "due_to": "2027-07-01"}
@@ -159,13 +172,21 @@ def test_create_action_bad_garden_plan_entry_id_returns_409(client: TestClient) 
 
 def test_due_date_range_filter_is_inclusive_on_both_ends(client: TestClient) -> None:
     on_from_boundary = client.post(
-        "/api/actions", json={"action_type": "sow", "due_date": "2027-05-01"}
+        "/api/actions",
+        json={"action_type": "sow", "due_date_start": "2027-05-01", "due_date_end": "2027-05-01"},
     ).json()["id"]
     on_to_boundary = client.post(
-        "/api/actions", json={"action_type": "harvest", "due_date": "2027-07-01"}
+        "/api/actions",
+        json={"action_type": "harvest", "due_date_start": "2027-07-01", "due_date_end": "2027-07-01"},
     ).json()["id"]
-    just_outside_from = client.post("/api/actions", json={"action_type": "sow", "due_date": "2027-04-30"}).json()["id"]
-    just_outside_to = client.post("/api/actions", json={"action_type": "harvest", "due_date": "2027-07-02"}).json()["id"]
+    just_outside_from = client.post(
+        "/api/actions",
+        json={"action_type": "sow", "due_date_start": "2027-04-30", "due_date_end": "2027-04-30"},
+    ).json()["id"]
+    just_outside_to = client.post(
+        "/api/actions",
+        json={"action_type": "harvest", "due_date_start": "2027-07-02", "due_date_end": "2027-07-02"},
+    ).json()["id"]
 
     response = client.get("/api/actions", params={"due_from": "2027-05-01", "due_to": "2027-07-01"})
     ids = {a["id"] for a in response.json()}

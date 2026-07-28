@@ -44,10 +44,11 @@ REMINDER_LOOKAHEAD_DAYS = 3
 
 def due_actions(session: Session, as_of: date | None = None) -> list[Action]:
     """Pending actions due today, overdue, or due within
-    REMINDER_LOOKAHEAD_DAYS. Actions with no due_date at all are never
-    "due" for reminder purposes (nothing to compare against), and
-    completed/skipped actions are excluded outright - status is what stops
-    the reminders, not a one-time notified flag."""
+    REMINDER_LOOKAHEAD_DAYS - "due" meaning the window's finish-before date
+    (due_date_end, #192), not its start. Actions with no due_date_end at
+    all are never "due" for reminder purposes (nothing to compare
+    against), and completed/skipped actions are excluded outright - status
+    is what stops the reminders, not a one-time notified flag."""
     if as_of is None:
         as_of = date.today()
     cutoff = as_of + timedelta(days=REMINDER_LOOKAHEAD_DAYS)
@@ -55,15 +56,15 @@ def due_actions(session: Session, as_of: date | None = None) -> list[Action]:
         session.exec(
             select(Action)
             .where(Action.status == ActionStatus.pending)
-            .where(Action.due_date.is_not(None))
-            .where(Action.due_date <= cutoff)
+            .where(Action.due_date_end.is_not(None))
+            .where(Action.due_date_end <= cutoff)
         ).all()
     )
 
 
 def _notification_payload(action: Action) -> str:
     label = action.action_type.value.replace("_", " ").capitalize()
-    body = f"{label} due {action.due_date.isoformat()}" if action.due_date else label
+    body = f"{label} due by {action.due_date_end.isoformat()}" if action.due_date_end else label
     return json.dumps({"title": "GardenBedPlanner reminder", "body": body})
 
 

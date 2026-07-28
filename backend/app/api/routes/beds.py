@@ -4,10 +4,12 @@ from sqlmodel import Session, select
 
 from app.api.deps import commit_or_409
 from app.core.db import get_session
+from app.models.action import Action
 from app.models.bed import Bed as BedTable
 from app.models.bed_equipment import BedEquipment
 from app.models.geometry import Geometry, parse_geometry
 from app.models.planting import Planting
+from app.services.task_generation import generate_bed_tasks
 
 router = APIRouter(prefix="/beds", tags=["beds"])
 
@@ -81,11 +83,29 @@ def get_bed(bed_id: int, session: Session = Depends(get_session)) -> Bed:  # typ
 
 
 @router.post("", response_model=Bed, status_code=201)
-def create_bed(bed: _BedCreate, session: Session = Depends(get_session)) -> Bed:  # type: ignore[valid-type]
+def create_bed(
+    bed: _BedCreate,
+    is_initial_state: bool = False,
+    session: Session = Depends(get_session),
+) -> Bed:  # type: ignore[valid-type]
+    """is_initial_state: set when backfilling a bed that already exists in
+    the real garden (modeling its pre-existing state), not when the
+    gardener is actually adding one now - skips auto-generating a
+    prepare_bed task (#192) so backfilling doesn't spam the task list with
+    things that already happened."""
     data = bed.model_dump()
     row = BedTable(**data)
     session.add(row)
     commit_or_409(session)
+    session.refresh(row)
+    generate_bed_tasks(session, row, is_initial_state=is_initial_state)
+    commit_or_409(session)
+    # The commit above expires every attribute on `row` (SQLAlchemy's
+    # default expire_on_commit=True) - _to_api_bed's model_dump() reads
+    # straight from __dict__, not through SQLAlchemy's lazy-reloading
+    # descriptors (same caveat app/api/routes/garden.py's put_garden
+    # documents), so without this second refresh every field would come
+    # back missing instead of reloaded.
     session.refresh(row)
     return _to_api_bed(row)
 
@@ -109,6 +129,28 @@ def delete_bed(
 ) -> None:
     bed = _get_or_404(session, bed_id)
     if cascade:
+        # Actions first, before Planting/BedEquipment: #192's
+        # auto-generated install_equipment tasks reference equipment_id, so
+        # deleting equipment before the actions that reference it would
+        # trip that FK the moment the equipment deletes autoflush (every
+        # install_equipment/prepare_bed/sow/etc. task against this bed
+        # already has bed_id set to this same bed - see
+        # app/services/task_generation.py - so this one query also covers
+        # equipment-referencing actions, not just bed-referencing ones).
+        bed_actions = list(session.exec(select(Action).where(Action.bed_id == bed_id)).all())
+        bed_action_ids = [action.id for action in bed_actions]
+        if bed_action_ids:
+            # Null out any depends_on_action_id (this bed's own, or another
+            # bed's - #192's self-FK dependency isn't scoped to a single
+            # bed) pointing at one of the actions about to be deleted,
+            # before deleting them - otherwise a still-referencing row
+            # would trip the FK constraint on the flush below.
+            for dependent in session.exec(
+                select(Action).where(Action.depends_on_action_id.in_(bed_action_ids))
+            ).all():
+                dependent.depends_on_action_id = None
+        for action in bed_actions:
+            session.delete(action)
         for planting in session.exec(select(Planting).where(Planting.bed_id == bed_id)).all():
             session.delete(planting)
         for equipment in session.exec(

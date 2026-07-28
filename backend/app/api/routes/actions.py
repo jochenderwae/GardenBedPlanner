@@ -42,21 +42,40 @@ def _get_or_404(session: Session, action_id: int) -> ActionTable:
 
 @router.get("", response_model=list[ActionTable])
 def list_actions(
-    due_from: date | None = Query(default=None, description="Only actions due on/after this date"),
-    due_to: date | None = Query(default=None, description="Only actions due on/before this date"),
+    due_from: date | None = Query(
+        default=None, description="Only actions whose window starts on/after this date"
+    ),
+    due_to: date | None = Query(
+        default=None, description="Only actions whose window ends on/before this date"
+    ),
     status: ActionStatus | None = Query(default=None),
     action_type: ActionType | None = Query(default=None),
+    actionable_now: bool = Query(
+        default=False,
+        description=(
+            "Only pending actions whose window has already opened "
+            "(due_date_start <= today) - 'what can I pick up right now' "
+            "(#192) - sorted by due_date_end ascending (closest "
+            "finish-before date first)."
+        ),
+    ),
     session: Session = Depends(get_session),
 ) -> list[ActionTable]:
     query = select(ActionTable)
     if due_from is not None:
-        query = query.where(ActionTable.due_date >= due_from)
+        query = query.where(ActionTable.due_date_start >= due_from)
     if due_to is not None:
-        query = query.where(ActionTable.due_date <= due_to)
+        query = query.where(ActionTable.due_date_end <= due_to)
     if status is not None:
         query = query.where(ActionTable.status == status)
     if action_type is not None:
         query = query.where(ActionTable.action_type == action_type)
+    if actionable_now:
+        today = date.today()
+        query = query.where(ActionTable.status == ActionStatus.pending)
+        query = query.where(ActionTable.due_date_start.is_not(None))
+        query = query.where(ActionTable.due_date_start <= today)
+        query = query.order_by(ActionTable.due_date_end)
     return list(session.exec(query).all())
 
 

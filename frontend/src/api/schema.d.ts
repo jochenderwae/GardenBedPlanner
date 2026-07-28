@@ -31,7 +31,14 @@ export interface paths {
         /** List Beds */
         get: operations["list_beds_api_beds_get"];
         put?: never;
-        /** Create Bed */
+        /**
+         * Create Bed
+         * @description is_initial_state: set when backfilling a bed that already exists in
+         *     the real garden (modeling its pre-existing state), not when the
+         *     gardener is actually adding one now - skips auto-generating a
+         *     prepare_bed task (#192) so backfilling doesn't spam the task list with
+         *     things that already happened.
+         */
         post: operations["create_bed_api_beds_post"];
         delete?: never;
         options?: never;
@@ -444,7 +451,19 @@ export interface paths {
         /** List Plantings */
         get: operations["list_plantings_api_plantings_get"];
         put?: never;
-        /** Create Planting */
+        /**
+         * Create Planting
+         * @description is_initial_state: set when backfilling a planting that already
+         *     exists in the real garden, not when the gardener is placing one now -
+         *     skips auto-generating sow/plant/fertilize/harvest tasks (#192) so
+         *     backfilling doesn't spam the task list with things that already
+         *     happened. started_from_seed: whether the gardener is sowing seed
+         *     (default) or planting an already-started plant they bought - a bought
+         *     started plant never gets a sow task, only whichever of
+         *     plant/fertilize/harvest apply. Neither flag is persisted on the
+         *     Planting row itself, both only decide which Actions get generated for
+         *     this one create call.
+         */
         post: operations["create_planting_api_plantings_post"];
         delete?: never;
         options?: never;
@@ -481,7 +500,12 @@ export interface paths {
         /** List Bed Equipment */
         get: operations["list_bed_equipment_api_bed_equipment_get"];
         put?: never;
-        /** Create Bed Equipment */
+        /**
+         * Create Bed Equipment
+         * @description is_initial_state: set when backfilling equipment that's already in
+         *     place in the real garden, not when the gardener is placing it now -
+         *     skips auto-generating an install_equipment task (#192).
+         */
         post: operations["create_bed_equipment_api_bed_equipment_post"];
         delete?: never;
         options?: never;
@@ -938,8 +962,10 @@ export interface components {
             /** Id */
             id?: number | null;
             action_type: components["schemas"]["ActionType"];
-            /** Due Date */
-            due_date?: string | null;
+            /** Due Date Start */
+            due_date_start?: string | null;
+            /** Due Date End */
+            due_date_end?: string | null;
             /** Completed Date */
             completed_date?: string | null;
             /** @default pending */
@@ -952,6 +978,8 @@ export interface components {
             plant_slug?: string | null;
             /** Equipment Id */
             equipment_id?: number | null;
+            /** Depends On Action Id */
+            depends_on_action_id?: number | null;
             /**
              * Notes
              * @default
@@ -961,8 +989,10 @@ export interface components {
         /** ActionCreate */
         ActionCreate: {
             action_type: components["schemas"]["ActionType"];
-            /** Due Date */
-            due_date?: string | null;
+            /** Due Date Start */
+            due_date_start?: string | null;
+            /** Due Date End */
+            due_date_end?: string | null;
             /** Completed Date */
             completed_date?: string | null;
             /** @default pending */
@@ -975,6 +1005,8 @@ export interface components {
             plant_slug?: string | null;
             /** Equipment Id */
             equipment_id?: number | null;
+            /** Depends On Action Id */
+            depends_on_action_id?: number | null;
             /**
              * Notes
              * @default
@@ -990,12 +1022,14 @@ export interface components {
          * ActionType
          * @enum {string}
          */
-        ActionType: "fertilize" | "compost" | "prepare_bed" | "sow" | "plant" | "install_equipment" | "remove_equipment" | "harvest" | "clear" | "collect_seeds";
+        ActionType: "fertilize" | "compost" | "prepare_bed" | "sow" | "plant" | "install_equipment" | "remove_equipment" | "harvest" | "clear" | "collect_seeds" | "thin";
         /** ActionUpdate */
         ActionUpdate: {
             action_type?: components["schemas"]["ActionType"] | null;
-            /** Due Date */
-            due_date?: string | null;
+            /** Due Date Start */
+            due_date_start?: string | null;
+            /** Due Date End */
+            due_date_end?: string | null;
             /** Completed Date */
             completed_date?: string | null;
             status?: components["schemas"]["ActionStatus"] | null;
@@ -1007,6 +1041,8 @@ export interface components {
             plant_slug?: string | null;
             /** Equipment Id */
             equipment_id?: number | null;
+            /** Depends On Action Id */
+            depends_on_action_id?: number | null;
             /** Notes */
             notes?: string | null;
         };
@@ -2504,7 +2540,9 @@ export interface operations {
     };
     create_bed_api_beds_post: {
         parameters: {
-            query?: never;
+            query?: {
+                is_initial_state?: boolean;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3726,7 +3764,10 @@ export interface operations {
     };
     create_planting_api_plantings_post: {
         parameters: {
-            query?: never;
+            query?: {
+                is_initial_state?: boolean;
+                started_from_seed?: boolean;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -3874,7 +3915,9 @@ export interface operations {
     };
     create_bed_equipment_api_bed_equipment_post: {
         parameters: {
-            query?: never;
+            query?: {
+                is_initial_state?: boolean;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -4355,12 +4398,14 @@ export interface operations {
     list_actions_api_actions_get: {
         parameters: {
             query?: {
-                /** @description Only actions due on/after this date */
+                /** @description Only actions whose window starts on/after this date */
                 due_from?: string | null;
-                /** @description Only actions due on/before this date */
+                /** @description Only actions whose window ends on/before this date */
                 due_to?: string | null;
                 status?: components["schemas"]["ActionStatus"] | null;
                 action_type?: components["schemas"]["ActionType"] | null;
+                /** @description Only pending actions whose window has already opened (due_date_start <= today) - 'what can I pick up right now' (#192) - sorted by due_date_end ascending (closest finish-before date first). */
+                actionable_now?: boolean;
             };
             header?: never;
             path?: never;

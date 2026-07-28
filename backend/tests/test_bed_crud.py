@@ -49,7 +49,10 @@ def test_bed_crud_round_trip(client: TestClient) -> None:
     # Untouched fields survive a partial PATCH.
     assert update_response.json()["category"] == "large_planter"
 
-    delete_response = client.delete(f"/api/beds/{bed_id}")
+    # cascade=true: an ordinary bed create auto-generates a prepare_bed
+    # task against it (#192) - cascade cleans that up too, see
+    # test_cascade_delete_actually_removes_dependent_plantings_and_equipment.
+    delete_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
     assert delete_response.status_code == 204
 
     assert client.get(f"/api/beds/{bed_id}").status_code == 404
@@ -133,14 +136,21 @@ def test_cascade_delete_actually_removes_dependent_plantings_and_equipment(clien
 
 
 def test_delete_bed_with_no_dependents_works_the_same_with_or_without_cascade(client: TestClient) -> None:
+    # is_initial_state=true: a plain (non-backfill) create would auto-
+    # generate a prepare_bed task against the bed (#192), which is exactly
+    # the kind of dependent this test is deliberately trying to avoid.
     without_cascade_id = client.post(
-        "/api/beds", json={"name": "Empty Bed A", "border_geometry": rectangle()}
+        "/api/beds",
+        json={"name": "Empty Bed A", "border_geometry": rectangle()},
+        params={"is_initial_state": "true"},
     ).json()["id"]
     assert client.delete(f"/api/beds/{without_cascade_id}").status_code == 204
     assert client.get(f"/api/beds/{without_cascade_id}").status_code == 404
 
     with_cascade_id = client.post(
-        "/api/beds", json={"name": "Empty Bed B", "border_geometry": rectangle()}
+        "/api/beds",
+        json={"name": "Empty Bed B", "border_geometry": rectangle()},
+        params={"is_initial_state": "true"},
     ).json()["id"]
     assert client.delete(f"/api/beds/{with_cascade_id}", params={"cascade": "true"}).status_code == 204
     assert client.get(f"/api/beds/{with_cascade_id}").status_code == 404

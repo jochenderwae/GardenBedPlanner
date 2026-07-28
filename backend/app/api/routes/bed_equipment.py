@@ -6,6 +6,7 @@ from app.api.deps import commit_or_409
 from app.core.db import get_session
 from app.models.bed_equipment import BedEquipment as BedEquipmentTable
 from app.models.geometry import Geometry, parse_geometry
+from app.services.task_generation import generate_equipment_tasks
 
 router = APIRouter(prefix="/bed-equipment", tags=["bed-equipment"])
 
@@ -75,11 +76,23 @@ def get_bed_equipment(equipment_id: int, session: Session = Depends(get_session)
 
 @router.post("", response_model=BedEquipment, status_code=201)
 def create_bed_equipment(
-    equipment: _BedEquipmentCreate, session: Session = Depends(get_session)  # type: ignore[valid-type]
+    equipment: _BedEquipmentCreate,  # type: ignore[valid-type]
+    is_initial_state: bool = False,
+    session: Session = Depends(get_session),
 ) -> BedEquipment:  # type: ignore[valid-type]
+    """is_initial_state: set when backfilling equipment that's already in
+    place in the real garden, not when the gardener is placing it now -
+    skips auto-generating an install_equipment task (#192)."""
     row = BedEquipmentTable(**equipment.model_dump())
     session.add(row)
     commit_or_409(session)
+    session.refresh(row)
+    generate_equipment_tasks(session, row, is_initial_state=is_initial_state)
+    commit_or_409(session)
+    # See beds.py's create_bed for why this second refresh is needed - the
+    # commit above expires row's attributes, and _to_api_equipment's
+    # model_dump() reads straight from __dict__, not through SQLAlchemy's
+    # lazy-reloading descriptors.
     session.refresh(row)
     return _to_api_equipment(row)
 

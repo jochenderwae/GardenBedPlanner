@@ -15,8 +15,8 @@ pytestmark = pytest.mark.integration
 TODAY = date(2027, 6, 15)
 
 
-def _action(db_session, due_date: date | None, status: ActionStatus = ActionStatus.pending) -> Action:
-    action = Action(action_type=ActionType.sow, due_date=due_date, status=status)
+def _action(db_session, due_date_end: date | None, status: ActionStatus = ActionStatus.pending) -> Action:
+    action = Action(action_type=ActionType.sow, due_date_end=due_date_end, status=status)
     db_session.add(action)
     db_session.commit()
     db_session.refresh(action)

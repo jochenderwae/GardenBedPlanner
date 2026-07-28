@@ -27,9 +27,14 @@ def test_bed_equipment_unassigned_inventory_round_trip(client: TestClient) -> No
 
 def test_bed_equipment_crud_round_trip_assigned_to_a_bed(client: TestClient) -> None:
     bed_id = client.post(
-        "/api/beds", json={"name": "Bed", "border_geometry": rectangle()}
+        "/api/beds",
+        json={"name": "Bed", "border_geometry": rectangle()},
+        params={"is_initial_state": "true"},
     ).json()["id"]
 
+    # is_initial_state=true: a plain (non-backfill) create would auto-
+    # generate an install_equipment task referencing this equipment (#192),
+    # which the plain (non-cascading) delete below would then conflict on.
     create_response = client.post(
         "/api/bed-equipment",
         json={
@@ -38,6 +43,7 @@ def test_bed_equipment_crud_round_trip_assigned_to_a_bed(client: TestClient) -> 
             "geometry": rectangle(width=10, height=200),
             "water_delivery_lph": 2.0,
         },
+        params={"is_initial_state": "true"},
     )
     assert create_response.status_code == 201, create_response.text
     equipment_id = create_response.json()["id"]
