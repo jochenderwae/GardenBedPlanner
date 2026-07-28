@@ -1,0 +1,167 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
+import { RulerDimensionLine } from "lucide-react";
+import { buttonVariants, Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { getAction, getBed, getPlant, listBedEquipment, updateAction, type Action, type ActionStatus } from "@/api/client";
+import { ACTION_TYPE_LABELS } from "@/pages/agenda/taskAgenda";
+
+/** "March 1 - May 31, 2026" for a real window, or just the one date when a
+ * task collapses to a single day (a `clear` task, whose window is always
+ * `due_date_start === due_date_end === Planting.removed_date` - see
+ * `task_generation.py`'s own doc). `null` when neither end of the window
+ * is set at all (a manually-created task with no computed window). */
+function formatDueWindow(action: Action): string | null {
+  if (!action.due_date_start && !action.due_date_end) return null;
+  if (action.due_date_start === action.due_date_end) return action.due_date_start;
+  if (!action.due_date_start) return `Due by ${action.due_date_end}`;
+  if (!action.due_date_end) return `Not before ${action.due_date_start}`;
+  return `${action.due_date_start} – ${action.due_date_end}`;
+}
+
+const STATUS_LABELS: Record<ActionStatus, string> = {
+  pending: "Pending",
+  completed: "Completed",
+  skipped: "Skipped",
+};
+
+/** A single garden task's own detail view (#181) - the "click a task ->
+ * see its detail" page the agenda (`TaskAgendaView.tsx`) and, eventually,
+ * the timeline view (#182) both link a task diamond/list entry through to.
+ * Read-only except for the one action a task detail view obviously needs
+ * (marking it done/not-done, `Action.status` existing precisely for that) -
+ * not a full per-field edit form, which nothing in this ticket's own scope
+ * asked for. */
+export function TaskDetail() {
+  const { id } = useParams();
+  const actionId = Number(id);
+  const queryClient = useQueryClient();
+
+  const actionQuery = useQuery({
+    queryKey: ["action", actionId],
+    queryFn: () => getAction(actionId),
+    enabled: Number.isFinite(actionId),
+  });
+  const action = actionQuery.data;
+
+  const bedQuery = useQuery({
+    queryKey: ["bed", action?.bed_id],
+    queryFn: () => getBed(action!.bed_id!),
+    enabled: action?.bed_id != null,
+  });
+  const plantQuery = useQuery({
+    queryKey: ["plant", action?.plant_slug],
+    queryFn: () => getPlant(action!.plant_slug!),
+    enabled: !!action?.plant_slug,
+  });
+  const equipmentQuery = useQuery({
+    queryKey: ["bed-equipment"],
+    queryFn: listBedEquipment,
+    enabled: action?.equipment_id != null,
+  });
+
+  // completed_date follows status here (rather than the other way around,
+  // which updateAction's own backend route also supports via its
+  // "set completed_date without status = mark completed" default) since
+  // this button is explicitly "mark done/not done," not a date-entry form.
+  const statusMutation = useMutation({
+    mutationFn: (status: ActionStatus) =>
+      updateAction(actionId, {
+        status,
+        completed_date: status === "completed" ? new Date().toISOString().slice(0, 10) : null,
+      }),
+    onSuccess: (updated) => queryClient.setQueryData(["action", actionId], updated),
+  });
+
+  const equipment =
+    action?.equipment_id != null ? equipmentQuery.data?.find((e) => e.id === action.equipment_id) : undefined;
+
+  return (
+    <div className="mx-auto max-w-2xl p-6">
+      <div className="mb-4 flex items-center gap-3">
+        <Link to="/agenda" className={buttonVariants({ variant: "outline", size: "sm" })}>
+          Back
+        </Link>
+        {action && <h1 className="text-xl font-medium">{ACTION_TYPE_LABELS[action.action_type] ?? action.action_type}</h1>}
+      </div>
+
+      {actionQuery.isPending && <p className="text-sm text-muted-foreground">Loading task…</p>}
+      {actionQuery.isError && <p className="text-sm text-destructive">Failed to load this task.</p>}
+
+      {action && (
+        <Card className="p-4">
+          <dl className="flex flex-col gap-3 text-sm">
+            <div>
+              <dt className="text-xs font-medium text-muted-foreground">Status</dt>
+              <dd className="flex items-center gap-2">
+                {STATUS_LABELS[action.status]}
+                <Button
+                  size="xs"
+                  variant="outline"
+                  disabled={statusMutation.isPending}
+                  onClick={() => statusMutation.mutate(action.status === "completed" ? "pending" : "completed")}
+                >
+                  {action.status === "completed" ? "Mark pending" : "Mark complete"}
+                </Button>
+              </dd>
+            </div>
+
+            {formatDueWindow(action) && (
+              <div>
+                <dt className="text-xs font-medium text-muted-foreground">Due</dt>
+                <dd>{formatDueWindow(action)}</dd>
+              </div>
+            )}
+
+            {action.completed_date && (
+              <div>
+                <dt className="text-xs font-medium text-muted-foreground">Completed</dt>
+                <dd>{action.completed_date}</dd>
+              </div>
+            )}
+
+            {action.plant_slug && (
+              <div>
+                <dt className="text-xs font-medium text-muted-foreground">Plant</dt>
+                <dd>
+                  <Link to={`/plants/${action.plant_slug}`} className="underline underline-offset-2">
+                    {plantQuery.data?.common_name ?? action.plant_slug}
+                  </Link>
+                </dd>
+              </div>
+            )}
+
+            {action.bed_id != null && (
+              <div>
+                <dt className="text-xs font-medium text-muted-foreground">Bed</dt>
+                <dd className="flex items-center gap-2">
+                  {bedQuery.data?.name ?? `Bed #${action.bed_id}`}
+                  <Link
+                    to={`/layout/beds/${action.bed_id}/technical-drawing`}
+                    className={buttonVariants({ variant: "outline", size: "xs" })}
+                  >
+                    <RulerDimensionLine /> Technical drawing
+                  </Link>
+                </dd>
+              </div>
+            )}
+
+            {action.equipment_id != null && (
+              <div>
+                <dt className="text-xs font-medium text-muted-foreground">Equipment</dt>
+                <dd>{equipment?.equipment_type ?? `Equipment #${action.equipment_id}`}</dd>
+              </div>
+            )}
+
+            {action.notes && (
+              <div>
+                <dt className="text-xs font-medium text-muted-foreground">Notes</dt>
+                <dd className="whitespace-pre-wrap">{action.notes}</dd>
+              </div>
+            )}
+          </dl>
+        </Card>
+      )}
+    </div>
+  );
+}

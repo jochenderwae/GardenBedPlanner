@@ -37,6 +37,12 @@ export type IrrigationZoneCreate = components["schemas"]["IrrigationZoneCreate"]
 export type IrrigationZoneUpdate = components["schemas"]["IrrigationZoneUpdate"];
 export type IrrigationZoneDetail = components["schemas"]["IrrigationZoneDetail"];
 
+export type Action = components["schemas"]["Action"];
+export type ActionCreate = components["schemas"]["ActionCreate"];
+export type ActionUpdate = components["schemas"]["ActionUpdate"];
+export type ActionType = components["schemas"]["ActionType"];
+export type ActionStatus = components["schemas"]["ActionStatus"];
+
 export type Plant = components["schemas"]["Plant"];
 export type PlantDetail = components["schemas"]["PlantDetail"];
 export type PlantCreate = components["schemas"]["PlantCreate"];
@@ -210,6 +216,48 @@ export function updateIrrigationZone(id: number, patch: IrrigationZoneUpdate): P
 
 export function deleteIrrigationZone(id: number): Promise<void> {
   return apiFetch(`/api/irrigation-zones/${id}`, { method: "DELETE" });
+}
+
+/** Garden work items (#181/#192) - `dueFrom`/`dueTo` filter on the due
+ * *window* (`due_date_start >= dueFrom`, `due_date_end <= dueTo`), matching
+ * the backend's own `due_from`/`due_to` query params (see
+ * `backend/app/api/routes/actions.py`), not a single `due_date` the way an
+ * earlier pre-#192 version of this model had. */
+export function listActions(filter?: {
+  dueFrom?: string;
+  dueTo?: string;
+  status?: ActionStatus;
+  actionType?: ActionType;
+}): Promise<Action[]> {
+  const params = new URLSearchParams();
+  if (filter?.dueFrom) params.set("due_from", filter.dueFrom);
+  if (filter?.dueTo) params.set("due_to", filter.dueTo);
+  if (filter?.status) params.set("status", filter.status);
+  if (filter?.actionType) params.set("action_type", filter.actionType);
+  const query = params.toString();
+  return apiFetch(`/api/actions${query ? `?${query}` : ""}`);
+}
+
+export function getAction(id: number): Promise<Action> {
+  return apiFetch(`/api/actions/${id}`);
+}
+
+export function createAction(action: ActionCreate): Promise<Action> {
+  return apiFetch(`/api/actions`, {
+    method: "POST",
+    body: JSON.stringify(action),
+  });
+}
+
+export function updateAction(id: number, patch: ActionUpdate): Promise<Action> {
+  return apiFetch(`/api/actions/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteAction(id: number): Promise<void> {
+  return apiFetch(`/api/actions/${id}`, { method: "DELETE" });
 }
 
 export function listPlants(limit = 500): Promise<Plant[]> {

@@ -1,4 +1,5 @@
 import { AgendaView } from "@/pages/agenda/AgendaView";
+import { TaskAgendaView } from "@/pages/agenda/TaskAgendaView";
 
 export function MobileAgenda() {
   return (
@@ -12,6 +13,11 @@ export function MobileAgenda() {
        * bottom nav's labels are also a step down (text-xs) from desktop,
        * not unaddressed drift. */}
       <h1 className="text-base font-semibold">Agenda</h1>
+
+      <h2 className="text-sm font-semibold text-muted-foreground">Tasks</h2>
+      <TaskAgendaView />
+
+      <h2 className="mt-2 text-sm font-semibold text-muted-foreground">Sowing &amp; harvest windows</h2>
       <AgendaView />
     </div>
   );
