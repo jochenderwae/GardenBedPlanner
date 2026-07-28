@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Popover } from "@base-ui/react/popover";
 import { Trash2, Plus } from "lucide-react";
+import { MONTH_NAMES } from "@/pages/agenda/agendaMonths";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -236,6 +237,20 @@ export function SeedInfoSection({ slug, seedInfo }: { slug: string; seedInfo: Se
   );
 }
 
+/** `MONTH_NAMES` (shared with the agenda view) is a plain 0-indexed array;
+ * `PlantPeriod.start_month`/`end_month` are 1-12, matching this app's
+ * month-number convention throughout (see `agendaMonths.ts`'s own doc).
+ * Exported for `SatelliteSections.test.ts` (#152). */
+export function monthName(month: number): string {
+  return MONTH_NAMES[month - 1] ?? String(month);
+}
+
+/** "March–May" for a real range, or just "March" for a single-month period
+ * (start === end) rather than the redundant "March–March" (#152). */
+export function monthRangeLabel(startMonth: number, endMonth: number): string {
+  return startMonth === endMonth ? monthName(startMonth) : `${monthName(startMonth)}–${monthName(endMonth)}`;
+}
+
 export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeriod[] }) {
   const { add, remove } = useSatelliteMutations<PlantPeriod>(slug, "periods", periodApi);
   const { data: periodTypes } = useQuery({ queryKey: ["period-types"], queryFn: listPeriodTypes });
@@ -250,7 +265,7 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
       {items.map((item) => (
         <div key={item.id} className={rowClass}>
           <span className="flex-1">
-            {item.period_type}: month {item.start_month}–{item.end_month}
+            {item.period_type}: {monthRangeLabel(item.start_month, item.end_month)}
           </span>
           <Button
             variant="ghost"
