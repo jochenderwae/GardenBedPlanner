@@ -289,7 +289,7 @@ def update_plant(
 
 @router.delete("/{slug}", status_code=204)
 def delete_plant(slug: str, session: Session = Depends(get_session)) -> None:
-    _get_plant_or_404(session, slug)
+    plant = _get_plant_or_404(session, slug)
     # No ON DELETE CASCADE at the DB level - clear every satellite row
     # (including plant_companion rows where this plant is only the
     # *target*, companion_plant_slug, not the owning plant_slug) before
@@ -306,7 +306,17 @@ def delete_plant(slug: str, session: Session = Depends(get_session)) -> None:
         session.exec(delete(model).where(model.plant_slug == slug))
     session.exec(delete(PlantCompanion).where(PlantCompanion.plant_slug == slug))
     session.exec(delete(PlantCompanion).where(PlantCompanion.companion_plant_slug == slug))
-    session.exec(delete(PlantTable).where(PlantTable.slug == slug))
+    # The plant row itself is deleted ORM-instance-style (session.delete),
+    # not via a bulk `exec(delete(...))` statement like the satellite rows
+    # above: a bulk delete statement is executed (and FK-checked by
+    # Postgres) immediately on session.exec(), before commit_or_409's
+    # try/except is even entered, so an IntegrityError from a remaining FK
+    # reference (e.g. garden_plan_entry.plant_slug, action.plant_slug)
+    # would propagate as an unhandled 500 instead of a clean 409.
+    # session.delete() defers its DELETE SQL to flush/commit time, which
+    # happens inside commit_or_409's try block - same pattern beds.py's
+    # delete_bed already uses for the bed row itself.
+    session.delete(plant)
     commit_or_409(session)
 
 
