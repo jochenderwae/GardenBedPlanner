@@ -293,3 +293,124 @@ def test_thin_action_type_is_accepted(client: TestClient) -> None:
     response = client.post("/api/actions", json={"action_type": "thin"})
     assert response.status_code == 201, response.text
     assert response.json()["action_type"] == "thin"
+
+
+def test_period_window_wraps_year_boundary_for_overwintering_periods(client: TestClient, db_session) -> None:
+    bed_id = _create_bed(client, is_initial_state=True)
+    # An overwintering sow window: November through February - end_month
+    # (2) < start_month (11), so the window should span into the next year.
+    plant_slug = _create_plant_with_periods(db_session, "test-garlic", [("sowing", 11, 2)])
+
+    response = client.post(
+        "/api/plantings",
+        json={
+            "bed_id": bed_id,
+            "plant_slug": plant_slug,
+            "placement_type": "individual",
+            "geometry": rectangle(width=20, height=20),
+            "planted_date": "2027-11-15",
+        },
+    )
+    assert response.status_code == 201, response.text
+
+    actions = client.get("/api/actions").json()
+    sow_action = next(a for a in actions if a["plant_slug"] == plant_slug and a["action_type"] == "sow")
+    assert sow_action["due_date_start"] == "2027-11-01"
+    assert sow_action["due_date_end"] == "2028-02-29"  # 2028 is a leap year
+
+
+def test_plant_with_no_periods_generates_no_lifecycle_tasks(client: TestClient, db_session) -> None:
+    bed_id = _create_bed(client)  # not initial state - still gets its own prepare_bed task
+    db_session.add(Plant(slug="test-no-periods", common_name="No Periods", botanical_name="Nullus periodus"))
+    db_session.commit()
+
+    response = client.post(
+        "/api/plantings",
+        json={
+            "bed_id": bed_id,
+            "plant_slug": "test-no-periods",
+            "placement_type": "individual",
+            "geometry": rectangle(width=20, height=20),
+            "planted_date": "2027-05-01",
+        },
+    )
+    assert response.status_code == 201, response.text
+
+    actions = client.get("/api/actions").json()
+    # No plant-scoped tasks at all - just confirms this doesn't crash and
+    # doesn't fabricate tasks from nothing, the bed's own prepare_bed task
+    # (unrelated to this plant) is the only thing present.
+    assert [a for a in actions if a["plant_slug"] == "test-no-periods"] == []
+    assert any(a["action_type"] == "prepare_bed" and a["bed_id"] == bed_id for a in actions)
+
+
+def test_grouping_does_not_merge_across_different_beds(client: TestClient, db_session) -> None:
+    bed_a = _create_bed(client, "Bed A", is_initial_state=True)
+    bed_b = _create_bed(client, "Bed B", is_initial_state=True)
+    plant_slug = _create_plant_with_periods(db_session, "test-radish", [("sowing", 3, 4)])
+
+    for bed_id in (bed_a, bed_b):
+        response = client.post(
+            "/api/plantings",
+            json={
+                "bed_id": bed_id,
+                "plant_slug": plant_slug,
+                "placement_type": "individual",
+                "geometry": rectangle(width=20, height=20),
+                "planted_date": "2027-04-01",
+            },
+        )
+        assert response.status_code == 201, response.text
+
+    actions = client.get("/api/actions").json()
+    sow_actions = [a for a in actions if a["plant_slug"] == plant_slug and a["action_type"] == "sow"]
+    # Same plant, same date, but two different beds - two distinct tasks,
+    # not collapsed into one (grouping key includes bed_id).
+    assert len(sow_actions) == 2
+    assert {a["bed_id"] for a in sow_actions} == {bed_a, bed_b}
+
+
+def test_grouping_does_not_reuse_an_already_completed_action(client: TestClient, db_session) -> None:
+    bed_id = _create_bed(client, is_initial_state=True)
+    plant_slug = _create_plant_with_periods(db_session, "test-spinach", [("sowing", 3, 4)])
+
+    def _plant() -> None:
+        response = client.post(
+            "/api/plantings",
+            json={
+                "bed_id": bed_id,
+                "plant_slug": plant_slug,
+                "placement_type": "individual",
+                "geometry": rectangle(width=20, height=20),
+                "planted_date": "2027-04-01",
+            },
+        )
+        assert response.status_code == 201, response.text
+
+    _plant()
+    actions = client.get("/api/actions").json()
+    first_sow = next(a for a in actions if a["plant_slug"] == plant_slug and a["action_type"] == "sow")
+    client.patch(f"/api/actions/{first_sow['id']}", json={"completed_date": "2027-03-15"})
+
+    # Plant the exact same plant/bed/date combination again - the get-or-
+    # create lookup only considers *pending* actions, so this should create
+    # a fresh task rather than silently re-attaching to (and un-completing
+    # the meaning of) the already-completed one.
+    _plant()
+    actions = client.get("/api/actions").json()
+    sow_actions = [a for a in actions if a["plant_slug"] == plant_slug and a["action_type"] == "sow"]
+    assert len(sow_actions) == 2
+    statuses = {a["status"] for a in sow_actions}
+    assert statuses == {"completed", "pending"}
+
+
+def test_deleting_a_bed_cascades_its_generated_actions(client: TestClient) -> None:
+    bed_id = _create_bed(client, name="Bed to delete")  # generates its own prepare_bed task
+    actions = client.get("/api/actions").json()
+    assert any(a["bed_id"] == bed_id for a in actions)
+
+    delete_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
+    assert delete_response.status_code == 204, delete_response.text
+
+    actions = client.get("/api/actions").json()
+    assert [a for a in actions if a["bed_id"] == bed_id] == []
