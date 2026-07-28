@@ -878,6 +878,43 @@ export interface paths {
         patch: operations["update_compost_fertilization_log_api_compost_fertilization_logs__log_id__patch"];
         trace?: never;
     };
+    "/api/compost-bins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Compost Bins */
+        get: operations["list_compost_bins_api_compost_bins_get"];
+        put?: never;
+        /** Create Compost Bin */
+        post: operations["create_compost_bin_api_compost_bins_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/compost-bins/{compost_bin_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Compost Bin */
+        get: operations["get_compost_bin_api_compost_bins__compost_bin_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Compost Bin */
+        delete: operations["delete_compost_bin_api_compost_bins__compost_bin_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Compost Bin */
+        patch: operations["update_compost_bin_api_compost_bins__compost_bin_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1115,6 +1152,78 @@ export interface components {
          * @enum {string}
          */
         CompanionRelationship: "good" | "bad";
+        /**
+         * CompostBin
+         * @description Compost-specific state for one of the garden's compost bins - fill
+         *     state, last-turned date, estimated maturity - kept as a small satellite
+         *     model linked 1:1 to a Bed rather than extending Bed itself, per this
+         *     issue's (#39) own technical analysis: Bed.category is deliberately
+         *     free-text/open-ended (see app/models/bed.py's own docstring on why),
+         *     so compost-specific fields that only ever apply to one bed out of many
+         *     belong on their own table, same reasoning as BedEquipment/
+         *     CompostFertilizationLog being separate tables rather than Bed columns.
+         *
+         *     bed_id is unique to enforce the 1:1 relationship - a second CompostBin
+         *     for the same bed_id fails as a 409 (unique violation) via the shared
+         *     commit_or_409 pattern, not a silent second row.
+         *
+         *     estimated_maturity_date is a plain gardener-set field, not derived from
+         *     last_turned_date - there's no single reliable formula (compost maturity
+         *     depends on turn frequency, greens/browns ratio, weather, bin size) to
+         *     compute it from turn history alone; the gardener sets/updates their own
+         *     estimate as they inspect the pile, same "record what's observed, don't
+         *     invent a formula" spirit as HarvestLog's yield_amount/yield_unit.
+         */
+        CompostBin: {
+            /** Id */
+            id?: number | null;
+            /** Bed Id */
+            bed_id: number;
+            /** @default empty */
+            fill_state: components["schemas"]["CompostBinFillState"];
+            /** Last Turned Date */
+            last_turned_date?: string | null;
+            /** Estimated Maturity Date */
+            estimated_maturity_date?: string | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** CompostBinCreate */
+        CompostBinCreate: {
+            /** Bed Id */
+            bed_id: number;
+            /** @default empty */
+            fill_state: components["schemas"]["CompostBinFillState"];
+            /** Last Turned Date */
+            last_turned_date?: string | null;
+            /** Estimated Maturity Date */
+            estimated_maturity_date?: string | null;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /**
+         * CompostBinFillState
+         * @enum {string}
+         */
+        CompostBinFillState: "empty" | "filling" | "full" | "curing";
+        /** CompostBinUpdate */
+        CompostBinUpdate: {
+            /** Bed Id */
+            bed_id?: number | null;
+            fill_state?: components["schemas"]["CompostBinFillState"] | null;
+            /** Last Turned Date */
+            last_turned_date?: string | null;
+            /** Estimated Maturity Date */
+            estimated_maturity_date?: string | null;
+            /** Notes */
+            notes?: string | null;
+        };
         /**
          * CompostFertilizationLog
          * @description A logged compost/fertilization event against a specific Bed - what
@@ -5167,6 +5276,166 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CompostFertilizationLog"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_compost_bins_api_compost_bins_get: {
+        parameters: {
+            query?: {
+                /** @description Only the compost bin for this bed */
+                bed_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompostBin"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_compost_bin_api_compost_bins_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompostBinCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompostBin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_compost_bin_api_compost_bins__compost_bin_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                compost_bin_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompostBin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_compost_bin_api_compost_bins__compost_bin_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                compost_bin_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_compost_bin_api_compost_bins__compost_bin_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                compost_bin_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompostBinUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CompostBin"];
                 };
             };
             /** @description Validation Error */
