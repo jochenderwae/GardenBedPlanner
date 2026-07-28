@@ -90,6 +90,13 @@ export const SCALAR_FIELDS: FieldConfig[] = [
   },
   { key: "height_cm", label: "Height (cm)", type: "number", description: "Typical mature height, in centimeters." },
   {
+    key: "growth_habit",
+    label: "Growth habit",
+    type: "text",
+    description:
+      "How this plant grows, e.g. upright, spreading, climbing, rosette, tree - free text, but upright/spreading/climbing/rosette/tree are the values the layout editor recognizes to pick a distinct footprint shape.",
+  },
+  {
     key: "sun_level",
     label: "Sun level",
     type: "select",
