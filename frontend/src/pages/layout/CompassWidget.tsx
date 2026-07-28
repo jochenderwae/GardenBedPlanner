@@ -16,14 +16,25 @@ const RING_COLOR = "#166534";
 const NEEDLE_FRONT_COLOR = "#dc2626";
 const NEEDLE_BACK_COLOR = "#fecaca";
 
-/** Same "divide a fixed on-screen px size by the current zoom" fix
- * `BedNode.tsx` already applies to its own Transformer anchors (see that
- * file's own comment) - keeps the rotate handle a constant, comfortably-
- * grabbable size regardless of how zoomed out the garden view is. This was
- * the root cause of the "I couldn't grab the needle" report: the previous
- * draggable `Circle`'s radius was a fixed *world-cm* value, shrinking to a
- * sub-pixel hit target at any zoom level where the garden doesn't fill the
- * canvas 1:1. */
+/** Plain, literal on-screen pixel values passed straight to the
+ * `Transformer` below - matches `BedNode.tsx`'s own `TRANSFORMER_ANCHOR_*`
+ * constants exactly (see that file's own comment for the full mechanism
+ * writeup, added by #129's fix). `Transformer` overrides
+ * `getAbsoluteTransform()` to just return `this.getTransform()` - it
+ * deliberately does NOT compose with the ambient Stage/Layer pan/zoom the
+ * way every other node here does - so it already renders `anchorSize`/
+ * `anchorStrokeWidth` at a constant on-screen size regardless of zoom, with
+ * no manual scale compensation needed. This file used to (incorrectly)
+ * divide both by `viewport.scale` (#190) - that's the exact double-
+ * compensation bug #129 already fixed once in `BedNode.tsx`/
+ * `GardenBoundary.tsx`: dividing an already-constant value by scale is a
+ * no-op at 100% zoom (this app's `CM_TO_PX = 1` convention made the bug
+ * invisible there) but reintroduces "balloons huge zoomed out, shrinks tiny
+ * zoomed in" at any other zoom level. This was the original root cause of
+ * the "I couldn't grab the needle" report the world-cm draggable `Circle`
+ * this widget used to be also had, for the unrelated reason of a fixed
+ * world-cm hit-radius shrinking to sub-pixel at low zoom - both bugs are
+ * now fixed via the same "let Konva's own zoom-bypass do its job" principle. */
 const TRANSFORMER_ANCHOR_SIZE_PX = 12;
 const TRANSFORMER_ANCHOR_STROKE_WIDTH_PX = 1;
 /** Radius (world cm) of the invisible proxy node the `Transformer` actually
@@ -56,14 +67,35 @@ const HANDLE_LABEL_CLEARANCE_CM = 10;
  * ring, plus a bit more clearance so the handle clears the label instead of
  * overlapping it. */
 const ROTATE_HANDLE_DISTANCE_CM = COMPASS_RADIUS_CM + LABEL_GAP_ABOVE_RING_CM + LABEL_HEIGHT_CM + HANDLE_LABEL_CLEARANCE_CM;
-/** The handle's *position* (as opposed to its size above) is deliberately
- * NOT divided by `viewport.scale` - it should sit at the ring's own edge and
- * scale together with the ring as the view zooms, not stay a fixed screen
- * distance away regardless of how big the ring itself is currently drawn.
- * Konva's `Transformer.rotateAnchorOffset` is measured from the wrapped
- * node's own bounding-box edge, not its center, hence subtracting the
- * proxy's own radius to land the handle at exactly `ROTATE_HANDLE_DISTANCE_CM`
- * from the ring's center. */
+/** The handle's *position* (as opposed to its size above) should sit at the
+ * ring's own edge and scale together with the ring as the view zooms, not
+ * stay a fixed screen distance away regardless of how big the ring itself
+ * is currently drawn. Konva's `Transformer.rotateAnchorOffset` is measured
+ * from the wrapped node's own bounding-box edge, not its center, hence
+ * subtracting the proxy's own radius to land the handle at exactly
+ * `ROTATE_HANDLE_DISTANCE_CM` from the ring's center - both distances here
+ * are still world-cm, converted to on-screen pixels via `viewport.scale`
+ * at the actual `rotateAnchorOffset` prop below (#190), not left as a raw
+ * cm number passed straight through.
+ *
+ * That conversion is required (not just a nice-to-have) because of how
+ * `Transformer` computes anchor positions internally
+ * (`node_modules/konva/lib/shapes/Transformer.js`'s `__getNodeRect()`/
+ * `update()`): `_getNodeRect()` derives the wrapped proxy node's
+ * width/height from that node's own `getAbsoluteTransform()` - which,
+ * unlike the `Transformer` itself, *does* compose with the ambient Stage/
+ * Layer pan/zoom - so the `edgeX`/`edgeY` the rotate anchor is positioned
+ * relative to are already expressed in zoomed/absolute screen pixels, not
+ * world-cm. Adding a raw, unscaled `rotateAnchorOffset` on top of an
+ * already-zoomed edge position only reads as "the right distance" by
+ * coincidence at this app's 100%/`CM_TO_PX = 1` zoom level; multiplying by
+ * `viewport.scale` here is what actually makes the handle's gap from the
+ * ring track the ring's own on-screen size at every zoom level, the
+ * intended behavior the comment above describes. Derived by reading
+ * `Transformer`'s own source (not visually verified against a running
+ * browser - flagged for a visual check across zoom levels per this
+ * ticket's own "How to test" step 4, same as `anchorSize`/
+ * `anchorStrokeWidth` above were before #129 confirmed that fix). */
 const ROTATE_ANCHOR_OFFSET_CM = ROTATE_HANDLE_DISTANCE_CM - HANDLE_PROXY_RADIUS_CM;
 /** Small buffer (world cm) added on top of the handle's own reach when
  * sizing `compassBoundingBox`'s headroom, covering the handle's own small
@@ -239,9 +271,9 @@ export function CompassWidget({
           resizeEnabled={false}
           rotateEnabled
           borderEnabled={false}
-          anchorSize={TRANSFORMER_ANCHOR_SIZE_PX / viewport.scale}
-          anchorStrokeWidth={TRANSFORMER_ANCHOR_STROKE_WIDTH_PX / viewport.scale}
-          rotateAnchorOffset={ROTATE_ANCHOR_OFFSET_CM}
+          anchorSize={TRANSFORMER_ANCHOR_SIZE_PX}
+          anchorStrokeWidth={TRANSFORMER_ANCHOR_STROKE_WIDTH_PX}
+          rotateAnchorOffset={ROTATE_ANCHOR_OFFSET_CM * viewport.scale}
         />
       )}
     </>
