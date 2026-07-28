@@ -132,6 +132,9 @@ class PlantDetail(BaseModel):
     fertilizer_needs: str | None = None
     needs_wind_cover: bool | None = None
     needs_rain_cover: bool | None = None
+    sow_indoors: bool | None = None
+    sow_direct: bool | None = None
+    needs_thinning: bool | None = None
     water_needs_mm_per_week: float | None = None
     growth_habit: str | None = None
     family: FamilyRead | None = None

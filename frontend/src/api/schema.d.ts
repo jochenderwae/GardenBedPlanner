@@ -1843,6 +1843,12 @@ export interface components {
             needs_wind_cover?: boolean | null;
             /** Needs Rain Cover */
             needs_rain_cover?: boolean | null;
+            /** Sow Indoors */
+            sow_indoors?: boolean | null;
+            /** Sow Direct */
+            sow_direct?: boolean | null;
+            /** Needs Thinning */
+            needs_thinning?: boolean | null;
             /** Water Needs Mm Per Week */
             water_needs_mm_per_week?: number | null;
             /** Growth Habit */
@@ -1933,6 +1939,12 @@ export interface components {
             needs_wind_cover?: boolean | null;
             /** Needs Rain Cover */
             needs_rain_cover?: boolean | null;
+            /** Sow Indoors */
+            sow_indoors?: boolean | null;
+            /** Sow Direct */
+            sow_direct?: boolean | null;
+            /** Needs Thinning */
+            needs_thinning?: boolean | null;
             /** Water Needs Mm Per Week */
             water_needs_mm_per_week?: number | null;
             /** Growth Habit */
@@ -2026,6 +2038,12 @@ export interface components {
             needs_wind_cover?: boolean | null;
             /** Needs Rain Cover */
             needs_rain_cover?: boolean | null;
+            /** Sow Indoors */
+            sow_indoors?: boolean | null;
+            /** Sow Direct */
+            sow_direct?: boolean | null;
+            /** Needs Thinning */
+            needs_thinning?: boolean | null;
             /** Water Needs Mm Per Week */
             water_needs_mm_per_week?: number | null;
             /** Growth Habit */
@@ -2179,6 +2197,12 @@ export interface components {
             needs_wind_cover?: boolean | null;
             /** Needs Rain Cover */
             needs_rain_cover?: boolean | null;
+            /** Sow Indoors */
+            sow_indoors?: boolean | null;
+            /** Sow Direct */
+            sow_direct?: boolean | null;
+            /** Needs Thinning */
+            needs_thinning?: boolean | null;
             /** Water Needs Mm Per Week */
             water_needs_mm_per_week?: number | null;
             /** Growth Habit */

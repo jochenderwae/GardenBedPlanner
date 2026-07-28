@@ -77,6 +77,13 @@ class Plant(SQLModel, table=True):
     fertilizer_needs: str | None = None
     needs_wind_cover: bool | None = None
     needs_rain_cover: bool | None = None
+    # True-or-null, never a derived false (#196, from #177's keyword
+    # extraction over unstructured growing-info text) - partial coverage
+    # (32%/54%/33% of plants respectively as of #177) - an unset value
+    # means "not extracted", not "no".
+    sow_indoors: bool | None = None
+    sow_direct: bool | None = None
+    needs_thinning: bool | None = None
     water_needs_mm_per_week: float | None = None
     # Free text (e.g. "vining", "bushy", "upright", "spreading") - no fixed
     # enum exists for the habit vocabulary populate_growth_habit.py already
