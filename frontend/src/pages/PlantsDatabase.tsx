@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, ChevronRight, Pencil, Plus, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Dialog, DialogPopup, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogPopup, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input, Select } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { createPlant, listPlants, type Plant } from "@/api/client";
@@ -133,7 +133,6 @@ export function PlantsDatabase() {
   const [sunFilter, setSunFilter] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("common_name");
   const [sortDir, setSortDir] = useState<SortDir>("asc");
-  const [showAddForm, setShowAddForm] = useState(false);
 
   const { data, isPending, isError } = useQuery({
     queryKey: ["plants"],
@@ -193,9 +192,7 @@ export function PlantsDatabase() {
     <div className="mx-auto max-w-4xl p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h1 className="text-xl font-medium">Plants database</h1>
-        <Button size="sm" onClick={() => setShowAddForm(true)}>
-          <Plus /> Add plant
-        </Button>
+        <AddPlantForm onCreated={openPlant} />
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -275,7 +272,6 @@ export function PlantsDatabase() {
         </>
       )}
 
-      {showAddForm && <AddPlantForm onClose={() => setShowAddForm(false)} onCreated={openPlant} />}
     </div>
   );
 }
@@ -434,13 +430,32 @@ function PlantRow({
   );
 }
 
-function AddPlantForm({ onClose, onCreated }: { onClose: () => void; onCreated: (slug: string) => void }) {
+/** Renders both its own trigger button ("Add plant") and the dialog itself,
+ * always mounted (not conditionally rendered by the caller the way this
+ * used to work) with `open` as real internal state - both changes needed
+ * for Base UI's focus-return-on-close behavior to actually fire (see
+ * `dialog.tsx`'s own `DialogTrigger` doc for the full explanation; #144's
+ * own follow-up bug report). Resets its own fields back to blank each time
+ * it opens (not just on mount, now that mounting happens once and `open`
+ * toggles thereafter) so a previous attempt's half-filled values don't
+ * linger into the next one. */
+function AddPlantForm({ onCreated }: { onCreated: (slug: string) => void }) {
   const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
   const [commonName, setCommonName] = useState("");
   const [botanicalName, setBotanicalName] = useState("");
   const [family, setFamily] = useState("");
   const [genus, setGenus] = useState("");
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setCommonName("");
+    setBotanicalName("");
+    setFamily("");
+    setGenus("");
+    setError(null);
+  }, [open]);
 
   const mutation = useMutation({
     mutationFn: () =>
@@ -453,6 +468,7 @@ function AddPlantForm({ onClose, onCreated }: { onClose: () => void; onCreated: 
       }),
     onSuccess: (plant) => {
       queryClient.invalidateQueries({ queryKey: ["plants"] });
+      setOpen(false);
       onCreated(plant.slug);
     },
     onError: (err: unknown) => {
@@ -471,18 +487,20 @@ function AddPlantForm({ onClose, onCreated }: { onClose: () => void; onCreated: 
   }
 
   return (
-    <Dialog
-      open
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-    >
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger
+        render={
+          <Button size="sm">
+            <Plus /> Add plant
+          </Button>
+        }
+      />
       <DialogPopup>
         <Card className="w-full max-w-sm p-4">
           <form className="flex flex-col gap-3" onSubmit={submit}>
             <div className="flex items-center justify-between">
               <DialogTitle className="text-base font-medium">Add plant</DialogTitle>
-              <Button variant="ghost" size="icon-sm" type="button" aria-label="Close" onClick={onClose}>
+              <Button variant="ghost" size="icon-sm" type="button" aria-label="Close" onClick={() => setOpen(false)}>
                 <X />
               </Button>
             </div>
@@ -511,7 +529,7 @@ function AddPlantForm({ onClose, onCreated }: { onClose: () => void; onCreated: 
             {error && <p className="text-sm text-destructive">{error}</p>}
 
             <div className="mt-1 flex justify-end gap-2">
-              <Button type="button" variant="outline" size="sm" onClick={onClose}>
+              <Button type="button" variant="outline" size="sm" onClick={() => setOpen(false)}>
                 Cancel
               </Button>
               <Button type="submit" size="sm" disabled={mutation.isPending}>

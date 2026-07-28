@@ -1,5 +1,5 @@
-import type { RefObject } from "react";
-import { Maximize, Plus, Redo2, Undo2 } from "lucide-react";
+import type { ReactNode } from "react";
+import { Maximize, Redo2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RadioToggleGroup, TabToggleGroup } from "@/components/ui/toggle-group";
 import { Tooltip } from "@/components/ui/tooltip";
@@ -49,11 +49,20 @@ interface ToolbarProps {
   onTabChange: (tab: PlacementTab) => void;
   zoomPercent: number;
   onFitView: () => void;
-  onAddBed: () => void;
+  /** The "Add bed" trigger button + its dialog, as one self-contained
+   * element (`AddBedForm`, built and passed in by `Layout.tsx`) - not a
+   * plain callback the way this used to work, so the actual clickable
+   * button can be a real `Dialog.Trigger` (see `dialog.tsx`'s own doc on
+   * why that's load-bearing for focus-return-on-close, not just a styling
+   * choice - #144's own follow-up bug report). */
+  addBedForm: ReactNode;
   armedPlant: Plant | null;
   onClearArmedPlant: () => void;
-  plantPickerAnchorRef: RefObject<HTMLDivElement | null>;
-  onOpenPlantPicker: () => void;
+  /** The "Pick a plant" trigger button + its popover, as one self-contained
+   * element (`PlantPicker`, built and passed in by `Layout.tsx`) - same
+   * rationale as `addBedForm` above, just for `Popover.Trigger` instead of
+   * `Dialog.Trigger`. */
+  plantPicker: ReactNode;
   placementMode: PlacementMode;
   onPlacementModeChange: (mode: PlacementMode) => void;
   canUndo: boolean;
@@ -96,11 +105,10 @@ export function Toolbar({
   onTabChange,
   zoomPercent,
   onFitView,
-  onAddBed,
+  addBedForm,
   armedPlant,
   onClearArmedPlant,
-  plantPickerAnchorRef,
-  onOpenPlantPicker,
+  plantPicker,
   placementMode,
   onPlacementModeChange,
   canUndo,
@@ -142,18 +150,10 @@ export function Toolbar({
         </div>
       </div>
       <div className="flex min-h-7 items-center gap-2">
-        {mode === "mine" && tab === "planters" && (
-          <Button size="sm" onClick={onAddBed}>
-            <Plus /> Add bed
-          </Button>
-        )}
+        {mode === "mine" && tab === "planters" && addBedForm}
         {mode === "mine" && tab === "plants" && (
           <>
-            <div ref={plantPickerAnchorRef}>
-              <Button size="sm" variant={armedPlant ? "outline" : "default"} onClick={onOpenPlantPicker}>
-                {armedPlant ? armedPlant.common_name : "Pick a plant"}
-              </Button>
-            </div>
+            {plantPicker}
             {armedPlant && (
               <>
                 <RadioToggleGroup

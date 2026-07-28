@@ -140,7 +140,6 @@ export function Layout() {
   const queryClient = useQueryClient();
   const { show: showSnackbar } = useSnackbar();
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [showAddForm, setShowAddForm] = useState(false);
   const [mode, setMode] = useState<ViewMode>("mine");
   const [tab, setTab] = useState<PlacementTab>("garden");
   // View tab's date scrubber (#180) - drives which of the garden's real
@@ -155,14 +154,12 @@ export function Layout() {
   // with beds still empty prompts again (see that component's own doc).
   const [onboardingDismissed, setOnboardingDismissed] = useState(false);
   // "Arm" a plant, then draw where it goes (point/row/area) - see
-  // PlantPlacementLayer's own doc. plantPickerOpen/plantPickerAnchorRef are
-  // for the popover that picks *which* plant gets armed (anchored under the
-  // toolbar button below via Popover's `anchor` prop, not tied to a canvas
-  // click position the way the old click-first flow's picker was).
+  // PlantPlacementLayer's own doc. `PlantPicker` (rendered via Toolbar's
+  // `plantPicker` slot below) owns which plant gets armed *from*, including
+  // its own open/close state - it isn't tied to a canvas click position the
+  // way the old click-first flow's picker was.
   const [armedPlant, setArmedPlant] = useState<Plant | null>(null);
   const [placementMode, setPlacementMode] = useState<PlacementMode>("individual");
-  const [plantPickerOpen, setPlantPickerOpen] = useState(false);
-  const plantPickerAnchorRef = useRef<HTMLDivElement>(null);
   // Clicking a placed plant marker opens its edit/details popup
   // (PlantingPanel), matching how clicking a bed opens BedPanel.
   const [selectedPlantingId, setSelectedPlantingId] = useState<number | null>(null);
@@ -393,13 +390,13 @@ export function Layout() {
     setTab(next);
     setSelectedId(null);
     setSelectedBedIds(new Set());
-    setPlantPickerOpen(false);
+    // No explicit PlantPicker-close needed here (unlike the old
+    // plantPickerOpen state this replaced) - Toolbar.tsx only renders the
+    // `plantPicker` slot while tab === "plants", so switching away from it
+    // unmounts PlantPicker entirely, which resets its own internal open
+    // state for free the next time this tab is switched back to.
     setSelectedPlantingId(null);
     setSelectedPlantingIds(new Set());
-  }
-
-  function openPlantPicker() {
-    setPlantPickerOpen(true);
   }
 
   function handlePlantPlace(bedId: number, geometry: Geometry, placementType: PlacementType) {
@@ -905,11 +902,16 @@ export function Layout() {
         onTabChange={switchTab}
         zoomPercent={viewport.scale * 100}
         onFitView={handleFitView}
-        onAddBed={() => setShowAddForm(true)}
+        addBedForm={<AddBedForm onCreated={(bed) => setSelectedId(bed.id ?? null)} nextPosition={nextBedPosition(beds)} />}
         armedPlant={armedPlant}
         onClearArmedPlant={() => setArmedPlant(null)}
-        plantPickerAnchorRef={plantPickerAnchorRef}
-        onOpenPlantPicker={openPlantPicker}
+        plantPicker={
+          <PlantPicker
+            plants={plantsQuery.data ?? []}
+            armedPlant={armedPlant}
+            onPick={(slug) => setArmedPlant(plantsBySlug.get(slug) ?? null)}
+          />
+        }
         placementMode={placementMode}
         onPlacementModeChange={setPlacementMode}
         canUndo={history.canUndo}
@@ -1156,28 +1158,6 @@ export function Layout() {
           </Stage>
           <PlantingTooltip tooltip={tooltip} />
         </div>
-      )}
-
-      <PlantPicker
-        open={plantPickerOpen}
-        anchorRef={plantPickerAnchorRef}
-        plants={plantsQuery.data ?? []}
-        onPick={(slug) => {
-          setArmedPlant(plantsBySlug.get(slug) ?? null);
-          setPlantPickerOpen(false);
-        }}
-        onClose={() => setPlantPickerOpen(false)}
-      />
-
-      {showAddForm && (
-        <AddBedForm
-          onClose={() => setShowAddForm(false)}
-          onCreated={(bed) => {
-            setShowAddForm(false);
-            setSelectedId(bed.id ?? null);
-          }}
-          nextPosition={nextBedPosition(beds)}
-        />
       )}
     </div>
   );

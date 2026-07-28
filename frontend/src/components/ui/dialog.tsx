@@ -54,4 +54,20 @@ function DialogClose(props: DialogPrimitive.Close.Props) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 }
 
-export { Dialog, DialogPortal, DialogBackdrop, DialogPopup, DialogTitle, DialogClose };
+/** The button that opens the dialog - `render`-prop it onto an existing
+ * styled `<Button>` (see `NavDrawer.tsx`'s identical pattern) rather than
+ * rendering a second, differently-styled trigger. Not cosmetic: Base UI's
+ * (and the underlying floating-ui-react's) automatic "return focus to
+ * whatever opened this" behavior on close is keyed off the click
+ * interaction registered via a real `Trigger` (see that library's own
+ * `useClick`), not just "whatever `document.activeElement` happened to be"
+ * - a dialog opened via a plain external button + a controlled `open` prop
+ * (this component's own previous shape, before the "replace hand-rolled
+ * overlays with Dialog" backlog item's own follow-up bug report) never
+ * registers that reference, so focus silently stays on `<body>` after
+ * Escape/close instead of returning to the button that opened it. */
+function DialogTrigger(props: DialogPrimitive.Trigger.Props) {
+  return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
+}
+
+export { Dialog, DialogPortal, DialogBackdrop, DialogPopup, DialogTitle, DialogClose, DialogTrigger };
