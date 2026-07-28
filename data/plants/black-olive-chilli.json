@@ -33,6 +33,11 @@
     {
       "attribution": "manual-research",
       "notes": "is_edible corrected from false to true (GitHub issue #165): edible_parts=['fruit'] was already populated, a direct contradiction with is_edible=false, and no is_toxic flag or toxicity_notes explained the discrepancy - a full-dataset audit found this affecting 120 plants (grown from an earlier 25-plant spot-check once backlog #133's edible_parts backfill widened coverage), all of them unambiguous real food/herb/fruit crops."
+    },
+    {
+      "source_url": "https://extension.umd.edu/sites/extension.umd.edu/files/2021-03/G-1.pdf",
+      "attribution": "university-extension-seed-size-reference",
+      "notes": "seeds_per_gram=153.44 derived from University of Maryland Extension's 'Table G-1: Vegetable Seed Sizes', category 'peppers' (4,000-4,700 seeds/oz, midpoint converted to seeds/gram); cross-referenced for consistency against several other independent university extension seed-size tables (see GitHub issue #61 / etl/backfill_seeds_per_gram.py for the full sourcing/licensing rationale, including why this is treated as factual data rather than a protectable compilation)."
     }
   ],
   "growth_habit": "upright",
@@ -42,5 +47,8 @@
   "edible_parts": [
     "fruit"
   ],
-  "is_edible": true
+  "is_edible": true,
+  "seed_info": {
+    "seeds_per_gram": 153.44
+  }
 }

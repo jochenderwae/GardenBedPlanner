@@ -118,6 +118,11 @@
     {
       "attribution": "manual-research",
       "notes": "sun_level corrected from full_sun to half_sun (GitHub issue #186): 4 of 5 growing_information excerpts explicitly recommend 'a moist, rich soil and a partly-shaded situation' for parsley. Root cause investigated, not just the symptom: homesteader-labs' own raw crop data already had sun='partial' for parsley, but etl/normalize.py's _SUN_MAP had no entry for the bare string 'partial' (only 'partial shade'/'partial sun'/'part shade'/'part sun'), so map_sun_level() silently returned None and that source's contribution to sun_level was dropped without ever registering as a conflict - leaving Trefle's light=7 (>=7 -> full_sun) uncontested. _SUN_MAP fixed to also match 'partial' as half_sun; this plant's value corrected directly rather than via a full ETL re-run given the narrow scope of this fix."
+    },
+    {
+      "source_url": "https://extension.umd.edu/sites/extension.umd.edu/files/2021-03/G-1.pdf",
+      "attribution": "university-extension-seed-size-reference",
+      "notes": "seeds_per_gram=582.02 derived from University of Maryland Extension's 'Table G-1: Vegetable Seed Sizes', category 'parsley' (240,000-288,000 seeds/lb, midpoint converted to seeds/gram); cross-referenced for consistency against several other independent university extension seed-size tables (see GitHub issue #61 / etl/backfill_seeds_per_gram.py for the full sourcing/licensing rationale, including why this is treated as factual data rather than a protectable compilation)."
     }
   ],
   "growing_information": [
@@ -165,7 +170,8 @@
   ],
   "needs_rain_cover": false,
   "seed_info": {
-    "pretreatment": "soak parsley seeds in warm water for 24 hours before planting"
+    "pretreatment": "soak parsley seeds in warm water for 24 hours before planting",
+    "seeds_per_gram": 582.02
   },
   "bedding_needs": [
     {

@@ -36,6 +36,11 @@
     {
       "attribution": "manual-plant-spacing-fallback",
       "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
+    },
+    {
+      "source_url": "https://extension.umd.edu/sites/extension.umd.edu/files/2021-03/G-1.pdf",
+      "attribution": "university-extension-seed-size-reference",
+      "notes": "seeds_per_gram=333.34 derived from University of Maryland Extension's 'Table G-1: Vegetable Seed Sizes', category 'cauliflower' (8,900-10,000 seeds/oz, midpoint converted to seeds/gram); cross-referenced for consistency against several other independent university extension seed-size tables (see GitHub issue #61 / etl/backfill_seeds_per_gram.py for the full sourcing/licensing rationale, including why this is treated as factual data rather than a protectable compilation)."
     }
   ],
   "growth_habit": "upright",
@@ -46,5 +51,8 @@
     "flowers"
   ],
   "is_edible": true,
-  "plant_spacing_cm": 50
+  "plant_spacing_cm": 50,
+  "seed_info": {
+    "seeds_per_gram": 333.34
+  }
 }

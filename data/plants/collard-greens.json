@@ -46,6 +46,11 @@
     {
       "attribution": "manual-research",
       "notes": "bedding_needs (blanching) backfilled from this plant's own growing_information text (GitHub issue #185) - found via a growing_info_interesting_log.jsonl triage pass (backlog #160) that surfaced a blanching mention with no matching bedding_needs entry."
+    },
+    {
+      "source_url": "https://extension.umd.edu/sites/extension.umd.edu/files/2021-03/G-1.pdf",
+      "attribution": "university-extension-seed-size-reference",
+      "notes": "seeds_per_gram=282.19 derived from University of Maryland Extension's 'Table G-1: Vegetable Seed Sizes', category 'collards' (7,500-8,500 seeds/oz, midpoint converted to seeds/gram); cross-referenced for consistency against several other independent university extension seed-size tables (see GitHub issue #61 / etl/backfill_seeds_per_gram.py for the full sourcing/licensing rationale, including why this is treated as factual data rather than a protectable compilation)."
     }
   ],
   "growing_information": [
@@ -70,5 +75,8 @@
       "need_type": "blanching",
       "notes": "Leaves become very tender and of delicate flavor when blanched - source text doesn't specify the method (unlike other Brassica-family plants in this dataset, which typically blanch by drawing/tying leaves together or hilling)."
     }
-  ]
+  ],
+  "seed_info": {
+    "seeds_per_gram": 282.19
+  }
 }

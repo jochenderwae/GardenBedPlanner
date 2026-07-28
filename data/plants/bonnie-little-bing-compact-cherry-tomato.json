@@ -129,6 +129,11 @@
     {
       "attribution": "manual-companion-slug-normalization",
       "notes": "1 companion_slug reference(s) corrected to the real plant slug (GitHub issue #164) - see etl/normalize_companion_slugs.py's ALIAS_MAP."
+    },
+    {
+      "source_url": "https://extension.umd.edu/sites/extension.umd.edu/files/2021-03/G-1.pdf",
+      "attribution": "university-extension-seed-size-reference",
+      "notes": "seeds_per_gram=377.43 derived from University of Maryland Extension's 'Table G-1: Vegetable Seed Sizes', category 'tomatoes_fresh' (10,000-11,400 seeds/oz, midpoint converted to seeds/gram); cross-referenced for consistency against several other independent university extension seed-size tables (see GitHub issue #61 / etl/backfill_seeds_per_gram.py for the full sourcing/licensing rationale, including why this is treated as factual data rather than a protectable compilation)."
     }
   ],
   "growing_information": [
@@ -225,5 +230,8 @@
   "plant_spacing_cm": 76.2,
   "sow_indoors": true,
   "sow_direct": true,
-  "needs_thinning": true
+  "needs_thinning": true,
+  "seed_info": {
+    "seeds_per_gram": 377.43
+  }
 }

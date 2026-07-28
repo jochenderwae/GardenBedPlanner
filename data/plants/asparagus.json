@@ -120,6 +120,11 @@
     {
       "attribution": "manual-sowing-details-derivation",
       "notes": "['needs_thinning', 'sow_indoors'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
+    },
+    {
+      "source_url": "https://extension.umd.edu/sites/extension.umd.edu/files/2021-03/G-1.pdf",
+      "attribution": "university-extension-seed-size-reference",
+      "notes": "seeds_per_gram=36.38 derived from University of Maryland Extension's 'Table G-1: Vegetable Seed Sizes', category 'asparagus' (13,000-20,000 seeds/lb, midpoint converted to seeds/gram); cross-referenced for consistency against several other independent university extension seed-size tables (see GitHub issue #61 / etl/backfill_seeds_per_gram.py for the full sourcing/licensing rationale, including why this is treated as factual data rather than a protectable compilation)."
     }
   ],
   "growing_information": [
@@ -209,5 +214,8 @@
   "water_needs_mm_per_week": 25.4,
   "plant_spacing_cm": 45.7,
   "sow_indoors": true,
-  "needs_thinning": true
+  "needs_thinning": true,
+  "seed_info": {
+    "seeds_per_gram": 36.38
+  }
 }
