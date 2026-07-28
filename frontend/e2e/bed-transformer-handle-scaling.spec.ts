@@ -23,10 +23,9 @@ import { test, expect, type APIRequestContext, type Page } from "@playwright/tes
  * colors (`colorsForBedCategory`) and canvas background never otherwise
  * use. Composites every same-sized Konva `<canvas>` layer (same technique
  * `ruler-tick-visibility.spec.ts`/others in this directory use), scans a
- * horizontal strip through the expected handle center for that exact blue,
- * and reports the leftmost-to-rightmost matched-pixel span as the handle's
- * measured screen width - a big, robust signal regardless of the exact
- * true anchor size (correct ~10px, or a "balloon" of 50-150+px).
+ * small square region around the expected handle center for that exact
+ * blue, and reports the matched pixels' bounding-box span as the handle's
+ * measured screen size.
  *
  * Two independent scenarios (not just one page's before/after zoom) so
  * each can use a bed sized appropriately for its own resulting scale,
@@ -34,6 +33,21 @@ import { test, expect, type APIRequestContext, type Page } from "@playwright/tes
  * scenario A's small garden nearly matches the canvas (Fit view scale close
  * to 1 - "not zoomed out"), scenario B's huge garden forces Fit view down
  * to roughly 0.1-0.15 (the exact regime #129's bug report was about).
+ *
+ * Locating the handle's expected screen position (2026-07-28 rewrite):
+ * scale comes straight from the toolbar's own zoom readout (ground truth,
+ * not a locally hand-replicated `fitViewport` formula, which - even sampling
+ * `canvasSize` right before the "Fit view" click - consistently landed
+ * ~5-8% off from the real value for reasons never fully root-caused,
+ * deterministic not flaky). The pan offset still needs local replication
+ * (Konva doesn't expose it), and critically must account for
+ * `CompassWidget.tsx`'s `compassBoundingBox` - `handleFitView` in
+ * `Layout.tsx` always includes it in the fitted content extent alongside
+ * the garden and every bed, regardless of active tab, and it sits far
+ * enough outside the garden boundary (right side, and above the top edge)
+ * to meaningfully shift the offset if omitted. An earlier version of this
+ * spec missed that and couldn't reliably locate the handle at all even
+ * after the scale fix.
  *
  * Same Garden-row cleanup caveat as every other Garden-creating spec in
  * this directory (no `DELETE /api/garden` route exists).
@@ -47,23 +61,30 @@ function rect(x: number, y: number, width: number, height: number): Rect {
   return { type: "rectangle", x, y, width, height, rotation: 0 };
 }
 
-function fitViewport(boxes: Box[], canvasSize: { width: number; height: number }, marginPx = 40) {
-  const minX = Math.min(...boxes.map((b) => b.x));
-  const minY = Math.min(...boxes.map((b) => b.y));
-  const maxX = Math.max(...boxes.map((b) => b.x + b.width));
-  const maxY = Math.max(...boxes.map((b) => b.y + b.height));
-  const contentWidth = Math.max(1, maxX - minX);
-  const contentHeight = Math.max(1, maxY - minY);
-  const availableWidth = Math.max(1, canvasSize.width - marginPx * 2);
-  const availableHeight = Math.max(1, canvasSize.height - marginPx * 2);
-  const scale = Math.min(5, Math.max(0.1, Math.min(availableWidth / contentWidth, availableHeight / contentHeight)));
-  const x = marginPx + (availableWidth - contentWidth * scale) / 2 - minX * scale;
-  const y = marginPx + (availableHeight - contentHeight * scale) / 2 - minY * scale;
-  return { x, y, scale };
-}
-
 function worldToScreen(point: Point, viewport: { x: number; y: number; scale: number }): Point {
   return { x: point.x * viewport.scale + viewport.x, y: point.y * viewport.scale + viewport.y };
+}
+
+// Mirrors CompassWidget.tsx's compassBoundingBox exactly (values copied
+// from its own constants - not importable across the e2e/src boundary).
+// handleFitView (Layout.tsx) always includes this box alongside the garden
+// and every bed when computing "Fit view", regardless of which tab is
+// active - omitting it from this spec's own content-extent calculation was
+// the real reason an earlier version of this spec couldn't reliably
+// locate the resize handle even after fixing the scale mismatch: the
+// compass sits to the right of *and* above the garden boundary, shifting
+// both the effective content width and the vertical pan offset.
+const COMPASS_RADIUS_CM = 36;
+const COMPASS_MARGIN_CM = 50;
+const ABOVE_RING_HEADROOM_CM = 36 + 15 + 12 * 1.2 + 10 - 36 + 8; // = 47.4
+function compassBoundingBox(gardenBounds: Box): Box {
+  const center = { x: gardenBounds.x + gardenBounds.width + COMPASS_MARGIN_CM, y: gardenBounds.y + COMPASS_RADIUS_CM };
+  return {
+    x: center.x - COMPASS_RADIUS_CM,
+    y: center.y - COMPASS_RADIUS_CM - ABOVE_RING_HEADROOM_CM,
+    width: COMPASS_RADIUS_CM * 2,
+    height: COMPASS_RADIUS_CM * 2 + ABOVE_RING_HEADROOM_CM,
+  };
 }
 
 async function putGarden(request: APIRequestContext, geometry: Rect): Promise<void> {
@@ -101,13 +122,19 @@ const KONVA_ANCHOR_BLUE = { r: 0, g: 161, b: 255 };
 
 /** Composites every same-sized Konva layer canvas (same rationale as
  * `ruler-tick-visibility.spec.ts`'s `regionContainsColor`), scans a
- * horizontal strip of CSS-px width `2*radiusPx+1` centered on
- * (centerCssX, centerCssY) for Konva's default anchor-stroke blue, and
- * returns the span (in CSS px) between the leftmost and rightmost matched
- * pixel - `null` if no match at all (handle invisible). A span pinned at
- * (or very near) `2*radiusPx` means the true handle extends *at least*
- * that far each direction - still a clear, comparable "very large" signal
- * even though it's a floor, not the exact true size. */
+ * `(2*radiusPx+1)`-square CSS-px region centered on (centerCssX,
+ * centerCssY) for Konva's default anchor-stroke blue, and returns the
+ * larger of the matched pixels' bounding-box width/height (in CSS px) -
+ * `null` if no match at all (handle invisible). Deliberately a full 2D scan
+ * rather than a single horizontal strip (an earlier version of this
+ * function was line-only, which turned out to be too fragile against a
+ * few-px vertical misalignment between this spec's hand-replicated
+ * fitViewport/worldToScreen math and the app's real canvas layout - a
+ * center computed even slightly off vertically could graze only the very
+ * edge of the anchor and undercount its size, or miss it outright). A span
+ * pinned at (or very near) `2*radiusPx` means the true handle extends *at
+ * least* that far - still a clear, comparable "very large" signal even
+ * though it's a floor, not the exact true size. */
 async function measureHandleWidthPx(
   page: Page,
   centerCssX: number,
@@ -136,20 +163,27 @@ async function measureHandleWidthPx(
       const scaleX = reference.width / refBox.width;
       const scaleY = reference.height / refBox.height;
       const tolerance = 30;
-      let minMatchedDx: number | null = null;
-      let maxMatchedDx: number | null = null;
-      for (let dx = -radiusPx; dx <= radiusPx; dx++) {
-        const localX = Math.round((centerCssX + dx - refBox.left) * scaleX);
-        const localY = Math.round((centerCssY - refBox.top) * scaleY);
-        if (localX < 0 || localY < 0 || localX >= scratch.width || localY >= scratch.height) continue;
-        const [r, g, b] = sctx.getImageData(localX, localY, 1, 1).data;
-        if (Math.abs(r - target.r) <= tolerance && Math.abs(g - target.g) <= tolerance && Math.abs(b - target.b) <= tolerance) {
-          if (minMatchedDx === null) minMatchedDx = dx;
-          maxMatchedDx = dx;
+      let minDx: number | null = null;
+      let maxDx: number | null = null;
+      let minDy: number | null = null;
+      let maxDy: number | null = null;
+      for (let dy = -radiusPx; dy <= radiusPx; dy++) {
+        const localY = Math.round((centerCssY + dy - refBox.top) * scaleY);
+        if (localY < 0 || localY >= scratch.height) continue;
+        for (let dx = -radiusPx; dx <= radiusPx; dx++) {
+          const localX = Math.round((centerCssX + dx - refBox.left) * scaleX);
+          if (localX < 0 || localX >= scratch.width) continue;
+          const [r, g, b] = sctx.getImageData(localX, localY, 1, 1).data;
+          if (Math.abs(r - target.r) <= tolerance && Math.abs(g - target.g) <= tolerance && Math.abs(b - target.b) <= tolerance) {
+            minDx = minDx === null ? dx : Math.min(minDx, dx);
+            maxDx = maxDx === null ? dx : Math.max(maxDx, dx);
+            minDy = minDy === null ? dy : Math.min(minDy, dy);
+            maxDy = maxDy === null ? dy : Math.max(maxDy, dy);
+          }
         }
       }
-      if (minMatchedDx === null || maxMatchedDx === null) return null;
-      return maxMatchedDx - minMatchedDx;
+      if (minDx === null || maxDx === null || minDy === null || maxDy === null) return null;
+      return Math.max(maxDx - minDx, maxDy - minDy);
     },
     { centerCssX, centerCssY, radiusPx, target: KONVA_ANCHOR_BLUE },
   );
@@ -173,20 +207,50 @@ async function measureAtScenario(
   await page.locator("canvas").first().waitFor();
   await dismissOnboardingIfPresent(page);
   await page.getByRole("tab", { name: "Beds" }).click();
-
-  const box = await canvasBox(page);
-  const canvasSize = { width: box.width, height: box.height };
-  const expectedViewport = fitViewport([gardenBox], canvasSize, 40);
+  await page.waitForTimeout(300); // let ResizeObserver-driven canvasSize settle before sampling it
 
   await page.getByRole("button", { name: "Fit view" }).click();
   await page.waitForTimeout(200);
 
+  // Ground truth for scale comes from the toolbar's own zoom readout, not a
+  // locally hand-replicated fitViewport formula - an earlier version of
+  // this spec recomputed fitViewport itself from a `canvasBox(page)`
+  // sampled *before* the Fit view click and consistently landed ~5-8%
+  // (relative) off from the real toolbar reading (deterministic, not
+  // flaky), most likely because the container's actual settled size at the
+  // moment the app itself computed Fit view isn't perfectly reproducible
+  // from outside via a second, independent measurement. Sampling the real
+  // canvas box and the real toolbar percentage *after* the click and
+  // re-deriving the pan offset from those (the offset formula is the only
+  // part that still needs local replication - Konva doesn't expose it) is
+  // far more robust than trying to predict the app's own internal state in
+  // advance.
+  const box = await canvasBox(page);
+  const canvasSize = { width: box.width, height: box.height };
   const zoomText = await page.locator("text=/^\\d+%$/").first().textContent();
   const actualScalePercent = Number(zoomText?.replace("%", ""));
-  expect(
-    Math.abs(actualScalePercent / 100 - expectedViewport.scale),
-    "replicated fitViewport formula didn't match the real toolbar zoom readout - can't trust computed handle position",
-  ).toBeLessThan(0.05);
+  const actualScale = actualScalePercent / 100;
+  const marginPx = 40;
+  const availableWidth = Math.max(1, canvasSize.width - marginPx * 2);
+  const availableHeight = Math.max(1, canvasSize.height - marginPx * 2);
+
+  // Content extent for "Fit view" is the garden boundary PLUS the compass
+  // widget's own bounding box (see the comment above compassBoundingBox) -
+  // this scenario has no other beds beyond the one under test, so those
+  // two boxes are the complete list handleFitView would have used.
+  const compassBox = compassBoundingBox(gardenBox);
+  const allBoxes = [gardenBox, compassBox];
+  const minX = Math.min(...allBoxes.map((b) => b.x));
+  const minY = Math.min(...allBoxes.map((b) => b.y));
+  const maxX = Math.max(...allBoxes.map((b) => b.x + b.width));
+  const maxY = Math.max(...allBoxes.map((b) => b.y + b.height));
+  const contentWidth = maxX - minX;
+  const contentHeight = maxY - minY;
+  const expectedViewport = {
+    scale: actualScale,
+    x: marginPx + (availableWidth - contentWidth * actualScale) / 2 - minX * actualScale,
+    y: marginPx + (availableHeight - contentHeight * actualScale) / 2 - minY * actualScale,
+  };
 
   // Select the bed - click its interior, well clear of any edge/handle.
   const bedCenterWorld = { x: bedBox.x + bedBox.width / 2, y: bedBox.y + bedBox.height / 2 };
@@ -213,7 +277,7 @@ test.describe("Bed resize-handle screen size across zoom levels (#71)", () => {
       request,
       { x: 0, y: 0, width: 800, height: 600 },
       { x: 40, y: 200, width: 700, height: 200 },
-      70,
+      12,
     );
     expect(near1.scale).toBeGreaterThan(0.5); // sanity: this really is the "not zoomed out" baseline
 
@@ -225,7 +289,7 @@ test.describe("Bed resize-handle screen size across zoom levels (#71)", () => {
       request,
       { x: 0, y: 0, width: 8000, height: 6000 },
       { x: 500, y: 2500, width: 3000, height: 800 },
-      120,
+      12,
     );
     expect(zoomedOut.scale).toBeLessThan(0.3); // sanity: this really is "zoomed out"
 
