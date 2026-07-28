@@ -122,6 +122,61 @@ def test_spacing_cm_persists_and_defaults_to_null(client: TestClient, db_session
     assert update_response.json()["spacing_cm"] == 22.0
 
 
+def test_spacing_cm_edge_cases(client: TestClient, db_session) -> None:
+    bed_id = _create_bed(client)
+    plant_slug = _create_plant(db_session)
+
+    planting_id = client.post(
+        "/api/plantings",
+        json={
+            "bed_id": bed_id,
+            "plant_slug": plant_slug,
+            "placement_type": "row",
+            "geometry": rectangle(width=100, height=20),
+            "spacing_cm": 15.5,
+        },
+    ).json()["id"]
+
+    # Explicitly clearing an override back to null (not just omitting the
+    # field, which exclude_unset would treat as "leave unchanged") persists
+    # as null.
+    clear_response = client.patch(f"/api/plantings/{planting_id}", json={"spacing_cm": None})
+    assert clear_response.status_code == 200
+    assert clear_response.json()["spacing_cm"] is None
+    assert client.get(f"/api/plantings/{planting_id}").json()["spacing_cm"] is None
+
+    # Zero is a valid float boundary and round-trips exactly.
+    zero_response = client.patch(f"/api/plantings/{planting_id}", json={"spacing_cm": 0})
+    assert zero_response.status_code == 200
+    assert zero_response.json()["spacing_cm"] == 0
+
+    # A large value is accepted as-is (no upper bound enforced at the API).
+    large_response = client.patch(f"/api/plantings/{planting_id}", json={"spacing_cm": 100000.0})
+    assert large_response.status_code == 200
+    assert large_response.json()["spacing_cm"] == 100000.0
+
+    # A non-numeric value is a 422 validation error, not a 500.
+    bad_type_response = client.patch(
+        f"/api/plantings/{planting_id}", json={"spacing_cm": "not-a-number"}
+    )
+    assert bad_type_response.status_code == 422
+
+    # Individual (non-row/field) placements can also carry a spacing_cm -
+    # nothing in the model/route restricts it to row/field, it's just
+    # semantically unused by the frontend for individual placements.
+    individual_id = client.post(
+        "/api/plantings",
+        json={
+            "bed_id": bed_id,
+            "plant_slug": plant_slug,
+            "placement_type": "individual",
+            "geometry": rectangle(width=20, height=20),
+            "spacing_cm": 30.0,
+        },
+    ).json()["id"]
+    assert client.get(f"/api/plantings/{individual_id}").json()["spacing_cm"] == 30.0
+
+
 def test_changing_bed_id_without_new_geometry_is_rejected(client: TestClient, db_session) -> None:
     bed_id = _create_bed(client, "Bed A")
     other_bed_id = _create_bed(client, "Bed B")
