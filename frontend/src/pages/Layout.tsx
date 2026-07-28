@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stage, Layer, Line, Rect } from "react-konva";
 import Konva from "konva";
+import { useSnackbar } from "@/components/Snackbar";
 
 // Konva defaults `dragButtons` to `[0, 1]` (left AND middle) - see
 // Konva.Node's `_startDrag`, which only skips a mousedown-turned-drag when
@@ -74,6 +75,7 @@ import {
   GRID_SPACING_CM,
   normalizedRect,
   NUDGE_STEP_CM,
+  plantingsOutsideBounds,
   rectanglesOverlap,
   translateGeometry,
 } from "./layout/geometry";
@@ -134,6 +136,7 @@ function nextBedPosition(beds: Bed[]): { pos_x: number; pos_y: number } {
 
 export function Layout() {
   const queryClient = useQueryClient();
+  const { show: showSnackbar } = useSnackbar();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [mode, setMode] = useState<ViewMode>("mine");
@@ -504,6 +507,28 @@ export function Layout() {
     geometryMutation.mutate({ id: bedId, patch: { border_geometry: geometry } });
   }
 
+  /** Warns (doesn't silently re-clamp/move anything - see the "plantings
+   * drifting outside their bed" backlog item, #198) when a bed's footprint
+   * just shrank/reshaped enough to leave some of its own plantings outside
+   * it. Only fires when the bed's own bounding size actually changed - a
+   * plain drag (position only) never affects a planting's bed-local
+   * coordinates, so it's never worth checking for that case. Uses
+   * `boundingRect` for both rectangle and polygon beds (the same
+   * bounding-box simplification already used elsewhere for a polygon's
+   * rough extent), since a resized polygon can equally strand a planting
+   * that used to sit inside it. */
+  function warnIfPlantingsNowOutOfBounds(bed: Bed, previousGeometry: Geometry, nextGeometry: Geometry) {
+    const previousRect = boundingRect(previousGeometry);
+    const nextRect = boundingRect(nextGeometry);
+    if (previousRect.width === nextRect.width && previousRect.height === nextRect.height) return;
+    const bedPlantings = plantings.filter((p) => p.bed_id === bed.id);
+    const outside = plantingsOutsideBounds(bedPlantings, nextRect.width, nextRect.height);
+    if (outside.length === 0) return;
+    showSnackbar(
+      `${outside.length} planting${outside.length === 1 ? "" : "s"} in "${bed.name}" now ${outside.length === 1 ? "sits" : "sit"} outside its resized edges.`,
+    );
+  }
+
   function handleBedChange(bed: Bed, geometry: Geometry) {
     if (bed.id == null) return;
     const bedId = bed.id;
@@ -513,6 +538,7 @@ export function Layout() {
       undo: () => applyBedGeometry(bedId, previousGeometry),
       redo: () => applyBedGeometry(bedId, geometry),
     });
+    warnIfPlantingsNowOutOfBounds(bed, previousGeometry, geometry);
   }
 
   /** Arrow-key nudge for the currently-selected bed - see the "Keyboard

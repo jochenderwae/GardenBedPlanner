@@ -13,6 +13,8 @@ import {
   formatDistanceCm,
   normalizedRect,
   normalizeDegrees,
+  plantingCenter,
+  plantingsOutsideBounds,
   polygonToRectangle,
   rectangleToPolygon,
   rectanglesOverlap,
@@ -393,5 +395,41 @@ describe("translateGeometry", () => {
         { x: 12, y: 13 },
       ],
     });
+  });
+});
+
+describe("plantingCenter", () => {
+  it("returns the midpoint of a rectangle geometry", () => {
+    const rect: RectangleGeometry = { type: "rectangle", x: 10, y: 20, width: 20, height: 10, rotation: 0 };
+    expect(plantingCenter(rect)).toEqual({ x: 20, y: 25 });
+  });
+});
+
+describe("plantingsOutsideBounds", () => {
+  function markerAt(x: number, y: number): { geometry: RectangleGeometry } {
+    return { geometry: { type: "rectangle", x, y, width: 20, height: 20, rotation: 0 } };
+  }
+
+  it("returns nothing when every planting's center is within the bed's footprint", () => {
+    const plantings = [markerAt(0, 0), markerAt(30, 30)];
+    expect(plantingsOutsideBounds(plantings, 70, 70)).toEqual([]);
+  });
+
+  it("flags a planting whose center falls past the bed's far edge", () => {
+    // Center at (60, 60) - just outside a 50x50 bed.
+    const plantings = [markerAt(50, 50)];
+    expect(plantingsOutsideBounds(plantings, 50, 50)).toEqual(plantings);
+  });
+
+  it("flags a planting whose center falls before the bed's near edge (negative x/y)", () => {
+    // Center at (-5, 10) - x is negative, outside the bed on that axis.
+    const plantings = [markerAt(-15, 0)];
+    expect(plantingsOutsideBounds(plantings, 50, 50)).toEqual(plantings);
+  });
+
+  it("doesn't flag a marker whose center sits exactly on the bed's edge", () => {
+    // Center at (50, 25) - exactly on the right edge of a 50-wide bed, not past it.
+    const plantings = [markerAt(40, 15)];
+    expect(plantingsOutsideBounds(plantings, 50, 50)).toEqual([]);
   });
 });

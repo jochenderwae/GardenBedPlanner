@@ -15,9 +15,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FieldHint } from "@/components/ui/tooltip";
+import { useSnackbar } from "@/components/Snackbar";
 import { ApiError, deleteBed, updateBed, type Bed, type BedUpdate, type Plant, type Planting, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
-import { rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
+import { boundingRect, plantingsOutsideBounds, rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
 import { todayIsoDate } from "./plantingLifecycle";
 
 interface BedPanelProps {
@@ -50,6 +51,7 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
   ref,
 ) {
   const queryClient = useQueryClient();
+  const { show: showSnackbar } = useSnackbar();
   const [draft, setDraft] = useState(bed);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   // Opened from deleteMutation's onError below when the first delete 409s
@@ -96,6 +98,24 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
   function commit(patch: BedUpdate) {
     setDraft((prev) => ({ ...prev, ...patch }) as Bed);
     mutation.mutate(patch);
+    // Same "warn, don't silently re-clamp" check as Layout.tsx's canvas
+    // drag/resize path (#198) - the Width/Length number inputs above are a
+    // second way a bed's own footprint can shrink out from under its
+    // existing plantings, so this needs the identical check, not just the
+    // canvas Transformer path.
+    if (patch.border_geometry) {
+      const nextRect = boundingRect(patch.border_geometry);
+      const previousRect = boundingRect(bed.border_geometry);
+      if (nextRect.width !== previousRect.width || nextRect.height !== previousRect.height) {
+        const bedPlantings = plantings.filter((p) => p.bed_id === bed.id);
+        const outside = plantingsOutsideBounds(bedPlantings, nextRect.width, nextRect.height);
+        if (outside.length > 0) {
+          showSnackbar(
+            `${outside.length} planting${outside.length === 1 ? "" : "s"} in "${bed.name}" now ${outside.length === 1 ? "sits" : "sit"} outside its resized edges.`,
+          );
+        }
+      }
+    }
   }
 
   function setRectField(key: keyof RectangleGeometry, value: number) {

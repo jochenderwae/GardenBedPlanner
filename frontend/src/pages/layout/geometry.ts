@@ -259,6 +259,35 @@ export function formatDistanceCm(cm: number): string {
   return `${(cm / 100).toFixed(cm % 100 === 0 ? 0 : 1)}m`;
 }
 
+/** A planting's own center point (bed-local cm) - what `data/etl/
+ * verify_garden.py`'s out-of-bounds check (and `plantingsOutsideBounds`
+ * below) test against a bed's footprint, not the full marker rectangle's
+ * own edges: a plant sown right at a bed's edge is legitimate, only its
+ * center actually needs to fall within the bed (see that script's own doc
+ * on why - marker-rectangle overflow near an edge isn't a real data
+ * problem). */
+export function plantingCenter(geometry: Geometry): { x: number; y: number } {
+  const rect = boundingRect(geometry);
+  return { x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 };
+}
+
+/** Which of `plantings` (expected to already be filtered to one bed) have
+ * their own center point fall outside that bed's local footprint
+ * `(0,0)-(widthCm,heightCm)` - used to *warn* (not silently re-clamp/move)
+ * when a bed resize leaves existing plantings stranded outside its new
+ * bounds (see the "plantings drifting outside their bed" backlog item,
+ * #198 - there was no such invariant enforced anywhere before this). */
+export function plantingsOutsideBounds<T extends { geometry: Geometry }>(
+  plantings: T[],
+  widthCm: number,
+  heightCm: number,
+): T[] {
+  return plantings.filter((p) => {
+    const center = plantingCenter(p.geometry);
+    return center.x < 0 || center.x > widthCm || center.y < 0 || center.y > heightCm;
+  });
+}
+
 /** Straight-line distance (cm) between two points - used for the polygon
  * vertex-drag dimension readout (distance to each neighboring vertex, see
  * PolygonEditor.tsx) and generically available for any other point-distance
