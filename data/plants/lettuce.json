@@ -135,6 +135,10 @@
     {
       "attribution": "manual-sowing-details-derivation",
       "notes": "['needs_thinning', 'sow_direct'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "bedding_needs (blanching) backfilled from this plant's own growing_information text (GitHub issue #185) - found via a growing_info_interesting_log.jsonl triage pass (backlog #160) that surfaced a blanching mention with no matching bedding_needs entry."
     }
   ],
   "growing_information": [
@@ -211,6 +215,10 @@
     {
       "need_type": "cold frames",
       "notes": "for early planting and protecting plants during winter"
+    },
+    {
+      "need_type": "blanching",
+      "notes": "Cos-type varieties do best if tied up a few days before using, to blanch all the inner leaves"
     }
   ],
   "growth_habit": "rosette",

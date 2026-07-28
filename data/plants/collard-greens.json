@@ -42,6 +42,10 @@
     {
       "attribution": "manual-sowing-details-derivation",
       "notes": "['sow_direct', 'sow_indoors'] derived from explicit keyword matches in sowing_method - see GitHub issue #177 / etl/backfill_sowing_details.py."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "bedding_needs (blanching) backfilled from this plant's own growing_information text (GitHub issue #185) - found via a growing_info_interesting_log.jsonl triage pass (backlog #160) that surfaced a blanching mention with no matching bedding_needs entry."
     }
   ],
   "growing_information": [
@@ -60,5 +64,11 @@
   ],
   "plant_spacing_cm": 15,
   "sow_indoors": true,
-  "sow_direct": true
+  "sow_direct": true,
+  "bedding_needs": [
+    {
+      "need_type": "blanching",
+      "notes": "Leaves become very tender and of delicate flavor when blanched - source text doesn't specify the method (unlike other Brassica-family plants in this dataset, which typically blanch by drawing/tying leaves together or hilling)."
+    }
+  ]
 }
