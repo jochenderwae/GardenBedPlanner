@@ -54,6 +54,38 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
   // user is actively typing otherwise - same pattern as FieldInput.
   useEffect(() => setYearsDraft(lifeCycleYears), [lifeCycleYears]);
 
+  // Self-heals a *loaded* plant whose stored life_cycle/life_cycle_years
+  // pair is already inconsistent - commitLifeCycle/commitYears above only
+  // ever fire on an interactive onChange, so a record that arrived
+  // inconsistent (imported before this correlation existed, or edited
+  // outside this UI - ~215/359 real plants on record, all annual/biennial
+  // with a null years) just displayed the mismatch forever, until someone
+  // happened to re-pick the same life_cycle value. Runs whenever these
+  // props actually change (mount, plant navigation, Undo unwinding to an
+  // older snapshot) rather than every render, and commits through the same
+  // `onSave` path `commitLifeCycle` uses so the correction is a normal
+  // undoable autosave, not a silent bypass. Deliberately one-directional
+  // (life_cycle -> years only, never inferring life_cycle from years on
+  // load) - the real inconsistent data is exclusively "cycle set, years
+  // missing/wrong", and a perennial's free-form years (however many, or
+  // none) is valid as-is and must be left alone (see "How to test" #5).
+  useEffect(() => {
+    if (lifeCycle !== "annual" && lifeCycle !== "biennial") return;
+    const expectedYears = yearsForLifeCycle(lifeCycle);
+    if (lifeCycleYears === expectedYears) return;
+    onSave(
+      { life_cycle: lifeCycle, life_cycle_years: expectedYears },
+      { life_cycle: lifeCycle, life_cycle_years: lifeCycleYears },
+      "life cycle years",
+    );
+    // `onSave` (usePlantAutosave's savePatch) is a fresh closure every
+    // PlantDetail render, so listing it here means this effect re-runs on
+    // every render, not just a genuine prop change - harmless, since the
+    // `lifeCycleYears === expectedYears` guard above makes every run after
+    // the first correction a no-op until the props actually change again
+    // (navigation to another plant, or an Undo).
+  }, [lifeCycle, lifeCycleYears, onSave]);
+
   function commitLifeCycle(nextCycle: LifeCycle) {
     let nextYears = lifeCycleYears;
     if (nextCycle === "annual" || nextCycle === "biennial") {
