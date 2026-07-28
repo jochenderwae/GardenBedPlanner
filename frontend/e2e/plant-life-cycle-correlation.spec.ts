@@ -9,9 +9,14 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
  * correlation plus the combined-undo requirement.
  */
 
-async function createPlant(request: APIRequestContext, slug: string, commonName: string): Promise<void> {
+async function createPlant(
+  request: APIRequestContext,
+  slug: string,
+  commonName: string,
+  overrides: Partial<{ life_cycle: string; life_cycle_years: number | null }> = {},
+): Promise<void> {
   const res = await request.post("/api/plants", {
-    data: { slug, common_name: commonName, botanical_name: "Testus e2eus" },
+    data: { slug, common_name: commonName, botanical_name: "Testus e2eus", ...overrides },
   });
   expect(res.ok(), `failed to create plant: ${res.status()} ${await res.text()}`).toBeTruthy();
 }
@@ -139,6 +144,95 @@ test.describe("Plant-detail life_cycle / life_cycle_years correlation (#118)", (
       await expect(lifeCycleSelect).toHaveValue("perennial");
     } finally {
       await request.delete(`/api/plants/${slug}`).catch(() => {});
+    }
+  });
+
+  // Regression coverage for the 2026-07-23 follow-up report: the fresh-
+  // plant flow above never exercises the shape ~215/359 real plants
+  // actually had (life_cycle set, life_cycle_years null - imported before
+  // this correlation existed) - loading one of those needs to self-heal on
+  // mount, not just react to interactive `onChange`s. Directly matches
+  // this ticket's own "How to test" steps 1-3.
+  test("an already-inconsistent plant (annual/biennial with null years) self-heals on load, and further edits still work correctly", async ({
+    page,
+    request,
+  }) => {
+    const annualSlug = `e2e-life-cycle-annual-inconsistent-${Date.now()}`;
+    await createPlant(request, annualSlug, "E2E Inconsistent Annual Plant", { life_cycle: "annual", life_cycle_years: null });
+    const biennialSlug = `e2e-life-cycle-biennial-inconsistent-${Date.now()}`;
+    await createPlant(request, biennialSlug, "E2E Inconsistent Biennial Plant", { life_cycle: "biennial", life_cycle_years: null });
+
+    try {
+      // Step 1: an annual with null years shows/persists the implied
+      // default (1), not a blank field - a real GET after load, not just
+      // the initial render.
+      await page.goto(`/plants/${annualSlug}`);
+      await expect(page.getByRole("heading", { name: "E2E Inconsistent Annual Plant" })).toBeVisible();
+      const annualYearsInput = page.getByRole("spinbutton", { name: "Life cycle years (productive lifespan)" });
+      await expect(annualYearsInput).toHaveValue("1");
+      await expect
+        .poll(async () => (await (await request.get(`/api/plants/${annualSlug}`)).json()).life_cycle_years, {
+          message: "an already-inconsistent annual plant never self-healed life_cycle_years to 1 on load",
+        })
+        .toBe(1);
+      // Still annual - the normalization only fills in years, it doesn't
+      // touch an already-correct life_cycle.
+      expect((await (await request.get(`/api/plants/${annualSlug}`)).json()).life_cycle).toBe("annual");
+
+      // Step 3: on this now-healed plant, typing a year count that implies
+      // a different life cycle still correctly flips it - the specific
+      // "changing years doesn't update life cycle" repro from an
+      // already-inconsistent starting state, not a freshly-created one.
+      await annualYearsInput.fill("5");
+      await annualYearsInput.blur();
+      await expect(page.getByRole("combobox", { name: "Life cycle" })).toHaveValue("perennial");
+      await expect
+        .poll(async () => (await (await request.get(`/api/plants/${annualSlug}`)).json()).life_cycle, {
+          message: "typing years=5 on a healed-then-edited plant never inferred Perennial",
+        })
+        .toBe("perennial");
+
+      // Step 2: same self-heal for biennial (implied default 2).
+      await page.goto(`/plants/${biennialSlug}`);
+      await expect(page.getByRole("heading", { name: "E2E Inconsistent Biennial Plant" })).toBeVisible();
+      const biennialYearsInput = page.getByRole("spinbutton", { name: "Life cycle years (productive lifespan)" });
+      await expect(biennialYearsInput).toHaveValue("2");
+      await expect
+        .poll(async () => (await (await request.get(`/api/plants/${biennialSlug}`)).json()).life_cycle_years, {
+          message: "an already-inconsistent biennial plant never self-healed life_cycle_years to 2 on load",
+        })
+        .toBe(2);
+      expect((await (await request.get(`/api/plants/${biennialSlug}`)).json()).life_cycle).toBe("biennial");
+    } finally {
+      await request.delete(`/api/plants/${annualSlug}`).catch(() => {});
+      await request.delete(`/api/plants/${biennialSlug}`).catch(() => {});
+    }
+  });
+
+  // Step 5's own negative control: a perennial with a free-form (or null)
+  // year count must be left alone on load - the normalization effect must
+  // not touch anything that's already consistent.
+  test("a perennial plant with a free-form year count (or none) is untouched on load", async ({ page, request }) => {
+    const freeFormSlug = `e2e-life-cycle-perennial-freeform-${Date.now()}`;
+    await createPlant(request, freeFormSlug, "E2E Perennial Freeform Plant", { life_cycle: "perennial", life_cycle_years: 12 });
+    const nullYearsSlug = `e2e-life-cycle-perennial-null-${Date.now()}`;
+    await createPlant(request, nullYearsSlug, "E2E Perennial Null Years Plant", { life_cycle: "perennial", life_cycle_years: null });
+
+    try {
+      await page.goto(`/plants/${freeFormSlug}`);
+      await expect(page.getByRole("heading", { name: "E2E Perennial Freeform Plant" })).toBeVisible();
+      await expect(page.getByRole("spinbutton", { name: "Life cycle years (productive lifespan)" })).toHaveValue("12");
+      await page.waitForTimeout(300); // give any (incorrect) auto-normalize a moment to have fired
+      expect((await (await request.get(`/api/plants/${freeFormSlug}`)).json()).life_cycle_years).toBe(12);
+
+      await page.goto(`/plants/${nullYearsSlug}`);
+      await expect(page.getByRole("heading", { name: "E2E Perennial Null Years Plant" })).toBeVisible();
+      await expect(page.getByRole("spinbutton", { name: "Life cycle years (productive lifespan)" })).toHaveValue("");
+      await page.waitForTimeout(300);
+      expect((await (await request.get(`/api/plants/${nullYearsSlug}`)).json()).life_cycle_years).toBeNull();
+    } finally {
+      await request.delete(`/api/plants/${freeFormSlug}`).catch(() => {});
+      await request.delete(`/api/plants/${nullYearsSlug}`).catch(() => {});
     }
   });
 });
