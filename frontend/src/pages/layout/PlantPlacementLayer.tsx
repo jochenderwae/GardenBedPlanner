@@ -17,7 +17,7 @@ import {
   snapToGrid,
 } from "./geometry";
 import { PlantFootprint } from "./PlantFootprint";
-import type { RemovalVisualState } from "./plantingLifecycle";
+import type { PlantingStartVisualState, RemovalVisualState } from "./plantingLifecycle";
 
 /** "individual" draws with a single click; "row"/"field" draw with a
  * click-drag-release gesture (see PlantPlacementLayer's mouse handlers
@@ -74,6 +74,16 @@ interface PlantPlacementLayerProps {
    * Keyed by planting id; a missing entry (or the planting itself having no
    * id yet) renders as "normal". */
   removalStateById: Map<number, RemovalVisualState>;
+  /** Edit-tab-only visual state (#201) derived from each planting's own
+   * `planted_date` vs. today - the "not yet in the ground" mirror of
+   * `removalStateById` above, using a visually distinct dash pattern so the
+   * two provisional states (not-yet-planted vs. leaving-soon) read as
+   * different things, not the same cue with two meanings. Takes priority
+   * over `removalStateById` when both are non-"normal" (see
+   * `combinedVisualProps` below) - a planting that hasn't started yet reads
+   * as "not yet planted" regardless of any (nonsensical, but not
+   * data-impossible) future removal also being scheduled on it. */
+  startStateById: Map<number, PlantingStartVisualState>;
 }
 
 /** Imperative escape hatch for Layout.tsx's Stage-level mouse handlers to
@@ -119,6 +129,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
     rotationWarnings,
     onHoverWarning,
     removalStateById,
+    startStateById,
   },
   ref,
 ) {
@@ -391,6 +402,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
                 rotationWarning={planting.id != null ? rotationWarnings.get(planting.id) : undefined}
                 onHoverWarning={onHoverWarning}
                 removalState={(planting.id != null && removalStateById.get(planting.id)) || "normal"}
+                startState={(planting.id != null && startStateById.get(planting.id)) || "normal"}
               />
             ))}
           </Group>
@@ -481,6 +493,45 @@ function removalVisualProps(state: RemovalVisualState, baseOpacity: number): { o
   }
 }
 
+// Distinct from REMOVAL_DASH_PATTERN (#180's [4, 4]) so "not yet planted"
+// and "leaving soon" read as two different provisional states rather than
+// the same dashed cue meaning two different things (#201) - a sparser,
+// finer dash reads as "doesn't fully exist here yet" vs. the removal
+// pattern's more solid dash.
+const NOT_YET_PLANTED_DASH_PATTERN = [2, 5];
+
+/** Derives a marker's opacity/dash from its Edit-tab planting-start state
+ * (#201) - the "not yet in the ground" mirror of `removalVisualProps`,
+ * same tier structure (the further-out state keeps normal opacity with
+ * just a dash; the imminent one also dims, reusing `LEAVING_SOON_OPACITY`
+ * since the underlying "provisional, about to change" feeling is the same
+ * regardless of which direction the change is). */
+function startVisualProps(state: PlantingStartVisualState, baseOpacity: number): { opacity: number; dash?: number[] } {
+  switch (state) {
+    case "starting-soon":
+      return { opacity: LEAVING_SOON_OPACITY, dash: NOT_YET_PLANTED_DASH_PATTERN };
+    case "not-yet-planted":
+      return { opacity: baseOpacity, dash: NOT_YET_PLANTED_DASH_PATTERN };
+    default:
+      return { opacity: baseOpacity };
+  }
+}
+
+/** Combines a planting's start-state and removal-state visuals into the
+ * one set of props a marker actually renders with - "not yet planted"
+ * takes priority over "leaving soon" whenever both are non-"normal" (see
+ * `PlantPlacementLayerProps.startStateById`'s own doc for why), otherwise
+ * whichever one isn't "normal" wins, and a fully "normal" planting on both
+ * axes renders at plain `baseOpacity`. */
+function combinedVisualProps(
+  startState: PlantingStartVisualState,
+  removalState: RemovalVisualState,
+  baseOpacity: number,
+): { opacity: number; dash?: number[] } {
+  if (startState !== "normal") return startVisualProps(startState, baseOpacity);
+  return removalVisualProps(removalState, baseOpacity);
+}
+
 function PlantingMarker({
   planting,
   plant,
@@ -495,6 +546,7 @@ function PlantingMarker({
   rotationWarning,
   onHoverWarning,
   removalState,
+  startState,
 }: {
   planting: Planting;
   plant: Plant | undefined;
@@ -524,6 +576,9 @@ function PlantingMarker({
   /** See PlantPlacementLayerProps.removalStateById - "normal" for a planting
    * with no removed_date scheduled at all. */
   removalState: RemovalVisualState;
+  /** See PlantPlacementLayerProps.startStateById - "normal" for a planting
+   * with no planted_date, or one already on/before today. */
+  startState: PlantingStartVisualState;
 }) {
   const label = plant?.common_name ?? planting.plant_slug;
   const color = colorForSlug(planting.plant_slug);
@@ -541,7 +596,7 @@ function PlantingMarker({
     // it at `effectiveSpacing` (#155), not the rectangle itself.
     const markerPositions =
       planting.placement_type === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);
-    const markerVisual = removalVisualProps(removalState, 0.85);
+    const markerVisual = combinedVisualProps(startState, removalState, 0.85);
 
     function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
       onGroupDragEnd();
@@ -576,7 +631,7 @@ function PlantingMarker({
           opacity={0.15}
           stroke={selected ? SELECTION_HIGHLIGHT_COLOR : color}
           strokeWidth={selected ? 3 : 1.5}
-          dash={removalState !== "normal" ? REMOVAL_DASH_PATTERN : undefined}
+          dash={markerVisual.dash}
           draggable={active}
           listening={active}
           onDragStart={onGroupDragStart}
@@ -614,7 +669,7 @@ function PlantingMarker({
   const radius = Math.max(4, rect.width / 2);
   const centerX = rect.x + rect.width / 2;
   const centerY = rect.y + rect.height / 2;
-  const pointVisual = removalVisualProps(removalState, 0.85);
+  const pointVisual = combinedVisualProps(startState, removalState, 0.85);
 
   function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
     onGroupDragEnd();

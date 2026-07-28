@@ -56,6 +56,20 @@ export function isPlantingActiveAsOf(planting: Planting, asOfDate: string): bool
   return true;
 }
 
+/** The Edit tab's own "what should even be drawn" filter (#180/#201) -
+ * deliberately *not* `isPlantingActiveAsOf`, which also excludes a planting
+ * whose `planted_date` is still in the future. That exclusion is correct
+ * for a point-in-time snapshot (the View tab's date-scrubbed render, the
+ * agenda) - "what was actually in the ground on date X" - but wrong for the
+ * always-editable canvas, where a future-dated planting should still be
+ * visible (with its own "not yet planted" treatment, see
+ * `plantingStartVisualState` below) rather than disappearing entirely until
+ * its start date arrives. The only thing that actually removes a planting
+ * from the Edit tab is its own `removed_date` having already passed. */
+export function isPlantingVisibleOnEditTab(planting: Planting, today: string): boolean {
+  return !planting.removed_date || planting.removed_date > today;
+}
+
 /** Within this many days of its own `removed_date`, a still-active planting
  * reads as "leaving soon" on the Edit tab's canvas (reduced opacity, on top
  * of the dashed stroke every future-dated removal already gets) rather than
@@ -90,6 +104,32 @@ export function describeRemovalSchedule(planting: Planting, asOfDate: string): s
   if (days === 0) return "Scheduled to be cleared today";
   const daysAgo = -days;
   return daysAgo === 1 ? "Cleared 1 day ago" : `Cleared ${daysAgo} days ago`;
+}
+
+export type PlantingStartVisualState = "normal" | "not-yet-planted" | "starting-soon";
+
+/** Edit-tab-only visual state (#201) for a planting whose `planted_date`
+ * is still in the future - the "not yet in the ground" mirror of
+ * `removalVisualState`'s "scheduled to leave" treatment, same
+ * `LEAVING_SOON_THRESHOLD_DAYS` tunable. A planting with no `planted_date`,
+ * or one already on/before `asOfDate`, is "normal" - unchanged, ordinary
+ * active-planting rendering (this only ever makes a planting look *more*
+ * provisional, never less). */
+export function plantingStartVisualState(planting: Planting, asOfDate: string): PlantingStartVisualState {
+  if (!planting.planted_date || planting.planted_date <= asOfDate) return "normal";
+  const daysUntil = daysBetweenIsoDates(asOfDate, planting.planted_date);
+  return daysUntil <= LEAVING_SOON_THRESHOLD_DAYS ? "starting-soon" : "not-yet-planted";
+}
+
+/** "Scheduled to start in N days" copy for `PlantingPanel`'s own
+ * `planted_date` field (#201), mirroring `describeRemovalSchedule` - `null`
+ * whenever `plantingStartVisualState` would be "normal" (nothing to say),
+ * since a `planted_date` on/before today is just an ordinary already-in-the-
+ * ground planting, not something needing a schedule callout. */
+export function describePlantingSchedule(planting: Planting, asOfDate: string): string | null {
+  if (!planting.planted_date || planting.planted_date <= asOfDate) return null;
+  const days = daysBetweenIsoDates(asOfDate, planting.planted_date);
+  return days === 1 ? "Scheduled to start tomorrow" : `Scheduled to start in ${days} days`;
 }
 
 /** Buffer (days) the View tab's date scrubber extends past the earliest/

@@ -4,8 +4,11 @@ import {
   addDaysToIsoDate,
   daysBetweenIsoDates,
   defaultScrubberRange,
+  describePlantingSchedule,
   describeRemovalSchedule,
   isPlantingActiveAsOf,
+  isPlantingVisibleOnEditTab,
+  plantingStartVisualState,
   removalVisualState,
 } from "./plantingLifecycle";
 
@@ -124,6 +127,74 @@ describe("describeRemovalSchedule", () => {
   it("describes a past removal", () => {
     const planting = makePlanting({ removed_date: "2026-07-20" });
     expect(describeRemovalSchedule(planting, "2026-07-28")).toBe("Cleared 8 days ago");
+  });
+});
+
+describe("isPlantingVisibleOnEditTab", () => {
+  it("is visible with no planted/removed date at all", () => {
+    expect(isPlantingVisibleOnEditTab(makePlanting({}), "2026-07-28")).toBe(true);
+  });
+
+  it("stays visible before its own future planted_date (unlike isPlantingActiveAsOf)", () => {
+    const planting = makePlanting({ planted_date: "2026-09-01" });
+    expect(isPlantingVisibleOnEditTab(planting, "2026-07-28")).toBe(true);
+  });
+
+  it("is visible when removed_date is in the future", () => {
+    const planting = makePlanting({ removed_date: "2026-08-15" });
+    expect(isPlantingVisibleOnEditTab(planting, "2026-07-28")).toBe(true);
+  });
+
+  it("is not visible once removed_date has passed", () => {
+    const planting = makePlanting({ removed_date: "2026-07-01" });
+    expect(isPlantingVisibleOnEditTab(planting, "2026-07-28")).toBe(false);
+  });
+
+  it("is not visible on the exact removed_date (removed that day)", () => {
+    const planting = makePlanting({ removed_date: "2026-07-28" });
+    expect(isPlantingVisibleOnEditTab(planting, "2026-07-28")).toBe(false);
+  });
+});
+
+describe("plantingStartVisualState", () => {
+  it("is normal with no planted_date", () => {
+    expect(plantingStartVisualState(makePlanting({}), "2026-07-28")).toBe("normal");
+  });
+
+  it("is normal once planted_date has arrived", () => {
+    const planting = makePlanting({ planted_date: "2026-07-28" });
+    expect(plantingStartVisualState(planting, "2026-07-28")).toBe("normal");
+  });
+
+  it("is not-yet-planted when the start date is well in the future", () => {
+    const planting = makePlanting({ planted_date: "2026-09-01" });
+    expect(plantingStartVisualState(planting, "2026-07-28")).toBe("not-yet-planted");
+  });
+
+  it("is starting-soon within the threshold", () => {
+    const planting = makePlanting({ planted_date: "2026-08-01" });
+    expect(plantingStartVisualState(planting, "2026-07-28")).toBe("starting-soon");
+  });
+});
+
+describe("describePlantingSchedule", () => {
+  it("is null with no planted_date", () => {
+    expect(describePlantingSchedule(makePlanting({}), "2026-07-28")).toBeNull();
+  });
+
+  it("is null once planted_date has arrived (nothing left to schedule)", () => {
+    const planting = makePlanting({ planted_date: "2026-07-28" });
+    expect(describePlantingSchedule(planting, "2026-07-28")).toBeNull();
+  });
+
+  it("describes a multi-day future window", () => {
+    const planting = makePlanting({ planted_date: "2026-08-09" });
+    expect(describePlantingSchedule(planting, "2026-07-28")).toBe("Scheduled to start in 12 days");
+  });
+
+  it("describes tomorrow", () => {
+    const planting = makePlanting({ planted_date: "2026-07-29" });
+    expect(describePlantingSchedule(planting, "2026-07-28")).toBe("Scheduled to start tomorrow");
   });
 });
 

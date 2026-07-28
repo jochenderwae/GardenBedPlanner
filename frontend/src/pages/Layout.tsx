@@ -60,6 +60,8 @@ import { PlantingTooltip, type PlantingTooltipState } from "./layout/PlantingToo
 import {
   defaultScrubberRange,
   isPlantingActiveAsOf,
+  isPlantingVisibleOnEditTab,
+  plantingStartVisualState,
   removalVisualState,
   todayIsoDate,
 } from "./layout/plantingLifecycle";
@@ -357,15 +359,22 @@ export function Layout() {
   const selectedBed = beds.find((b) => b.id === selectedId) ?? null;
   const selectedPlanting = plantings.find((p) => p.id === selectedPlantingId) ?? null;
   const today = todayIsoDate();
-  // Edit tab (#180): stays a fixed "today" view, no scrubber - a planting
-  // whose removed_date has already passed just isn't drawn at all (a
-  // planting scheduled to leave *later* still is, with a visual cue - see
-  // removalStateById below). Only affects what's rendered on the canvas;
-  // every other lookup in this file (selectedPlanting, BulkPlantingPanel,
-  // handlePlantingMove, ...) still reads off the full `plantings` array.
-  const editablePlantings = plantings.filter((p) => isPlantingActiveAsOf(p, today));
+  // Edit tab (#180/#201): stays a fixed "today" view, no scrubber - a
+  // planting whose removed_date has already passed just isn't drawn at all,
+  // but (unlike the View tab below) one whose planted_date hasn't arrived
+  // *yet* still is - see isPlantingVisibleOnEditTab's own doc for why this
+  // is deliberately not the same isPlantingActiveAsOf filter the View tab
+  // uses. A planting scheduled to leave later, or not yet planted, still
+  // renders, with its own visual cue - see removalStateById/startStateById
+  // below. Only affects what's rendered on the canvas; every other lookup
+  // in this file (selectedPlanting, BulkPlantingPanel, handlePlantingMove,
+  // ...) still reads off the full `plantings` array.
+  const editablePlantings = plantings.filter((p) => isPlantingVisibleOnEditTab(p, today));
   const removalStateById = new Map(
     editablePlantings.filter((p) => p.id != null).map((p) => [p.id as number, removalVisualState(p, today)]),
+  );
+  const startStateById = new Map(
+    editablePlantings.filter((p) => p.id != null).map((p) => [p.id as number, plantingStartVisualState(p, today)]),
   );
   // View tab (#180): the same real plantings, filtered to whatever was
   // actually in the ground as of the scrubber's own selected date instead
@@ -1054,6 +1063,7 @@ export function Layout() {
                   rotationWarnings={rotationWarnings}
                   onHoverWarning={setTooltip}
                   removalStateById={removalStateById}
+                  startStateById={startStateById}
                 />
               )}
               {/* Drawn last (topmost Konva Layer) so opaque bed/garden-boundary

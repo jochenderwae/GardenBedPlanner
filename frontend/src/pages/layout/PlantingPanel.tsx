@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input, Select } from "@/components/ui/input";
 import { deletePlanting, updatePlanting, type PlacementType, type Plant, type Planting, type PlantingUpdate } from "@/api/client";
-import { describeRemovalSchedule, todayIsoDate } from "./plantingLifecycle";
+import { describePlantingSchedule, describeRemovalSchedule, todayIsoDate } from "./plantingLifecycle";
 
 const PLACEMENT_TYPE_LABELS: Record<PlacementType, string> = {
   individual: "Point",
@@ -117,6 +117,16 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
             onChange={(e) => setDraft((prev) => ({ ...prev, planted_date: e.target.value || null }))}
             onBlur={() => draft.planted_date !== planting.planted_date && commit({ planted_date: draft.planted_date })}
           />
+          {/* Derived purely from planted_date vs. today, not a separate
+              stored field (#201, the "not yet in the ground" mirror of
+              removed_date's identical treatment below) - lets a
+              future-dated planting stay visible on the canvas (see
+              PlantPlacementLayer's startState-driven dashed/opacity
+              treatment) while still reading clearly here as "not planted
+              yet, but scheduled". */}
+          {describePlantingSchedule(draft, todayIsoDate()) && (
+            <span className="text-xs text-muted-foreground">{describePlantingSchedule(draft, todayIsoDate())}</span>
+          )}
         </label>
 
         <label className="flex flex-col gap-1">
