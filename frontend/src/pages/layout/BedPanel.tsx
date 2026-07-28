@@ -1,7 +1,8 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Trash2, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { RulerDimensionLine, Trash2, X } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   AlertDialog,
@@ -287,6 +288,13 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
             onBlur={() => draft.notes !== bed.notes && commit({ notes: draft.notes })}
           />
         </label>
+
+        <Link
+          to={`/layout/beds/${bed.id}/technical-drawing`}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
+          <RulerDimensionLine /> View technical drawing
+        </Link>
 
         <div className="flex flex-col gap-1.5 border-t pt-3">
           <span className="text-xs font-medium text-muted-foreground">History</span>

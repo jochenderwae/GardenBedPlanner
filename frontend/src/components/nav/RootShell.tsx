@@ -3,6 +3,7 @@ import { useIsMobileViewport } from "@/hooks/useIsMobileViewport";
 import { AppShell } from "@/components/nav/AppShell";
 import { Home } from "@/pages/Home";
 import { Layout } from "@/pages/Layout";
+import { TechnicalDrawing } from "@/pages/TechnicalDrawing";
 import { PlantsDatabase } from "@/pages/PlantsDatabase";
 import { PlantDetail } from "@/pages/PlantDetail";
 import { Agenda } from "@/pages/Agenda";
@@ -48,6 +49,7 @@ export function RootShell() {
       <Route element={<AppShell />}>
         <Route path="/" element={<Home />} />
         <Route path="/layout" element={<Layout />} />
+        <Route path="/layout/beds/:bedId/technical-drawing" element={<TechnicalDrawing />} />
         <Route path="/agenda" element={<Agenda />} />
         <Route path="/seed-guide" element={<SeedGuide />} />
         <Route path="/plants" element={<PlantsDatabase />} />

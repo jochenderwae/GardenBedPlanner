@@ -79,6 +79,13 @@ export function listBeds(): Promise<Bed[]> {
   return apiFetch(`/api/beds`);
 }
 
+/** Single-bed fetch - used by the technical-drawing view (#193), which is
+ * reached by bed id (e.g. `/layout/beds/:bedId/technical-drawing`) rather
+ * than already holding the bed from a `listBeds()` call. */
+export function getBed(id: number): Promise<Bed> {
+  return apiFetch(`/api/beds/${id}`);
+}
+
 export function createBed(bed: BedCreate): Promise<Bed> {
   return apiFetch(`/api/beds`, {
     method: "POST",

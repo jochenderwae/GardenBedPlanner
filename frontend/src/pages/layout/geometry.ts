@@ -145,7 +145,7 @@ function localPointToGeometrySpace(geometry: RectShape, local: { x: number; y: n
  * edge) or a fixed-step layout that leaves uneven leftover space at one
  * end. Shared by both axes of `fieldMarkerPositions` and the single axis
  * `rowMarkerPositions` fills. */
-function centeredSegments(length: number, count: number): number[] {
+export function centeredSegments(length: number, count: number): number[] {
   const step = length / count;
   return Array.from({ length: count }, (_, i) => step * (i + 0.5));
 }
@@ -153,7 +153,7 @@ function centeredSegments(length: number, count: number): number[] {
 /** How many spacing-sized segments fit across `length` - always at least 1,
  * so even a placement narrower than one spacing interval still renders its
  * single center point rather than nothing. */
-function segmentCount(length: number, spacingCm: number): number {
+export function segmentCount(length: number, spacingCm: number): number {
   return Math.max(1, Math.round(length / Math.max(1, spacingCm)));
 }
 
