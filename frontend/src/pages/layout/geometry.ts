@@ -1,4 +1,4 @@
-import type { Geometry, Plant, PolygonGeometry, RectangleGeometry } from "@/api/client";
+import type { Geometry, PlacementType, Plant, PolygonGeometry, RectangleGeometry } from "@/api/client";
 
 /** 1cm = 1px - real bed sizes (30-200cm) map directly to a readable canvas
  * scale without needing zoom/pan for a first pass. Revisit if/when gardens
@@ -211,6 +211,29 @@ export function fieldMarkerPositions(geometry: RectShape, spacingCm: number): { 
     }
   }
   return points;
+}
+
+/** Every point a planting's own marker(s) render at - a single center point
+ * for an `individual` placement, or the same `rowMarkerPositions`/
+ * `fieldMarkerPositions` grid `PlantingMarker`/`SnapshotPlantingMarker`
+ * already draw markers at for a `row`/`field` one. Factored out so the
+ * spread-size outline (#173's `SpreadOutline`, drawn as its own render pass
+ * so it can never sit visually on top of another planting's solid marker -
+ * see that ticket's design spec) can be positioned identically to the real
+ * markers without duplicating this placement-type branch a third time. */
+export function plantingMarkerPositions(
+  placementType: PlacementType,
+  geometry: Geometry,
+  spacingCm: number | null | undefined,
+  plant: Plant | undefined,
+): { x: number; y: number }[] {
+  if (placementType === "row" || placementType === "field") {
+    const props = rectRenderProps(geometry);
+    const effectiveSpacing = effectivePlantSpacing(spacingCm, plant);
+    return placementType === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);
+  }
+  const rect = boundingRect(geometry);
+  return [{ x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }];
 }
 
 /** Flattens either geometry variant to renderable `Rect` props (x/y/width/

@@ -1,5 +1,7 @@
 import type Konva from "konva";
 import { Circle, Group, Rect, RegularPolygon, Ring, Star } from "react-konva";
+import type { Geometry, PlacementType, Plant } from "@/api/client";
+import { colorForSlug, plantingMarkerPositions } from "./geometry";
 
 /** The ETL's authored vocabulary (`data/plant.schema.json`'s own
  * `growth_habit` enum) - not enforced as a real enum at the API layer
@@ -24,7 +26,10 @@ interface PlantFootprintProps {
   x: number;
   y: number;
   radius: number;
-  fill: string;
+  /** Omit entirely (rather than passing `"transparent"`) for an unfilled,
+   * stroke-only outline - Konva's own idiom for "no fill", used by
+   * `SpreadOutline` below. */
+  fill?: string;
   opacity: number;
   stroke: string;
   strokeWidth: number;
@@ -174,4 +179,72 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
         />
       );
   }
+}
+
+// Deliberately below the solid marker's own 0.85 (edit)/0.75 (read-only)
+// opacity so a spread outline always reads as background/secondary,
+// regardless of which view it's drawn in - see #173's design spec.
+const SPREAD_OUTLINE_OPACITY = 0.3;
+const SPREAD_OUTLINE_STROKE_WIDTH_CM = 1;
+
+/** A plant's mature-size footprint, drawn as a thin, unfilled, non-
+ * interactive outline "behind" its solid marker(s) - see #173's design
+ * spec (the ticket this implements). Sized off `Plant.spread_cm` (how big
+ * the plant actually gets), deliberately not `effectivePlantSpacing`/
+ * `defaultPlantSpacing` (the *planting-distance* recommendation the solid
+ * marker itself is already sized to) - those two numbers legitimately
+ * differ, and reusing the marker's own spacing here would just draw two
+ * near-identical shapes instead of showing anything new.
+ *
+ * Renders once per marker position (`plantingMarkerPositions` - the same
+ * grid `PlantingMarker`/`SnapshotPlantingMarker` place their own solid
+ * markers at for a row/field planting, or the single center point for an
+ * individual one), never one outline spanning a whole row/field rectangle -
+ * `spread_cm` is inherently a per-plant measure.
+ *
+ * Callers must render every bed's `SpreadOutline`s in their own pass
+ * *before* every bed's solid markers (a "two-pass" render order, not
+ * interleaved per-planting) so a low-opacity outline can never visually
+ * cover a neighboring plant's actual marker where footprints overlap - see
+ * `PlantPlacementLayer`/`GardenSnapshotView`'s own render order comments. */
+export function SpreadOutline({
+  placementType,
+  geometry,
+  spacingCm,
+  plant,
+  slug,
+}: {
+  placementType: PlacementType;
+  geometry: Geometry;
+  spacingCm: number | null | undefined;
+  plant: Plant | undefined;
+  slug: string;
+}) {
+  const spreadCm = plant?.spread_cm;
+  // No fallback to a default size when unknown (unlike the solid marker's
+  // own DEFAULT_PLANTING_DIAMETER_CM, which exists purely so an unsized
+  // marker is still visible/clickable) - a placeholder-sized ring here would
+  // imply false precision about a real biological measurement that just
+  // isn't on file. Omitting the outline entirely is the graceful fallback.
+  if (spreadCm == null || spreadCm <= 0) return null;
+  const radius = spreadCm / 2;
+  const stroke = colorForSlug(slug);
+  const positions = plantingMarkerPositions(placementType, geometry, spacingCm, plant);
+  return (
+    <>
+      {positions.map((pos, i) => (
+        <PlantFootprint
+          key={i}
+          growthHabit={plant?.growth_habit}
+          x={pos.x}
+          y={pos.y}
+          radius={radius}
+          stroke={stroke}
+          strokeWidth={SPREAD_OUTLINE_STROKE_WIDTH_CM}
+          opacity={SPREAD_OUTLINE_OPACITY}
+          listening={false}
+        />
+      ))}
+    </>
+  );
 }

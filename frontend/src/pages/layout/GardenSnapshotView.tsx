@@ -12,7 +12,7 @@ import {
   rowMarkerPositions,
 } from "./geometry";
 import { clampLabelYBelowRuler, LABEL_PADDING_CM, measureTextWidth } from "./labels";
-import { PlantFootprint } from "./PlantFootprint";
+import { PlantFootprint, SpreadOutline } from "./PlantFootprint";
 import type { PlantingTooltipState } from "./PlantingTooltip";
 import { DEFAULT_VIEWPORT, type Viewport } from "./viewport";
 
@@ -133,6 +133,20 @@ function SnapshotBedGroup({
         onMouseMove={showLabelTooltip}
         onMouseLeave={() => onHover(null)}
       />
+      {/* Same two-pass render order as PlantPlacementLayer's identical
+          comment (#173) - every planting's spread outline first, then every
+          planting's solid marker, so an outline can never cover a
+          neighboring plant's actual marker in this read-only view either. */}
+      {plantings.map((planting) => (
+        <SpreadOutline
+          key={`spread-${planting.id}`}
+          placementType={planting.placement_type}
+          geometry={planting.geometry}
+          spacingCm={planting.spacing_cm}
+          plant={plantsBySlug.get(planting.plant_slug)}
+          slug={planting.plant_slug}
+        />
+      ))}
       {plantings.map((planting) => (
         <SnapshotPlantingMarker
           key={planting.id}

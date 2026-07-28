@@ -16,7 +16,7 @@ import {
   rowMarkerPositions,
   snapToGrid,
 } from "./geometry";
-import { PlantFootprint } from "./PlantFootprint";
+import { PlantFootprint, SpreadOutline } from "./PlantFootprint";
 import type { PlantingStartVisualState, RemovalVisualState } from "./plantingLifecycle";
 
 /** "individual" draws with a single click; "row"/"field" draw with a
@@ -386,6 +386,22 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
                 listening={false}
               />
             )}
+            {/* Every planting's spread-size outline first, then every
+                planting's solid marker (see the JSX below) - two separate
+                passes over the same `bedPlantings`, not one outline drawn
+                per-marker, so a low-opacity outline can never sit on top of
+                a neighboring plant's actual marker where footprints
+                overlap close together (#173). */}
+            {bedPlantings.map((planting) => (
+              <SpreadOutline
+                key={`spread-${planting.id}`}
+                placementType={planting.placement_type}
+                geometry={planting.geometry}
+                spacingCm={planting.spacing_cm}
+                plant={plantsBySlug.get(planting.plant_slug)}
+                slug={planting.plant_slug}
+              />
+            ))}
             {bedPlantings.map((planting) => (
               <PlantingMarker
                 key={planting.id}
