@@ -32,6 +32,11 @@ export type BedEquipment = components["schemas"]["BedEquipment"];
 export type BedEquipmentCreate = components["schemas"]["BedEquipmentCreate"];
 export type BedEquipmentUpdate = components["schemas"]["BedEquipmentUpdate"];
 
+export type IrrigationZone = components["schemas"]["IrrigationZone"];
+export type IrrigationZoneCreate = components["schemas"]["IrrigationZoneCreate"];
+export type IrrigationZoneUpdate = components["schemas"]["IrrigationZoneUpdate"];
+export type IrrigationZoneDetail = components["schemas"]["IrrigationZoneDetail"];
+
 export type Plant = components["schemas"]["Plant"];
 export type PlantDetail = components["schemas"]["PlantDetail"];
 export type PlantCreate = components["schemas"]["PlantCreate"];
@@ -175,6 +180,36 @@ export function updateBedEquipment(id: number, patch: BedEquipmentUpdate): Promi
 
 export function deleteBedEquipment(id: number): Promise<void> {
   return apiFetch(`/api/bed-equipment/${id}`, { method: "DELETE" });
+}
+
+export function listIrrigationZones(): Promise<IrrigationZone[]> {
+  return apiFetch(`/api/irrigation-zones`);
+}
+
+/** The single-zone detail response (#36/#200) - member equipment plus
+ * `total_water_delivery_lph`, summed server-side (see
+ * `backend/app/api/routes/irrigation_zones.py`'s own doc on why it's `null`
+ * rather than 0 when no member equipment has a rate set at all). */
+export function getIrrigationZone(id: number): Promise<IrrigationZoneDetail> {
+  return apiFetch(`/api/irrigation-zones/${id}`);
+}
+
+export function createIrrigationZone(zone: IrrigationZoneCreate): Promise<IrrigationZone> {
+  return apiFetch(`/api/irrigation-zones`, {
+    method: "POST",
+    body: JSON.stringify(zone),
+  });
+}
+
+export function updateIrrigationZone(id: number, patch: IrrigationZoneUpdate): Promise<IrrigationZone> {
+  return apiFetch(`/api/irrigation-zones/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteIrrigationZone(id: number): Promise<void> {
+  return apiFetch(`/api/irrigation-zones/${id}`, { method: "DELETE" });
 }
 
 export function listPlants(limit = 500): Promise<Plant[]> {

@@ -1,16 +1,23 @@
-import { useState, type FormEvent } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { PackageCheck, Trash2, X } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { PackageCheck, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Select } from "@/components/ui/input";
 import { FieldHint, Tooltip } from "@/components/ui/tooltip";
 import {
   createBedEquipment,
+  createIrrigationZone,
   deleteBedEquipment,
+  deleteIrrigationZone,
+  getIrrigationZone,
+  listIrrigationZones,
+  updateBedEquipment,
+  updateIrrigationZone,
   type Bed,
   type BedEquipment,
   type BedEquipmentCreate,
+  type IrrigationZone,
 } from "@/api/client";
 
 export const DEFAULT_EQUIPMENT_SIZE_CM = 20;
@@ -25,6 +32,126 @@ interface EquipmentPanelProps {
   onPlace: (item: BedEquipment, bed: Bed) => void;
   /** Unplace a placed item back to inventory - same reasoning as onPlace. */
   onReturnToInventory: (item: BedEquipment) => void;
+}
+
+/** One irrigation zone's own row in the zone-management list (#200/#36):
+ * an inline-editable name, its combined water delivery rate (fetched via
+ * the zone's own detail endpoint - the list endpoint doesn't include it,
+ * see `backend/app/api/routes/irrigation_zones.py`), and delete. Each row
+ * owns its own detail query (rather than the parent panel fetching every
+ * zone's detail up front) so a rename/delete doesn't need to touch every
+ * other zone's data, and an equipment (re)assignment (see
+ * `assignZoneMutation` below) only needs to invalidate the "irrigation-zone"
+ * query prefix to refresh whichever totals actually changed. */
+function ZoneRow({
+  zone,
+  onRename,
+  onDelete,
+}: {
+  zone: IrrigationZone;
+  onRename: (name: string) => void;
+  onDelete: () => void;
+}) {
+  const [name, setName] = useState(zone.name);
+  useEffect(() => setName(zone.name), [zone.name]);
+  const detailQuery = useQuery({
+    queryKey: ["irrigation-zone", zone.id],
+    queryFn: () => getIrrigationZone(zone.id as number),
+    enabled: zone.id != null,
+  });
+  const total = detailQuery.data?.total_water_delivery_lph;
+
+  return (
+    <div className="flex items-center gap-1.5 text-sm">
+      <Input
+        className="h-7 flex-1"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        onBlur={() => name.trim() && name !== zone.name && onRename(name.trim())}
+      />
+      <span className="w-16 shrink-0 text-right text-xs text-muted-foreground">
+        {total != null ? `${total} L/h` : "—"}
+      </span>
+      <Button variant="ghost" size="icon-sm" aria-label={`Delete zone ${zone.name}`} onClick={onDelete}>
+        <Trash2 />
+      </Button>
+    </div>
+  );
+}
+
+/** Zone list + create form (#200) - deliberately minimal (no separate
+ * detail view/route): rename is inline on each `ZoneRow`, and a zone's
+ * member equipment is managed from the *equipment* side (the "assign to
+ * zone" `Select` on each placed item below), not from here. Deleting a zone
+ * unassigns its member equipment server-side rather than deleting it (see
+ * the backend route's own doc) - `onDeleted` invalidates `bed-equipment` so
+ * those items' now-null `zone_id` is reflected without a full page reload. */
+function ZoneManagementSection({
+  zones,
+  onCreated,
+  onRenamed,
+  onDeleted,
+}: {
+  zones: IrrigationZone[];
+  onCreated: (zone: IrrigationZone) => void;
+  onRenamed: (zone: IrrigationZone) => void;
+  onDeleted: (id: number) => void;
+}) {
+  const [newZoneName, setNewZoneName] = useState("");
+
+  const createMutation = useMutation({
+    mutationFn: (name: string) => createIrrigationZone({ name, notes: null }),
+    onSuccess: (created) => {
+      onCreated(created);
+      setNewZoneName("");
+    },
+  });
+  const renameMutation = useMutation({
+    mutationFn: ({ id, name }: { id: number; name: string }) => updateIrrigationZone(id, { name }),
+    onSuccess: onRenamed,
+  });
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deleteIrrigationZone(id),
+    onSuccess: (_void, id) => onDeleted(id),
+  });
+
+  return (
+    <div className="flex flex-col gap-2 border-t pt-3">
+      <h3 className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+        Irrigation zones
+        <FieldHint description="Groups of drip-irrigation equipment whose combined water delivery is tracked together." />
+      </h3>
+      {zones.length === 0 && <p className="text-xs text-muted-foreground">No zones yet.</p>}
+      <div className="flex flex-col gap-1">
+        {zones.map((zone) => (
+          <ZoneRow
+            key={zone.id}
+            zone={zone}
+            onRename={(name) => zone.id != null && renameMutation.mutate({ id: zone.id, name })}
+            onDelete={() => zone.id != null && deleteMutation.mutate(zone.id)}
+          />
+        ))}
+      </div>
+      <form
+        className="flex items-center gap-1.5"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!newZoneName.trim()) return;
+          createMutation.mutate(newZoneName.trim());
+        }}
+      >
+        <Input
+          placeholder="New zone name"
+          className="h-7 flex-1"
+          value={newZoneName}
+          onChange={(e) => setNewZoneName(e.target.value)}
+        />
+        <Button type="submit" size="icon-sm" variant="outline" disabled={createMutation.isPending} aria-label="Add zone">
+          <Plus />
+        </Button>
+      </form>
+    </div>
+  );
 }
 
 /** Trellises/drip lines/stakes/etc - equipment is "retrieved from stock,"
@@ -61,6 +188,28 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
       queryClient.setQueryData<BedEquipment[]>(["bed-equipment"], (old) => old?.filter((e) => e.id !== id));
     },
   });
+
+  const zonesQuery = useQuery({ queryKey: ["irrigation-zones"], queryFn: listIrrigationZones });
+  const zones = zonesQuery.data ?? [];
+
+  const assignZoneMutation = useMutation({
+    mutationFn: ({ id, zoneId }: { id: number; zoneId: number | null }) => updateBedEquipment(id, { zone_id: zoneId }),
+    onSuccess: (updated) => {
+      queryClient.setQueryData<BedEquipment[]>(["bed-equipment"], (old) =>
+        old ? old.map((e) => (e.id === updated.id ? updated : e)) : old,
+      );
+      // Whichever zone(s) this item just left/joined need their
+      // total_water_delivery_lph recomputed - simplest correct approach for
+      // a handful of zones is invalidating every zone-detail query rather
+      // than tracking which specific zone id(s) changed.
+      queryClient.invalidateQueries({ queryKey: ["irrigation-zone"] });
+    },
+  });
+
+  function handleAssignZone(item: BedEquipment, zoneIdStr: string) {
+    if (item.id == null) return;
+    assignZoneMutation.mutate({ id: item.id, zoneId: zoneIdStr ? Number(zoneIdStr) : null });
+  }
 
   function submit(e: FormEvent) {
     e.preventDefault();
@@ -188,31 +337,65 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
           <div className="flex max-h-40 flex-col gap-1 overflow-auto">
             {placed.length === 0 && <p className="text-xs text-muted-foreground">Nothing placed yet.</p>}
             {placed.map((item) => (
-              <div key={item.id} className="flex items-center justify-between rounded px-1 py-1 text-sm hover:bg-accent">
-                <div>
-                  <div className="font-medium">{item.equipment_type}</div>
-                  <div className="text-xs text-muted-foreground">{bedName(item.bed_id)}</div>
-                </div>
-                <div className="flex items-center gap-0.5">
-                  <Tooltip content="Return to inventory">
-                    <Button variant="ghost" size="sm" onClick={() => onReturnToInventory(item)}>
-                      Unplace
+              <div key={item.id} className="flex flex-col gap-1 rounded px-1 py-1 text-sm hover:bg-accent">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-medium">{item.equipment_type}</div>
+                    <div className="text-xs text-muted-foreground">{bedName(item.bed_id)}</div>
+                  </div>
+                  <div className="flex items-center gap-0.5">
+                    <Tooltip content="Return to inventory">
+                      <Button variant="ghost" size="sm" onClick={() => onReturnToInventory(item)}>
+                        Unplace
+                      </Button>
+                    </Tooltip>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label={`Delete ${item.equipment_type}`}
+                      onClick={() => item.id != null && deleteMutation.mutate(item.id)}
+                    >
+                      <Trash2 />
                     </Button>
-                  </Tooltip>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label={`Delete ${item.equipment_type}`}
-                    onClick={() => item.id != null && deleteMutation.mutate(item.id)}
-                  >
-                    <Trash2 />
-                  </Button>
+                  </div>
                 </div>
+                <label className="flex items-center gap-1.5">
+                  <span className="shrink-0 text-xs text-muted-foreground">Zone</span>
+                  <Select
+                    className="h-6 text-xs"
+                    value={item.zone_id != null ? String(item.zone_id) : ""}
+                    disabled={zones.length === 0}
+                    onChange={(e) => handleAssignZone(item, e.target.value)}
+                  >
+                    <option value="">No zone</option>
+                    {zones.map((zone) => (
+                      <option key={zone.id} value={String(zone.id)}>
+                        {zone.name}
+                      </option>
+                    ))}
+                  </Select>
+                </label>
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      <ZoneManagementSection
+        zones={zones}
+        onCreated={(created) =>
+          queryClient.setQueryData<IrrigationZone[]>(["irrigation-zones"], (old) => (old ? [...old, created] : [created]))
+        }
+        onRenamed={(updated) =>
+          queryClient.setQueryData<IrrigationZone[]>(["irrigation-zones"], (old) =>
+            old ? old.map((z) => (z.id === updated.id ? updated : z)) : old,
+          )
+        }
+        onDeleted={(id) => {
+          queryClient.setQueryData<IrrigationZone[]>(["irrigation-zones"], (old) => old?.filter((z) => z.id !== id));
+          queryClient.invalidateQueries({ queryKey: ["bed-equipment"] });
+        }}
+      />
     </Card>
   );
 }
