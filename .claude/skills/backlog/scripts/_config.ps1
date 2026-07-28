@@ -69,6 +69,15 @@ $CacheFile = Join-Path $CacheDir "project_items.json"
 $CacheTtlSeconds = 20
 
 function Get-AllProjectItems {
+  # -query "is:open" filters server-side (GitHub Projects filter syntax) -
+  # closed issues (verified-and-closed, or dropped as not-planned) stay on
+  # the board forever with whatever Status they had at closing time, so
+  # without this every script here would keep listing them as if they were
+  # still live work (confirmed for real: #37, closed not-planned, kept
+  # showing up under "Ready to Start" in list_tasks.ps1's output). Cuts the
+  # payload substantially too (roughly 195 -> 120 items on this board as of
+  # 2026-07-28) - fewer tokens spent parsing/displaying dead entries, not
+  # just correctness.
   if (Test-Path $CacheFile) {
     $cached = Get-Content $CacheFile -Raw | ConvertFrom-Json
     $age = (Get-Date) - [DateTime]$cached.fetchedAt
@@ -76,7 +85,7 @@ function Get-AllProjectItems {
       return $cached.items
     }
   }
-  $items = (gh project item-list $ProjectNumber --owner $Owner --format json -L 200 | ConvertFrom-Json).items
+  $items = (gh project item-list $ProjectNumber --owner $Owner --format json -L 200 --query "is:open" | ConvertFrom-Json).items
   if (-not (Test-Path $CacheDir)) { New-Item -ItemType Directory -Path $CacheDir | Out-Null }
   @{ fetchedAt = (Get-Date).ToString("o"); items = $items } | ConvertTo-Json -Depth 6 | Set-Content -Path $CacheFile -Encoding utf8
   return $items
