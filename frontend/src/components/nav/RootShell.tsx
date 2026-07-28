@@ -7,6 +7,7 @@ import { TechnicalDrawing } from "@/pages/TechnicalDrawing";
 import { PlantsDatabase } from "@/pages/PlantsDatabase";
 import { PlantDetail } from "@/pages/PlantDetail";
 import { Agenda } from "@/pages/Agenda";
+import { Timeline } from "@/pages/Timeline";
 import { TaskDetail } from "@/pages/TaskDetail";
 import { MobileShell } from "@/pages/mobile/MobileShell";
 import { MobileHome } from "@/pages/mobile/MobileHome";
@@ -53,6 +54,7 @@ export function RootShell() {
         <Route path="/layout" element={<Layout />} />
         <Route path="/layout/beds/:bedId/technical-drawing" element={<TechnicalDrawing />} />
         <Route path="/agenda" element={<Agenda />} />
+        <Route path="/timeline" element={<Timeline />} />
         <Route path="/tasks/:id" element={<TaskDetail />} />
         <Route path="/seed-guide" element={<SeedGuide />} />
         <Route path="/plants" element={<PlantsDatabase />} />
