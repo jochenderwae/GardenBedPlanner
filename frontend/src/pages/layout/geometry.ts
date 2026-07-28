@@ -1,4 +1,4 @@
-import type { Geometry, PolygonGeometry, RectangleGeometry } from "@/api/client";
+import type { Geometry, Plant, PolygonGeometry, RectangleGeometry } from "@/api/client";
 
 /** 1cm = 1px - real bed sizes (30-200cm) map directly to a readable canvas
  * scale without needing zoom/pan for a first pass. Revisit if/when gardens
@@ -44,6 +44,29 @@ export function rotationFromGardenRelative(relativeDeg: number, gardenOrientatio
  * spread_cm/row_spacing_cm on file - keeps a planting visible instead of
  * collapsing to a near-invisible dot. */
 export const DEFAULT_PLANTING_DIAMETER_CM = 20;
+
+/** A plant's own recommended default row/area marker spacing (cm), before
+ * any explicit per-placement override - prefers `plant_spacing_cm` (a
+ * genuine recommended in-row planting distance) over `spread_cm` (the
+ * plant's mature visual footprint, a *different* thing a plant can
+ * legitimately be planted closer together than - #195), `null` when
+ * neither is set on the plant record at all. */
+export function defaultPlantSpacing(plant: Plant | undefined): number | null {
+  return plant?.plant_spacing_cm ?? plant?.spread_cm ?? null;
+}
+
+/** The effective marker spacing (cm) actually used to render/place a row
+ * or area planting - an explicit per-placement override (#154's own
+ * `spacing_cm`) always wins over `defaultPlantSpacing`, falling back to
+ * `DEFAULT_PLANTING_DIAMETER_CM` when neither the override nor either of
+ * the plant's own fields is set. Centralizes the fallback chain every
+ * row/area rendering site (`PlantPlacementLayer`, `GardenSnapshotView`,
+ * `TechnicalDrawingLayer`) and `PlantingPanel`'s own spacing-field default
+ * copy need identically, so a future change to the priority order is a
+ * one-function edit, not a find-replace across several files. */
+export function effectivePlantSpacing(explicitSpacingCm: number | null | undefined, plant: Plant | undefined): number {
+  return explicitSpacingCm ?? defaultPlantSpacing(plant) ?? DEFAULT_PLANTING_DIAMETER_CM;
+}
 
 /** Deterministic string -> hue, so the same key (a plant slug, a bed
  * category, ...) always gets the same color across renders without

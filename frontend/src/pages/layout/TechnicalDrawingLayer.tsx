@@ -6,7 +6,7 @@ import {
   boundingRect,
   colorForSlug,
   colorsForBedCategory,
-  DEFAULT_PLANTING_DIAMETER_CM,
+  effectivePlantSpacing,
   fieldMarkerPositions,
   formatDistanceCm,
   rectRenderProps,
@@ -61,7 +61,7 @@ function plantingDrawing(
 
   if (planting.placement_type === "row" || planting.placement_type === "field") {
     const props = rectRenderProps(planting.geometry);
-    const effectiveSpacing = planting.spacing_cm ?? plant?.spread_cm ?? DEFAULT_PLANTING_DIAMETER_CM;
+    const effectiveSpacing = effectivePlantSpacing(planting.spacing_cm, plant);
     const markerRadius = Math.max(3, effectiveSpacing / 2);
     const positions =
       planting.placement_type === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);

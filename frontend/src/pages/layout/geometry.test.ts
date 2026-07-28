@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest";
-import type { PolygonGeometry, RectangleGeometry } from "@/api/client";
+import type { Plant, PolygonGeometry, RectangleGeometry } from "@/api/client";
 import {
   boundingRect,
   clampPointToBounds,
   clampRectPositionToBounds,
   colorForSlug,
   colorsForBedCategory,
+  DEFAULT_PLANTING_DIAMETER_CM,
+  defaultPlantSpacing,
   distanceBetweenPoints,
+  effectivePlantSpacing,
   fieldGeometryFromDrag,
   fieldMarkerPositions,
   findAlignmentSnap,
@@ -431,5 +434,46 @@ describe("plantingsOutsideBounds", () => {
     // Center at (50, 25) - exactly on the right edge of a 50-wide bed, not past it.
     const plantings = [markerAt(40, 15)];
     expect(plantingsOutsideBounds(plantings, 50, 50)).toEqual([]);
+  });
+});
+
+function makePlant(overrides: Partial<Plant>): Plant {
+  return { slug: "tomato", common_name: "Tomato", botanical_name: "Solanum lycopersicum", ...overrides } as Plant;
+}
+
+describe("defaultPlantSpacing", () => {
+  it("prefers plant_spacing_cm over spread_cm when both are set", () => {
+    const plant = makePlant({ plant_spacing_cm: 30, spread_cm: 90 });
+    expect(defaultPlantSpacing(plant)).toBe(30);
+  });
+
+  it("falls back to spread_cm when plant_spacing_cm isn't set", () => {
+    const plant = makePlant({ plant_spacing_cm: null, spread_cm: 90 });
+    expect(defaultPlantSpacing(plant)).toBe(90);
+  });
+
+  it("is null when neither is set", () => {
+    const plant = makePlant({ plant_spacing_cm: null, spread_cm: null });
+    expect(defaultPlantSpacing(plant)).toBeNull();
+  });
+
+  it("is null for an undefined plant (no plant looked up yet)", () => {
+    expect(defaultPlantSpacing(undefined)).toBeNull();
+  });
+});
+
+describe("effectivePlantSpacing", () => {
+  it("an explicit per-placement override always wins over either plant default", () => {
+    const plant = makePlant({ plant_spacing_cm: 30, spread_cm: 90 });
+    expect(effectivePlantSpacing(15, plant)).toBe(15);
+  });
+
+  it("falls back to defaultPlantSpacing when there's no explicit override", () => {
+    const plant = makePlant({ plant_spacing_cm: 30, spread_cm: 90 });
+    expect(effectivePlantSpacing(null, plant)).toBe(30);
+  });
+
+  it("falls back to DEFAULT_PLANTING_DIAMETER_CM when nothing at all is set", () => {
+    expect(effectivePlantSpacing(null, undefined)).toBe(DEFAULT_PLANTING_DIAMETER_CM);
   });
 });

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input, Select } from "@/components/ui/input";
 import { deletePlanting, updatePlanting, type PlacementType, type Plant, type Planting, type PlantingUpdate } from "@/api/client";
+import { defaultPlantSpacing } from "./geometry";
 import { describePlantingSchedule, describeRemovalSchedule, todayIsoDate } from "./plantingLifecycle";
 
 const PLACEMENT_TYPE_LABELS: Record<PlacementType, string> = {
@@ -147,22 +148,31 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
           )}
         </label>
 
-        {(draft.placement_type === "row" || draft.placement_type === "field") && (
-          <label className="flex flex-col gap-1">
-            <span className="text-xs font-medium text-muted-foreground">
-              Plant spacing (cm){plant?.spread_cm != null && !draft.spacing_cm && ` - default ${plant.spread_cm}`}
-            </span>
-            <Input
-              type="number"
-              min={1}
-              step={1}
-              placeholder={plant?.spread_cm != null ? String(plant.spread_cm) : undefined}
-              value={draft.spacing_cm ?? ""}
-              onChange={(e) => setDraft((prev) => ({ ...prev, spacing_cm: e.target.value === "" ? null : Number(e.target.value) }))}
-              onBlur={() => draft.spacing_cm !== planting.spacing_cm && commit({ spacing_cm: draft.spacing_cm })}
-            />
-          </label>
-        )}
+        {(draft.placement_type === "row" || draft.placement_type === "field") &&
+          (() => {
+            // Prefers the plant's own recommended in-row planting distance
+            // (plant_spacing_cm) over its mature-footprint size (spread_cm)
+            // - see geometry.ts's defaultPlantSpacing (#195). Same fallback
+            // this field's own placeholder/blank-value default already
+            // needs to match what actually gets used on the canvas.
+            const defaultSpacing = defaultPlantSpacing(plant);
+            return (
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-muted-foreground">
+                  Plant spacing (cm){defaultSpacing != null && !draft.spacing_cm && ` - default ${defaultSpacing}`}
+                </span>
+                <Input
+                  type="number"
+                  min={1}
+                  step={1}
+                  placeholder={defaultSpacing != null ? String(defaultSpacing) : undefined}
+                  value={draft.spacing_cm ?? ""}
+                  onChange={(e) => setDraft((prev) => ({ ...prev, spacing_cm: e.target.value === "" ? null : Number(e.target.value) }))}
+                  onBlur={() => draft.spacing_cm !== planting.spacing_cm && commit({ spacing_cm: draft.spacing_cm })}
+                />
+              </label>
+            );
+          })()}
 
         <Button variant="destructive" size="sm" onClick={() => setConfirmDeleteOpen(true)}>
           <Trash2 /> Remove planting

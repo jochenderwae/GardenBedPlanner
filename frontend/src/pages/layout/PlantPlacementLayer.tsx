@@ -6,7 +6,7 @@ import type { PlantingTooltipState } from "./PlantingTooltip";
 import {
   boundingRect,
   colorForSlug,
-  DEFAULT_PLANTING_DIAMETER_CM,
+  effectivePlantSpacing,
   fieldGeometryFromDrag,
   fieldMarkerPositions,
   normalizedRect,
@@ -174,7 +174,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
   // No plant armed = selection mode: click-drag over empty bed space draws a
   // marquee instead of a placement (see handleMouseDown/Up below).
   const canSelect = active && armedPlant == null;
-  const thicknessCm = armedPlant?.spread_cm ?? DEFAULT_PLANTING_DIAMETER_CM;
+  const thicknessCm = effectivePlantSpacing(null, armedPlant ?? undefined);
 
   function localPoint(e: Konva.KonvaEventObject<MouseEvent>): { x: number; y: number } | null {
     return e.target.getRelativePointerPosition();
@@ -588,7 +588,7 @@ function PlantingMarker({
     // The plant's own default spacing, overridable per-placement (#154's
     // `spacing_cm`, edited in PlantingPanel.tsx) - matches the same
     // fallback `PlantPlacementLayer`'s own draw-time `thicknessCm` uses.
-    const effectiveSpacing = planting.spacing_cm ?? plant?.spread_cm ?? DEFAULT_PLANTING_DIAMETER_CM;
+    const effectiveSpacing = effectivePlantSpacing(planting.spacing_cm, plant);
     const markerRadius = Math.max(3, effectiveSpacing / 2);
     // The drawn rectangle is only ever the placement's own drag/select/
     // delete hit-target (see this branch's `Rect` below) - what actually
