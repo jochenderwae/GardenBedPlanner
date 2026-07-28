@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Group, Rect, Text, Transformer } from "react-konva";
 import type Konva from "konva";
 import type { Bed, Geometry, PolygonGeometry } from "@/api/client";
-import type { PlantingTooltipState } from "./ExampleGardenView";
+import type { PlantingTooltipState } from "./PlantingTooltip";
 import {
   ALIGNMENT_SNAP_THRESHOLD_PX,
   boundingRect,
@@ -79,7 +79,7 @@ interface BedNodeProps {
   /** Reports hover state for this bed's own name label - only fired while
    * the label is actually ellipsis-truncated (see `measureTextWidth`), so
    * hovering a fully-visible name is a no-op. Rendered by the caller via
-   * `ExampleGardenView.tsx`'s existing `PlantingTooltip`, reused here rather
+   * `PlantingTooltip.tsx`'s shared `PlantingTooltip`, reused here rather
    * than building a second tooltip primitive. */
   onHoverLabel?: (tooltip: PlantingTooltipState | null) => void;
 }

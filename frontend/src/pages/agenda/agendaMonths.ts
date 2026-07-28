@@ -1,4 +1,5 @@
 import type { Bed, Plant, Planting, PlantPeriod } from "@/api/client";
+import { isPlantingActiveAsOf, todayIsoDate } from "@/pages/layout/plantingLifecycle";
 
 /** Month numbers this app uses throughout are 1-12 (matching `PlantPeriod`'s
  * own `start_month`/`end_month`), not JS `Date`'s 0-11. */
@@ -44,19 +45,22 @@ export interface AgendaEntry {
 
 /** Builds one `AgendaEntry` per (active planting x its plant's period x
  * month that period covers) - the actual "what's due when across the whole
- * garden" view this backlog item asks for. Only plantings still in the
- * ground (`removed_date` unset) are considered, since a removed planting's
- * species-level sow/harvest calendar isn't actionable anymore. Callers
- * group the result by `month` for a month-by-month display (see
- * `groupByMonth`). */
+ * garden" view this backlog item asks for. "Active" means actually in the
+ * ground as of `asOfDate` (defaults to today) - `removed_date` is a real
+ * date, not a boolean flag (#180): a planting scheduled to leave *next*
+ * month is still active today and still belongs in the agenda, while one
+ * already removed isn't actionable anymore regardless of whether it was
+ * ever formally "cleared" in the data. Callers group the result by `month`
+ * for a month-by-month display (see `groupByMonth`). */
 export function buildAgendaEntries(
   plantings: Planting[],
   plantsBySlug: Map<string, Plant>,
   periods: PlantPeriod[],
   bedsById: Map<number, Bed>,
+  asOfDate: string = todayIsoDate(),
 ): AgendaEntry[] {
   const entries: AgendaEntry[] = [];
-  const activePlantings = plantings.filter((p) => !p.removed_date);
+  const activePlantings = plantings.filter((p) => isPlantingActiveAsOf(p, asOfDate));
 
   // One pass per distinct plant referenced by an active planting (rather
   // than per-planting x per-period-row) so a plant placed several times in

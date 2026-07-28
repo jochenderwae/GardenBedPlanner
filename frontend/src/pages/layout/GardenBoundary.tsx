@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { Rect, Text, Transformer } from "react-konva";
 import type Konva from "konva";
 import type { Geometry } from "@/api/client";
-import type { PlantingTooltipState } from "./ExampleGardenView";
+import type { PlantingTooltipState } from "./PlantingTooltip";
 import { boundingRect, snapToGrid } from "./geometry";
 import { clampLabelYBelowRuler, LABEL_PADDING_CM, measureTextWidth } from "./labels";
 import { PolygonEditor } from "./PolygonEditor";

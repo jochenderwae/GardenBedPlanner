@@ -57,9 +57,15 @@ describe("buildAgendaEntries", () => {
     expect(entries[0]).toMatchObject({ plantCommonName: "Tomato", bedName: "Bed A", periodTypeCode: "sow_indoor" });
   });
 
-  it("excludes plantings that have already been removed", () => {
+  it("excludes plantings already removed as of the given date", () => {
     const plantings = [makePlanting({ id: 1, plant_slug: "tomato", bed_id: 1, removed_date: "2026-06-01" })];
-    expect(buildAgendaEntries(plantings, plantsBySlug, periods, bedsById)).toEqual([]);
+    expect(buildAgendaEntries(plantings, plantsBySlug, periods, bedsById, "2026-07-01")).toEqual([]);
+  });
+
+  it("still includes a planting whose removal is scheduled in the future", () => {
+    const plantings = [makePlanting({ id: 1, plant_slug: "tomato", bed_id: 1, removed_date: "2026-08-01" })];
+    const entries = buildAgendaEntries(plantings, plantsBySlug, periods, bedsById, "2026-07-01");
+    expect(entries.map((e) => e.month)).toEqual([2, 3]);
   });
 
   it("skips a planting whose plant or bed isn't in the lookup maps", () => {

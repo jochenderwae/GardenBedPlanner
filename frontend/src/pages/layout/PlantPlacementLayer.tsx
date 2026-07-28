@@ -2,7 +2,7 @@ import type Konva from "konva";
 import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Group, Layer, Rect, RegularPolygon, Text } from "react-konva";
 import type { Bed, Geometry, PlacementType, Plant, Planting, RotationWarning } from "@/api/client";
-import type { PlantingTooltipState } from "./ExampleGardenView";
+import type { PlantingTooltipState } from "./PlantingTooltip";
 import {
   boundingRect,
   colorForSlug,
@@ -17,6 +17,7 @@ import {
   snapToGrid,
 } from "./geometry";
 import { PlantFootprint } from "./PlantFootprint";
+import type { RemovalVisualState } from "./plantingLifecycle";
 
 /** "individual" draws with a single click; "row"/"field" draw with a
  * click-drag-release gesture (see PlantPlacementLayer's mouse handlers
@@ -64,9 +65,15 @@ interface PlantPlacementLayerProps {
   rotationWarnings: Map<number, RotationWarning>;
   /** Hover/leave on a warning triangle - rendered by the caller via the
    * same `PlantingTooltip` component/state this file's own plant-name
-   * hover (BedNode.tsx-style) and ExampleGardenView's planting-dot hover
+   * hover (BedNode.tsx-style) and GardenSnapshotView's planting-marker hover
    * already reuse, rather than a new tooltip primitive. */
   onHoverWarning: (tooltip: PlantingTooltipState | null) => void;
+  /** Edit-tab-only visual state (#180) derived from each planting's own
+   * `removed_date` vs. today - dashed stroke for a future-dated removal,
+   * further-reduced opacity once it's within `LEAVING_SOON_THRESHOLD_DAYS`.
+   * Keyed by planting id; a missing entry (or the planting itself having no
+   * id yet) renders as "normal". */
+  removalStateById: Map<number, RemovalVisualState>;
 }
 
 /** Imperative escape hatch for Layout.tsx's Stage-level mouse handlers to
@@ -111,6 +118,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
     onMarqueeSelect,
     rotationWarnings,
     onHoverWarning,
+    removalStateById,
   },
   ref,
 ) {
@@ -382,6 +390,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
                 onGroupDragEnd={handleGroupDragEnd}
                 rotationWarning={planting.id != null ? rotationWarnings.get(planting.id) : undefined}
                 onHoverWarning={onHoverWarning}
+                removalState={(planting.id != null && removalStateById.get(planting.id)) || "normal"}
               />
             ))}
           </Group>
@@ -448,6 +457,30 @@ function WarningTriangle({
   );
 }
 
+// Dash pattern for a future-dated removal ("scheduled"/"leaving-soon", see
+// plantingLifecycle.ts) - matches the marquee-select rectangle's own
+// dash={[4, 4]} elsewhere in this file, this app's existing "provisional"
+// visual language.
+const REMOVAL_DASH_PATTERN = [4, 4];
+// Between the existing 0.85 "normal" marker opacity and the 0.5-0.35
+// preview-ghost opacities used elsewhere in this file - reads as "leaving
+// soon" without looking like an in-progress drag preview.
+const LEAVING_SOON_OPACITY = 0.6;
+
+/** Derives a marker's opacity/dash from its Edit-tab removal state (#180) -
+ * `baseOpacity` is whatever the marker would render at with no removal
+ * scheduled at all (0.85 for every `PlantFootprint` in this file). */
+function removalVisualProps(state: RemovalVisualState, baseOpacity: number): { opacity: number; dash?: number[] } {
+  switch (state) {
+    case "leaving-soon":
+      return { opacity: LEAVING_SOON_OPACITY, dash: REMOVAL_DASH_PATTERN };
+    case "scheduled":
+      return { opacity: baseOpacity, dash: REMOVAL_DASH_PATTERN };
+    default:
+      return { opacity: baseOpacity };
+  }
+}
+
 function PlantingMarker({
   planting,
   plant,
@@ -461,6 +494,7 @@ function PlantingMarker({
   onGroupDragEnd,
   rotationWarning,
   onHoverWarning,
+  removalState,
 }: {
   planting: Planting;
   plant: Plant | undefined;
@@ -487,6 +521,9 @@ function PlantingMarker({
    * conflict (or none checked yet), in which case no triangle renders. */
   rotationWarning: RotationWarning | undefined;
   onHoverWarning: (tooltip: PlantingTooltipState | null) => void;
+  /** See PlantPlacementLayerProps.removalStateById - "normal" for a planting
+   * with no removed_date scheduled at all. */
+  removalState: RemovalVisualState;
 }) {
   const label = plant?.common_name ?? planting.plant_slug;
   const color = colorForSlug(planting.plant_slug);
@@ -504,6 +541,7 @@ function PlantingMarker({
     // it at `effectiveSpacing` (#155), not the rectangle itself.
     const markerPositions =
       planting.placement_type === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);
+    const markerVisual = removalVisualProps(removalState, 0.85);
 
     function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
       onGroupDragEnd();
@@ -538,6 +576,7 @@ function PlantingMarker({
           opacity={0.15}
           stroke={selected ? SELECTION_HIGHLIGHT_COLOR : color}
           strokeWidth={selected ? 3 : 1.5}
+          dash={removalState !== "normal" ? REMOVAL_DASH_PATTERN : undefined}
           draggable={active}
           listening={active}
           onDragStart={onGroupDragStart}
@@ -554,7 +593,8 @@ function PlantingMarker({
             y={pos.y}
             radius={markerRadius}
             fill={color}
-            opacity={0.85}
+            opacity={markerVisual.opacity}
+            dash={markerVisual.dash}
             stroke="#00000040"
             strokeWidth={1}
             listening={false}
@@ -574,6 +614,7 @@ function PlantingMarker({
   const radius = Math.max(4, rect.width / 2);
   const centerX = rect.x + rect.width / 2;
   const centerY = rect.y + rect.height / 2;
+  const pointVisual = removalVisualProps(removalState, 0.85);
 
   function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
     onGroupDragEnd();
@@ -596,7 +637,8 @@ function PlantingMarker({
         y={centerY}
         radius={radius}
         fill={color}
-        opacity={0.85}
+        opacity={pointVisual.opacity}
+        dash={pointVisual.dash}
         stroke={selected ? SELECTION_HIGHLIGHT_COLOR : "#00000040"}
         strokeWidth={selected ? 2.5 : 1}
         draggable={active}

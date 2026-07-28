@@ -1,6 +1,7 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlant, listBeds, listPeriodTypes, listPlantings, type Plant, type PlantPeriod } from "@/api/client";
+import { isPlantingActiveAsOf, todayIsoDate } from "@/pages/layout/plantingLifecycle";
 import { applyPeriodTypeLabels, buildAgendaEntries, groupByMonth, MONTH_NAMES } from "./agendaMonths";
 
 /** Sowing/harvest windows derived from the garden's active plantings,
@@ -14,7 +15,8 @@ export function AgendaView() {
   const bedsQuery = useQuery({ queryKey: ["beds"], queryFn: listBeds });
   const periodTypesQuery = useQuery({ queryKey: ["period-types"], queryFn: listPeriodTypes });
 
-  const activePlantings = (plantingsQuery.data ?? []).filter((p) => !p.removed_date);
+  const today = todayIsoDate();
+  const activePlantings = (plantingsQuery.data ?? []).filter((p) => isPlantingActiveAsOf(p, today));
   const distinctSlugs = [...new Set(activePlantings.map((p) => p.plant_slug))];
 
   // Plant (list) omits periods - only the single-plant PlantDetail GET
@@ -47,7 +49,7 @@ export function AgendaView() {
   );
 
   const entries = applyPeriodTypeLabels(
-    buildAgendaEntries(activePlantings, plantsBySlug, periods, bedsById),
+    buildAgendaEntries(activePlantings, plantsBySlug, periods, bedsById, today),
     periodTypeLabelsByCode,
   );
   const byMonth = groupByMonth(entries);

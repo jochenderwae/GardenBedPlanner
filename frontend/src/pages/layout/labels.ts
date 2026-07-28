@@ -1,7 +1,7 @@
 import type { Viewport } from "./viewport";
 
 /** Fixed padding (cm - these labels render in unscaled world-space text, see
- * BedNode.tsx/GardenBoundary.tsx/ExampleGardenView.tsx) between a label's
+ * BedNode.tsx/GardenBoundary.tsx/GardenSnapshotView.tsx) between a label's
  * anchor point and the edge of the shape it's attached to. */
 export const LABEL_PADDING_CM = 4;
 

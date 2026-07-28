@@ -18,7 +18,6 @@ Konva.dragButtons = [0];
 import {
   checkRotation,
   createPlanting,
-  getExampleGarden,
   getGarden,
   listBedEquipment,
   listBeds,
@@ -47,15 +46,22 @@ import { BedPanel, type BedPanelHandle } from "./layout/BedPanel";
 import { AddBedForm } from "./layout/AddBedForm";
 import { BulkPlantingPanel, type BulkPlantingPanelHandle } from "./layout/BulkPlantingPanel";
 import { compassBoundingBox, compassCenter, CompassWidget } from "./layout/CompassWidget";
-import { ExampleGardenLayer, PlantingTooltip, type PlantingTooltipState } from "./layout/ExampleGardenView";
 import { GardenBoundary } from "./layout/GardenBoundary";
 import { GardenPanel } from "./layout/GardenPanel";
+import { GardenSnapshotLayer } from "./layout/GardenSnapshotView";
 import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPanel";
 import { OnboardingPrompt } from "./layout/OnboardingPrompt";
 import { PlantPlacementLayer, type PlacementMode, type PlantPlacementLayerHandle } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel, type PlantingPanelHandle } from "./layout/PlantingPanel";
+import { PlantingTooltip, type PlantingTooltipState } from "./layout/PlantingTooltip";
+import {
+  defaultScrubberRange,
+  isPlantingActiveAsOf,
+  removalVisualState,
+  todayIsoDate,
+} from "./layout/plantingLifecycle";
 import { RulerLayer } from "./layout/RulerLayer";
 import { Toolbar, type PlacementTab, type ViewMode } from "./layout/Toolbar";
 import {
@@ -132,6 +138,12 @@ export function Layout() {
   const [showAddForm, setShowAddForm] = useState(false);
   const [mode, setMode] = useState<ViewMode>("mine");
   const [tab, setTab] = useState<PlacementTab>("garden");
+  // View tab's date scrubber (#180) - drives which of the garden's real
+  // Bed/Planting rows are actually "in the ground" as of that date (see
+  // isPlantingActiveAsOf below). Defaults to today; only meaningful while
+  // mode === "example" (the tab's own toolbar control is gated the same way
+  // - see Toolbar.tsx).
+  const [viewAsOfDate, setViewAsOfDate] = useState<string>(todayIsoDate());
   // First-run "seed the example garden?" prompt (see OnboardingPrompt.tsx) -
   // dismissing (either "start from scratch" or a successful seed) hides it
   // for the rest of this page load; no persisted flag, so a later reload
@@ -246,20 +258,22 @@ export function Layout() {
     return true;
   }
 
+  // Beds/garden/plantings are fetched unconditionally now - both the Edit
+  // ("mine") and View ("example") tabs render the same real data, just
+  // filtered to a different as-of date (see editablePlantings/viewPlantings
+  // below, #180). Only equipment stays Edit-tab-only; the View tab doesn't
+  // show it.
   const { data, isPending, isError } = useQuery({
     queryKey: ["beds"],
     queryFn: listBeds,
-    enabled: mode === "mine",
   });
   const gardenQuery = useQuery({
     queryKey: ["garden"],
     queryFn: getGarden,
-    enabled: mode === "mine",
   });
   const plantingsQuery = useQuery({
     queryKey: ["plantings"],
     queryFn: listPlantings,
-    enabled: mode === "mine",
   });
   const equipmentQuery = useQuery({
     queryKey: ["bed-equipment"],
@@ -271,11 +285,6 @@ export function Layout() {
     queryFn: () => listPlants(500),
   });
 
-  const exampleGardenQuery = useQuery({
-    queryKey: ["example-garden"],
-    queryFn: getExampleGarden,
-    enabled: mode === "example",
-  });
   const plantsBySlug = useMemo(() => {
     const map = new Map<string, Plant>();
     for (const plant of plantsQuery.data ?? []) map.set(plant.slug, plant);
@@ -344,6 +353,22 @@ export function Layout() {
   const equipmentList = equipmentQuery.data ?? [];
   const selectedBed = beds.find((b) => b.id === selectedId) ?? null;
   const selectedPlanting = plantings.find((p) => p.id === selectedPlantingId) ?? null;
+  const today = todayIsoDate();
+  // Edit tab (#180): stays a fixed "today" view, no scrubber - a planting
+  // whose removed_date has already passed just isn't drawn at all (a
+  // planting scheduled to leave *later* still is, with a visual cue - see
+  // removalStateById below). Only affects what's rendered on the canvas;
+  // every other lookup in this file (selectedPlanting, BulkPlantingPanel,
+  // handlePlantingMove, ...) still reads off the full `plantings` array.
+  const editablePlantings = plantings.filter((p) => isPlantingActiveAsOf(p, today));
+  const removalStateById = new Map(
+    editablePlantings.filter((p) => p.id != null).map((p) => [p.id as number, removalVisualState(p, today)]),
+  );
+  // View tab (#180): the same real plantings, filtered to whatever was
+  // actually in the ground as of the scrubber's own selected date instead
+  // of always "today".
+  const viewPlantings = plantings.filter((p) => isPlantingActiveAsOf(p, viewAsOfDate));
+  const viewDateRange = defaultScrubberRange(plantings, today);
   // Every bed's bounding box, in world/cm space, keyed by id - so each
   // BedNode can be given every *other* bed's box for the "beds must not
   // intersect" hard constraint. Not memoized - the bed count here is a
@@ -451,19 +476,16 @@ export function Layout() {
     if (pos) plantPlacementRef.current?.handleStageMouseUp(pos);
   }
 
-  /** "Fit to garden": frame the garden boundary + every bed (falling back
-   * to the example-garden beds in that mode) at the largest zoom that keeps
-   * it all on screen - replaces "hope the fixed canvas is big enough" with
-   * an actual answer. */
+  /** "Fit to garden": frame the garden boundary + every bed at the largest
+   * zoom that keeps it all on screen - replaces "hope the fixed canvas is
+   * big enough" with an actual answer. Beds/garden are the same real data
+   * in both modes now (#180), so this no longer branches on `mode`. */
   function handleFitView() {
-    const boxes =
-      mode === "mine"
-        ? [
-            ...(garden ? [boundingRect(garden.border_geometry)] : []),
-            ...(gardenBounds ? [compassBoundingBox(gardenBounds)] : []),
-            ...beds.map((b) => boundingRect(b.border_geometry)),
-          ]
-        : exampleBeds.map((b) => boundingRect(b.border_geometry));
+    const boxes = [
+      ...(garden ? [boundingRect(garden.border_geometry)] : []),
+      ...(gardenBounds ? [compassBoundingBox(gardenBounds)] : []),
+      ...beds.map((b) => boundingRect(b.border_geometry)),
+    ];
     setViewport(fitViewport(boxes, canvasSize));
   }
 
@@ -732,8 +754,6 @@ export function Layout() {
     });
   }
 
-  const exampleBeds = exampleGardenQuery.data?.beds ?? [];
-
   function handleModeChange(next: ViewMode) {
     if (next === "example") {
       setSelectedId(null);
@@ -744,8 +764,9 @@ export function Layout() {
   }
 
   // Global keyboard shortcuts - only active in "mine" mode, matching the
-  // four tracked undo/redo mutation sites which only exist there (the
-  // example garden is read-only). Ignores every shortcut below while focus
+  // four tracked undo/redo mutation sites which only exist there (the View
+  // tab's snapshot stays read-only regardless of which date it's scrubbed
+  // to - see #180). Ignores every shortcut below while focus
   // is in a text input/textarea/contenteditable so none of them fight the
   // browser's/field's own native key handling.
   //
@@ -860,6 +881,9 @@ export function Layout() {
         canRedo={history.canRedo}
         onUndo={history.undo}
         onRedo={history.redo}
+        viewAsOfDate={viewAsOfDate}
+        onViewAsOfDateChange={setViewAsOfDate}
+        viewDateRange={viewDateRange}
       />
       <p className="text-xs text-muted-foreground">
         Scroll to pan, Ctrl/Cmd+scroll to zoom, middle-click drag to pan, left-click drag on empty canvas to
@@ -898,15 +922,16 @@ export function Layout() {
       )}
       {mode === "example" && (
         <>
-          {(exampleGardenQuery.isPending || plantsQuery.isPending) && (
-            <p className="text-sm text-muted-foreground">Loading example garden…</p>
+          {(isPending || plantingsQuery.isPending || plantsQuery.isPending) && (
+            <p className="text-sm text-muted-foreground">Loading your garden…</p>
           )}
-          {(exampleGardenQuery.isError || plantsQuery.isError) && (
-            <p className="text-sm text-destructive">Failed to load example garden.</p>
+          {(isError || plantingsQuery.isError || plantsQuery.isError) && (
+            <p className="text-sm text-destructive">Failed to load your garden.</p>
           )}
           <p className="text-xs text-muted-foreground">
-            Read-only preview of a realistic demo layout (data/example_garden.json) - not connected to your real
-            beds. Hover a plant for its name.
+            Read-only snapshot of your real garden as of {viewAsOfDate}{viewAsOfDate === today ? " (today)" : ""} -
+            drag the date scrubber above to see what was (or will be) in the ground on another date. Hover a plant
+            for its name.
           </p>
         </>
       )}
@@ -990,7 +1015,7 @@ export function Layout() {
                 <PlantPlacementLayer
                   ref={plantPlacementRef}
                   beds={beds}
-                  plantings={plantings}
+                  plantings={editablePlantings}
                   plantsBySlug={plantsBySlug}
                   active
                   armedPlant={armedPlant}
@@ -1002,6 +1027,7 @@ export function Layout() {
                   onMarqueeSelect={handleMarqueeSelect}
                   rotationWarnings={rotationWarnings}
                   onHoverWarning={setTooltip}
+                  removalStateById={removalStateById}
                 />
               )}
               {/* Drawn last (topmost Konva Layer) so opaque bed/garden-boundary
@@ -1031,6 +1057,8 @@ export function Layout() {
                 ref={bedPanelRef}
                 bed={selectedBed}
                 gardenOrientationDeg={garden?.orientation_deg}
+                plantings={plantings}
+                plantsBySlug={plantsBySlug}
                 onClose={() => setSelectedId(null)}
                 onDeleted={() => setSelectedId(null)}
               />
@@ -1071,7 +1099,7 @@ export function Layout() {
         </div>
       )}
 
-      {mode === "example" && exampleGardenQuery.data && (
+      {mode === "example" && data && (
         <div ref={canvasContainerRef} className="relative min-h-0 min-w-0 flex-1 overflow-hidden rounded-md border">
           <Stage
             width={canvasSize.width}
@@ -1086,7 +1114,7 @@ export function Layout() {
             <Layer listening={false}>
               <GridLines canvasSize={canvasSize} viewport={viewport} />
             </Layer>
-            <ExampleGardenLayer beds={exampleBeds} plantsBySlug={plantsBySlug} onHover={setTooltip} viewport={viewport} />
+            <GardenSnapshotLayer beds={beds} plantings={viewPlantings} plantsBySlug={plantsBySlug} onHover={setTooltip} viewport={viewport} />
             {/* Topmost layer - see the "mine" Stage's identical comment above. */}
             <RulerLayer canvasSize={canvasSize} viewport={viewport} />
           </Stage>

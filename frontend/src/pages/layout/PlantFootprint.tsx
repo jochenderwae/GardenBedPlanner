@@ -28,6 +28,11 @@ interface PlantFootprintProps {
   opacity: number;
   stroke: string;
   strokeWidth: number;
+  /** Konva's own `dash` line-pattern (e.g. `[4, 4]`) - used to mark a
+   * planting scheduled for a future removal (#180's Edit-tab visual
+   * treatment) without a separate badge/icon. `undefined` (the default)
+   * renders a solid stroke, same as before this prop existed. */
+  dash?: number[];
   draggable?: boolean;
   listening?: boolean;
   onDragStart?: (e: Konva.KonvaEventObject<DragEvent>) => void;
@@ -54,15 +59,15 @@ interface PlantFootprintProps {
  * `Plant.growth_habit` instead of the generic circle every plant rendered
  * as regardless of how it actually grows (see the "render distinct plant
  * footprint shapes" backlog item). Shared between the editable canvas
- * (`PlantPlacementLayer`'s `PlantingMarker`) and the read-only example
- * garden view (`ExampleGardenView`'s `PlantingDot`) - both point-placed a
+ * (`PlantPlacementLayer`'s `PlantingMarker`) and the read-only View-tab
+ * snapshot (`GardenSnapshotView`'s own marker) - both point-placed a
  * plant the same way before this, so both get the same shape mapping.
  *
  * `x`/`y` is always the shape's *center* (matching the `Circle` this
  * replaces) regardless of which case below renders - callers that read the
  * dragged position back off a Konva node (`node.x()`/`node.y()`) don't need
  * to know or care which shape is currently on screen. */
-export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, stroke, strokeWidth, nodeRef, ...events }: PlantFootprintProps) {
+export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, stroke, strokeWidth, dash, nodeRef, ...events }: PlantFootprintProps) {
   const habit = normalizeHabit(growthHabit);
 
   switch (habit) {
@@ -81,6 +86,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
           opacity={opacity}
           stroke={stroke}
           strokeWidth={strokeWidth}
+          dash={dash}
           {...events}
         />
       );
@@ -98,6 +104,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
           opacity={opacity}
           stroke={stroke}
           strokeWidth={strokeWidth}
+          dash={dash}
           {...events}
         />
       );
@@ -116,6 +123,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
           opacity={opacity}
           stroke={stroke}
           strokeWidth={strokeWidth}
+          dash={dash}
           {...events}
         />
       );
@@ -133,6 +141,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
           opacity={opacity}
           stroke={stroke}
           strokeWidth={strokeWidth}
+          dash={dash}
           {...events}
         />
       );
@@ -146,7 +155,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
       return (
         <Group ref={nodeRef} x={x} y={y} {...events}>
           <Rect x={-radius * 0.12} y={0} width={radius * 0.24} height={radius} fill={stroke} listening={false} />
-          <Circle y={-radius * 0.15} radius={radius * 0.75} fill={fill} opacity={opacity} stroke={stroke} strokeWidth={strokeWidth} />
+          <Circle y={-radius * 0.15} radius={radius * 0.75} fill={fill} opacity={opacity} stroke={stroke} strokeWidth={strokeWidth} dash={dash} />
         </Group>
       );
     default:
@@ -160,6 +169,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
           opacity={opacity}
           stroke={stroke}
           strokeWidth={strokeWidth}
+          dash={dash}
           {...events}
         />
       );

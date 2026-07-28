@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FieldHint } from "@/components/ui/tooltip";
-import { ApiError, deleteBed, updateBed, type Bed, type BedUpdate, type RectangleGeometry } from "@/api/client";
+import { ApiError, deleteBed, updateBed, type Bed, type BedUpdate, type Plant, type Planting, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 import { rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
+import { todayIsoDate } from "./plantingLifecycle";
 
 interface BedPanelProps {
   bed: Bed;
@@ -26,6 +27,11 @@ interface BedPanelProps {
    * angle. Defaults to 0 (north-up) when there's no garden yet, matching
    * `Garden.orientation_deg`'s own default. */
   gardenOrientationDeg?: number;
+  /** Every planting across the whole garden (not just this bed, not
+   * date-filtered) - used to build the read-only History section below
+   * (#180): this bed's own already-removed plantings, most recent first. */
+  plantings: Planting[];
+  plantsBySlug: Map<string, Plant>;
   onClose: () => void;
   onDeleted: () => void;
 }
@@ -39,7 +45,7 @@ export interface BedPanelHandle {
 }
 
 export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPanel(
-  { bed, gardenOrientationDeg = 0, onClose, onDeleted },
+  { bed, gardenOrientationDeg = 0, plantings, plantsBySlug, onClose, onDeleted },
   ref,
 ) {
   const queryClient = useQueryClient();
@@ -104,6 +110,16 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
   // for us - keeping the discriminant check inline (not via a separate
   // boolean) is what makes that narrowing apply.
   const originalRect = bed.border_geometry.type === "rectangle" ? bed.border_geometry : null;
+
+  // History section (#180) - this bed's own already-removed plantings,
+  // most recent removal first. Deliberately past-only (not "scheduled to
+  // leave" ones, which still render live on the canvas today) - see
+  // plantingLifecycle.ts's isPlantingActiveAsOf for the same "as of today"
+  // cutoff the Edit tab's canvas rendering itself uses.
+  const today = todayIsoDate();
+  const pastPlantings = plantings
+    .filter((p) => p.bed_id === bed.id && p.removed_date && p.removed_date <= today)
+    .sort((a, b) => (b.removed_date ?? "").localeCompare(a.removed_date ?? ""));
 
   return (
     <Card className="w-80 p-4">
@@ -271,6 +287,25 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
             onBlur={() => draft.notes !== bed.notes && commit({ notes: draft.notes })}
           />
         </label>
+
+        <div className="flex flex-col gap-1.5 border-t pt-3">
+          <span className="text-xs font-medium text-muted-foreground">History</span>
+          {pastPlantings.length === 0 ? (
+            <p className="text-xs text-muted-foreground">No past plantings recorded for this bed yet.</p>
+          ) : (
+            <ul className="flex flex-col gap-1">
+              {pastPlantings.map((p) => (
+                <li key={p.id} className="text-xs">
+                  <span className="font-medium">{plantsBySlug.get(p.plant_slug)?.common_name ?? p.plant_slug}</span>
+                  <span className="text-muted-foreground">
+                    {" "}
+                    — {p.planted_date ?? "unknown start"} – {p.removed_date}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <Button
           variant="destructive"

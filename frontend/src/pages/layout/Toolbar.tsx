@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { RadioToggleGroup, TabToggleGroup } from "@/components/ui/toggle-group";
 import { Tooltip } from "@/components/ui/tooltip";
 import type { Plant } from "@/api/client";
+import { DateScrubber } from "./DateScrubber";
 import type { PlacementMode } from "./PlantPlacementLayer";
 
 export type ViewMode = "mine" | "example";
@@ -59,6 +60,11 @@ interface ToolbarProps {
   canRedo: boolean;
   onUndo: () => void;
   onRedo: () => void;
+  /** View tab's date scrubber (#180) - only rendered while
+   * `mode === "example"`; see Layout.tsx's `defaultScrubberRange`. */
+  viewAsOfDate: string;
+  onViewAsOfDateChange: (date: string) => void;
+  viewDateRange: { min: string; max: string };
 }
 
 /** The canvas editor's top-of-canvas control area, split into two always-
@@ -68,13 +74,15 @@ interface ToolbarProps {
  * wide enough).
  *
  * Row 1 - navigation, always the same width regardless of mode/tab: view
- * mode (Edit your own beds / View the read-only example garden), the
- * Garden/Beds/Plants/Equipment tab switcher, zoom readout + "Fit view".
+ * mode (Edit your own beds today / View a read-only, date-scrubbable
+ * snapshot of your real garden - see #180), the Garden/Beds/Plants/
+ * Equipment tab switcher, zoom readout + "Fit view".
  *
  * Row 2 - whichever tools are specific to the active mode/tab (Add bed on
- * the Beds tab; pick-a-plant + Point/Row/Area mode on the Plants tab).
- * Always rendered (with a fixed min-height even when it has no tools for
- * the current tab) so switching tabs never causes row 1 to jump up/down.
+ * the Beds tab; pick-a-plant + Point/Row/Area mode on the Plants tab; the
+ * date scrubber on the View tab). Always rendered (with a fixed min-height
+ * even when it has no tools for the current tab) so switching tabs never
+ * causes row 1 to jump up/down.
  *
  * Consolidated out of what used to be ad hoc JSX directly in Layout.tsx
  * specifically so future tool-mode controls (pan/select, once those land)
@@ -99,6 +107,9 @@ export function Toolbar({
   canRedo,
   onUndo,
   onRedo,
+  viewAsOfDate,
+  onViewAsOfDateChange,
+  viewDateRange,
 }: ToolbarProps) {
   return (
     <div className="flex flex-col gap-2">
@@ -157,6 +168,9 @@ export function Toolbar({
               </>
             )}
           </>
+        )}
+        {mode === "example" && (
+          <DateScrubber value={viewAsOfDate} onChange={onViewAsOfDateChange} minDate={viewDateRange.min} maxDate={viewDateRange.max} />
         )}
       </div>
     </div>

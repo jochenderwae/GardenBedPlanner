@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input, Select } from "@/components/ui/input";
 import { deletePlanting, updatePlanting, type PlacementType, type Plant, type Planting, type PlantingUpdate } from "@/api/client";
+import { describeRemovalSchedule, todayIsoDate } from "./plantingLifecycle";
 
 const PLACEMENT_TYPE_LABELS: Record<PlacementType, string> = {
   individual: "Point",
@@ -126,6 +127,14 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
             onChange={(e) => setDraft((prev) => ({ ...prev, removed_date: e.target.value || null }))}
             onBlur={() => draft.removed_date !== planting.removed_date && commit({ removed_date: draft.removed_date })}
           />
+          {/* Derived purely from removed_date vs. today, not a separate
+              stored field (#180) - lets a future-dated removal stay visible
+              on the canvas (see PlantPlacementLayer's removalState-driven
+              dashed/opacity treatment) while still reading clearly here as
+              "not gone yet, but scheduled". */}
+          {describeRemovalSchedule(draft, todayIsoDate()) && (
+            <span className="text-xs text-muted-foreground">{describeRemovalSchedule(draft, todayIsoDate())}</span>
+          )}
         </label>
 
         {(draft.placement_type === "row" || draft.placement_type === "field") && (
