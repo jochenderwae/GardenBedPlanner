@@ -171,6 +171,22 @@ test.describe("Bed canvas drag/pan/marquee-select (#14)", () => {
     expect(fetched.border_geometry.y).toBe(40);
   });
 
+  // Regression coverage for a real bug found on the #14 re-verification pass
+  // (2026-07-28): a single-bed marquee-select no longer opens the BedPanel
+  // ("Edit bed" heading never appears), reproduced 4/4 serial repeat runs -
+  // fully deterministic, not flaky. The neighboring "over multiple beds"
+  // test below still passes, but its own assertions ("no single-bed panel",
+  // "neither bed moved") are equally satisfied if the marquee-select is
+  // silently hitting zero beds every time - it does NOT positively prove
+  // marquee-select still selects anything, only this test's stronger
+  // "Edit bed" assertion catches the regression. Root cause not confirmed
+  // (out of scope for the tester role to fix), but Layout.tsx's
+  // handleStageMouseUp/handleMineStageMouseDown (bedMarquee state,
+  // rectanglesOverlap/boundingRect over `beds`) is the right place to start
+  // - worth checking whether `e.target !== stage` in
+  // handleMineStageMouseDown is even matching now that #180 (garden editor
+  // timeline) or other recent Layout.tsx changes landed. See backlog #14's
+  // comment thread for the full report.
   test("left-mouse-drag starting on empty canvas marquee-selects a single overlapped bed, without moving it", async ({
     page,
     request,
