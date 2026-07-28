@@ -32,12 +32,24 @@ type Point = { x: number; y: number };
 
 // Mirrors CompassWidget.tsx's own constants exactly (kept in sync by
 // comment, not import - see this file's own doc on why importing app
-// source isn't done here).
+// source isn't done here). Updated 2026-07-28 for #70's follow-up fix
+// (commit 453a220): the rotate handle's offset used to be a flat
+// `COMPASS_RADIUS_CM` (36cm), which the user reported as overlapping the
+// "N" label; it's now derived from the label's own geometry so the handle
+// clears it, landing at ~75.4cm from center instead of 36cm -
+// `compassBoundingBox`'s headroom grew to match (was a flat 20cm margin,
+// now ~47.4cm) so "Fit view" still doesn't clip it.
 const COMPASS_RADIUS_CM = 36;
 const COMPASS_MARGIN_CM = 50;
-const COMPASS_LABEL_MARGIN_CM = 20;
+const LABEL_GAP_ABOVE_RING_CM = 15;
+const LABEL_FONT_SIZE_CM = 12;
+const LABEL_HEIGHT_CM = LABEL_FONT_SIZE_CM * 1.2; // 14.4
+const HANDLE_LABEL_CLEARANCE_CM = 10;
+const ROTATE_HANDLE_DISTANCE_CM = COMPASS_RADIUS_CM + LABEL_GAP_ABOVE_RING_CM + LABEL_HEIGHT_CM + HANDLE_LABEL_CLEARANCE_CM; // 75.4
+const HANDLE_VISUAL_BUFFER_CM = 8;
+const ABOVE_RING_HEADROOM_CM = ROTATE_HANDLE_DISTANCE_CM - COMPASS_RADIUS_CM + HANDLE_VISUAL_BUFFER_CM; // 47.4
 const HANDLE_PROXY_RADIUS_CM = 4;
-const ROTATE_ANCHOR_OFFSET_CM = COMPASS_RADIUS_CM;
+const ROTATE_ANCHOR_OFFSET_CM = ROTATE_HANDLE_DISTANCE_CM - HANDLE_PROXY_RADIUS_CM; // 71.4
 
 function compassCenter(gardenBounds: Box): Point {
   return { x: gardenBounds.x + gardenBounds.width + COMPASS_MARGIN_CM, y: gardenBounds.y + COMPASS_RADIUS_CM };
@@ -47,9 +59,9 @@ function compassBoundingBox(gardenBounds: Box): Box {
   const center = compassCenter(gardenBounds);
   return {
     x: center.x - COMPASS_RADIUS_CM,
-    y: center.y - COMPASS_RADIUS_CM - COMPASS_LABEL_MARGIN_CM,
+    y: center.y - COMPASS_RADIUS_CM - ABOVE_RING_HEADROOM_CM,
     width: COMPASS_RADIUS_CM * 2,
-    height: COMPASS_RADIUS_CM * 2 + COMPASS_LABEL_MARGIN_CM,
+    height: COMPASS_RADIUS_CM * 2 + ABOVE_RING_HEADROOM_CM,
   };
 }
 
