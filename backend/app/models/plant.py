@@ -63,6 +63,13 @@ class Plant(SQLModel, table=True):
     sowing_method: str | None = None
     spread_cm: float | None = None
     row_spacing_cm: float | None = None
+    # In-row spacing between individual plants, distinct from row_spacing_cm
+    # (the gap between rows) - #194. Populated for 290/358 plants as of
+    # #170; per that issue's own caveat, 277 of those 290 values are a
+    # row_spacing_cm fallback (tagged manual-plant-spacing-fallback in
+    # data_sources), not independently sourced - "best available", not
+    # necessarily authoritative.
+    plant_spacing_cm: float | None = None
     height_cm: float | None = None
     sun_level: SunLevel | None = None
     soil_type: str | None = None

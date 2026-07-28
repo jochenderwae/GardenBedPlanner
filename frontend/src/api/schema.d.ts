@@ -1828,6 +1828,8 @@ export interface components {
             spread_cm?: number | null;
             /** Row Spacing Cm */
             row_spacing_cm?: number | null;
+            /** Plant Spacing Cm */
+            plant_spacing_cm?: number | null;
             /** Height Cm */
             height_cm?: number | null;
             sun_level?: components["schemas"]["SunLevel"] | null;
@@ -1916,6 +1918,8 @@ export interface components {
             spread_cm?: number | null;
             /** Row Spacing Cm */
             row_spacing_cm?: number | null;
+            /** Plant Spacing Cm */
+            plant_spacing_cm?: number | null;
             /** Height Cm */
             height_cm?: number | null;
             sun_level?: components["schemas"]["SunLevel"] | null;
@@ -2007,6 +2011,8 @@ export interface components {
             spread_cm?: number | null;
             /** Row Spacing Cm */
             row_spacing_cm?: number | null;
+            /** Plant Spacing Cm */
+            plant_spacing_cm?: number | null;
             /** Height Cm */
             height_cm?: number | null;
             sun_level?: components["schemas"]["SunLevel"] | null;
@@ -2158,6 +2164,8 @@ export interface components {
             spread_cm?: number | null;
             /** Row Spacing Cm */
             row_spacing_cm?: number | null;
+            /** Plant Spacing Cm */
+            plant_spacing_cm?: number | null;
             /** Height Cm */
             height_cm?: number | null;
             sun_level?: components["schemas"]["SunLevel"] | null;

@@ -124,6 +124,7 @@ class PlantDetail(BaseModel):
     sowing_method: str | None = None
     spread_cm: float | None = None
     row_spacing_cm: float | None = None
+    plant_spacing_cm: float | None = None
     height_cm: float | None = None
     sun_level: SunLevel | None = None
     soil_type: str | None = None
