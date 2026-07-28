@@ -105,6 +105,122 @@ async function canvasBox(page: Page) {
   return box;
 }
 
+const KONVA_ANCHOR_BLUE = { r: 0, g: 161, b: 255 };
+
+/** Composites every same-sized Konva layer canvas and scans a small square
+ * region around the expected handle center for Konva's default anchor
+ * stroke color, returning the matched pixels' bounding-box span - identical
+ * technique to `bed-transformer-handle-scaling.spec.ts`'s function of the
+ * same name (see its own doc for the full rationale/history). */
+async function measureHandleWidthPx(page: Page, centerCssX: number, centerCssY: number, radiusPx: number): Promise<number | null> {
+  return page.evaluate(
+    ({ centerCssX, centerCssY, radiusPx, target }) => {
+      const all = Array.from(document.querySelectorAll("canvas"));
+      const reference = all[0];
+      if (!reference) return null;
+      const refBox = reference.getBoundingClientRect();
+      const layers = all.filter((c) => {
+        const b = c.getBoundingClientRect();
+        return b.left === refBox.left && b.top === refBox.top && b.width === refBox.width && b.height === refBox.height;
+      });
+      if (layers.length === 0) return null;
+      const scratch = document.createElement("canvas");
+      scratch.width = reference.width;
+      scratch.height = reference.height;
+      const sctx = scratch.getContext("2d");
+      if (!sctx) return null;
+      for (const layer of layers) sctx.drawImage(layer, 0, 0);
+      const scaleX = reference.width / refBox.width;
+      const scaleY = reference.height / refBox.height;
+      const tolerance = 30;
+      let minDx: number | null = null;
+      let maxDx: number | null = null;
+      let minDy: number | null = null;
+      let maxDy: number | null = null;
+      for (let dy = -radiusPx; dy <= radiusPx; dy++) {
+        const localY = Math.round((centerCssY + dy - refBox.top) * scaleY);
+        if (localY < 0 || localY >= scratch.height) continue;
+        for (let dx = -radiusPx; dx <= radiusPx; dx++) {
+          const localX = Math.round((centerCssX + dx - refBox.left) * scaleX);
+          if (localX < 0 || localX >= scratch.width) continue;
+          const [r, g, b] = sctx.getImageData(localX, localY, 1, 1).data;
+          if (Math.abs(r - target.r) <= tolerance && Math.abs(g - target.g) <= tolerance && Math.abs(b - target.b) <= tolerance) {
+            minDx = minDx === null ? dx : Math.min(minDx, dx);
+            maxDx = maxDx === null ? dx : Math.max(maxDx, dx);
+            minDy = minDy === null ? dy : Math.min(minDy, dy);
+            maxDy = maxDy === null ? dy : Math.max(maxDy, dy);
+          }
+        }
+      }
+      if (minDx === null || maxDx === null || minDy === null || maxDy === null) return null;
+      return Math.max(maxDx - minDx, maxDy - minDy);
+    },
+    { centerCssX, centerCssY, radiusPx, target: KONVA_ANCHOR_BLUE },
+  );
+}
+
+/** Puts a garden sized so "Fit view" lands at roughly the given target
+ * scale, opens the Garden tab, fits, and returns the rotate handle's
+ * measured on-screen size plus the actual grab-and-drag outcome (a real
+ * `orientation_deg` change) - used by #190's handle-scaling coverage below
+ * to check both facets (size *and* grabbable position) at each scale. */
+async function measureAndDragAtScenario(
+  page: Page,
+  request: APIRequestContext,
+  gardenRect: Box,
+  radiusPx: number,
+): Promise<{ widthPx: number | null; scale: number; orientationChanged: boolean }> {
+  await putGarden(request, { type: "rectangle", rotation: 0, ...gardenRect }, 0);
+  await deleteAutoCreatedGroundBed(request);
+
+  await page.goto("/layout");
+  await page.locator("canvas").first().waitFor();
+  const startFromScratch = page.getByRole("button", { name: "Start from scratch" });
+  if (await startFromScratch.isVisible().catch(() => false)) await startFromScratch.click();
+  await page.getByRole("tab", { name: "Garden" }).click();
+  await page.waitForTimeout(300);
+
+  const box = await canvasBox(page);
+  const canvasSize = { width: box.width, height: box.height };
+  const compassBox = compassBoundingBox(gardenRect);
+  const expectedViewport = fitViewport([gardenRect, compassBox], canvasSize, 40);
+
+  await page.getByRole("button", { name: "Fit view" }).click();
+  await page.waitForTimeout(200);
+
+  const compassCenterWorld = compassCenter(gardenRect);
+  const handleWorld = {
+    x: compassCenterWorld.x,
+    y: compassCenterWorld.y - HANDLE_PROXY_RADIUS_CM - ROTATE_ANCHOR_OFFSET_CM,
+  };
+  const handleScreen = worldToScreen(handleWorld, expectedViewport);
+  const handlePageX = box.x + handleScreen.x;
+  const handlePageY = box.y + handleScreen.y;
+
+  const widthPx = await measureHandleWidthPx(page, handlePageX, handlePageY, radiusPx);
+
+  const distanceFromCenter = HANDLE_PROXY_RADIUS_CM + ROTATE_ANCHOR_OFFSET_CM;
+  const eastWorld = { x: compassCenterWorld.x + distanceFromCenter, y: compassCenterWorld.y };
+  const eastScreen = worldToScreen(eastWorld, expectedViewport);
+
+  await page.mouse.move(handlePageX, handlePageY);
+  await page.mouse.down();
+  await page.mouse.move(box.x + eastScreen.x, box.y + eastScreen.y, { steps: 15 });
+  await page.mouse.up();
+
+  let orientationChanged = false;
+  try {
+    await expect
+      .poll(async () => (await (await request.get("/api/garden")).json()).orientation_deg, { timeout: 3000 })
+      .toBeGreaterThan(5);
+    orientationChanged = true;
+  } catch {
+    orientationChanged = false;
+  }
+
+  return { widthPx, scale: expectedViewport.scale, orientationChanged };
+}
+
 test.describe("Compass widget (#70)", () => {
   test("'Fit view' frames the compass on screen, and its rotate handle is grabbable and functional at that zoomed-out scale", async ({
     page,
@@ -228,6 +344,81 @@ test.describe("Compass widget (#70)", () => {
       expect(afterReload.orientation_deg).toBe(afterDrag.orientation_deg);
     } finally {
       await deleteAutoCreatedGroundBed(request); // in case the drag somehow left a stray bed
+    }
+  });
+
+  // Real-browser coverage for #190 ("Compass widget rotate handle likely
+  // has the same Transformer scale-double-compensation bug #129 just
+  // fixed"). The implementer's own outcome comment explicitly flags the
+  // `rotateAnchorOffset * viewport.scale` change (distinct from the
+  // anchorSize/anchorStrokeWidth fix, which is a mechanical copy of #129's
+  // already-proven fix) as reasoned from Konva's source but NOT visually
+  // verified, and specifically asks for the handle's *distance* from the
+  // ring to be checked at multiple zoom levels, not just its size.
+  test("the rotate handle stays a roughly constant on-screen size AND a sensible, grabbable distance from the ring across zoom levels", async ({
+    page,
+    request,
+  }) => {
+    try {
+      // Near-1x: small garden, Fit view lands close to 100%.
+      const near1 = await measureAndDragAtScenario(page, request, { x: 0, y: 0, width: 800, height: 600 }, 15);
+      expect(near1.scale).toBeGreaterThan(0.5); // sanity: really is "not zoomed out"
+      expect(near1.orientationChanged, "near-1x scale: dragging the rotate handle at its predicted position never changed orientation_deg").toBe(
+        true,
+      );
+
+      // Zoomed out: the exact regime #129/#190's bug report was about.
+      // Deliberately NOT the very tall 8000x6000 garden the other
+      // handle-scaling specs use - at this spec's canvas aspect ratio that
+      // combination hits `clampScale`'s documented `MIN_SCALE` floor (0.1),
+      // and once genuinely clamped the offset-centering math overflows the
+      // content symmetrically top/bottom, clipping the compass (which sits
+      // above the garden's own top edge) off-screen entirely regardless of
+      // whether #190's fix is correct - confirmed via a throwaway
+      // screenshot while debugging this spec. A garden whose aspect ratio
+      // roughly matches the canvas's own keeps the natural (unclamped)
+      // scale comfortably above that floor while still being "zoomed out".
+      const zoomedOut = await measureAndDragAtScenario(page, request, { x: 0, y: 0, width: 6000, height: 2500 }, 15);
+      expect(zoomedOut.scale).toBeLessThan(0.3); // sanity: really is "zoomed out"
+      expect(zoomedOut.scale).toBeGreaterThan(0.12); // sanity: clear of the MIN_SCALE=0.1 clamp
+      expect(
+        zoomedOut.orientationChanged,
+        "zoomed-out scale: dragging the rotate handle at its predicted position never changed orientation_deg",
+      ).toBe(true);
+
+      console.log(
+        `[compass-widget #190] near-1x scale=${near1.scale.toFixed(3)} handle size=${near1.widthPx}px | ` +
+          `zoomed-out scale=${zoomedOut.scale.toFixed(3)} handle size=${zoomedOut.widthPx}px`,
+      );
+
+      // Both scenarios' drags succeeding at the position this spec predicts
+      // from `ROTATE_ANCHOR_OFFSET_CM` (a flat world-cm value, unaffected by
+      // the `* viewport.scale` conversion applied once at the Konva prop
+      // boundary - see this file's own updated constants comment) is itself
+      // strong evidence the handle's *distance* from the ring behaves
+      // sensibly at both scales: if the `rotateAnchorOffset` fix had the
+      // wrong sign or scaled twice, the handle would have rendered
+      // somewhere else entirely and one of these two drags would have
+      // missed it (no orientation_deg change).
+      expect(near1.widthPx, "rotate handle wasn't found (invisible/mispositioned) at the near-1x baseline").not.toBeNull();
+      expect(zoomedOut.widthPx, "rotate handle wasn't found (invisible/mispositioned) at the zoomed-out scale").not.toBeNull();
+
+      const a = near1.widthPx as number;
+      const b = zoomedOut.widthPx as number;
+      // Same generous 2.5x tolerance as bed-transformer-handle-scaling.spec.ts/
+      // garden-boundary-handle-scaling.spec.ts's identical checks.
+      expect(
+        b / a,
+        `rotate handle size should stay roughly constant across zoom levels (measured ${a}px near 1x scale vs ${b}px ` +
+          "zoomed out) - a large ratio here is exactly the #129/#190-style ballooning/shrinking regression",
+      ).toBeGreaterThan(1 / 2.5);
+      expect(
+        b / a,
+        `rotate handle size should stay roughly constant across zoom levels (measured ${a}px near 1x scale vs ${b}px ` +
+          "zoomed out) - a large ratio here is exactly the #129/#190-style ballooning/shrinking regression",
+      ).toBeLessThan(2.5);
+    } finally {
+      await deleteAutoCreatedGroundBed(request);
     }
   });
 });
