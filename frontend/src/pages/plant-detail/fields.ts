@@ -77,6 +77,24 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     description: "How this plant is typically sown, e.g. direct sow, or start indoors and transplant.",
   },
   {
+    key: "sow_indoors",
+    label: "Sow indoors",
+    type: "tristate",
+    description: "Whether this plant is typically started indoors and transplanted out later.",
+  },
+  {
+    key: "sow_direct",
+    label: "Sow direct",
+    type: "tristate",
+    description: "Whether this plant is typically sown directly into its final growing spot.",
+  },
+  {
+    key: "needs_thinning",
+    label: "Needs thinning",
+    type: "tristate",
+    description: "Whether seedlings of this plant typically need thinning out after germination.",
+  },
+  {
     key: "spread_cm",
     label: "Spread (cm)",
     type: "number",
