@@ -48,6 +48,17 @@ from app.main import app  # noqa: E402
 # SQLModel table model - SQLModel.metadata now knows about all of them.
 _ALL_TABLE_NAMES = [t.name for t in SQLModel.metadata.sorted_tables]
 
+# Small reference/lookup tables seeded once by a migration's own data insert
+# (not created by any test) - truncating these along with real app data wipes
+# seed rows that nothing re-inserts, so the *first* test in a session to hit
+# a truncation leaves every later test (and, per #205, any exploratory/e2e
+# session reusing garden_test afterward) looking at an empty lookup table
+# instead of the real seeded codes. Excluded from the per-test truncation
+# below; add a table here if a future migration seeds another lookup table
+# the same way.
+_REFERENCE_TABLE_NAMES = {"period_type"}
+_TRUNCATE_TABLE_NAMES = [name for name in _ALL_TABLE_NAMES if name not in _REFERENCE_TABLE_NAMES]
+
 
 @pytest.fixture(scope="session")
 def _migrated_db() -> None:
@@ -65,11 +76,13 @@ def db_session(_migrated_db: None) -> Generator[Session, None, None]:
     """One Session per test, shared by every TestClient request the test
     makes (via the `client` fixture's dependency override below) - so a test
     can create something through the API and immediately query it back in
-    the same session. Truncates every app table on teardown."""
+    the same session. Truncates every app table on teardown except the
+    small reference/lookup tables in _REFERENCE_TABLE_NAMES (seed data, not
+    test artifacts - see that constant's own comment)."""
     with Session(engine) as session:
         yield session
     with engine.begin() as conn:
-        quoted = ", ".join(f'"{name}"' for name in _ALL_TABLE_NAMES)
+        quoted = ", ".join(f'"{name}"' for name in _TRUNCATE_TABLE_NAMES)
         conn.execute(text(f"TRUNCATE TABLE {quoted} RESTART IDENTITY CASCADE"))
 
 
