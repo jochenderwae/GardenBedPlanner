@@ -8,6 +8,18 @@ import { putGarden, type Garden, type GardenPut } from "@/api/client";
 
 const DEFAULT_GARDEN_SIZE_CM = 500;
 
+// Whether the "no garden yet" create form's Name input has already
+// auto-focused once during this page load - a plain module-level flag
+// (not component state, which resets on every mount) since `GardenPanel`
+// itself fully unmounts/remounts each time the Edit/View mode toggle
+// switches (it's only rendered while `mode === "mine"`, see Toolbar.tsx/
+// Layout.tsx's gating) - an unconditional `autoFocus` re-fired on every one
+// of those remounts, silently stealing keyboard focus away from whatever
+// the user was just interacting with (e.g. the toggle button itself) every
+// single time they switched back to Edit, not just on the form's genuine
+// first appearance (#179).
+let hasAutoFocusedCreateForm = false;
+
 interface GardenPanelProps {
   garden: Garden | null;
 }
@@ -24,6 +36,22 @@ export function GardenPanel({ garden }: GardenPanelProps) {
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState<Garden | null>(garden);
   const [name, setName] = useState("My Garden");
+  // Lazy initializer runs exactly once per mount, at mount time - captures
+  // whether *this* mount is the page's genuine first mount of the "no
+  // garden yet" create form specifically (and claims that for
+  // `hasAutoFocusedCreateForm` immediately) rather than every remount
+  // re-deciding "yes, focus me" the way an unconditional `autoFocus` prop
+  // did (#179). Checking `garden` (not `draft`, which starts as `garden`
+  // anyway) here matters: a mount where a Garden already exists never
+  // renders the create form at all, so it must never consume this flag -
+  // otherwise an early "Edit garden" mount would silently burn the one
+  // legitimate future auto-focus a since-deleted-and-recreated garden's
+  // create form should still get.
+  const [shouldAutoFocusName] = useState(() => {
+    if (garden || hasAutoFocusedCreateForm) return false;
+    hasAutoFocusedCreateForm = true;
+    return true;
+  });
 
   useEffect(() => setDraft(garden), [garden]);
 
@@ -64,7 +92,7 @@ export function GardenPanel({ garden }: GardenPanelProps) {
               Name
               <FieldHint description="Your garden's display name." />
             </span>
-            <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+            <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus={shouldAutoFocusName} />
           </label>
           <Button
             size="sm"
