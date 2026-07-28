@@ -2,7 +2,7 @@
 acronym and apostrophe-proper-noun edge cases, on top of the earlier fixes
 for leading punctuation and words after an internal slash)."""
 
-from etl.normalize import title_case_plant_name
+from etl.normalize import map_sun_level, title_case_plant_name
 
 
 class TestTitleCasePlantName:
@@ -44,3 +44,27 @@ class TestTitleCasePlantName:
         assert title_case_plant_name(already_correct) == already_correct
         already_correct_anjou = "Red D'Anjou Pear"
         assert title_case_plant_name(already_correct_anjou) == already_correct_anjou
+
+
+class TestMapSunLevel:
+    """GitHub issue #186: homesteader-labs' raw crop data uses the bare
+    string 'partial' (not 'partial shade'/'partial sun'/'part shade'/
+    'part sun') for some plants (e.g. parsley), which _SUN_MAP didn't
+    recognize - map_sun_level() silently returned None, dropping that
+    source's contribution to sun_level without ever registering as a
+    conflict against another source's (possibly wrong) value."""
+
+    def test_bare_partial_maps_to_half_sun(self) -> None:
+        assert map_sun_level("partial") == "half_sun"
+
+    def test_bare_partial_is_case_insensitive(self) -> None:
+        assert map_sun_level("Partial") == "half_sun"
+
+    def test_full_still_maps_to_full_sun(self) -> None:
+        assert map_sun_level("full") == "full_sun"
+
+    def test_unrecognized_text_returns_none(self) -> None:
+        assert map_sun_level("dappled") is None
+
+    def test_none_input_returns_none(self) -> None:
+        assert map_sun_level(None) is None

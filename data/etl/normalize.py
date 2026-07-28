@@ -11,6 +11,7 @@ _SUN_MAP = {
     "partial sun": "half_sun",
     "part shade": "half_sun",
     "partial shade": "half_sun",
+    "partial": "half_sun",
     "half": "half_sun",
     "full shade": "shadow",
     "shade": "shadow",

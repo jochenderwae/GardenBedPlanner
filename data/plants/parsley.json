@@ -6,7 +6,7 @@
   "spread_cm": 30,
   "row_spacing_cm": 25.45,
   "height_cm": 30,
-  "sun_level": "full_sun",
+  "sun_level": "half_sun",
   "family": "Apiaceae",
   "genus": "Petroselinum",
   "days_to_maturity": 75,
@@ -114,6 +114,10 @@
     {
       "attribution": "manual-sowing-details-derivation",
       "notes": "['needs_thinning'] derived from explicit keyword matches in sowing_method and growing_information - see GitHub issue #177 / etl/backfill_sowing_details.py."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "sun_level corrected from full_sun to half_sun (GitHub issue #186): 4 of 5 growing_information excerpts explicitly recommend 'a moist, rich soil and a partly-shaded situation' for parsley. Root cause investigated, not just the symptom: homesteader-labs' own raw crop data already had sun='partial' for parsley, but etl/normalize.py's _SUN_MAP had no entry for the bare string 'partial' (only 'partial shade'/'partial sun'/'part shade'/'part sun'), so map_sun_level() silently returned None and that source's contribution to sun_level was dropped without ever registering as a conflict - leaving Trefle's light=7 (>=7 -> full_sun) uncontested. _SUN_MAP fixed to also match 'partial' as half_sun; this plant's value corrected directly rather than via a full ETL re-run given the narrow scope of this fix."
     }
   ],
   "growing_information": [
