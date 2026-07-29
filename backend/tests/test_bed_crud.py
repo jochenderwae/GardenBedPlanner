@@ -234,6 +234,29 @@ def test_cascade_delete_bed_with_a_plantings_harvest_log_should_not_500(client: 
     assert cascade_response.status_code in (204, 409), cascade_response.text
 
 
+@pytest.mark.xfail(
+    reason="Bug found while testing #39 (same root cause as #38's CompostFertilizationLog "
+    "finding, a different Bed-linked satellite table): delete_bed's cascade=true path never "
+    "cleans up CompostBin rows either (only Action/Planting/BedEquipment are handled) - a bed "
+    "marked as a compost bin can never be deleted at all, cascade or not. Reported back on #39 "
+    "rather than fixed here (outside this role's edit boundary). Remove this xfail once fixed - "
+    "it's asserting the correct/desired behavior, not the current buggy one.",
+    strict=True,
+)
+def test_cascade_delete_bed_with_compost_bin_should_succeed(client: TestClient) -> None:
+    bed_id = client.post(
+        "/api/beds", json={"name": "Compost Bin Bed", "border_geometry": rectangle()},
+        params={"is_initial_state": "true"},
+    ).json()["id"]
+    bin_response = client.post("/api/compost-bins", json={"bed_id": bed_id})
+    assert bin_response.status_code == 201, bin_response.text
+    bin_id = bin_response.json()["id"]
+
+    cascade_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
+    assert cascade_response.status_code == 204, cascade_response.text
+    assert client.get(f"/api/compost-bins/{bin_id}").status_code == 404
+
+
 def test_delete_bed_with_no_dependents_works_the_same_with_or_without_cascade(client: TestClient) -> None:
     # is_initial_state=true: a plain (non-backfill) create would auto-
     # generate a prepare_bed task against the bed (#192), which is exactly
