@@ -193,11 +193,16 @@ test.describe("Crop-rotation warning triangle (#26)", () => {
         )
         .toBe(true);
 
-      // Hover it and confirm the tooltip identifies the shared family, not
-      // just "same plant" (the ticket's own step 4 requirement).
+      // Hover it and confirm the tooltip identifies the conflicting
+      // planting, not just "same plant" (the ticket's own step 4
+      // requirement). Copy per #174's design spec (generalized the title
+      // from #26's original "Rotation warning: <family>" to a reason-
+      // agnostic "Placement warning" title + a "Rotation: ..." reason
+      // line, since a marker can now accumulate several simultaneous
+      // reasons, not just rotation).
       await page.mouse.move(box.x + triangleX, box.y + triangleY);
-      await expect(page.getByText(`Rotation warning: ${family}`)).toBeVisible();
-      await expect(page.getByText(new RegExp(`E2E Rotation Tomato ${stamp}`))).toBeVisible();
+      await expect(page.getByText("Placement warning")).toBeVisible();
+      await expect(page.getByText(`Rotation: same family as E2E Rotation Tomato ${stamp} (planted ${todayIso()})`)).toBeVisible();
     } finally {
       for (const p of await plantingsFor(request, bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
