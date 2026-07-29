@@ -39,6 +39,13 @@ export type IrrigationZoneCreate = components["schemas"]["IrrigationZoneCreate"]
 export type IrrigationZoneUpdate = components["schemas"]["IrrigationZoneUpdate"];
 export type IrrigationZoneDetail = components["schemas"]["IrrigationZoneDetail"];
 
+export type IrrigationPart = components["schemas"]["IrrigationPart"];
+export type IrrigationPartCreate = components["schemas"]["IrrigationPartCreate"];
+export type IrrigationPartUpdate = components["schemas"]["IrrigationPartUpdate"];
+export type IrrigationPartDetail = components["schemas"]["IrrigationPartDetail"];
+export type IrrigationConnection = components["schemas"]["IrrigationConnection"];
+export type IrrigationConnectionCreate = components["schemas"]["IrrigationConnectionCreate"];
+
 export type Action = components["schemas"]["Action"];
 export type ActionCreate = components["schemas"]["ActionCreate"];
 export type ActionUpdate = components["schemas"]["ActionUpdate"];
@@ -228,6 +235,58 @@ export function updateIrrigationZone(id: number, patch: IrrigationZoneUpdate): P
 
 export function deleteIrrigationZone(id: number): Promise<void> {
   return apiFetch(`/api/irrigation-zones/${id}`, { method: "DELETE" });
+}
+
+// Catalog-level irrigation parts/connections (#37/#209/#212) - the "pipe
+// network" diagram's own data, distinct from IrrigationZone (equipment
+// grouping) and BedEquipment (bed-placed items). `IrrigationPart` has no
+// `bed_id`/`geometry`, only a free-standing `diagram_x`/`diagram_y` for the
+// dialog's own schematic canvas - see PipeNetworkDialog.tsx.
+
+export function listIrrigationParts(): Promise<IrrigationPart[]> {
+  return apiFetch(`/api/irrigation-parts`);
+}
+
+export function getIrrigationPart(id: number): Promise<IrrigationPartDetail> {
+  return apiFetch(`/api/irrigation-parts/${id}`);
+}
+
+export function createIrrigationPart(part: IrrigationPartCreate): Promise<IrrigationPart> {
+  return apiFetch(`/api/irrigation-parts`, {
+    method: "POST",
+    body: JSON.stringify(part),
+  });
+}
+
+export function updateIrrigationPart(id: number, patch: IrrigationPartUpdate): Promise<IrrigationPart> {
+  return apiFetch(`/api/irrigation-parts/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteIrrigationPart(id: number): Promise<void> {
+  return apiFetch(`/api/irrigation-parts/${id}`, { method: "DELETE" });
+}
+
+/** No `partId` filter passed by the pipe-network dialog - it fetches every
+ * connection once, on open, and derives per-part connection counts/edges
+ * client-side rather than issuing one filtered request per part (simpler at
+ * this app's "a handful of parts" scale - see backend's own docstring). */
+export function listIrrigationConnections(partId?: number): Promise<IrrigationConnection[]> {
+  const query = partId != null ? `?part_id=${partId}` : "";
+  return apiFetch(`/api/irrigation-connections${query}`);
+}
+
+export function createIrrigationConnection(connection: IrrigationConnectionCreate): Promise<IrrigationConnection> {
+  return apiFetch(`/api/irrigation-connections`, {
+    method: "POST",
+    body: JSON.stringify(connection),
+  });
+}
+
+export function deleteIrrigationConnection(id: number): Promise<void> {
+  return apiFetch(`/api/irrigation-connections/${id}`, { method: "DELETE" });
 }
 
 /** Garden work items (#181/#192) - `dueFrom`/`dueTo` filter on the due

@@ -60,6 +60,7 @@ import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPanel";
 import { GrowthHabitLegend } from "./layout/GrowthHabitLegend";
 import { OnboardingPrompt } from "./layout/OnboardingPrompt";
+import { PipeNetworkDialog } from "./layout/PipeNetworkDialog";
 import { PlantPlacementLayer, type PlacementMode, type PlantPlacementLayerHandle } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel, type PlantingPanelHandle } from "./layout/PlantingPanel";
@@ -1261,6 +1262,7 @@ export function Layout() {
         zoomPercent={viewport.scale * 100}
         onFitView={handleFitView}
         addBedForm={<AddBedForm onCreated={(bed) => setSelectedId(bed.id ?? null)} nextPosition={nextBedPosition(beds)} />}
+        pipeNetworkTrigger={<PipeNetworkDialog />}
         armedPlant={armedPlant}
         onClearArmedPlant={() => setArmedPlant(null)}
         plantPicker={

@@ -56,6 +56,10 @@ interface ToolbarProps {
    * why that's load-bearing for focus-return-on-close, not just a styling
    * choice - #144's own follow-up bug report). */
   addBedForm: ReactNode;
+  /** The "Pipe network" trigger button + its dialog (`PipeNetworkDialog`,
+   * built and passed in by `Layout.tsx`), same lifted-up-render-prop
+   * pattern as `addBedForm` above (#209). */
+  pipeNetworkTrigger: ReactNode;
   armedPlant: Plant | null;
   onClearArmedPlant: () => void;
   /** The "Pick a plant" trigger button + its popover, as one self-contained
@@ -106,6 +110,7 @@ export function Toolbar({
   zoomPercent,
   onFitView,
   addBedForm,
+  pipeNetworkTrigger,
   armedPlant,
   onClearArmedPlant,
   plantPicker,
@@ -151,6 +156,7 @@ export function Toolbar({
       </div>
       <div className="flex min-h-7 items-center gap-2">
         {mode === "mine" && tab === "planters" && addBedForm}
+        {mode === "mine" && tab === "equipment" && pipeNetworkTrigger}
         {mode === "mine" && tab === "plants" && (
           <>
             {plantPicker}
