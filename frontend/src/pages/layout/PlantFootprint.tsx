@@ -8,7 +8,7 @@ import { colorForSlug, plantingMarkerPositions } from "./geometry";
  * (`Plant.growth_habit` is plain `string | null`), so this is only used as
  * a lookup key set, never assumed to be the full range of values that
  * could show up. */
-const KNOWN_HABITS = ["upright", "spreading", "climbing", "rosette", "tree"] as const;
+export const KNOWN_HABITS = ["upright", "spreading", "climbing", "rosette", "tree"] as const;
 type KnownGrowthHabit = (typeof KNOWN_HABITS)[number];
 const KNOWN_HABIT_SET = new Set<string>(KNOWN_HABITS);
 

@@ -58,6 +58,7 @@ import { GardenPanel } from "./layout/GardenPanel";
 import { GardenSnapshotLayer } from "./layout/GardenSnapshotView";
 import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPanel";
+import { GrowthHabitLegend } from "./layout/GrowthHabitLegend";
 import { OnboardingPrompt } from "./layout/OnboardingPrompt";
 import { PlantPlacementLayer, type PlacementMode, type PlantPlacementLayerHandle } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
@@ -1436,6 +1437,7 @@ export function Layout() {
               <RulerLayer canvasSize={canvasSize} viewport={viewport} />
             </Stage>
             <PlantingTooltip tooltip={tooltip} />
+            {tab === "plants" && <GrowthHabitLegend />}
           </div>
 
           {/* Side panels get their own scroll region (`overflow-y-auto`,
@@ -1518,6 +1520,7 @@ export function Layout() {
             <RulerLayer canvasSize={canvasSize} viewport={viewport} />
           </Stage>
           <PlantingTooltip tooltip={tooltip} />
+          <GrowthHabitLegend />
         </div>
       )}
     </div>
