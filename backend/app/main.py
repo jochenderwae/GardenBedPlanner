@@ -14,6 +14,8 @@ from app.api.routes import (
     garden_plans,
     harvest_logs,
     health,
+    irrigation_connections,
+    irrigation_parts,
     irrigation_zones,
     period_types,
     placement,
@@ -74,6 +76,8 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     app.include_router(push_subscriptions.router, prefix="/api")
     app.include_router(seed_inventory_items.router, prefix="/api")
     app.include_router(irrigation_zones.router, prefix="/api")
+    app.include_router(irrigation_parts.router, prefix="/api")
+    app.include_router(irrigation_connections.router, prefix="/api")
     app.include_router(compost_fertilization_logs.router, prefix="/api")
     app.include_router(compost_bins.router, prefix="/api")
 

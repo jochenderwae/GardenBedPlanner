@@ -865,6 +865,80 @@ export interface paths {
         patch: operations["update_irrigation_zone_api_irrigation_zones__zone_id__patch"];
         trace?: never;
     };
+    "/api/irrigation-parts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Irrigation Parts */
+        get: operations["list_irrigation_parts_api_irrigation_parts_get"];
+        put?: never;
+        /** Create Irrigation Part */
+        post: operations["create_irrigation_part_api_irrigation_parts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/irrigation-parts/{part_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Irrigation Part */
+        get: operations["get_irrigation_part_api_irrigation_parts__part_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Irrigation Part */
+        delete: operations["delete_irrigation_part_api_irrigation_parts__part_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Irrigation Part */
+        patch: operations["update_irrigation_part_api_irrigation_parts__part_id__patch"];
+        trace?: never;
+    };
+    "/api/irrigation-connections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Irrigation Connections */
+        get: operations["list_irrigation_connections_api_irrigation_connections_get"];
+        put?: never;
+        /** Create Irrigation Connection */
+        post: operations["create_irrigation_connection_api_irrigation_connections_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/irrigation-connections/{connection_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Irrigation Connection */
+        get: operations["get_irrigation_connection_api_irrigation_connections__connection_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Irrigation Connection */
+        delete: operations["delete_irrigation_connection_api_irrigation_connections__connection_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Irrigation Connection */
+        patch: operations["update_irrigation_connection_api_irrigation_connections__connection_id__patch"];
+        trace?: never;
+    };
     "/api/compost-fertilization-logs": {
         parameters: {
             query?: never;
@@ -1676,6 +1750,145 @@ export interface components {
          * @enum {string}
          */
         HarvestQuality: "poor" | "fair" | "good" | "excellent";
+        /**
+         * IrrigationConnection
+         * @description Records that one IrrigationPart physically connects to another (e.g.
+         *     a nozzle plugs into a T-junction) - the "pipe network" edge list #37
+         *     asks for, so the exact watering layout can eventually be drawn out
+         *     rather than only reasoned about in the abstract. A flat edge list (two
+         *     FKs into irrigation_part), not a general graph model - matches this
+         *     garden's actual scale (a handful of parts), same reasoning as
+         *     IrrigationZone's own docstring on why a flat FK is enough here.
+         *
+         *     from_part_id/to_part_id are undirected in practice (a connection is
+         *     just "these two parts are connected", not implying a flow direction) -
+         *     named from_/to_ only to give each end a distinct column name, not to
+         *     encode directionality.
+         */
+        IrrigationConnection: {
+            /** Id */
+            id?: number | null;
+            /** From Part Id */
+            from_part_id: number;
+            /** To Part Id */
+            to_part_id: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** IrrigationConnectionCreate */
+        IrrigationConnectionCreate: {
+            /** From Part Id */
+            from_part_id: number;
+            /** To Part Id */
+            to_part_id: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** IrrigationConnectionUpdate */
+        IrrigationConnectionUpdate: {
+            /** From Part Id */
+            from_part_id?: number | null;
+            /** To Part Id */
+            to_part_id?: number | null;
+            /** Notes */
+            notes?: string | null;
+        };
+        /**
+         * IrrigationPart
+         * @description A Gardena-style drip irrigation part the user owns as stock (nozzles,
+         *     T-junctions, connectors, valves, hose/pipe segments), tracked at the
+         *     catalog level - one row per distinct part type ("Gardena 13mm
+         *     T-junction"), not one row per physical item, matching #37's technical
+         *     analysis: a gardener thinks "I have 6 of these", not in terms of six
+         *     individually-tracked rows. Additive to IrrigationZone (#36's zone-level
+         *     grouping) and BedEquipment (placed equipment) - this table is about
+         *     unplaced part-level inventory and how parts connect to each other
+         *     (see IrrigationConnection), not placement on the canvas.
+         *
+         *     "Needs purchase" is deliberately not a stored column here - it's derived
+         *     by comparing quantity_on_hand against how many times a part is
+         *     referenced by IrrigationConnection rows, computed at read time (see
+         *     app/api/routes/irrigation_parts.py), same spirit as #41's seed-buying
+         *     agenda deriving "need to buy" from existing data rather than a stored
+         *     flag.
+         */
+        IrrigationPart: {
+            /** Id */
+            id?: number | null;
+            /** Name */
+            name: string;
+            /** Part Type */
+            part_type: string;
+            /**
+             * Quantity On Hand
+             * @default 0
+             */
+            quantity_on_hand: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /** IrrigationPartCreate */
+        IrrigationPartCreate: {
+            /** Name */
+            name: string;
+            /** Part Type */
+            part_type: string;
+            /**
+             * Quantity On Hand
+             * @default 0
+             */
+            quantity_on_hand: number;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+        };
+        /**
+         * IrrigationPartDetail
+         * @description GET /irrigation-parts/{part_id} response: the part plus its derived
+         *     "needs purchase" status - #37's test criterion 4. connections_needed is
+         *     how many times this part is referenced by an IrrigationConnection (each
+         *     connection implies one physical unit of this part is in use); this is
+         *     never stored, only computed here from the recorded network, same "no
+         *     dedicated flag" reasoning as #41's seed-buying agenda.
+         */
+        IrrigationPartDetail: {
+            /** Id */
+            id: number;
+            /** Name */
+            name: string;
+            /** Part Type */
+            part_type: string;
+            /** Quantity On Hand */
+            quantity_on_hand: number;
+            /** Notes */
+            notes: string;
+            /** Connections Needed */
+            connections_needed: number;
+            /** Needs Purchase */
+            needs_purchase: boolean;
+        };
+        /** IrrigationPartUpdate */
+        IrrigationPartUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Part Type */
+            part_type?: string | null;
+            /** Quantity On Hand */
+            quantity_on_hand?: number | null;
+            /** Notes */
+            notes?: string | null;
+        };
         /**
          * IrrigationZone
          * @description Groups one or more BedEquipment rows (drip lines/emitters) that share
@@ -5189,6 +5402,314 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IrrigationZone"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_irrigation_parts_api_irrigation_parts_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPart"][];
+                };
+            };
+        };
+    };
+    create_irrigation_part_api_irrigation_parts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationPartCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPart"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_irrigation_part_api_irrigation_parts__part_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_irrigation_part_api_irrigation_parts__part_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_irrigation_part_api_irrigation_parts__part_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationPartUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPart"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_irrigation_connections_api_irrigation_connections_get: {
+        parameters: {
+            query?: {
+                /** @description Only connections touching this part */
+                part_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationConnection"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_irrigation_connection_api_irrigation_connections_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationConnectionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationConnection"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_irrigation_connection_api_irrigation_connections__connection_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connection_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationConnection"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_irrigation_connection_api_irrigation_connections__connection_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connection_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_irrigation_connection_api_irrigation_connections__connection_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connection_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationConnectionUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationConnection"];
                 };
             };
             /** @description Validation Error */
