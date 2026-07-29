@@ -1,7 +1,7 @@
 import type Konva from "konva";
-import { forwardRef, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Group, Layer, Rect, RegularPolygon, Text } from "react-konva";
-import type { Bed, Geometry, PlacementType, Plant, Planting, RotationWarning } from "@/api/client";
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { Circle, Group, Layer, Line, Rect, RegularPolygon, Text } from "react-konva";
+import type { Bed, Geometry, PlacementType, Plant, Planting } from "@/api/client";
 import type { PlantingTooltipState } from "./PlantingTooltip";
 import {
   boundingRect,
@@ -55,19 +55,38 @@ interface PlantPlacementLayerProps {
    * replace it outright (plain drag, including an empty/same-point drag -
    * the "click empty space to clear the selection" case). */
   onMarqueeSelect: (ids: number[], additive: boolean) => void;
-  /** Same-family crop-rotation warnings (#26), keyed by planting id - a
-   * present entry (always `has_warning: true`, see Layout.tsx's own
-   * `rotationWarnings` state doc) renders a small warning triangle
-   * overlaid on that planting's own footprint instead of a blocking popup,
-   * per #174's interaction design (this is the minimal rotation-only slice
-   * of it - #174 itself covers the fuller arm-a-candidate/companion-check
-   * version once a UI/UX pass settles the final icon design). */
-  rotationWarnings: Map<number, RotationWarning>;
-  /** Hover/leave on a warning triangle - rendered by the caller via the
-   * same `PlantingTooltip` component/state this file's own plant-name
-   * hover (BedNode.tsx-style) and GardenSnapshotView's planting-marker hover
-   * already reuse, rather than a new tooltip primitive. */
-  onHoverWarning: (tooltip: PlantingTooltipState | null) => void;
+  /** Placement-warning reasons (rotation conflict, antagonist companion,
+   * shade risk - #26/#174), keyed by planting id - a present (non-empty)
+   * entry renders a small warning triangle overlaid on that planting's own
+   * footprint instead of a blocking popup. Combines both a *speculative*
+   * source (live, only while a candidate plant is armed - see Layout.tsx's
+   * own `plantingWarnings` doc) and a *committed* source (permanent, from
+   * the moment a planting was actually saved) - this component doesn't
+   * need to know or care which produced a given entry. Warning always wins
+   * over `plantingGoodCompanions` on the same marker - see
+   * `PlantingMarker` below. */
+  plantingWarnings: Map<number, { reasons: string[] }>;
+  /** Good-companion matches (#174), keyed by planting id - a present entry
+   * renders a small green checkmark, but only when that same planting has
+   * no entry in `plantingWarnings` (bad news shouldn't hide behind a
+   * positive icon). Same speculative/committed combination as
+   * `plantingWarnings`. */
+  plantingGoodCompanions: Map<number, { neighbors: string[] }>;
+  /** Hover/leave on a warning triangle or good-companion checkmark -
+   * rendered by the caller via the same `PlantingTooltip` component/state
+   * this file's own plant-name hover (BedNode.tsx-style) and
+   * GardenSnapshotView's planting-marker hover already reuse, rather than a
+   * new tooltip primitive. */
+  onHoverIndicator: (tooltip: PlantingTooltipState | null) => void;
+  /** Fired continuously while a row/field placement is being drawn
+   * (individual/point placements have no pre-click drag phase, so this
+   * never fires for those - see #174's design spec) with the *live* preview
+   * rectangle - Layout.tsx debounces this into a re-run of the placement
+   * check against the live drag position, refining the arm-time
+   * bed-centroid approximation the moment the user starts actually drawing.
+   * Omitted/no-op is fine; it's a pure refinement, not load-bearing for
+   * correctness (the commit-time check is always the authoritative one). */
+  onDrawGeometryChange?: (bedId: number, geometry: Geometry) => void;
   /** Edit-tab-only visual state (#180) derived from each planting's own
    * `removed_date` vs. today - dashed stroke for a future-dated removal,
    * further-reduced opacity once it's within `LEAVING_SOON_THRESHOLD_DAYS`.
@@ -126,8 +145,10 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
     onSelect,
     selectedIds,
     onMarqueeSelect,
-    rotationWarnings,
-    onHoverWarning,
+    plantingWarnings,
+    plantingGoodCompanions,
+    onHoverIndicator,
+    onDrawGeometryChange,
     removalStateById,
     startStateById,
   },
@@ -175,6 +196,17 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
   // marquee instead of a placement (see handleMouseDown/Up below).
   const canSelect = active && armedPlant == null;
   const thicknessCm = effectivePlantSpacing(null, armedPlant ?? undefined);
+
+  // See PlantPlacementLayerProps.onDrawGeometryChange's own doc - fires on
+  // every tick of an in-progress row/field drag with the live preview
+  // rectangle so Layout.tsx can refine its arm-time bed-centroid placement
+  // check against the actual position being drawn.
+  useEffect(() => {
+    if (!draw || !onDrawGeometryChange || placementMode === "individual") return;
+    const geometry =
+      placementMode === "row" ? rowGeometryFromDrag(draw.start, draw.current, thicknessCm) : fieldGeometryFromDrag(draw.start, draw.current);
+    if (geometry) onDrawGeometryChange(draw.bedId, geometry);
+  }, [draw, placementMode, thicknessCm, onDrawGeometryChange]);
 
   function localPoint(e: Konva.KonvaEventObject<MouseEvent>): { x: number; y: number } | null {
     return e.target.getRelativePointerPosition();
@@ -415,8 +447,9 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
                 onGroupDragStart={(e) => handleGroupDragStart(planting.id, e)}
                 onGroupDragMove={(e) => handleGroupDragMove(planting.id, e)}
                 onGroupDragEnd={handleGroupDragEnd}
-                rotationWarning={planting.id != null ? rotationWarnings.get(planting.id) : undefined}
-                onHoverWarning={onHoverWarning}
+                warnings={planting.id != null ? plantingWarnings.get(planting.id)?.reasons : undefined}
+                goodCompanions={planting.id != null ? plantingGoodCompanions.get(planting.id)?.neighbors : undefined}
+                onHoverIndicator={onHoverIndicator}
                 removalState={(planting.id != null && removalStateById.get(planting.id)) || "normal"}
                 startState={(planting.id != null && startStateById.get(planting.id)) || "normal"}
               />
@@ -434,38 +467,42 @@ const SELECTION_HIGHLIGHT_COLOR = "#1d4ed8";
 
 // Matches this app's existing warning color language (see
 // seed-guide/SeedGuideView.tsx's amber "sow" styling) - Tailwind's
-// amber-600.
+// amber-600. Shared by both indicator icons below (#174) - renamed from
+// #26's original WARNING_TRIANGLE_RADIUS_CM now that it sizes the
+// checkmark too.
 const WARNING_TRIANGLE_COLOR = "#d97706";
-const WARNING_TRIANGLE_RADIUS_CM = 7;
+// This app's first "positive/success" color (emerald-600) - a reasonable
+// candidate to become the standing success color going forward, per #174's
+// design spec, given there wasn't one yet.
+const COMPANION_CHECKMARK_COLOR = "#059669";
+const INDICATOR_ICON_RADIUS_CM = 7;
 
-/** Small filled triangle flagging a same-family crop-rotation conflict
- * (#26) - anchored at a marker's own corner, hover-only (no click target of
- * its own, distinct from the marker's click-to-edit/shift-click-to-select
- * interactions) via the shared `PlantingTooltip`. Deliberately minimal:
- * #174 owns the fuller warning/good-companion-checkmark icon design once a
- * UI/UX pass settles on it; this is the rotation-only slice #26 itself
- * authorizes ("building the minimal version of it if #174 hasn't landed
- * yet"), not a second indicator system. */
+/** Small filled triangle flagging one or more placement-warning reasons
+ * (same-family crop-rotation conflict, antagonist companion, shade risk -
+ * #26/#174) - anchored at a marker's own corner, hover-only (no click
+ * target of its own, distinct from the marker's click-to-edit/shift-click-
+ * to-select interactions) via the shared `PlantingTooltip`. Reason-agnostic:
+ * `reasons` is already the exact set of human-readable lines to show,
+ * assembled by whoever populates `plantingWarnings` (Layout.tsx). */
 function WarningTriangle({
   x,
   y,
-  warning,
+  reasons,
   onHover,
 }: {
   x: number;
   y: number;
-  warning: RotationWarning;
+  reasons: string[];
   onHover: (tooltip: PlantingTooltipState | null) => void;
 }) {
   function showTooltip(e: Konva.KonvaEventObject<MouseEvent>) {
     const stageBox = e.target.getStage()?.container().getBoundingClientRect();
     if (!stageBox) return;
-    const conflictName = warning.conflicting_plant_common_name ?? warning.conflicting_plant_slug ?? "a recent planting";
     onHover({
       x: e.evt.clientX - stageBox.left,
       y: e.evt.clientY - stageBox.top,
-      title: `Rotation warning: ${warning.family_name ?? "same family"}`,
-      subtitle: `Follows ${conflictName} in this bed - same family, disease-carryover risk.`,
+      title: "Placement warning",
+      subtitle: reasons,
     });
   }
 
@@ -474,7 +511,7 @@ function WarningTriangle({
       x={x}
       y={y}
       sides={3}
-      radius={WARNING_TRIANGLE_RADIUS_CM}
+      radius={INDICATOR_ICON_RADIUS_CM}
       fill={WARNING_TRIANGLE_COLOR}
       stroke="#ffffff"
       strokeWidth={1}
@@ -482,6 +519,48 @@ function WarningTriangle({
       onMouseMove={showTooltip}
       onMouseLeave={() => onHover(null)}
     />
+  );
+}
+
+/** Small filled circle + checkmark glyph flagging one or more good-
+ * companion matches against an already-placed neighbor (#174) - same
+ * anchoring/interaction pattern as `WarningTriangle` above, only ever shown
+ * when that same marker has *no* warnings (see `PlantingMarker`'s own
+ * priority logic below). */
+function CompanionCheckmark({
+  x,
+  y,
+  neighbors,
+  onHover,
+}: {
+  x: number;
+  y: number;
+  neighbors: string[];
+  onHover: (tooltip: PlantingTooltipState | null) => void;
+}) {
+  function showTooltip(e: Konva.KonvaEventObject<MouseEvent>) {
+    const stageBox = e.target.getStage()?.container().getBoundingClientRect();
+    if (!stageBox) return;
+    onHover({
+      x: e.evt.clientX - stageBox.left,
+      y: e.evt.clientY - stageBox.top,
+      title: "Good companion",
+      subtitle: neighbors,
+    });
+  }
+
+  return (
+    <Group x={x} y={y} onMouseEnter={showTooltip} onMouseMove={showTooltip} onMouseLeave={() => onHover(null)}>
+      <Circle radius={INDICATOR_ICON_RADIUS_CM} fill={COMPANION_CHECKMARK_COLOR} stroke="#ffffff" strokeWidth={1} />
+      <Line
+        points={[-3, 0, -1, 2.5, 3, -2.5]}
+        stroke="#ffffff"
+        strokeWidth={1.5}
+        lineCap="round"
+        lineJoin="round"
+        listening={false}
+      />
+    </Group>
   );
 }
 
@@ -559,8 +638,9 @@ function PlantingMarker({
   onGroupDragStart,
   onGroupDragMove,
   onGroupDragEnd,
-  rotationWarning,
-  onHoverWarning,
+  warnings,
+  goodCompanions,
+  onHoverIndicator,
   removalState,
   startState,
 }: {
@@ -585,10 +665,14 @@ function PlantingMarker({
   onGroupDragStart: (e: Konva.KonvaEventObject<DragEvent>) => void;
   onGroupDragMove: (e: Konva.KonvaEventObject<DragEvent>) => void;
   onGroupDragEnd: () => void;
-  /** See PlantPlacementLayerProps.rotationWarnings - undefined means no
-   * conflict (or none checked yet), in which case no triangle renders. */
-  rotationWarning: RotationWarning | undefined;
-  onHoverWarning: (tooltip: PlantingTooltipState | null) => void;
+  /** See PlantPlacementLayerProps.plantingWarnings - undefined/empty means
+   * no warning (or none checked yet), in which case no triangle renders. */
+  warnings: string[] | undefined;
+  /** See PlantPlacementLayerProps.plantingGoodCompanions - only rendered
+   * (as a checkmark) when `warnings` above is empty; warning always wins on
+   * the same marker. */
+  goodCompanions: string[] | undefined;
+  onHoverIndicator: (tooltip: PlantingTooltipState | null) => void;
   /** See PlantPlacementLayerProps.removalStateById - "normal" for a planting
    * with no removed_date scheduled at all. */
   removalState: RemovalVisualState;
@@ -674,8 +758,13 @@ function PlantingMarker({
         {active && (
           <Text x={props.x + 4} y={props.y - 14} text={label} fontSize={10} fill="#1f2937" listening={false} />
         )}
-        {rotationWarning && (
-          <WarningTriangle x={props.x + props.width} y={props.y} warning={rotationWarning} onHover={onHoverWarning} />
+        {warnings && warnings.length > 0 ? (
+          <WarningTriangle x={props.x + props.width} y={props.y} reasons={warnings} onHover={onHoverIndicator} />
+        ) : (
+          goodCompanions &&
+          goodCompanions.length > 0 && (
+            <CompanionCheckmark x={props.x + props.width} y={props.y} neighbors={goodCompanions} onHover={onHoverIndicator} />
+          )
         )}
       </>
     );
@@ -724,13 +813,18 @@ function PlantingMarker({
       {active && (
         <Text x={centerX + radius + 3} y={centerY - 5} text={label} fontSize={10} fill="#1f2937" listening={false} />
       )}
-      {rotationWarning && (
-        <WarningTriangle
-          x={centerX + radius * 0.7}
-          y={centerY - radius * 0.7}
-          warning={rotationWarning}
-          onHover={onHoverWarning}
-        />
+      {warnings && warnings.length > 0 ? (
+        <WarningTriangle x={centerX + radius * 0.7} y={centerY - radius * 0.7} reasons={warnings} onHover={onHoverIndicator} />
+      ) : (
+        goodCompanions &&
+        goodCompanions.length > 0 && (
+          <CompanionCheckmark
+            x={centerX + radius * 0.7}
+            y={centerY - radius * 0.7}
+            neighbors={goodCompanions}
+            onHover={onHoverIndicator}
+          />
+        )
       )}
     </>
   );

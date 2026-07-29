@@ -17,6 +17,7 @@ import { useSnackbar } from "@/components/Snackbar";
 // on shapes, only the app-level pan.
 Konva.dragButtons = [0];
 import {
+  checkPlacement,
   checkRotation,
   createPlanting,
   getGarden,
@@ -33,15 +34,18 @@ import {
   type BedEquipment,
   type BedEquipmentUpdate,
   type BedUpdate,
+  type CompanionMatch,
   type Garden,
   type GardenPut,
   type Geometry,
+  type PlacementCheck,
   type PlacementType,
   type Plant,
   type Planting,
   type PlantingUpdate,
   type PolygonGeometry,
   type RotationWarning,
+  type ShadeWarning,
 } from "@/api/client";
 import { BedNode } from "./layout/BedNode";
 import { BedPanel, type BedPanelHandle } from "./layout/BedPanel";
@@ -76,6 +80,7 @@ import {
   clampPointToBounds,
   clampRectPositionToBounds,
   DRAG_SNAP_CM,
+  effectivePlantSpacing,
   GRID_SPACING_CM,
   normalizedRect,
   NUDGE_STEP_CM,
@@ -138,6 +143,124 @@ function nextBedPosition(beds: Bed[]): { pos_x: number; pos_y: number } {
   return { pos_x: 20 + offset, pos_y: 20 + offset };
 }
 
+// #174: placement-warning/good-companion indicator plumbing. See that
+// issue's own design-spec comment (GH issue #174) for the full rationale -
+// summarized inline below at each piece's own use site.
+
+/** Appends `reason` to `map`'s array entry for `id`, creating it if absent -
+ * always via a fresh array (never mutating an existing one in place), since
+ * callers reuse this against `new Map(prev)` shallow copies whose array
+ * *values* would otherwise still be shared with the previous React state
+ * snapshot. */
+function addReason(map: Map<number, string[]>, id: number, reason: string) {
+  const existing = map.get(id);
+  map.set(id, existing ? [...existing, reason] : [reason]);
+}
+
+/** A bed-local candidate geometry centered on the bed's own bounding-box
+ * centroid - the arm-time approximation #174's design spec calls for
+ * ("the real eventual position is unknown yet... an acceptable, stated
+ * trade-off for 'as soon as armed' feedback"). `boundingRect` already
+ * returns bed-local width/height regardless of whether the bed itself is a
+ * rectangle or polygon (see that function's own doc) - only its magnitude
+ * matters here, not its (necessarily world-space) x/y. */
+function bedCentroidGeometry(bed: Bed, thicknessCm: number): Geometry {
+  const localSize = boundingRect(bed.border_geometry);
+  return {
+    type: "rectangle",
+    x: localSize.width / 2 - thicknessCm / 2,
+    y: localSize.height / 2 - thicknessCm / 2,
+    width: thicknessCm,
+    height: thicknessCm,
+    rotation: 0,
+  };
+}
+
+/** Rotation-conflict reason line, from the perspective of whichever marker
+ * actually violates the rule - `RotationWarning.conflicting_*` fields
+ * always describe the *other* (pre-existing) planting, matching #174's
+ * design spec's canonical copy exactly when attached to the newly-placed
+ * candidate's own marker (commit-time - see `plantingCreateMutation` below).
+ * Not reused for the arm-time "flag the already-placed conflicting planting
+ * itself" case (see `rotationReasonForExisting` below) - self-referencing
+ * "same family as itself" would read as nonsense on that marker's own
+ * tooltip. */
+function rotationReasonForCandidate(warning: RotationWarning): string | null {
+  if (!warning.has_warning) return null;
+  const name = warning.conflicting_plant_common_name ?? warning.conflicting_plant_slug ?? "a recent planting";
+  const datePart = warning.conflicting_planted_date ? ` (planted ${warning.conflicting_planted_date})` : "";
+  return `Rotation: same family as ${name}${datePart}`;
+}
+
+/** Rotation-conflict reason line for the *already-placed* conflicting
+ * planting's own marker (arm-time speculative check) - phrased around the
+ * armed candidate species instead of the (self-referential) conflicting
+ * plant fields. */
+function rotationReasonForExisting(candidateName: string): string {
+  return `Rotation: same family as ${candidateName}, which you're about to place here`;
+}
+
+/** Splits one `PlacementCheck` result into every reason line it implies,
+ * from both directions - `candidateWarnings`/`candidateGoodCompanions` for
+ * the placement being checked itself (only used at commit time - see
+ * #174's design spec's "What does not get a checkmark" section for why the
+ * candidate never gets a checkmark, only ever a warning), and
+ * `neighborWarnings`/`neighborGoodCompanions` (keyed by each matched
+ * neighbor planting's own id) for the already-placed plantings it's an
+ * antagonist/shade-risk/companion to - used both at commit time and by the
+ * arm-time/drag-time speculative check (which only ever has neighbors to
+ * anchor an icon to - the not-yet-placed candidate has no marker yet). */
+function describePlacementCheck(
+  check: PlacementCheck,
+  candidateName: string,
+): {
+  candidateWarnings: string[];
+  candidateGoodCompanions: string[];
+  neighborWarnings: Map<number, string[]>;
+  neighborGoodCompanions: Map<number, string[]>;
+} {
+  const candidateWarnings: string[] = [];
+  const candidateGoodCompanions: string[] = [];
+  const neighborWarnings = new Map<number, string[]>();
+  const neighborGoodCompanions = new Map<number, string[]>();
+
+  function antagonistDetail(match: CompanionMatch): string {
+    return match.mechanism ? ` - ${match.mechanism}` : "";
+  }
+  for (const match of check.antagonists) {
+    const detail = antagonistDetail(match);
+    candidateWarnings.push(`Antagonist: inhibits ${match.neighbor_plant_common_name}${detail}`);
+    addReason(neighborWarnings, match.neighbor_planting_id, `Antagonist: inhibits ${candidateName}${detail}`);
+  }
+
+  function shadeForCandidate(shade: ShadeWarning): string {
+    return shade.direction === "shaded_by_neighbor"
+      ? `Shade risk: ${shade.neighbor_plant_common_name} may shade this spot`
+      : `Shade risk: may shade ${shade.neighbor_plant_common_name}`;
+  }
+  function shadeForNeighbor(shade: ShadeWarning): string {
+    return shade.direction === "shaded_by_neighbor"
+      ? `Shade risk: may shade ${candidateName}`
+      : `Shade risk: ${candidateName} may shade this spot`;
+  }
+  for (const shade of check.shade_warnings) {
+    candidateWarnings.push(shadeForCandidate(shade));
+    addReason(neighborWarnings, shade.neighbor_planting_id, shadeForNeighbor(shade));
+  }
+
+  function companionDetail(match: CompanionMatch): string {
+    const detail = match.mechanism ?? match.notes;
+    return detail ? ` - ${detail}` : " - beneficial pairing";
+  }
+  for (const match of check.companions) {
+    const detail = companionDetail(match);
+    candidateGoodCompanions.push(`Pairs well with ${match.neighbor_plant_common_name}${detail}`);
+    addReason(neighborGoodCompanions, match.neighbor_planting_id, `Pairs well with ${candidateName}${detail}`);
+  }
+
+  return { candidateWarnings, candidateGoodCompanions, neighborWarnings, neighborGoodCompanions };
+}
+
 export function Layout() {
   const queryClient = useQueryClient();
   const { show: showSnackbar } = useSnackbar();
@@ -170,14 +293,53 @@ export function Layout() {
   // Non-empty whenever BulkPlantingPanel is showing instead of PlantingPanel.
   const [selectedPlantingIds, setSelectedPlantingIds] = useState<Set<number>>(new Set());
   const [tooltip, setTooltip] = useState<PlantingTooltipState | null>(null);
-  // Same-family crop-rotation warnings (#26), keyed by planting id - only
-  // populated for a planting right after it's freshly placed (see
-  // plantingCreateMutation's onSuccess below), not proactively checked for
-  // every existing planting on load. A minimal version of the full
-  // arm-a-candidate-and-see-every-conflict interaction #174 designs -
-  // scoped here to "the thing you just planted gets flagged if it repeats a
-  // recent family," matching this ticket's own "How to test" steps.
-  const [rotationWarnings, setRotationWarnings] = useState<Map<number, RotationWarning>>(new Map());
+  // Placement-warning/good-companion indicators (#26/#174) - see #174's own
+  // design-spec comment for the full rationale. Two sources feed the same
+  // pair of icons (PlantPlacementLayer's WarningTriangle/CompanionCheckmark):
+  // - "Committed": permanent, written once a placement is actually saved
+  //   (plantingCreateMutation's onSuccess below) - #26's original
+  //   rotation-only mechanism, generalized to also cover antagonist/shade
+  //   companion checks.
+  // - "Speculative": live, only while a candidate plant is armed - see the
+  //   `armedPlant`-driven effect and `handleDrawGeometryChange` below.
+  //   Keyed *by bed* (not flattened into one big map) so a live drag in one
+  //   bed only ever refines/replaces that bed's own entry, never clobbering
+  //   another bed's arm-time approximation.
+  const [committedWarnings, setCommittedWarnings] = useState<Map<number, string[]>>(new Map());
+  const [committedGoodCompanions, setCommittedGoodCompanions] = useState<Map<number, string[]>>(new Map());
+  const [speculativeByBed, setSpeculativeByBed] = useState<
+    Map<number, { warnings: Map<number, string[]>; goodCompanions: Map<number, string[]> }>
+  >(new Map());
+  // Combines committed + every bed's current speculative result into the
+  // one pair of maps PlantPlacementLayer actually renders from - it doesn't
+  // need to know or care which source produced a given entry (see #174's
+  // design spec's own "both write into the same maps" note). A planting id
+  // can validly accumulate reasons from both sources at once (e.g. it has
+  // an old committed rotation conflict *and* is now also a speculative
+  // antagonist match for whatever's freshly armed) - concatenated, not
+  // overwritten.
+  const plantingWarnings = useMemo(() => {
+    const merged = new Map<number, { reasons: string[] }>();
+    for (const [id, reasons] of committedWarnings) merged.set(id, { reasons: [...reasons] });
+    for (const { warnings } of speculativeByBed.values()) {
+      for (const [id, reasons] of warnings) {
+        const existing = merged.get(id);
+        merged.set(id, { reasons: existing ? [...existing.reasons, ...reasons] : reasons });
+      }
+    }
+    return merged;
+  }, [committedWarnings, speculativeByBed]);
+  const plantingGoodCompanions = useMemo(() => {
+    const merged = new Map<number, { neighbors: string[] }>();
+    for (const [id, neighbors] of committedGoodCompanions) merged.set(id, { neighbors: [...neighbors] });
+    for (const { goodCompanions } of speculativeByBed.values()) {
+      for (const [id, neighbors] of goodCompanions) {
+        const existing = merged.get(id);
+        merged.set(id, { neighbors: existing ? [...existing.neighbors, ...neighbors] : neighbors });
+      }
+    }
+    return merged;
+  }, [committedGoodCompanions, speculativeByBed]);
   // Imperative handles onto the currently-open panel so the global
   // Delete-key handler below can trigger the exact same confirm-dialog-open
   // action as that panel's own trash button - see the "Keyboard shortcuts"
@@ -321,19 +483,62 @@ export function Layout() {
       createPlanting({ ...payload, planted_date: null, removed_date: null }),
     onSuccess: (created) => {
       queryClient.setQueryData<Planting[]>(["plantings"], (old) => (old ? [...old, created] : [created]));
-      // Fire-and-forget: flag the just-placed planting if it repeats a
-      // same-family crop recently grown in this bed (#26). A failed check
-      // (network hiccup, etc.) just means no warning shows - not worth
-      // surfacing as an error for a purely advisory indicator.
-      if (created.id != null) {
-        const plantingId = created.id;
-        checkRotation(created.bed_id, created.plant_slug)
-          .then((warning) => {
-            if (!warning.has_warning) return;
-            setRotationWarnings((prev) => new Map(prev).set(plantingId, warning));
-          })
-          .catch(() => {});
-      }
+      if (created.id == null) return;
+      const plantingId = created.id;
+      // The commit-time check below is now the authoritative result for
+      // this bed - drop whatever the arm-time/drag-time speculative check
+      // had guessed for it (#174's design spec: "Clear the speculative
+      // per-arm state for that bed once this lands").
+      setSpeculativeByBed((prev) => {
+        if (!prev.has(created.bed_id)) return prev;
+        const next = new Map(prev);
+        next.delete(created.bed_id);
+        return next;
+      });
+      const candidateName = plantsBySlug.get(created.plant_slug)?.common_name ?? created.plant_slug;
+      // Fire-and-forget, both checks in parallel: flag the just-placed
+      // planting itself if it repeats a same-family crop recently grown in
+      // this bed (#26) or is an antagonist/shade-risk to an already-placed
+      // neighbor (#174) - and flag that neighbor's own marker too. A failed
+      // check (network hiccup, etc.) just means no warning shows - not
+      // worth surfacing as an error for a purely advisory indicator.
+      checkRotation(created.bed_id, created.plant_slug)
+        .then((warning) => {
+          const reason = rotationReasonForCandidate(warning);
+          if (!reason) return;
+          setCommittedWarnings((prev) => {
+            const next = new Map(prev);
+            addReason(next, plantingId, reason);
+            return next;
+          });
+        })
+        .catch(() => {});
+      checkPlacement(created.bed_id, created.plant_slug, created.geometry, { excludePlantingId: plantingId })
+        .then((check) => {
+          const { candidateWarnings, neighborWarnings, neighborGoodCompanions } = describePlacementCheck(check, candidateName);
+          if (candidateWarnings.length > 0) {
+            setCommittedWarnings((prev) => {
+              const next = new Map(prev);
+              for (const reason of candidateWarnings) addReason(next, plantingId, reason);
+              return next;
+            });
+          }
+          if (neighborWarnings.size > 0) {
+            setCommittedWarnings((prev) => {
+              const next = new Map(prev);
+              for (const [id, reasons] of neighborWarnings) for (const reason of reasons) addReason(next, id, reason);
+              return next;
+            });
+          }
+          if (neighborGoodCompanions.size > 0) {
+            setCommittedGoodCompanions((prev) => {
+              const next = new Map(prev);
+              for (const [id, reasons] of neighborGoodCompanions) for (const reason of reasons) addReason(next, id, reason);
+              return next;
+            });
+          }
+        })
+        .catch(() => {});
     },
   });
   const plantingUpdateMutation = useMutation({
@@ -412,6 +617,90 @@ export function Layout() {
   function handlePlantPlace(bedId: number, geometry: Geometry, placementType: PlacementType) {
     if (!armedPlant) return;
     plantingCreateMutation.mutate({ bed_id: bedId, plant_slug: armedPlant.slug, placement_type: placementType, geometry });
+  }
+
+  // #174: while a candidate plant is armed, speculatively check every bed
+  // that already has at least one planting for a rotation conflict (exact,
+  // bed-scoped) and a companion/antagonist/shade match (approximated
+  // against that bed's own centroid until a real drag position exists -
+  // see `handleDrawGeometryChange` below for the live refinement).
+  // Cleared (empty map) whenever nothing is armed or the tab isn't Plants.
+  useEffect(() => {
+    if (tab !== "plants" || !armedPlant) {
+      setSpeculativeByBed(new Map());
+      return;
+    }
+    const candidate = armedPlant;
+    const candidateName = candidate.common_name;
+    const thickness = effectivePlantSpacing(null, candidate);
+    // Depends on the raw query-cache data (stable across renders unless it
+    // actually changes), not the `beds`/`plantings` locals derived from it
+    // every render, so this effect doesn't refire on every keystroke/render
+    // while a plant stays armed.
+    const currentBeds = data ?? [];
+    const currentPlantings = plantingsQuery.data ?? [];
+    const bedsWithPlantings = currentBeds.filter((bed) => bed.id != null && currentPlantings.some((p) => p.bed_id === bed.id));
+    let cancelled = false;
+    Promise.all(
+      bedsWithPlantings.map(async (bed) => {
+        const bedId = bed.id as number;
+        const [rotationResult, placementResult] = await Promise.allSettled([
+          checkRotation(bedId, candidate.slug),
+          checkPlacement(bedId, candidate.slug, bedCentroidGeometry(bed, thickness)),
+        ]);
+        const warnings = new Map<number, string[]>();
+        const goodCompanions = new Map<number, string[]>();
+        if (
+          rotationResult.status === "fulfilled" &&
+          rotationResult.value.has_warning &&
+          rotationResult.value.conflicting_planting_id != null
+        ) {
+          addReason(warnings, rotationResult.value.conflicting_planting_id, rotationReasonForExisting(candidateName));
+        }
+        if (placementResult.status === "fulfilled") {
+          const { neighborWarnings, neighborGoodCompanions } = describePlacementCheck(placementResult.value, candidateName);
+          for (const [id, reasons] of neighborWarnings) for (const reason of reasons) addReason(warnings, id, reason);
+          for (const [id, reasons] of neighborGoodCompanions) for (const reason of reasons) addReason(goodCompanions, id, reason);
+        }
+        return { bedId, warnings, goodCompanions };
+      }),
+    ).then((results) => {
+      if (cancelled) return;
+      setSpeculativeByBed(new Map(results.map((r) => [r.bedId, { warnings: r.warnings, goodCompanions: r.goodCompanions }])));
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [armedPlant, tab, data, plantingsQuery.data]);
+
+  // #174: refine the arm-time bed-centroid approximation the moment the
+  // user actually starts drawing a row/field placement - re-runs the
+  // companion/shade check (rotation isn't geometry-dependent, no need to
+  // re-run it) against the live drag rectangle, debounced 150ms so a fast
+  // drag doesn't spam the endpoint, and guarded (via an incrementing token)
+  // against a stale response landing after a newer drag tick already
+  // superseded it. Passed to PlantPlacementLayer as `onDrawGeometryChange`.
+  const drawCheckTokenRef = useRef(0);
+  const drawCheckTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function handleDrawGeometryChange(bedId: number, geometry: Geometry) {
+    if (!armedPlant) return;
+    const candidate = armedPlant;
+    if (drawCheckTimeoutRef.current != null) clearTimeout(drawCheckTimeoutRef.current);
+    const token = ++drawCheckTokenRef.current;
+    drawCheckTimeoutRef.current = setTimeout(() => {
+      checkPlacement(bedId, candidate.slug, geometry)
+        .then((check) => {
+          if (drawCheckTokenRef.current !== token) return;
+          const { neighborWarnings, neighborGoodCompanions } = describePlacementCheck(check, candidate.common_name);
+          setSpeculativeByBed((prev) => {
+            const next = new Map(prev);
+            next.set(bedId, { warnings: neighborWarnings, goodCompanions: neighborGoodCompanions });
+            return next;
+          });
+        })
+        .catch(() => {});
+    }, 150);
   }
 
   /** Ctrl/Cmd+scroll = pointer-relative zoom (matches Figma's convention,
@@ -1130,8 +1419,10 @@ export function Layout() {
                   onSelect={handlePlantingSelect}
                   selectedIds={selectedPlantingIds}
                   onMarqueeSelect={handleMarqueeSelect}
-                  rotationWarnings={rotationWarnings}
-                  onHoverWarning={setTooltip}
+                  plantingWarnings={plantingWarnings}
+                  plantingGoodCompanions={plantingGoodCompanions}
+                  onHoverIndicator={setTooltip}
+                  onDrawGeometryChange={handleDrawGeometryChange}
                   removalStateById={removalStateById}
                   startStateById={startStateById}
                 />

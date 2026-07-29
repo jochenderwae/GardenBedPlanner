@@ -395,6 +395,38 @@ export function checkRotation(
   return apiFetch(`/api/beds/${bedId}/rotation-check?${params.toString()}`);
 }
 
+export type CompanionMatch = components["schemas"]["CompanionMatch"];
+export type ShadeWarning = components["schemas"]["ShadeWarning"];
+export type PlacementCheck = components["schemas"]["PlacementCheck"];
+
+/** Companion/antagonist/shade-casting check for a candidate plant placement
+ * (not necessarily saved yet - `geometry` is supplied directly, not a
+ * Planting id) against every other active planting in the *whole garden*
+ * (distance-based, not bed-scoped like `checkRotation` above) - see
+ * backend/app/services/placement.py's own docstring for the exact
+ * semantics. #174's design spec (see that issue's own comment thread)
+ * covers what geometry a caller should supply before a real position
+ * exists: an approximate bed-centroid point while a plant is merely
+ * "armed", the live drag rectangle's centroid while row/field-drawing, and
+ * the real committed geometry once a placement is actually saved. */
+export function checkPlacement(
+  bedId: number,
+  plantSlug: string,
+  geometry: Geometry,
+  options?: { asOf?: string; neighborDistanceCm?: number; excludePlantingId?: number | null },
+): Promise<PlacementCheck> {
+  return apiFetch(`/api/beds/${bedId}/placement-check`, {
+    method: "POST",
+    body: JSON.stringify({
+      plant_slug: plantSlug,
+      geometry,
+      ...(options?.asOf ? { as_of: options.asOf } : {}),
+      ...(options?.neighborDistanceCm != null ? { neighbor_distance_cm: options.neighborDistanceCm } : {}),
+      ...(options?.excludePlantingId != null ? { exclude_planting_id: options.excludePlantingId } : {}),
+    }),
+  });
+}
+
 export type PushSubscription = components["schemas"]["PushSubscription"];
 export type PushSubscriptionRegister = components["schemas"]["PushSubscriptionRegister"];
 
