@@ -71,6 +71,55 @@ test.describe("PWA manifest + service worker (#47)", () => {
     }
   });
 
+  test("theme_color/background_color pixel-match index.css's own light-mode --primary/--background tokens (#202)", async ({
+    page,
+  }) => {
+    // Reuses the same rasterization technique terracotta-clay-color-
+    // scheme.spec.ts (#188) established: setting a color as a canvas
+    // fillStyle and reading back the actual rasterized pixel is the one
+    // reliable way to compare two CSS color strings for real equality on
+    // this Chromium build, since getComputedStyle preserves oklch(...)
+    // notation verbatim rather than normalizing it. Proves the manifest's
+    // hardcoded hex values are pixel-identical to the live CSS tokens,
+    // not just "looks about right" from a manual OKLCH->sRGB conversion.
+    await page.goto(PREVIEW_URL!);
+    const manifestLink = page.locator('link[rel="manifest"]');
+    const href = await manifestLink.getAttribute("href");
+    const manifest = await (await page.request.get(new URL(href!, PREVIEW_URL).toString())).json();
+
+    async function resolvedRgba(colorValue: string): Promise<[number, number, number, number]> {
+      return page.evaluate((val) => {
+        // Resolve any var(--token) reference through the real DOM cascade
+        // first - canvas has no notion of CSS custom properties.
+        const probe = document.createElement("div");
+        probe.style.color = val;
+        document.body.appendChild(probe);
+        const computed = getComputedStyle(probe).color;
+        document.body.removeChild(probe);
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 1;
+        canvas.height = 1;
+        const ctx = canvas.getContext("2d")!;
+        ctx.fillStyle = computed;
+        ctx.fillRect(0, 0, 1, 1);
+        const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
+        return [r, g, b, a] as [number, number, number, number];
+      }, colorValue);
+    }
+
+    const primaryRgba = await resolvedRgba("var(--primary)");
+    const themeColorRgba = await resolvedRgba(manifest.theme_color);
+    expect(themeColorRgba, `manifest.theme_color (${manifest.theme_color}) must resolve to the same pixel as --primary`).toEqual(primaryRgba);
+
+    const backgroundRgba = await resolvedRgba("var(--background)");
+    const manifestBackgroundRgba = await resolvedRgba(manifest.background_color);
+    expect(
+      manifestBackgroundRgba,
+      `manifest.background_color (${manifest.background_color}) must resolve to the same pixel as --background`,
+    ).toEqual(backgroundRgba);
+  });
+
   test("the apple-touch-icon link (needed for iOS 'Add to Home Screen', per this ticket's own note) resolves to a real file", async ({
     page,
   }) => {
