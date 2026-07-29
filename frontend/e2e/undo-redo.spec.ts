@@ -114,7 +114,15 @@ test.describe("Undo/redo (#18)", () => {
       const afterStaleRedo = await (await request.get(`/api/beds/${bed.id}`)).json();
       expect(afterStaleRedo.border_geometry).toEqual(beforeStaleRedo.border_geometry);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task (#192),
+      // so a plain delete now 409s on that FK - left as a bare (non-cascade)
+      // delete this cleanup silently failed every run, leaving the bed
+      // behind to collide (same footprint) with the next run's freshly
+      // created bed and falsely trip the "beds must not overlap" hard
+      // constraint - the actual root cause behind #204's whole "drag/resize/
+      // nudge silently does nothing" symptom cluster, not a real interaction
+      // regression in Layout.tsx/BedNode.tsx.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -252,7 +260,9 @@ test.describe("Undo/redo (#18)", () => {
       await request.delete(`/api/plantings/${planting.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
       await request.delete(`/api/bed-equipment/${equipment.id}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true - see the first test's own comment on why a plain
+      // delete here silently fails and leaks the bed into the next run.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

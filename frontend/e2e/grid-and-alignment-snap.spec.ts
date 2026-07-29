@@ -65,7 +65,13 @@ test.describe("Grid-snap and bed-to-bed alignment snap (#16)", () => {
         })
         .toBe(120);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task
+      // (#192), so a plain delete now 409s on that FK - see #204's own
+      // root-cause finding. A bare delete here silently fails and leaks the
+      // bed into the next run, where it overlaps the next freshly-created
+      // bed at the same coordinates and falsely trips the "beds must not
+      // overlap" hard constraint - not a real interaction regression.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -92,7 +98,13 @@ test.describe("Grid-snap and bed-to-bed alignment snap (#16)", () => {
         })
         .toBe(100);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task
+      // (#192), so a plain delete now 409s on that FK - see #204's own
+      // root-cause finding. A bare delete here silently fails and leaks the
+      // bed into the next run, where it overlaps the next freshly-created
+      // bed at the same coordinates and falsely trips the "beds must not
+      // overlap" hard constraint - not a real interaction regression.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -138,7 +150,13 @@ test.describe("Grid-snap and bed-to-bed alignment snap (#16)", () => {
         )
         .toEqual({ x: 720, y: 120 });
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task
+      // (#192), so a plain delete now 409s on that FK - see #204's own
+      // root-cause finding. A bare delete here silently fails and leaks the
+      // bed into the next run, where it overlaps the next freshly-created
+      // bed at the same coordinates and falsely trips the "beds must not
+      // overlap" hard constraint - not a real interaction regression.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -193,7 +211,13 @@ test.describe("Grid-snap and bed-to-bed alignment snap (#16)", () => {
     } finally {
       await request.delete(`/api/plantings/${planting.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task
+      // (#192), so a plain delete now 409s on that FK - see #204's own
+      // root-cause finding. A bare delete here silently fails and leaks the
+      // bed into the next run, where it overlaps the next freshly-created
+      // bed at the same coordinates and falsely trips the "beds must not
+      // overlap" hard constraint - not a real interaction regression.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -227,8 +251,9 @@ test.describe("Grid-snap and bed-to-bed alignment snap (#16)", () => {
         })
         .toBe(242);
     } finally {
-      await request.delete(`/api/beds/${bedA.id}`).catch(() => {});
-      await request.delete(`/api/beds/${bedB.id}`).catch(() => {});
+      // cascade=true - see this file's own earlier comment.
+      await request.delete(`/api/beds/${bedA.id}?cascade=true`).catch(() => {});
+      await request.delete(`/api/beds/${bedB.id}?cascade=true`).catch(() => {});
     }
   });
 });

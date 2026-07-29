@@ -71,7 +71,13 @@ test.describe("Keyboard shortcuts in the canvas editor (#17)", () => {
         })
         .toBe(201);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task (#192),
+      // so a plain delete now 409s on that FK - see #204's own root-cause
+      // finding. A bare delete here silently fails and leaks the bed into
+      // the next test/run, where it overlaps the next freshly-created bed
+      // at the same coordinates and falsely trips the "beds must not
+      // overlap" hard constraint - not a real interaction regression.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -105,8 +111,10 @@ test.describe("Keyboard shortcuts in the canvas editor (#17)", () => {
       const finalA = (await (await request.get(`/api/beds/${bedA.id}`)).json()).border_geometry as Rect;
       expect(finalA.x, "bed A must stop exactly where it touches bed B, not overlap it").toBe(210);
     } finally {
-      await request.delete(`/api/beds/${bedA.id}`).catch(() => {});
-      await request.delete(`/api/beds/${bedB.id}`).catch(() => {});
+      // cascade=true - see the first test's own comment on why a plain
+      // delete here silently fails and leaks the bed(s) into the next run.
+      await request.delete(`/api/beds/${bedA.id}?cascade=true`).catch(() => {});
+      await request.delete(`/api/beds/${bedB.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -158,7 +166,8 @@ test.describe("Keyboard shortcuts in the canvas editor (#17)", () => {
     } finally {
       await request.delete(`/api/plantings/${planting.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true - see the first test's own comment.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -188,7 +197,8 @@ test.describe("Keyboard shortcuts in the canvas editor (#17)", () => {
       expect(plantings.filter((p: { bed_id: number }) => p.bed_id === bed.id)).toHaveLength(0);
     } finally {
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true - see the first test's own comment.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -208,7 +218,8 @@ test.describe("Keyboard shortcuts in the canvas editor (#17)", () => {
       await page.keyboard.press("Escape");
       await expect(page.getByRole("heading", { name: "Edit bed" })).toHaveCount(0);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true - see the first test's own comment.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

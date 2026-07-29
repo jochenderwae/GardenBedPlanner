@@ -144,7 +144,13 @@ test.describe("Live dimension labels during drag/resize/vertex-drag (#15)", () =
         "no visible difference between mid-drag and after-release at the label's position - either it never appeared, or never disappeared",
       ).toBe(true);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task
+      // (#192), so a plain delete now 409s on that FK - see #204's own
+      // root-cause finding. A bare delete here silently fails and leaks the
+      // bed into the next run, where it overlaps the next freshly-created
+      // bed at the same coordinates and falsely trips the "beds must not
+      // overlap" hard constraint - not a real interaction regression.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -182,7 +188,13 @@ test.describe("Live dimension labels during drag/resize/vertex-drag (#15)", () =
         "no visible difference between mid-resize and after-release at the label's position - either it never appeared, or never disappeared",
       ).toBe(true);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task
+      // (#192), so a plain delete now 409s on that FK - see #204's own
+      // root-cause finding. A bare delete here silently fails and leaks the
+      // bed into the next run, where it overlaps the next freshly-created
+      // bed at the same coordinates and falsely trips the "beds must not
+      // overlap" hard constraint - not a real interaction regression.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -222,7 +234,13 @@ test.describe("Live dimension labels during drag/resize/vertex-drag (#15)", () =
 
       await page.mouse.up();
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      // cascade=true: bed creation auto-generates a prepare_bed task
+      // (#192), so a plain delete now 409s on that FK - see #204's own
+      // root-cause finding. A bare delete here silently fails and leaks the
+      // bed into the next run, where it overlaps the next freshly-created
+      // bed at the same coordinates and falsely trips the "beds must not
+      // overlap" hard constraint - not a real interaction regression.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });
