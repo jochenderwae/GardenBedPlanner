@@ -135,7 +135,7 @@ test.describe("Bed name label truncation and hover tooltip (#166)", () => {
 
   test.afterEach(async ({ request }) => {
     for (const id of createdBedIds) {
-      await request.delete(`/api/beds/${id}`).catch(() => {});
+      await request.delete(`/api/beds/${id}?cascade=true`).catch(() => {});
     }
   });
 

@@ -22,14 +22,20 @@ Specs seed/clean up their own data directly via the API (`request` fixture)
   run is interrupted mid-test and leaves stray `E2E ...`-named beds behind
   (see `.claude/skills/db-query`).
 
-  Note (#14 re-verification, 2026-07-29): `DELETE /api/beds/{id}` still 500s
-  (#210, open) whenever an Action row references the bed - which every bed
-  created via the API gets for free (`generate_bed_tasks` on create). A spec
-  whose cleanup just does `request.delete(...).catch(() => {})` will silently
-  leave every bed behind once #210's FK violation starts firing, polluting
-  later runs/tests sharing `garden_test`. `bed-canvas-drag-pan.spec.ts`'s
-  `afterEach` deletes each bed's dependent Action rows first as a workaround;
-  copy that pattern in any new bed-creating spec until #210 actually ships.
+  Note (#211, 2026-07-29): `DELETE /api/beds/{id}` (no `cascade`) cleanly
+  409s - never 500s - whenever an Action row references the bed, which every
+  bed created via the API gets for free (`generate_bed_tasks` on create;
+  #210 re-verified the 409-not-500 behavior directly against real
+  `garden_test` and closed with a regression test, no code change needed). A
+  spec whose cleanup just does `request.delete(...).catch(() => {})` with no
+  `cascade=true` silently swallows that 409 and leaves the bed behind,
+  polluting later runs/tests sharing `garden_test` - #211 swept every
+  `finally`/`afterEach` cleanup delete under `frontend/e2e/` to pass
+  `?cascade=true` for exactly this reason. Copy that pattern (plain
+  `?cascade=true` on the cleanup delete is enough now - no need for
+  `bed-canvas-drag-pan.spec.ts`'s older manual "delete the bed's Action rows
+  first" workaround, which still works but is redundant) in any new
+  bed-creating spec.
 
 ## Specs
 

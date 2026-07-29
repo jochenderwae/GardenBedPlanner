@@ -64,7 +64,7 @@ test.describe("Bed delete confirm dialog - the styled AlertDialog, not native co
       await expect(dialog.getByText("This removes the bed and its layout permanently")).toBeVisible();
       await expect(dialog.getByText(/can't be undone/i)).toBeVisible();
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -86,7 +86,7 @@ test.describe("Bed delete confirm dialog - the styled AlertDialog, not native co
       expect(stillThere.status()).toBe(200);
       expect((await stillThere.json()).name).toBe("E2E Delete Dialog Cancel Bed");
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -107,7 +107,7 @@ test.describe("Bed delete confirm dialog - the styled AlertDialog, not native co
       await expect(page.getByRole("alertdialog").getByRole("heading", { name: /still has plantings or equipment/ })).toHaveCount(0);
       await expect(page.getByRole("heading", { name: "Edit bed" })).toHaveCount(0);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

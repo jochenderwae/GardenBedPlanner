@@ -232,7 +232,7 @@ test.describe("Plant footprint shapes by growth_habit (#132)", () => {
       for (const slug of createdPlantSlugs) {
         await request.delete(`/api/plants/${slug}`).catch(() => {});
       }
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

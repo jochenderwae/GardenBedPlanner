@@ -151,7 +151,7 @@ test.describe("Row default spacing prefers plant_spacing_cm over spread_cm (#195
     } finally {
       for (const p of await plantingsFor(request, bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -196,7 +196,7 @@ test.describe("Row default spacing prefers plant_spacing_cm over spread_cm (#195
     } finally {
       for (const p of await plantingsFor(request, bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

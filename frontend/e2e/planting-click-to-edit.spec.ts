@@ -112,7 +112,7 @@ test.describe("Clicking a placed plant opens its edit panel, not a delete (#86)"
     } finally {
       await request.delete(`/api/plantings/${planting.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

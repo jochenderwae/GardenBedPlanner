@@ -131,7 +131,7 @@ test.describe("Ruler tick visibility while panning over bed content (#115)", () 
       const ticksVisible = await regionContainsColor(page, box.x, box.y, 30, box.height, RULER_TICK_COLOR);
       expect(ticksVisible, "no ruler tick color found along the left edge after panning right over a bed").toBe(true);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -164,7 +164,7 @@ test.describe("Ruler tick visibility while panning over bed content (#115)", () 
         expect(ticksVisible, `no ruler tick color found along the left edge after panning ${name}`).toBe(true);
       }
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

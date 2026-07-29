@@ -194,7 +194,7 @@ test.describe("Garden editor timeline (#180)", () => {
     } finally {
       await request.delete(`/api/plantings/${past.id}`).catch(() => {});
       await request.delete(`/api/plantings/${current.id}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
     }
   });
@@ -234,7 +234,7 @@ test.describe("Garden editor timeline (#180)", () => {
     } finally {
       await request.delete(`/api/plantings/${scheduled.id}`).catch(() => {});
       await request.delete(`/api/plantings/${gone.id}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
     }
   });
@@ -293,7 +293,7 @@ test.describe("Garden editor timeline (#180)", () => {
     } finally {
       await request.delete(`/api/plantings/${past.id}`).catch(() => {});
       await request.delete(`/api/plantings/${scheduled.id}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
     }
   });

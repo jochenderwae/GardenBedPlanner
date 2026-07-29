@@ -68,7 +68,7 @@ test.describe("Accessible Tooltip component (#145)", () => {
     } finally {
       const beds = await (await request.get("/api/beds")).json();
       for (const b of beds as { id: number; name: string }[]) {
-        if (b.name === "E2E Tooltip Bed") await request.delete(`/api/beds/${b.id}`).catch(() => {});
+        if (b.name === "E2E Tooltip Bed") await request.delete(`/api/beds/${b.id}?cascade=true`).catch(() => {});
       }
     }
   });
@@ -91,7 +91,7 @@ test.describe("Accessible Tooltip component (#145)", () => {
     } finally {
       const beds = await (await request.get("/api/beds")).json();
       for (const b of beds as { id: number; name: string }[]) {
-        if (b.name === "E2E Tooltip Bed 2") await request.delete(`/api/beds/${b.id}`).catch(() => {});
+        if (b.name === "E2E Tooltip Bed 2") await request.delete(`/api/beds/${b.id}?cascade=true`).catch(() => {});
       }
     }
   });
@@ -132,7 +132,7 @@ test.describe("Accessible Tooltip component (#145)", () => {
       await expect(nameFieldHint).toBeFocused();
       await expect(page.getByText("The bed's display name")).toBeVisible();
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

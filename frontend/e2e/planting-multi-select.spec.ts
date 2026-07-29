@@ -207,7 +207,7 @@ test.describe("Planting multi-select: marquee, shift-click, bulk move/delete (#1
     } finally {
       for (const p of [plantingA, plantingB, plantingC]) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -236,7 +236,7 @@ test.describe("Planting multi-select: marquee, shift-click, bulk move/delete (#1
     } finally {
       await request.delete(`/api/plantings/${planting.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -292,7 +292,7 @@ test.describe("Planting multi-select: marquee, shift-click, bulk move/delete (#1
           "either the rectangle stopped tracking, or never rendered at all",
       ).toBe(true);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -371,7 +371,7 @@ test.describe("Planting multi-select: marquee, shift-click, bulk move/delete (#1
     } finally {
       for (const p of [plantingA, plantingB]) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

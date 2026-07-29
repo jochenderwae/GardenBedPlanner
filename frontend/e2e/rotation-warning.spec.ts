@@ -200,7 +200,7 @@ test.describe("Crop-rotation warning triangle (#26)", () => {
       await expect(page.getByText(new RegExp(`E2E Rotation Tomato ${stamp}`))).toBeVisible();
     } finally {
       for (const p of await plantingsFor(request, bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
       await request.delete(`/api/plants/${pepperSlug}`).catch(() => {});
       await request.delete(`/api/plants/${tomatoSlug}`).catch(() => {});
     }
@@ -248,7 +248,7 @@ test.describe("Crop-rotation warning triangle (#26)", () => {
       await expect(page.locator(".pointer-events-none.absolute.z-10")).toHaveCount(0);
     } finally {
       for (const p of await plantingsFor(request, bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
       await request.delete(`/api/plants/${beanSlug}`).catch(() => {});
       await request.delete(`/api/plants/${tomatoSlug}`).catch(() => {});
     }

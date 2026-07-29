@@ -94,7 +94,7 @@ test.describe("Shared Input/Select/Textarea primitives (#142)", () => {
       expect(final.sun_level).toBe("half_sun");
       expect(final.notes).toBe("Planted a mix of nightshades this year.");
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

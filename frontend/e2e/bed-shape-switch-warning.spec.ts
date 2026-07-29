@@ -98,7 +98,7 @@ test.describe("Shape-switch discard warning with an irregular polygon (#72)", ()
         height: 180, // 220 - 40
       });
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

@@ -85,7 +85,7 @@ test.describe("Bed delete confirm + cascade dialog + error handling (#83)", () =
     } finally {
       await request.delete(`/api/plantings/${planting.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -126,7 +126,7 @@ test.describe("Bed delete confirm + cascade dialog + error handling (#83)", () =
     } finally {
       await request.delete(`/api/plantings/${planting.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -156,7 +156,7 @@ test.describe("Bed delete confirm + cascade dialog + error handling (#83)", () =
         0,
       );
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

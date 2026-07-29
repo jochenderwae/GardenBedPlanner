@@ -101,7 +101,7 @@ test.describe("Toolbar (#90)", () => {
       await page.getByRole("tab", { name: "Equipment" }).click();
       await expect(page.getByRole("button", { name: "Add bed" })).not.toBeVisible();
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

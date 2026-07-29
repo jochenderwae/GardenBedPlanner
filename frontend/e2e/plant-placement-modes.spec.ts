@@ -142,7 +142,7 @@ test.describe("Plant placement modes: Point / Row / Area (#85)", () => {
     } finally {
       for (const p of await plantingsFor(request, bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -184,7 +184,7 @@ test.describe("Plant placement modes: Point / Row / Area (#85)", () => {
     } finally {
       for (const p of await plantingsFor(request, bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -219,7 +219,7 @@ test.describe("Plant placement modes: Point / Row / Area (#85)", () => {
     } finally {
       for (const p of await plantingsFor(request, bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

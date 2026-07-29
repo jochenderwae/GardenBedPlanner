@@ -100,7 +100,7 @@ test.describe("Bed canvas drag/pan/marquee-select (#14)", () => {
           await request.delete(`/api/actions/${action.id}`).catch(() => {});
         }
       }
-      await request.delete(`/api/beds/${id}`).catch(() => {});
+      await request.delete(`/api/beds/${id}?cascade=true`).catch(() => {});
     }
   });
 

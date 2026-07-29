@@ -113,7 +113,7 @@ test.describe("Bed rotation relative to garden orientation (#68)", () => {
       const afterReorient = await (await request.get(`/api/beds/${bed.id}`)).json();
       expect(afterReorient.border_geometry.rotation).toBe(75); // unchanged by the garden reorientation itself
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

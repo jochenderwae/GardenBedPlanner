@@ -79,7 +79,7 @@ test.describe("Bed resize leaves a planting outside its new footprint - warning 
       const plantings = (await (await request.get(`/api/plantings`)).json()) as { id: number; bed_id: number }[];
       for (const p of plantings.filter((p) => p.bed_id === bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -139,7 +139,7 @@ test.describe("Bed resize leaves a planting outside its new footprint - warning 
       const plantings = (await (await request.get(`/api/plantings`)).json()) as { id: number; bed_id: number }[];
       for (const p of plantings.filter((p) => p.bed_id === bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -170,7 +170,7 @@ test.describe("Bed resize leaves a planting outside its new footprint - warning 
       const plantings = (await (await request.get(`/api/plantings`)).json()) as { id: number; bed_id: number }[];
       for (const p of plantings.filter((p) => p.bed_id === bed.id)) await request.delete(`/api/plantings/${p.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

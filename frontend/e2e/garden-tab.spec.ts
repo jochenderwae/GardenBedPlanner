@@ -62,7 +62,7 @@ test.describe("Dedicated Garden tab, ordering, and cascading lock (#89)", () => 
       await page.getByRole("tab", { name: "Garden" }).click();
       await expect(page.getByRole("tab", { name: "Garden" })).toHaveAttribute("aria-selected", "true");
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -96,7 +96,7 @@ test.describe("Dedicated Garden tab, ordering, and cascading lock (#89)", () => 
         await expect(page.getByRole("heading", { name: "Edit bed" })).toHaveCount(0);
       }
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 

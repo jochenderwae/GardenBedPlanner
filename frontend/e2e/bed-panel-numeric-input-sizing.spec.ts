@@ -74,7 +74,7 @@ test.describe("Bed panel numeric input sizing (#74)", () => {
       const panelWidth = await page.locator('[data-slot="card"]').first().evaluate((el) => el.getBoundingClientRect().width);
       expect(panelWidth).toBeGreaterThan(300);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

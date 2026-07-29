@@ -137,7 +137,7 @@ test.describe("Bed placement clamped to the garden's boundary (#66)", () => {
       // a drag that silently did nothing at all).
       expect(g.x).toBeGreaterThan(350);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -181,7 +181,7 @@ test.describe("Bed placement clamped to the garden's boundary (#66)", () => {
       // top-of-file doc) the position shifted from x=350.
       expect(g.width !== 100 || g.x !== 350, "the resize gesture must have had *some* real effect").toBe(true);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -247,7 +247,7 @@ test.describe("Bed placement clamped to the garden's boundary (#66)", () => {
       const moved = points.some((p, i) => p.x !== original[i].x || p.y !== original[i].y);
       expect(moved, "the polygon drag gesture must have had some real effect").toBe(true);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

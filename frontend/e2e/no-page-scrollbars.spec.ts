@@ -49,7 +49,7 @@ test.describe("No page-level scroll bars in the Bed Planner (#113)", () => {
 
       expect(await pageHasVerticalScroll(page), "the /layout page itself scrolls vertically").toBe(false);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -80,7 +80,7 @@ test.describe("No page-level scroll bars in the Bed Planner (#113)", () => {
       ).toBeLessThan(initialBox.height - 100);
       expect(await pageHasVerticalScroll(page), "the page scrolls vertically after shrinking the window").toBe(false);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 
@@ -124,7 +124,7 @@ test.describe("No page-level scroll bars in the Bed Planner (#113)", () => {
 
       expect(await pageHasVerticalScroll(page), "the whole page scrolls instead of just the panel").toBe(false);
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

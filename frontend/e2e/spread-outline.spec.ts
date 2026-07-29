@@ -248,7 +248,7 @@ test.describe("Plant spread outline (#173)", () => {
           await request.delete(`/api/actions/${action.id}`).catch(() => {});
         }
       }
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

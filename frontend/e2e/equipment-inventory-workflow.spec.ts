@@ -93,7 +93,7 @@ test.describe("Equipment: create unplaced, place, unplace (#34)", () => {
       for (const item of items.filter((i) => i.equipment_type === equipmentType)) {
         await request.delete(`/api/bed-equipment/${item.id}`).catch(() => {});
       }
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

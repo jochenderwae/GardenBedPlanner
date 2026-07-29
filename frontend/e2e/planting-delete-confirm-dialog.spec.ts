@@ -103,7 +103,7 @@ test.describe("Planting remove-confirm dialog is the app's own AlertDialog, not 
     } finally {
       await request.delete(`/api/plantings/${planting.id}`).catch(() => {});
       await request.delete(`/api/plants/${slug}`).catch(() => {});
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

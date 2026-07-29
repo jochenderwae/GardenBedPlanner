@@ -69,7 +69,7 @@ test.describe("Bed panel has no Orientation input (#76)", () => {
         })
         .toBe("full_sun");
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });

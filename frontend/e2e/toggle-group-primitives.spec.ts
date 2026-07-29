@@ -219,7 +219,7 @@ test.describe("Shared toggle-group primitives (#143)", () => {
         })
         .toBe("rectangle");
     } finally {
-      await request.delete(`/api/beds/${bed.id}`).catch(() => {});
+      await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});
     }
   });
 });
