@@ -7,6 +7,8 @@ from app.core.db import get_session
 from app.models.action import Action
 from app.models.bed import Bed as BedTable
 from app.models.bed_equipment import BedEquipment
+from app.models.compost_bin import CompostBin
+from app.models.compost_fertilization_log import CompostFertilizationLog
 from app.models.geometry import Geometry, parse_geometry
 from app.models.planting import Planting
 from app.services.task_generation import generate_bed_tasks
@@ -157,12 +159,28 @@ def delete_bed(
             select(BedEquipment).where(BedEquipment.bed_id == bed_id)
         ).all():
             session.delete(equipment)
-        # No SQLAlchemy `relationship()` links Bed to Planting/BedEquipment
-        # (plain FK columns only - see each model's own docstring), so the
-        # ORM's unit-of-work has no dependency info to order these deletes
-        # against the bed's own delete below; without an explicit flush here
-        # it can (and did, verified against garden_test) emit the bed's
-        # DELETE first and hit the FK constraint it's trying to avoid.
+        # Same gap as Planting/BedEquipment above, found by tester while
+        # testing #38/#39: these two are also plain-FK-only satellite
+        # tables on bed_id (CompostFertilizationLog per #38,
+        # CompostBin per #39 - see each model's own docstring), so they
+        # need the same explicit cleanup here or a bed with any logged
+        # compost/fertilization history, or one marked as a compost bin,
+        # could never be deleted at all (cascade or not).
+        for log in session.exec(
+            select(CompostFertilizationLog).where(CompostFertilizationLog.bed_id == bed_id)
+        ).all():
+            session.delete(log)
+        for compost_bin in session.exec(
+            select(CompostBin).where(CompostBin.bed_id == bed_id)
+        ).all():
+            session.delete(compost_bin)
+        # No SQLAlchemy `relationship()` links Bed to Planting/BedEquipment/
+        # CompostFertilizationLog/CompostBin (plain FK columns only - see
+        # each model's own docstring), so the ORM's unit-of-work has no
+        # dependency info to order these deletes against the bed's own
+        # delete below; without an explicit flush here it can (and did,
+        # verified against garden_test) emit the bed's DELETE first and hit
+        # the FK constraint it's trying to avoid.
         session.flush()
     session.delete(bed)
     commit_or_409(session)

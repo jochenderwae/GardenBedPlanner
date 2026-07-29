@@ -161,16 +161,6 @@ def test_cascade_delete_actually_removes_dependent_plantings_and_equipment(clien
     assert client.get(f"/api/bed-equipment/{equipment_id}").status_code == 404
 
 
-@pytest.mark.xfail(
-    reason="Bug found while testing #38: delete_bed's cascade=true path never cleans up "
-    "CompostFertilizationLog rows (only Action/Planting/BedEquipment are handled) - a bed "
-    "with any logged compost/fertilization history can never be deleted at all, cascade or "
-    "not, since the FK violation happens either way. Reported back on #38 rather than fixed "
-    "here (outside this role's edit boundary). Remove this xfail once fixed - it's asserting "
-    "the correct/desired behavior, not the current buggy one, so it'll flip to an unexpected "
-    "pass (caught by strict=True) the moment it's actually fixed.",
-    strict=True,
-)
 def test_cascade_delete_bed_with_compost_fertilization_log_should_succeed(client: TestClient) -> None:
     bed_id = client.post(
         "/api/beds", json={"name": "Bed With Compost Log", "border_geometry": rectangle()},
@@ -234,15 +224,6 @@ def test_cascade_delete_bed_with_a_plantings_harvest_log_should_not_500(client: 
     assert cascade_response.status_code in (204, 409), cascade_response.text
 
 
-@pytest.mark.xfail(
-    reason="Bug found while testing #39 (same root cause as #38's CompostFertilizationLog "
-    "finding, a different Bed-linked satellite table): delete_bed's cascade=true path never "
-    "cleans up CompostBin rows either (only Action/Planting/BedEquipment are handled) - a bed "
-    "marked as a compost bin can never be deleted at all, cascade or not. Reported back on #39 "
-    "rather than fixed here (outside this role's edit boundary). Remove this xfail once fixed - "
-    "it's asserting the correct/desired behavior, not the current buggy one.",
-    strict=True,
-)
 def test_cascade_delete_bed_with_compost_bin_should_succeed(client: TestClient) -> None:
     bed_id = client.post(
         "/api/beds", json={"name": "Compost Bin Bed", "border_geometry": rectangle()},
