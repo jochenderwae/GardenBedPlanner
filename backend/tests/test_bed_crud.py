@@ -161,6 +161,79 @@ def test_cascade_delete_actually_removes_dependent_plantings_and_equipment(clien
     assert client.get(f"/api/bed-equipment/{equipment_id}").status_code == 404
 
 
+@pytest.mark.xfail(
+    reason="Bug found while testing #38: delete_bed's cascade=true path never cleans up "
+    "CompostFertilizationLog rows (only Action/Planting/BedEquipment are handled) - a bed "
+    "with any logged compost/fertilization history can never be deleted at all, cascade or "
+    "not, since the FK violation happens either way. Reported back on #38 rather than fixed "
+    "here (outside this role's edit boundary). Remove this xfail once fixed - it's asserting "
+    "the correct/desired behavior, not the current buggy one, so it'll flip to an unexpected "
+    "pass (caught by strict=True) the moment it's actually fixed.",
+    strict=True,
+)
+def test_cascade_delete_bed_with_compost_fertilization_log_should_succeed(client: TestClient) -> None:
+    bed_id = client.post(
+        "/api/beds", json={"name": "Bed With Compost Log", "border_geometry": rectangle()},
+        params={"is_initial_state": "true"},
+    ).json()["id"]
+    log_response = client.post(
+        "/api/compost-fertilization-logs",
+        json={"bed_id": bed_id, "log_date": "2027-04-01", "type": "compost"},
+    )
+    assert log_response.status_code == 201, log_response.text
+    log_id = log_response.json()["id"]
+
+    cascade_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
+    assert cascade_response.status_code == 204, cascade_response.text
+    assert client.get(f"/api/compost-fertilization-logs/{log_id}").status_code == 404
+
+
+@pytest.mark.xfail(
+    reason="Bug found while testing #38 (same area, a different dependent table): delete_bed's "
+    "cascade=true path deletes a bed's Plantings but never cleans up HarvestLog rows that "
+    "reference one of those plantings via planting_id - unlike the CompostFertilizationLog gap "
+    "just above (a clean 409), this one crashes with a raw 500. The FK violation fires during "
+    "an autoflush triggered by a later SELECT inside the cascade block (delete_bed's own "
+    "session.exec(select(BedEquipment)...) call), not at the final explicit session.commit() "
+    "commit_or_409 wraps - so commit_or_409's try/except never even gets a chance to catch it. "
+    "Same class of bug as #215 (a cascade-delete FK violation bypassing commit_or_409 due to "
+    "autoflush timing), different trigger. Reported as a new issue rather than folded into #38 "
+    "or fixed here. Remove this xfail once fixed.",
+    strict=True,
+)
+def test_cascade_delete_bed_with_a_plantings_harvest_log_should_not_500(client: TestClient, db_session) -> None:
+    from app.models.plant import Plant
+
+    bed_id = client.post(
+        "/api/beds", json={"name": "Bed With Harvested Planting", "border_geometry": rectangle()},
+        params={"is_initial_state": "true"},
+    ).json()["id"]
+    db_session.add(Plant(slug="test-harvest-cascade", common_name="Test", botanical_name="Testus e2eus"))
+    db_session.commit()
+    planting_response = client.post(
+        "/api/plantings",
+        json={
+            "bed_id": bed_id,
+            "plant_slug": "test-harvest-cascade",
+            "placement_type": "individual",
+            "geometry": rectangle(width=20, height=20),
+        },
+    )
+    assert planting_response.status_code == 201, planting_response.text
+    planting_id = planting_response.json()["id"]
+    harvest_log_response = client.post(
+        "/api/harvest-logs", json={"planting_id": planting_id, "harvest_date": "2027-08-01"}
+    )
+    assert harvest_log_response.status_code == 201, harvest_log_response.text
+
+    cascade_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
+    # The bar here is deliberately just "not a raw 500" - either a clean
+    # cascade (204, HarvestLog cleaned up too) or a clean 409 (blocked,
+    # like CompostFertilizationLog above) would both be acceptable fixes;
+    # a 500 is the one outcome that's definitely wrong.
+    assert cascade_response.status_code in (204, 409), cascade_response.text
+
+
 def test_delete_bed_with_no_dependents_works_the_same_with_or_without_cascade(client: TestClient) -> None:
     # is_initial_state=true: a plain (non-backfill) create would auto-
     # generate a prepare_bed task against the bed (#192), which is exactly
