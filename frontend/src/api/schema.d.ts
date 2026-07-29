@@ -939,6 +939,23 @@ export interface paths {
         patch: operations["update_irrigation_connection_api_irrigation_connections__connection_id__patch"];
         trace?: never;
     };
+    "/api/beds/{bed_id}/irrigation-sizing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Irrigation Sizing */
+        get: operations["get_irrigation_sizing_api_beds__bed_id__irrigation_sizing_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/compost-fertilization-logs": {
         parameters: {
             query?: never;
@@ -1748,6 +1765,17 @@ export interface components {
             /** Family Id */
             family_id?: number | null;
         };
+        /** GoverningPlanting */
+        GoverningPlanting: {
+            /** Planting Id */
+            planting_id: number;
+            /** Plant Slug */
+            plant_slug: string;
+            /** Plant Common Name */
+            plant_common_name: string;
+            /** Water Needs Mm Per Week */
+            water_needs_mm_per_week: number;
+        };
         /**
          * GrowingInfoRecordType
          * @enum {string}
@@ -1974,6 +2002,22 @@ export interface components {
             quantity_on_hand?: number | null;
             /** Notes */
             notes?: string | null;
+        };
+        /** IrrigationSizing */
+        IrrigationSizing: {
+            /** Bed Id */
+            bed_id: number;
+            /** Bed Area M2 */
+            bed_area_m2: number;
+            governing_planting?: components["schemas"]["GoverningPlanting"] | null;
+            /** Target Volume L Per Week */
+            target_volume_l_per_week?: number | null;
+            /** Total Water Delivery Lph */
+            total_water_delivery_lph?: number | null;
+            /** Required Runtime Hours Per Week */
+            required_runtime_hours_per_week?: number | null;
+            /** Required Lph For Desired Runtime */
+            required_lph_for_desired_runtime?: number | null;
         };
         /**
          * IrrigationZone
@@ -5796,6 +5840,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IrrigationConnection"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_irrigation_sizing_api_beds__bed_id__irrigation_sizing_get: {
+        parameters: {
+            query?: {
+                /** @description If given, also compute required_lph_for_desired_runtime - the nozzle rating (L/hour) needed to deliver the bed's target weekly volume within this many hours/week. */
+                desired_runtime_hours_per_week?: number | null;
+            };
+            header?: never;
+            path: {
+                bed_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationSizing"];
                 };
             };
             /** @description Validation Error */

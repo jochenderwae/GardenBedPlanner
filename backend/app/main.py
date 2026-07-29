@@ -17,6 +17,7 @@ from app.api.routes import (
     health,
     irrigation_connections,
     irrigation_parts,
+    irrigation_sizing,
     irrigation_zones,
     period_types,
     placement,
@@ -79,6 +80,7 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     app.include_router(irrigation_zones.router, prefix="/api")
     app.include_router(irrigation_parts.router, prefix="/api")
     app.include_router(irrigation_connections.router, prefix="/api")
+    app.include_router(irrigation_sizing.router, prefix="/api")
     app.include_router(compost_fertilization_logs.router, prefix="/api")
     app.include_router(compost_bins.router, prefix="/api")
     app.include_router(equipment_types.router, prefix="/api")
