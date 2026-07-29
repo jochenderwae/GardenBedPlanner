@@ -1,0 +1,128 @@
+{
+  "_notes": "Researched reference data for GitHub issue #206 (parent #35, blocks backend sub-issue #207) - real-world default geometry + bed-bound/garden-bound categorization per BedEquipment.equipment_type. Not sourced via the usual openfarm/trefle/permapeople ETL pipeline (those are plant databases, not equipment catalogs) - each entry's `sourcing_note` documents the specific real-world reference(s) checked (product spec pages, standard-size guides, extension-style buying guides) via WebSearch, same 'defensible, not guessed' bar the rest of this pipeline holds itself to. `slug` is a proposed machine key; `BedEquipment.equipment_type` today is fully free-text (see backend/app/models/bed_equipment.py's own comment and frontend/src/pages/layout/EquipmentPanel.tsx's placeholder text 'e.g. trellis, drip line, stake...') with no canonical value list anywhere in the codebase yet (grepped - only a single e2e fixture using the bare string 'trellis'), so these slugs aren't overriding an existing convention, they're proposing one for #207's EquipmentType lookup table to formalize. `default_geometry` is a rectangle (`{type, x, y, width, height, rotation}`, footprint in cm) with x/y left at 0 as a template origin - actual placement x/y is filled in per-instance, not part of a type's default. `default_height_cm` is the type's real vertical dimension, kept separate from `default_geometry` exactly the way BedEquipment.height_cm already sits alongside (not inside) its own geometry column. Two real geometry-shape gaps surfaced during this research, flagged per-entry below rather than fixed here (schema/model changes are out of this task's scope - see data/CLAUDE.md's importer-sync boundary reasoning, same idea applied to docs/schema.md's Geometry union): (1) a drip line and a garden pathway are fundamentally line/strip-shaped with an installation-specific length, not a fixed footprint the way a trellis/stake/cold-frame/rain-barrel is - modeled here as a thin rectangle (matching docs/schema.md's own precedent of using a thin polygon for a 'row' planting) with `is_placeholder: true` marking the length dimension as a non-authoritative starting point, not a researched typical value; (2) a rain barrel's true footprint is circular, but docs/schema.md's Geometry union only supports rectangle|polygon, no circle - modeled here as a rectangle bounding box rather than a many-sided polygon approximation, to keep the shape as simple/legible as every other entry until a real circle type (or a frontend render-override keyed on equipment_type) gets decided on elsewhere. Neither gap is resolved here - flagging only, per this task's own 'flag if a new shape is needed' instruction.",
+  "equipment_types": [
+    {
+      "slug": "trellis",
+      "name": "Trellis",
+      "category": "bed_bound",
+      "default_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 120,
+        "height": 5,
+        "rotation": 0
+      },
+      "default_height_cm": 180,
+      "sourcing_note": "Off-the-shelf raised-bed trellis panels commonly run ~120-165cm wide (e.g. a 65in x 48in / 165cm x 122cm U-shape cucumber/tomato trellis sold specifically for raised beds) and 150-210cm tall to give climbing tomatoes/cucumbers/beans full-season height. Picked a 120cm-wide x 180cm-tall (~6ft) panel as a realistic mid-range default sized to fit comfortably along one edge of this project's own 70x70cm/70x200cm bed footprints (root CLAUDE.md). Footprint depth (5cm) reflects panel material thickness when mounted flush/vertical against a bed edge, not a freestanding footprint - the real spatial extent is the 180cm height, captured in default_height_cm rather than the 2D footprint. General fencing-style trellis panels (a different, larger product category - freestanding garden dividers, not bed-mounted plant supports) run a standardized 183cm/6ft wide x up to 180cm tall, cross-checked as a sanity bound, not used directly."
+    },
+    {
+      "slug": "drip_line",
+      "name": "Drip Line",
+      "category": "bed_bound",
+      "default_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 100,
+        "height": 1.7,
+        "rotation": 0
+      },
+      "default_height_cm": 2,
+      "is_placeholder": true,
+      "sourcing_note": "Width (1.7cm) matches common 'half-inch' drip tubing outer diameter - nominal sizing isn't industry-standardized (manufacturers' '1/2in' tubing measures anywhere from 12mm to 17mm/.62-.71in OD), picked the upper end of that range. default_height_cm (2cm) reflects the tube's own diameter lying flat on/near the soil surface, not a raised object. Length (100cm, the rectangle's `width` field) is explicitly NOT a researched typical value the way the other entries' dimensions are - a drip line's real run length is installation-specific (varies with bed size and emitter spacing) unlike a trellis/stake/cold-frame's fairly fixed off-the-shelf size, so `is_placeholder: true` marks this as a starting point only. See this file's top-level `_notes` for the related geometry-shape gap (no dedicated line/polyline shape in docs/schema.md's Geometry union - modeled as a thin rectangle instead)."
+    },
+    {
+      "slug": "stake",
+      "name": "Stake",
+      "category": "bed_bound",
+      "default_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 3,
+        "height": 3,
+        "rotation": 0
+      },
+      "default_height_cm": 180,
+      "sourcing_note": "Footprint (3cm x 3cm) matches a typical wooden garden stake's cross-section - commonly recommended between ~2.5cm x 2.5cm and 5cm x 5cm for enough sturdiness to support a loaded tomato plant, picked the middle of that range. Height (180cm/6ft) matches the commonly sold 'standard' tomato/plant support stake length (multiple garden retailers sell 180cm/71in as their standard SKU), sized for indeterminate tomatoes/pole beans rather than the shorter 120-150cm that's sufficient for determinate varieties - erring toward the taller default since a too-short stake is a bigger practical problem for the user than a too-tall one. ~30-45cm of this length is driven into the soil (not a separate dimension here, already included in the 180cm total, same as a real product's stated length)."
+    },
+    {
+      "slug": "cold_frame",
+      "name": "Cold Frame",
+      "category": "bed_bound",
+      "default_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 129,
+        "height": 63,
+        "rotation": 0
+      },
+      "default_height_cm": 38,
+      "sourcing_note": "Matches a named commercial 'Standard Cold Frame' product spec (129cm W x 63cm D x 38cm H) - picked over the much wider range seen in DIY builds (roughly 90-122cm x 60-107cm x 30-60cm) since it's an actual standard product's dimensions rather than one-off builder choices. Real cold frames typically slope (taller at the back, for rain runoff and sun angle) - 38cm here is a single representative height, not a true ridge height; default_height_cm has no way to express a slope, flagging so backend/frontend don't render it as a flat-topped box if that distinction ever matters."
+    },
+    {
+      "slug": "pathway",
+      "name": "Pathway",
+      "category": "garden_bound_decorative",
+      "default_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 60,
+        "height": 100,
+        "rotation": 0
+      },
+      "default_height_cm": 0,
+      "is_placeholder": true,
+      "category_reasoning": "Classified decorative, not functional, but this is a genuine judgment call worth flagging rather than an obvious fit: a pathway does serve a real navigational purpose, unlike a purely ornamental element. But the category axis (per this issue's own definition) is really about whether a type needs dedicated downstream domain data beyond placement - e.g. rain_barrel's capacity - and a pathway doesn't need any such field, it's placement-only, which is the actual criterion 'decorative' is testing for even though 'purely ornamental' undersells what a path is for.",
+      "sourcing_note": "Width (60cm, the rectangle's `height` field - the path's cross-width) sits at the low end of standard garden path width guidance (comfortable single-person width is commonly cited as roughly 45-90cm) - picked 60cm as realistic-but-usable for a home vegetable garden's tightly packed beds (root CLAUDE.md), not a wide formal walkway. Length (100cm, the rectangle's `width` field) is a placeholder for the same reason as drip_line - real path length is installation-specific, connecting whichever beds it happens to run between - hence `is_placeholder: true`. default_height_cm (0) reflects that a path sits flush with grade rather than being a raised object."
+    },
+    {
+      "slug": "rain_barrel",
+      "name": "Rain Barrel",
+      "category": "garden_bound_functional",
+      "default_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 61,
+        "height": 61,
+        "rotation": 0
+      },
+      "default_height_cm": 93,
+      "sourcing_note": "Matches a common ~50-55 gallon (roughly 190-210 liter) cylindrical rain barrel: diameter ~61cm/24in, height ~93cm/36.5in, cross-checked against several real retail listings in that capacity range. Footprint is a rectangle bounding box (61cm x 61cm), not a true circle - see this file's top-level `_notes` for why (Geometry union has no circle type, and a many-sided polygon approximation was deliberately skipped to keep this entry's shape as simple as every other one). Category is garden_bound_functional (not decorative) because a rain barrel's capacity/fill-state is real garden-management data (linking to composting/fertilization/watering logging, per root CLAUDE.md's domain notes) even though building the dedicated model for that is explicitly deferred to the backend sub-issue (#207), matching the distinction this issue's own description draws between rain_barrel and a purely ornamental garden_bound_decorative element."
+    },
+    {
+      "slug": "fence_panel",
+      "name": "Fence Panel",
+      "category": "garden_bound_decorative",
+      "default_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 183,
+        "height": 5,
+        "rotation": 0
+      },
+      "default_height_cm": 180,
+      "sourcing_note": "Not in this issue's required list, added as one of the 'obvious gap' examples it names. Matches standard UK garden fence panel sizing: 183cm/6ft width is the near-universal standard, with height sold in fixed steps (90/120/150/180cm) - picked the tallest common option (180cm) since a home-garden fence is more likely used for privacy/windbreak/deer-and-pet exclusion than a low decorative border. Footprint depth (5cm) is panel thickness when installed upright, same reasoning as trellis. Classified decorative for the same reason as pathway (no dedicated downstream data field needed beyond placement) despite serving a real boundary/enclosure function, not because it's purely ornamental - flagging the same judgment-call caveat."
+    },
+    {
+      "slug": "hose_reel",
+      "name": "Hose Reel",
+      "category": "garden_bound_functional",
+      "default_geometry": {
+        "type": "rectangle",
+        "x": 0,
+        "y": 0,
+        "width": 40,
+        "height": 25,
+        "rotation": 0
+      },
+      "default_height_cm": 40,
+      "sourcing_note": "Not in this issue's required list, added as one of the 'obvious gap' examples it names. Matches compact wall-mounted garden hose reel product dimensions - real listings cluster around roughly 40-58cm wide x 25-40cm deep x 40cm tall; picked the more compact end since a wall-mounted unit projects less into usable garden space than a freestanding cart-style reel. Classified garden_bound_functional (not decorative) since it directly relates to the garden's watering/irrigation setup - similar reasoning to rain_barrel - even though, same as rain_barrel, no dedicated downstream model is being built here."
+    }
+  ]
+}
