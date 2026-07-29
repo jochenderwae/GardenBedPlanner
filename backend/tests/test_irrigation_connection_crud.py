@@ -123,3 +123,83 @@ def test_confirm_connection_both_ends_come_back_correctly(client: TestClient) ->
     to_side = client.get(f"/api/irrigation-connections?part_id={t_junction['id']}").json()
     assert [c["id"] for c in from_side] == [connection["id"]]
     assert [c["id"] for c in to_side] == [connection["id"]]
+
+
+def test_delete_irrigation_connection_twice_is_404_the_second_time(client: TestClient) -> None:
+    nozzle = _make_part(client, "Nozzle", "nozzle")
+    t_junction = _make_part(client, "T-junction", "t_junction")
+    connection_id = client.post(
+        "/api/irrigation-connections",
+        json={"from_part_id": nozzle["id"], "to_part_id": t_junction["id"]},
+    ).json()["id"]
+
+    assert client.delete(f"/api/irrigation-connections/{connection_id}").status_code == 204
+    assert client.delete(f"/api/irrigation-connections/{connection_id}").status_code == 404
+
+
+def test_create_connection_missing_required_field_is_422(client: TestClient) -> None:
+    nozzle = _make_part(client, "Nozzle", "nozzle")
+    response = client.post("/api/irrigation-connections", json={"from_part_id": nozzle["id"]})
+    assert response.status_code == 422
+
+
+def test_create_connection_with_both_parts_nonexistent_is_409_not_500(client: TestClient) -> None:
+    response = client.post(
+        "/api/irrigation-connections",
+        json={"from_part_id": 999997, "to_part_id": 999998},
+    )
+    assert response.status_code == 409
+
+
+def test_create_connection_to_self_with_nonexistent_id_is_400_not_409(client: TestClient) -> None:
+    """The self-connection check should run before the FK is ever hit -
+    passing the same nonexistent id twice is still "connects to itself"
+    first, not a 409 about a missing part."""
+    response = client.post(
+        "/api/irrigation-connections",
+        json={"from_part_id": 999999, "to_part_id": 999999},
+    )
+    assert response.status_code == 400
+
+
+def test_update_connection_to_nonexistent_part_is_409_not_500(client: TestClient) -> None:
+    nozzle = _make_part(client, "Nozzle", "nozzle")
+    t_junction = _make_part(client, "T-junction", "t_junction")
+    connection_id = client.post(
+        "/api/irrigation-connections",
+        json={"from_part_id": nozzle["id"], "to_part_id": t_junction["id"]},
+    ).json()["id"]
+
+    response = client.patch(
+        f"/api/irrigation-connections/{connection_id}", json={"to_part_id": 999999}
+    )
+    assert response.status_code == 409
+    # The connection itself is untouched by the failed update.
+    unchanged = client.get(f"/api/irrigation-connections/{connection_id}").json()
+    assert unchanged["to_part_id"] == t_junction["id"]
+
+
+def test_list_connections_filtered_by_part_id_with_no_matches_returns_empty(
+    client: TestClient,
+) -> None:
+    nozzle = _make_part(client, "Nozzle", "nozzle")
+    lonely_part = _make_part(client, "Lonely valve", "valve")
+    t_junction = _make_part(client, "T-junction", "t_junction")
+    client.post(
+        "/api/irrigation-connections",
+        json={"from_part_id": nozzle["id"], "to_part_id": t_junction["id"]},
+    )
+
+    filtered = client.get(f"/api/irrigation-connections?part_id={lonely_part['id']}").json()
+    assert filtered == []
+
+
+def test_connection_notes_default_to_empty_string_when_omitted(client: TestClient) -> None:
+    nozzle = _make_part(client, "Nozzle", "nozzle")
+    t_junction = _make_part(client, "T-junction", "t_junction")
+    response = client.post(
+        "/api/irrigation-connections",
+        json={"from_part_id": nozzle["id"], "to_part_id": t_junction["id"]},
+    )
+    assert response.status_code == 201
+    assert response.json()["notes"] == ""

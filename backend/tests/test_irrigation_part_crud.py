@@ -121,3 +121,174 @@ def test_deleting_irrigation_part_deletes_its_connections(client: TestClient) ->
     assert client.get(f"/api/irrigation-connections/{connection_id}").status_code == 404
     # The other endpoint of the connection is untouched.
     assert client.get(f"/api/irrigation-parts/{t_junction['id']}").status_code == 200
+
+
+def test_deleting_irrigation_part_deletes_all_its_connections_not_just_one(
+    client: TestClient,
+) -> None:
+    """A part can be the endpoint of several connections at once (e.g. a
+    T-junction feeding two nozzles) - deleting it must clean up every one of
+    them, not just the first found."""
+    hub = client.post(
+        "/api/irrigation-parts", json={"name": "Hub T-junction", "part_type": "t_junction", "quantity_on_hand": 1}
+    ).json()
+    nozzle_a = client.post(
+        "/api/irrigation-parts", json={"name": "Nozzle A", "part_type": "nozzle", "quantity_on_hand": 1}
+    ).json()
+    nozzle_b = client.post(
+        "/api/irrigation-parts", json={"name": "Nozzle B", "part_type": "nozzle", "quantity_on_hand": 1}
+    ).json()
+    conn_a = client.post(
+        "/api/irrigation-connections",
+        json={"from_part_id": hub["id"], "to_part_id": nozzle_a["id"]},
+    ).json()["id"]
+    conn_b = client.post(
+        "/api/irrigation-connections",
+        json={"from_part_id": nozzle_b["id"], "to_part_id": hub["id"]},
+    ).json()["id"]
+
+    assert client.delete(f"/api/irrigation-parts/{hub['id']}").status_code == 204
+    assert client.get(f"/api/irrigation-connections/{conn_a}").status_code == 404
+    assert client.get(f"/api/irrigation-connections/{conn_b}").status_code == 404
+    # Both leaf parts survive, only their connections to the deleted hub are gone.
+    assert client.get(f"/api/irrigation-parts/{nozzle_a['id']}").status_code == 200
+    assert client.get(f"/api/irrigation-parts/{nozzle_b['id']}").status_code == 200
+
+
+def test_delete_irrigation_part_twice_is_404_the_second_time(client: TestClient) -> None:
+    part_id = client.post(
+        "/api/irrigation-parts", json={"name": "Once", "part_type": "connector", "quantity_on_hand": 1}
+    ).json()["id"]
+    assert client.delete(f"/api/irrigation-parts/{part_id}").status_code == 204
+    assert client.delete(f"/api/irrigation-parts/{part_id}").status_code == 404
+
+
+def test_create_irrigation_part_with_wrong_type_quantity_is_422(client: TestClient) -> None:
+    response = client.post(
+        "/api/irrigation-parts",
+        json={"name": "Bad quantity", "part_type": "nozzle", "quantity_on_hand": "six"},
+    )
+    assert response.status_code == 422
+
+
+def test_irrigation_part_detail_needs_purchase_false_at_exact_boundary(
+    client: TestClient,
+) -> None:
+    """connections_needed == quantity_on_hand is exactly enough stock, not
+    short - needs_purchase should be False, not True, at that boundary."""
+    nozzle = client.post(
+        "/api/irrigation-parts",
+        json={"name": "Boundary nozzle", "part_type": "nozzle", "quantity_on_hand": 2},
+    ).json()
+    t1 = client.post(
+        "/api/irrigation-parts", json={"name": "T1", "part_type": "t_junction", "quantity_on_hand": 5}
+    ).json()
+    t2 = client.post(
+        "/api/irrigation-parts", json={"name": "T2", "part_type": "t_junction", "quantity_on_hand": 5}
+    ).json()
+    assert (
+        client.post(
+            "/api/irrigation-connections",
+            json={"from_part_id": nozzle["id"], "to_part_id": t1["id"]},
+        ).status_code
+        == 201
+    )
+    assert (
+        client.post(
+            "/api/irrigation-connections",
+            json={"from_part_id": nozzle["id"], "to_part_id": t2["id"]},
+        ).status_code
+        == 201
+    )
+
+    detail = client.get(f"/api/irrigation-parts/{nozzle['id']}").json()
+    assert detail["connections_needed"] == 2
+    assert detail["quantity_on_hand"] == 2
+    assert detail["needs_purchase"] is False
+
+
+def test_irrigation_part_detail_needs_purchase_true_with_multiple_connections_short(
+    client: TestClient,
+) -> None:
+    nozzle = client.post(
+        "/api/irrigation-parts",
+        json={"name": "Short nozzle", "part_type": "nozzle", "quantity_on_hand": 1},
+    ).json()
+    t1 = client.post(
+        "/api/irrigation-parts", json={"name": "T1", "part_type": "t_junction", "quantity_on_hand": 5}
+    ).json()
+    t2 = client.post(
+        "/api/irrigation-parts", json={"name": "T2", "part_type": "t_junction", "quantity_on_hand": 5}
+    ).json()
+    t3 = client.post(
+        "/api/irrigation-parts", json={"name": "T3", "part_type": "t_junction", "quantity_on_hand": 5}
+    ).json()
+    for other in (t1, t2, t3):
+        assert (
+            client.post(
+                "/api/irrigation-connections",
+                json={"from_part_id": nozzle["id"], "to_part_id": other["id"]},
+            ).status_code
+            == 201
+        )
+
+    detail = client.get(f"/api/irrigation-parts/{nozzle['id']}").json()
+    assert detail["connections_needed"] == 3
+    assert detail["needs_purchase"] is True
+
+
+def test_list_irrigation_parts_returns_multiple_parts(client: TestClient) -> None:
+    names = {"Nozzle", "T-junction", "Connector", "Valve"}
+    for name in names:
+        assert (
+            client.post(
+                "/api/irrigation-parts",
+                json={"name": name, "part_type": name.lower(), "quantity_on_hand": 1},
+            ).status_code
+            == 201
+        )
+
+    listed = client.get("/api/irrigation-parts").json()
+    assert {p["name"] for p in listed} == names
+
+
+def test_patch_irrigation_part_notes_only_leaves_other_fields_unchanged(
+    client: TestClient,
+) -> None:
+    part = client.post(
+        "/api/irrigation-parts",
+        json={"name": "Nozzle", "part_type": "nozzle", "quantity_on_hand": 3, "notes": "original"},
+    ).json()
+
+    response = client.patch(f"/api/irrigation-parts/{part['id']}", json={"notes": "updated"})
+    assert response.status_code == 200
+    updated = response.json()
+    assert updated["notes"] == "updated"
+    assert updated["name"] == "Nozzle"
+    assert updated["quantity_on_hand"] == 3
+
+
+def test_confirm_zone_based_bed_equipment_completely_unaffected_by_irrigation_parts(
+    client: TestClient,
+) -> None:
+    """#37 test criterion 5: IrrigationZone/zoned BedEquipment (#36) can
+    still be created/queried normally alongside the new parts-catalog/
+    connection model - the two are additive, not entangled."""
+    zone_id = client.post("/api/irrigation-zones", json={"name": "Zone unaffected by #37"}).json()["id"]
+    equipment_response = client.post(
+        "/api/bed-equipment",
+        json={"equipment_type": "drip_line", "water_delivery_lph": 2.0, "zone_id": zone_id},
+    )
+    assert equipment_response.status_code == 201, equipment_response.text
+
+    zone_detail = client.get(f"/api/irrigation-zones/{zone_id}").json()
+    assert zone_detail["total_water_delivery_lph"] == pytest.approx(2.0)
+
+    # Also create an irrigation part alongside - the two models coexist
+    # without cross-contamination.
+    part = client.post(
+        "/api/irrigation-parts",
+        json={"name": "Coexisting nozzle", "part_type": "nozzle", "quantity_on_hand": 1},
+    )
+    assert part.status_code == 201
+    assert client.get(f"/api/irrigation-zones/{zone_id}").json()["total_water_delivery_lph"] == pytest.approx(2.0)
