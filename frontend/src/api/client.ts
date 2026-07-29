@@ -31,6 +31,8 @@ export type PlacementType = components["schemas"]["PlacementType"];
 export type BedEquipment = components["schemas"]["BedEquipment"];
 export type BedEquipmentCreate = components["schemas"]["BedEquipmentCreate"];
 export type BedEquipmentUpdate = components["schemas"]["BedEquipmentUpdate"];
+export type EquipmentType = components["schemas"]["EquipmentType"];
+export type EquipmentCategory = components["schemas"]["EquipmentCategory"];
 
 export type IrrigationZone = components["schemas"]["IrrigationZone"];
 export type IrrigationZoneCreate = components["schemas"]["IrrigationZoneCreate"];
@@ -186,6 +188,16 @@ export function updateBedEquipment(id: number, patch: BedEquipmentUpdate): Promi
 
 export function deleteBedEquipment(id: number): Promise<void> {
   return apiFetch(`/api/bed-equipment/${id}`, { method: "DELETE" });
+}
+
+/** Reference lookup for an equipment type's real-world default shape/height
+ * and bed-bound vs. garden-bound categorization (#207/#208) - `equipment_
+ * type` on `BedEquipment` stays free text, matched against this list's
+ * `slug` by string at render time (see `EquipmentLayer.tsx`), not a joined
+ * FK - an exotic/one-off type with no matching row here is expected and
+ * falls back to the old fixed-size rendering. */
+export function listEquipmentTypes(): Promise<EquipmentType[]> {
+  return apiFetch(`/api/equipment-types`);
 }
 
 export function listIrrigationZones(): Promise<IrrigationZone[]> {

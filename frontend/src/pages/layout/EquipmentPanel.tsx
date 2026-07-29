@@ -17,19 +17,33 @@ import {
   type Bed,
   type BedEquipment,
   type BedEquipmentCreate,
+  type Garden,
   type IrrigationZone,
 } from "@/api/client";
+
+/** Sentinel `<option>` value for "place in garden" in the same `<Select>`
+ * that otherwise lists bed ids - kept distinct from any real bed id string
+ * so `handlePlace` can branch on it (#207/#208). */
+const PLACE_IN_GARDEN_VALUE = "__garden__";
 
 export const DEFAULT_EQUIPMENT_SIZE_CM = 20;
 
 interface EquipmentPanelProps {
   beds: Bed[];
+  /** Needed for the "place in garden" option (#207/#208) - `null` while no
+   * garden's been set up yet, in which case that option just isn't
+   * offered. */
+  garden: Garden | null;
   equipment: BedEquipment[];
   onClose: () => void;
   /** Place an inventory item onto a bed - lifted up to Layout.tsx (rather
    * than owning the geometry PATCH here) so the undo/redo history stack can
    * record it as one of its four tracked geometry-mutation sites. */
   onPlace: (item: BedEquipment, bed: Bed) => void;
+  /** Place an inventory item directly against the garden as a whole
+   * (#207/#208) - a rain barrel, pathway, or other item that doesn't belong
+   * to any one bed. Same lifted-up-to-Layout.tsx reasoning as onPlace. */
+  onPlaceInGarden: (item: BedEquipment) => void;
   /** Unplace a placed item back to inventory - same reasoning as onPlace. */
   onReturnToInventory: (item: BedEquipment) => void;
 }
@@ -164,7 +178,7 @@ function ZoneManagementSection({
  * of the placement tabs. Geometry, when placed, is bed-local (same
  * coordinate convention as Planting.geometry), auto-positioned the same
  * cascading way AddBedForm/the old inline form did. */
-export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToInventory }: EquipmentPanelProps) {
+export function EquipmentPanel({ beds, garden, equipment, onClose, onPlace, onPlaceInGarden, onReturnToInventory }: EquipmentPanelProps) {
   const queryClient = useQueryClient();
   const [equipmentType, setEquipmentType] = useState("");
   const [heightCm, setHeightCm] = useState("");
@@ -227,20 +241,29 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
     });
   }
 
-  function handlePlace(item: BedEquipment, bedIdStr: string) {
-    if (item.id == null || !bedIdStr) return;
-    const bed = beds.find((b) => String(b.id) === bedIdStr);
+  function handlePlace(item: BedEquipment, target: string) {
+    if (item.id == null || !target) return;
+    if (target === PLACE_IN_GARDEN_VALUE) {
+      onPlaceInGarden(item);
+      return;
+    }
+    const bed = beds.find((b) => String(b.id) === target);
     if (!bed || bed.id == null) return;
     onPlace(item, bed);
   }
 
-  function bedName(id: number | null | undefined): string {
-    if (id == null) return "Inventory";
-    return beds.find((b) => b.id === id)?.name ?? `Bed #${id}`;
+  /** Where a placed item's own bed_id/garden_id says it lives - "Inventory"
+   * only means genuinely unplaced (both null); a garden-bound item
+   * (bed_id null, garden_id set) reads "Garden", not "Inventory" (#207/
+   * #208). */
+  function placementLabel(item: BedEquipment): string {
+    if (item.bed_id != null) return beds.find((b) => b.id === item.bed_id)?.name ?? `Bed #${item.bed_id}`;
+    if (item.garden_id != null) return garden?.name ?? "Garden";
+    return "Inventory";
   }
 
-  const inventory = equipment.filter((item) => item.bed_id == null);
-  const placed = equipment.filter((item) => item.bed_id != null);
+  const inventory = equipment.filter((item) => item.bed_id == null && item.garden_id == null);
+  const placed = equipment.filter((item) => item.bed_id != null || item.garden_id != null);
 
   return (
     <Card className="w-80 p-4">
@@ -316,7 +339,7 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
                   <PackageCheck className="size-3.5 shrink-0 text-muted-foreground" />
                   <Select
                     value=""
-                    disabled={beds.length === 0}
+                    disabled={beds.length === 0 && !garden}
                     onChange={(e) => handlePlace(item, e.target.value)}
                   >
                     <option value="">Place in bed…</option>
@@ -325,6 +348,15 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
                         {bed.name}
                       </option>
                     ))}
+                    {/* Garden-bound placement (#207/#208) - a rain barrel,
+                        pathway, or other item that belongs to the garden as
+                        a whole rather than to one bed. Always offered
+                        alongside the bed list rather than gated by the
+                        item's own equipment_type category - simpler, and
+                        the category itself is only advisory (an item with
+                        no matching EquipmentType has no category to check
+                        against anyway). */}
+                    {garden && <option value={PLACE_IN_GARDEN_VALUE}>Place in garden…</option>}
                   </Select>
                 </label>
               </div>
@@ -341,7 +373,7 @@ export function EquipmentPanel({ beds, equipment, onClose, onPlace, onReturnToIn
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="font-medium">{item.equipment_type}</div>
-                    <div className="text-xs text-muted-foreground">{bedName(item.bed_id)}</div>
+                    <div className="text-xs text-muted-foreground">{placementLabel(item)}</div>
                   </div>
                   <div className="flex items-center gap-0.5">
                     <Tooltip content="Return to inventory">

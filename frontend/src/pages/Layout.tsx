@@ -22,6 +22,7 @@ import {
   getGarden,
   listBedEquipment,
   listBeds,
+  listEquipmentTypes,
   listPlantings,
   listPlants,
   putGarden,
@@ -47,6 +48,7 @@ import { BedPanel, type BedPanelHandle } from "./layout/BedPanel";
 import { AddBedForm } from "./layout/AddBedForm";
 import { BulkPlantingPanel, type BulkPlantingPanelHandle } from "./layout/BulkPlantingPanel";
 import { compassBoundingBox, compassCenter, CompassWidget } from "./layout/CompassWidget";
+import { findEquipmentType } from "./layout/equipmentTypes";
 import { GardenBoundary } from "./layout/GardenBoundary";
 import { GardenPanel } from "./layout/GardenPanel";
 import { GardenSnapshotLayer } from "./layout/GardenSnapshotView";
@@ -282,6 +284,13 @@ export function Layout() {
     queryFn: listBedEquipment,
     enabled: mode === "mine",
   });
+  // Reference lookup for a placed item's real default shape/height (#208) -
+  // Edit-tab-only, same gating as equipmentQuery above.
+  const equipmentTypesQuery = useQuery({
+    queryKey: ["equipment-types"],
+    queryFn: listEquipmentTypes,
+    enabled: mode === "mine",
+  });
   const plantsQuery = useQuery({
     queryKey: ["plants"],
     queryFn: () => listPlants(500),
@@ -353,6 +362,7 @@ export function Layout() {
   const gardenBounds = garden ? boundingRect(garden.border_geometry) : undefined;
   const plantings = plantingsQuery.data ?? [];
   const equipmentList = equipmentQuery.data ?? [];
+  const equipmentTypes = equipmentTypesQuery.data ?? [];
   const selectedBed = beds.find((b) => b.id === selectedId) ?? null;
   const selectedPlanting = plantings.find((p) => p.id === selectedPlantingId) ?? null;
   const today = todayIsoDate();
@@ -746,6 +756,28 @@ export function Layout() {
     equipmentGeometryMutation.mutate({ id: equipmentId, patch });
   }
 
+  /** An item's real footprint at placement time (#208): its matching
+   * `EquipmentType`'s own `default_geometry` size (a trellis renders wider
+   * than a stake, a drip line reads as a thin strip, etc.) instead of the
+   * old one-size-fits-all `DEFAULT_EQUIPMENT_SIZE_CM` box - which stays the
+   * fallback for an exotic/one-off `equipment_type` with no matching row
+   * (`findEquipmentType` returns `undefined` in that case, same "still
+   * works, just without a rendered default" contract the backend model
+   * itself documents). `default_height_cm` only fills in `height_cm` when
+   * the item doesn't already have one - never overwrites a value the user
+   * explicitly entered in the inventory form. */
+  function equipmentPlacementPatch(item: BedEquipment): { width: number; height: number; height_cm?: number } {
+    const matchedType = findEquipmentType(item.equipment_type, equipmentTypes);
+    const size = matchedType
+      ? boundingRect(matchedType.default_geometry)
+      : { width: DEFAULT_EQUIPMENT_SIZE_CM, height: DEFAULT_EQUIPMENT_SIZE_CM };
+    const heightPatch =
+      item.height_cm == null && matchedType?.default_height_cm != null
+        ? { height_cm: matchedType.default_height_cm }
+        : {};
+    return { width: size.width, height: size.height, ...heightPatch };
+  }
+
   /** Placing an inventory item onto a bed - same cascading default position
    * as the old inline handler this replaced (AddBedForm's nextBedPosition
    * follows the same idea), just lifted up here so it's one of undo/redo's
@@ -753,19 +785,51 @@ export function Layout() {
   function handleEquipmentPlace(item: BedEquipment, bed: Bed) {
     if (item.id == null || bed.id == null) return;
     const itemId = item.id;
+    const { width, height, height_cm } = equipmentPlacementPatch(item);
     const existingInBed = equipmentList.filter((e) => e.bed_id === bed.id).length;
-    const offset = (existingInBed % 5) * (DEFAULT_EQUIPMENT_SIZE_CM + 5);
-    const previousPatch: BedEquipmentUpdate = { bed_id: item.bed_id, geometry: item.geometry };
+    const offset = (existingInBed % 5) * (Math.max(width, height) + 5);
+    const previousPatch: BedEquipmentUpdate = {
+      bed_id: item.bed_id,
+      garden_id: item.garden_id,
+      geometry: item.geometry,
+    };
     const nextPatch: BedEquipmentUpdate = {
       bed_id: bed.id,
-      geometry: {
-        type: "rectangle",
-        x: 10 + offset,
-        y: 10 + offset,
-        width: DEFAULT_EQUIPMENT_SIZE_CM,
-        height: DEFAULT_EQUIPMENT_SIZE_CM,
-        rotation: 0,
-      },
+      garden_id: null,
+      geometry: { type: "rectangle", x: 10 + offset, y: 10 + offset, width, height, rotation: 0 },
+      ...(height_cm != null ? { height_cm } : {}),
+    };
+    applyEquipmentPatch(itemId, nextPatch);
+    history.push({
+      undo: () => applyEquipmentPatch(itemId, previousPatch),
+      redo: () => applyEquipmentPatch(itemId, nextPatch),
+    });
+  }
+
+  /** Placing an inventory item directly against the garden as a whole
+   * (#207/#208) - a rain barrel, pathway, or other item that doesn't belong
+   * to any one bed. Mirrors `handleEquipmentPlace`'s cascading-position/
+   * default-size/undo-redo shape exactly, just keyed off `garden_id`
+   * instead of `bed_id`; geometry is garden-local the same way a bed's own
+   * plantings are bed-local (see `EquipmentLayer.tsx`'s matching render-
+   * offset), not literal world coordinates. */
+  function handleEquipmentPlaceInGarden(item: BedEquipment) {
+    if (item.id == null || garden == null || garden.id == null) return;
+    const itemId = item.id;
+    const gardenId = garden.id;
+    const { width, height, height_cm } = equipmentPlacementPatch(item);
+    const existingInGarden = equipmentList.filter((e) => e.garden_id === gardenId).length;
+    const offset = (existingInGarden % 5) * (Math.max(width, height) + 5);
+    const previousPatch: BedEquipmentUpdate = {
+      bed_id: item.bed_id,
+      garden_id: item.garden_id,
+      geometry: item.geometry,
+    };
+    const nextPatch: BedEquipmentUpdate = {
+      bed_id: null,
+      garden_id: gardenId,
+      geometry: { type: "rectangle", x: 10 + offset, y: 10 + offset, width, height, rotation: 0 },
+      ...(height_cm != null ? { height_cm } : {}),
     };
     applyEquipmentPatch(itemId, nextPatch);
     history.push({
@@ -777,8 +841,12 @@ export function Layout() {
   function handleEquipmentReturnToInventory(item: BedEquipment) {
     if (item.id == null) return;
     const itemId = item.id;
-    const previousPatch: BedEquipmentUpdate = { bed_id: item.bed_id, geometry: item.geometry };
-    const nextPatch: BedEquipmentUpdate = { bed_id: null, geometry: null };
+    const previousPatch: BedEquipmentUpdate = {
+      bed_id: item.bed_id,
+      garden_id: item.garden_id,
+      geometry: item.geometry,
+    };
+    const nextPatch: BedEquipmentUpdate = { bed_id: null, garden_id: null, geometry: null };
     applyEquipmentPatch(itemId, nextPatch);
     history.push({
       undo: () => applyEquipmentPatch(itemId, previousPatch),
@@ -1047,7 +1115,7 @@ export function Layout() {
                     );
                   })()}
               </Layer>
-              {tab === "equipment" && <EquipmentLayer beds={beds} equipment={equipmentList} />}
+              {tab === "equipment" && <EquipmentLayer beds={beds} garden={garden} equipment={equipmentList} />}
               {tab === "plants" && (
                 <PlantPlacementLayer
                   ref={plantPlacementRef}
@@ -1106,9 +1174,11 @@ export function Layout() {
             <div className="h-full overflow-y-auto">
               <EquipmentPanel
                 beds={beds}
+                garden={garden}
                 equipment={equipmentList}
                 onClose={() => switchTab("planters")}
                 onPlace={handleEquipmentPlace}
+                onPlaceInGarden={handleEquipmentPlaceInGarden}
                 onReturnToInventory={handleEquipmentReturnToInventory}
               />
             </div>
