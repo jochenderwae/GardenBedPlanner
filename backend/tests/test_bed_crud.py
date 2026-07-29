@@ -238,6 +238,36 @@ def test_cascade_delete_bed_with_compost_bin_should_succeed(client: TestClient) 
     assert client.get(f"/api/compost-bins/{bin_id}").status_code == 404
 
 
+def test_cascade_delete_bed_with_both_compost_log_and_compost_bin_should_succeed(client: TestClient) -> None:
+    """#38 and #39's cascade fixes were verified independently against the
+    tester's own xfail regressions - this confirms they also work together,
+    a bed that is both a compost bin *and* has logged fertilization/compost
+    history against it (a realistic combination: a compost bin can itself
+    receive an activator/fertilizer application logged the same way as any
+    other bed's), deleted with cascade=true in one call."""
+    bed_id = client.post(
+        "/api/beds", json={"name": "Compost Bin With History", "border_geometry": rectangle()},
+        params={"is_initial_state": "true"},
+    ).json()["id"]
+
+    log_response = client.post(
+        "/api/compost-fertilization-logs",
+        json={"bed_id": bed_id, "log_date": "2027-04-01", "type": "fertilizer"},
+    )
+    assert log_response.status_code == 201, log_response.text
+    log_id = log_response.json()["id"]
+
+    bin_response = client.post("/api/compost-bins", json={"bed_id": bed_id})
+    assert bin_response.status_code == 201, bin_response.text
+    bin_id = bin_response.json()["id"]
+
+    cascade_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
+    assert cascade_response.status_code == 204, cascade_response.text
+    assert client.get(f"/api/compost-fertilization-logs/{log_id}").status_code == 404
+    assert client.get(f"/api/compost-bins/{bin_id}").status_code == 404
+    assert client.get(f"/api/beds/{bed_id}").status_code == 404
+
+
 def test_delete_bed_with_no_dependents_works_the_same_with_or_without_cascade(client: TestClient) -> None:
     # is_initial_state=true: a plain (non-backfill) create would auto-
     # generate a prepare_bed task against the bed (#192), which is exactly

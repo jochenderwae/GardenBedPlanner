@@ -91,3 +91,56 @@ def test_regular_bed_has_no_compost_bin_by_default(client: TestClient) -> None:
     response = client.get("/api/compost-bins", params={"bed_id": bed_id})
     assert response.status_code == 200
     assert response.json() == []
+
+
+def test_create_compost_bin_missing_bed_id_422(client: TestClient) -> None:
+    response = client.post("/api/compost-bins", json={})
+    assert response.status_code == 422
+
+
+def test_create_compost_bin_bad_fill_state_422(client: TestClient) -> None:
+    bed_id = _create_bed(client)
+    response = client.post("/api/compost-bins", json={"bed_id": bed_id, "fill_state": "overflowing"})
+    assert response.status_code == 422
+
+
+def test_patch_missing_compost_bin_404(client: TestClient) -> None:
+    response = client.patch("/api/compost-bins/999999", json={"fill_state": "full"})
+    assert response.status_code == 404
+
+
+def test_delete_missing_compost_bin_404(client: TestClient) -> None:
+    assert client.delete("/api/compost-bins/999999").status_code == 404
+
+
+def test_delete_compost_bin_twice_is_404_the_second_time(client: TestClient) -> None:
+    bed_id = _create_bed(client)
+    bin_id = client.post("/api/compost-bins", json={"bed_id": bed_id}).json()["id"]
+    assert client.delete(f"/api/compost-bins/{bin_id}").status_code == 204
+    assert client.delete(f"/api/compost-bins/{bin_id}").status_code == 404
+
+
+def test_update_compost_bin_bad_bed_id_returns_409(client: TestClient) -> None:
+    bed_id = _create_bed(client)
+    bin_id = client.post("/api/compost-bins", json={"bed_id": bed_id}).json()["id"]
+
+    response = client.patch(f"/api/compost-bins/{bin_id}", json={"bed_id": 999999})
+    assert response.status_code == 409
+
+    # Untouched by the failed update - still points at the original bed.
+    assert client.get(f"/api/compost-bins/{bin_id}").json()["bed_id"] == bed_id
+
+
+def test_update_compost_bin_to_another_beds_id_conflicts_with_existing_bin(client: TestClient) -> None:
+    """Moving a CompostBin's bed_id to a bed that already has its own
+    CompostBin should trip the same unique-bed_id constraint an outright
+    create does (test_compost_bin_enforces_one_per_bed), not silently
+    succeed and leave two bins pointed at fields that no longer make
+    sense."""
+    bed_a = _create_bed(client, "Compost bin A")
+    bed_b = _create_bed(client, "Compost bin B")
+    bin_a_id = client.post("/api/compost-bins", json={"bed_id": bed_a}).json()["id"]
+    client.post("/api/compost-bins", json={"bed_id": bed_b})
+
+    response = client.patch(f"/api/compost-bins/{bin_a_id}", json={"bed_id": bed_b})
+    assert response.status_code == 409

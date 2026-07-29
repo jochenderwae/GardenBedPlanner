@@ -120,3 +120,52 @@ def test_compost_fertilization_log_defaults_are_valid(client: TestClient) -> Non
     assert entry["product"] == ""
     assert entry["amount"] == ""
     assert entry["notes"] == ""
+
+
+def test_create_compost_fertilization_log_missing_required_fields_422(client: TestClient) -> None:
+    bed_id = _create_bed(client)
+    # Missing log_date and type.
+    response = client.post("/api/compost-fertilization-logs", json={"bed_id": bed_id})
+    assert response.status_code == 422
+
+
+def test_create_compost_fertilization_log_bad_type_422(client: TestClient) -> None:
+    bed_id = _create_bed(client)
+    response = client.post(
+        "/api/compost-fertilization-logs",
+        json={"bed_id": bed_id, "log_date": "2027-04-01", "type": "manure"},
+    )
+    assert response.status_code == 422
+
+
+def test_patch_missing_compost_fertilization_log_404(client: TestClient) -> None:
+    response = client.patch("/api/compost-fertilization-logs/999999", json={"notes": "x"})
+    assert response.status_code == 404
+
+
+def test_delete_missing_compost_fertilization_log_404(client: TestClient) -> None:
+    assert client.delete("/api/compost-fertilization-logs/999999").status_code == 404
+
+
+def test_delete_compost_fertilization_log_twice_is_404_the_second_time(client: TestClient) -> None:
+    bed_id = _create_bed(client)
+    entry_id = client.post(
+        "/api/compost-fertilization-logs",
+        json={"bed_id": bed_id, "log_date": "2027-04-01", "type": "compost"},
+    ).json()["id"]
+    assert client.delete(f"/api/compost-fertilization-logs/{entry_id}").status_code == 204
+    assert client.delete(f"/api/compost-fertilization-logs/{entry_id}").status_code == 404
+
+
+def test_update_compost_fertilization_log_bad_bed_id_returns_409(client: TestClient) -> None:
+    bed_id = _create_bed(client)
+    entry_id = client.post(
+        "/api/compost-fertilization-logs",
+        json={"bed_id": bed_id, "log_date": "2027-04-01", "type": "compost"},
+    ).json()["id"]
+
+    response = client.patch(f"/api/compost-fertilization-logs/{entry_id}", json={"bed_id": 999999})
+    assert response.status_code == 409
+
+    # Untouched by the failed update - still points at the original bed.
+    assert client.get(f"/api/compost-fertilization-logs/{entry_id}").json()["bed_id"] == bed_id
