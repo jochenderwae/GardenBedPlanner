@@ -17,6 +17,7 @@ import {
   normalizedRect,
   normalizeDegrees,
   plantingCenter,
+  plantingMarkerPositions,
   plantingsOutsideBounds,
   polygonToRectangle,
   rectangleToPolygon,
@@ -172,6 +173,60 @@ describe("fieldMarkerPositions", () => {
   it("always returns at least one point for a field smaller than one spacing interval on either axis", () => {
     const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 10, height: 10, rotation: 0 };
     expect(fieldMarkerPositions(geometry, 30)).toEqual([{ x: 5, y: 5 }]);
+  });
+});
+
+describe("plantingMarkerPositions", () => {
+  it("returns a single center point for an 'individual' placement", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 10, y: 20, width: 30, height: 40, rotation: 0 };
+    const points = plantingMarkerPositions("individual", geometry, undefined, undefined);
+    expect(points).toEqual([{ x: 25, y: 40 }]);
+  });
+
+  it("ignores spacingCm/plant for an 'individual' placement - always the geometry's own center", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 20, height: 20, rotation: 0 };
+    const plant = { spread_cm: 200, plant_spacing_cm: 5 } as Plant;
+    expect(plantingMarkerPositions("individual", geometry, 999, plant)).toEqual([{ x: 10, y: 10 }]);
+  });
+
+  it("delegates to rowMarkerPositions for a 'row' placement, using the effective spacing", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: -10, width: 90, height: 20, rotation: 0 };
+    const points = plantingMarkerPositions("row", geometry, 30, undefined);
+    expect(points).toEqual(rowMarkerPositions(geometry, 30));
+    expect(points.map((p) => p.x)).toEqual([15, 45, 75]);
+  });
+
+  it("delegates to fieldMarkerPositions for a 'field' placement, using the effective spacing", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 60, height: 60, rotation: 0 };
+    const points = plantingMarkerPositions("field", geometry, 30, undefined);
+    expect(points).toEqual(fieldMarkerPositions(geometry, 30));
+    expect(points).toHaveLength(4);
+  });
+
+  it("falls back through the same effectivePlantSpacing chain as the solid marker when no explicit spacing is given", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 90, height: 20, rotation: 0 };
+    const plant = { plant_spacing_cm: 30 } as Plant;
+    // explicit spacingCm (undefined) -> plant.plant_spacing_cm (30cm) -> 3 points on a 90cm row.
+    expect(plantingMarkerPositions("row", geometry, undefined, plant)).toHaveLength(3);
+  });
+
+  it("falls back to DEFAULT_PLANTING_DIAMETER_CM for row/field placements when neither spacing nor plant data is known", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 40, height: 20, rotation: 0 };
+    // 40cm / 20cm default spacing -> 2 marker positions.
+    expect(plantingMarkerPositions("row", geometry, null, undefined)).toHaveLength(2);
+  });
+
+  it("takes the polygon's bounding-box center for an 'individual' placement on polygon geometry", () => {
+    const polygon: PolygonGeometry = {
+      type: "polygon",
+      points: [
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+        { x: 10, y: 10 },
+        { x: 0, y: 10 },
+      ],
+    };
+    expect(plantingMarkerPositions("individual", polygon, undefined, undefined)).toEqual([{ x: 5, y: 5 }]);
   });
 });
 
