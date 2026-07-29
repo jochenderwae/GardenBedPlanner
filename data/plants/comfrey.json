@@ -9,7 +9,9 @@
   "days_to_maturity": 60,
   "soil_ph_min": 7.5,
   "soil_ph_max": 8.0,
-  "is_edible": false,
+  "is_edible": true,
+  "is_toxic": true,
+  "toxicity_notes": "Comfrey leaves have a genuine historical \"pot herb\" use (young leaves eaten in small quantities), but they contain pyrrolizidine alkaloids, which are hepatotoxic. The FDA and EMA specifically warn against internal/food consumption of comfrey due to the risk of liver damage with repeated or significant use - modern guidance favors topical/external use (e.g. poultices, compost tea) over eating it.",
   "succession_enabled": false,
   "succession_max_sowings": 1,
   "companions": [
@@ -54,6 +56,10 @@
     {
       "attribution": "manual-plant-spacing-fallback",
       "notes": "plant_spacing_cm substituted from row_spacing_cm (GitHub issue #170: no source distinguishes in-row plant spacing from row spacing for this plant) - NOT an independently-sourced value, just a carried-over placeholder."
+    },
+    {
+      "attribution": "manual-research",
+      "notes": "GitHub issue #199 (product-owner decision, 2026-07-29): is_edible corrected from false to true (edible_parts=['leaves'] reflects a real, documented historical 'pot herb' use, not a data bug) and is_toxic/toxicity_notes added to carry the modern-guidance caveat - FDA/EMA warn against internal consumption of comfrey leaves due to pyrrolizidine alkaloids (hepatotoxic). is_edible and is_toxic are independent fields here by design, not either/or."
     }
   ],
   "growth_habit": "upright",

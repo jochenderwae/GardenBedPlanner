@@ -10,16 +10,22 @@ not food" call (see backlog #133's own note: `infer_edible_parts`
 deliberately doesn't gate on a plant's `is_edible` for exactly this reason,
 so the edible_parts backfill never inherited this bug).
 
-One deliberate exception, NOT auto-fixed here: `comfrey` (Symphytum
-orientale). Its `edible_parts: ['leaves']` came from an Ollama inference
-pass with no cross-check against modern food-safety guidance - comfrey
-leaves contain pyrrolizidine alkaloids and mainstream sources (FDA, EMA)
-specifically warn against internal/food use, unlike the historical "pot
-herb" framing that produced the Ollama inference. That's a genuine
-"flag rather than force true blindly" case per the issue's own instruction,
-not something this script should resolve unilaterally - left as `is_edible:
-false` with `edible_parts` still populated (a real, documented
-contradiction) and flagged in data/suggestions.md for a human call instead.
+`comfrey` (Symphytum orientale) was a deliberate exception here, NOT
+auto-fixed, pending a human decision on whether its `edible_parts:
+['leaves']` (an Ollama inference with no cross-check against modern
+food-safety guidance - comfrey leaves contain pyrrolizidine alkaloids and
+mainstream sources like the FDA/EMA specifically warn against internal/food
+use) should flip `is_edible` to `false` or stay `true` with a toxicity
+caveat. **Resolved via GitHub issue #199 (product-owner decision,
+2026-07-29): `is_edible: true` stays, with new `is_toxic: true`/
+`toxicity_notes` fields added directly to `data/plants/comfrey.json` to
+carry the caveat** - `is_edible`/`is_toxic` are independent fields by
+design, not either/or, and comfrey's historical edible use and modern
+toxicity warning are both real, documented facts about the same plant part.
+`comfrey` is therefore no longer excluded here - it no longer contradicts
+`find_contradictions()`'s check (edible_parts populated AND is_edible
+already true), so removing it from `EXCLUDE_SLUGS` is a no-op on re-run,
+not a behavior change.
 
 Run from data/: uv run python -m etl.backfill_is_edible
 """
@@ -28,10 +34,11 @@ import json
 
 from etl.config import PLANTS_OUT_DIR
 
-# Confirmed 2026-07-27 (issue #165): a real, documented exception where
-# edible_parts is populated but is_edible should stay false pending a human
-# decision - see the module docstring and data/suggestions.md.
-EXCLUDE_SLUGS = {"comfrey"}
+# Historical note: comfrey was excluded here 2026-07-27..2026-07-29 (issue
+# #165) pending a human decision - see the module docstring. Resolved by
+# issue #199; no plants are excluded anymore, but the mechanism is kept in
+# place in case a similar case comes up again.
+EXCLUDE_SLUGS: set[str] = set()
 
 
 def find_contradictions() -> list[dict]:

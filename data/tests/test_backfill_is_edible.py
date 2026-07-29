@@ -61,14 +61,20 @@ class TestMain:
     def test_excluded_slug_is_skipped_even_with_the_contradiction(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
     ) -> None:
+        """EXCLUDE_SLUGS is empty by default as of GitHub issue #199 (comfrey,
+        its one former member, was resolved rather than left excluded - see
+        the module docstring), but the mechanism itself is kept in place for
+        a future similar case - exercise it directly via monkeypatch rather
+        than relying on any specific real plant being excluded."""
         plant_dir = tmp_path / "plants"
         plant_dir.mkdir()
-        _write_plant(plant_dir / "comfrey.json", slug="comfrey", edible_parts=["leaves"], is_edible=False)
+        _write_plant(plant_dir / "test-excluded.json", slug="test-excluded", edible_parts=["leaves"], is_edible=False)
         monkeypatch.setattr(bie, "PLANTS_OUT_DIR", plant_dir)
+        monkeypatch.setattr(bie, "EXCLUDE_SLUGS", {"test-excluded"})
 
         bie.main()
 
-        data = json.loads((plant_dir / "comfrey.json").read_text(encoding="utf-8"))
+        data = json.loads((plant_dir / "test-excluded.json").read_text(encoding="utf-8"))
         assert data["is_edible"] is False
         assert "data_sources" not in data
 
