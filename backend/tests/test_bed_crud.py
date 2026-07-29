@@ -103,6 +103,32 @@ def test_delete_bed_without_cascade_conflicts_when_referenced(client: TestClient
     assert client.get(f"/api/beds/{bed_id}").status_code == 404
 
 
+def test_delete_bed_without_cascade_conflicts_when_only_dependent_is_an_action(client: TestClient) -> None:
+    """#210: an ordinary (non-backfill) bed create auto-generates a
+    prepare_bed Action against it (#192) - confirms that alone is enough to
+    409 a non-cascade delete (not just a Planting/BedEquipment dependent,
+    which test_delete_bed_without_cascade_conflicts_when_referenced already
+    covers), and that cascade=true still cleans it up."""
+    bed_id = client.post(
+        "/api/beds", json={"name": "Bed with auto-generated task", "border_geometry": rectangle()}
+    ).json()["id"]
+
+    actions = client.get("/api/actions").json()
+    assert any(a["bed_id"] == bed_id and a["action_type"] == "prepare_bed" for a in actions)
+
+    conflict_response = client.delete(f"/api/beds/{bed_id}")
+    assert conflict_response.status_code == 409
+
+    # Untouched, ready for a retry - not half-deleted.
+    assert client.get(f"/api/beds/{bed_id}").status_code == 200
+    assert any(a["bed_id"] == bed_id for a in client.get("/api/actions").json())
+
+    cascade_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
+    assert cascade_response.status_code == 204
+    assert client.get(f"/api/beds/{bed_id}").status_code == 404
+    assert [a for a in client.get("/api/actions").json() if a["bed_id"] == bed_id] == []
+
+
 def test_cascade_delete_actually_removes_dependent_plantings_and_equipment(client: TestClient, db_session) -> None:
     """The earlier round-trip test only confirms the *bed* is gone after a
     cascade delete - this confirms the dependent rows it was supposed to
