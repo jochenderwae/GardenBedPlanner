@@ -268,6 +268,73 @@ def test_patch_irrigation_part_notes_only_leaves_other_fields_unchanged(
     assert updated["quantity_on_hand"] == 3
 
 
+def test_irrigation_part_diagram_and_connector_fields_round_trip(client: TestClient) -> None:
+    """#212: connector_size_mm/diagram_x/diagram_y round-trip through create
+    and GET, including via the derived IrrigationPartDetail response."""
+    create_response = client.post(
+        "/api/irrigation-parts",
+        json={
+            "name": "Gardena 13mm connector",
+            "part_type": "connector",
+            "quantity_on_hand": 3,
+            "connector_size_mm": 13.0,
+            "diagram_x": 120.5,
+            "diagram_y": 45.0,
+        },
+    )
+    assert create_response.status_code == 201, create_response.text
+    created = create_response.json()
+    assert created["connector_size_mm"] == pytest.approx(13.0)
+    assert created["diagram_x"] == pytest.approx(120.5)
+    assert created["diagram_y"] == pytest.approx(45.0)
+
+    detail = client.get(f"/api/irrigation-parts/{created['id']}").json()
+    assert detail["connector_size_mm"] == pytest.approx(13.0)
+
+
+def test_irrigation_part_diagram_and_connector_fields_default_to_null(client: TestClient) -> None:
+    """#212: omitting the new fields on create is not a validation error -
+    they default to null, same "not recorded/not placed yet" state as an
+    existing row from before the migration."""
+    create_response = client.post(
+        "/api/irrigation-parts",
+        json={"name": "Plain nozzle", "part_type": "nozzle", "quantity_on_hand": 1},
+    )
+    assert create_response.status_code == 201, create_response.text
+    created = create_response.json()
+    assert created["connector_size_mm"] is None
+    assert created["diagram_x"] is None
+    assert created["diagram_y"] is None
+
+    detail = client.get(f"/api/irrigation-parts/{created['id']}").json()
+    assert detail["connector_size_mm"] is None
+
+
+def test_patch_irrigation_part_diagram_position_only_leaves_connector_size_untouched(
+    client: TestClient,
+) -> None:
+    """#212 test criterion 5: PATCHing only diagram_x/diagram_y must not
+    disturb connector_size_mm (or any other field left unset)."""
+    part = client.post(
+        "/api/irrigation-parts",
+        json={
+            "name": "Micro-Drip dripper",
+            "part_type": "nozzle",
+            "quantity_on_hand": 2,
+            "connector_size_mm": 4.6,
+        },
+    ).json()
+
+    response = client.patch(
+        f"/api/irrigation-parts/{part['id']}", json={"diagram_x": 10.0, "diagram_y": 20.0}
+    )
+    assert response.status_code == 200
+    updated = response.json()
+    assert updated["diagram_x"] == pytest.approx(10.0)
+    assert updated["diagram_y"] == pytest.approx(20.0)
+    assert updated["connector_size_mm"] == pytest.approx(4.6)
+
+
 def test_confirm_zone_based_bed_equipment_completely_unaffected_by_irrigation_parts(
     client: TestClient,
 ) -> None:

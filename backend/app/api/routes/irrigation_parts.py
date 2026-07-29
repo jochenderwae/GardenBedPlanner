@@ -46,6 +46,7 @@ class IrrigationPartDetail(BaseModel):
     part_type: str
     quantity_on_hand: int
     notes: str
+    connector_size_mm: float | None
     connections_needed: int
     needs_purchase: bool
 
@@ -77,6 +78,7 @@ def _to_detail(session: Session, part: IrrigationPartTable) -> IrrigationPartDet
         part_type=part.part_type,
         quantity_on_hand=part.quantity_on_hand,
         notes=part.notes,
+        connector_size_mm=part.connector_size_mm,
         connections_needed=needed,
         needs_purchase=needed > part.quantity_on_hand,
     )

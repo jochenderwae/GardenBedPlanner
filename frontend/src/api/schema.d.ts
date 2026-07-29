@@ -1949,6 +1949,12 @@ export interface components {
              * @default
              */
             notes: string;
+            /** Connector Size Mm */
+            connector_size_mm?: number | null;
+            /** Diagram X */
+            diagram_x?: number | null;
+            /** Diagram Y */
+            diagram_y?: number | null;
         };
         /** IrrigationPartCreate */
         IrrigationPartCreate: {
@@ -1966,6 +1972,12 @@ export interface components {
              * @default
              */
             notes: string;
+            /** Connector Size Mm */
+            connector_size_mm?: number | null;
+            /** Diagram X */
+            diagram_x?: number | null;
+            /** Diagram Y */
+            diagram_y?: number | null;
         };
         /**
          * IrrigationPartDetail
@@ -1987,6 +1999,8 @@ export interface components {
             quantity_on_hand: number;
             /** Notes */
             notes: string;
+            /** Connector Size Mm */
+            connector_size_mm: number | null;
             /** Connections Needed */
             connections_needed: number;
             /** Needs Purchase */
@@ -2002,6 +2016,12 @@ export interface components {
             quantity_on_hand?: number | null;
             /** Notes */
             notes?: string | null;
+            /** Connector Size Mm */
+            connector_size_mm?: number | null;
+            /** Diagram X */
+            diagram_x?: number | null;
+            /** Diagram Y */
+            diagram_y?: number | null;
         };
         /** IrrigationSizing */
         IrrigationSizing: {

@@ -29,3 +29,17 @@ class IrrigationPart(SQLModel, table=True):
     part_type: str
     quantity_on_hand: int = 0
     notes: str = ""
+    # Connector/fitting size in millimeters (Gardena's own convention - 13mm
+    # standard hose, 4.6mm Micro-Drip micro-tube, etc). Nullable/advisory
+    # only: #212's canvas UI (#209) uses this to flag a diameter mismatch
+    # between two connected parts, never to block the connection - a
+    # legitimate configuration exists (reducer/dripper fittings) where sizes
+    # genuinely differ.
+    connector_size_mm: float | None = None
+    # Node position on the pipe-network diagram canvas (#209), independent
+    # of any bed/garden position - IrrigationPart is catalog-level stock, not
+    # placed equipment (no bed_id/geometry the way BedEquipment has). None
+    # means "not yet added to the diagram", same "unplaced but still valid
+    # inventory" state as an unplaced BedEquipment item.
+    diagram_x: float | None = None
+    diagram_y: float | None = None
