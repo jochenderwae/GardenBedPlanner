@@ -192,6 +192,48 @@ def test_irrigation_sizing_required_lph_for_desired_runtime(client: TestClient, 
     assert data["required_lph_for_desired_runtime"] == pytest.approx(10.0)
 
 
+def test_irrigation_sizing_desired_runtime_of_zero_does_not_divide_by_zero(client: TestClient, db_session) -> None:
+    """desired_runtime_hours_per_week has no Query-level gt=0 constraint -
+    a caller passing 0 (a nonsensical "water for zero hours" request, but
+    not rejected by validation) must get a clean null back, not a 500
+    from a ZeroDivisionError."""
+    bed_id = _create_bed(client)
+    tomato = _create_plant(db_session, "test-tomato", water_needs_mm_per_week=25)
+    _plant_bed(client, bed_id, tomato)
+
+    response = client.get(
+        f"/api/beds/{bed_id}/irrigation-sizing",
+        params={"desired_runtime_hours_per_week": 0},
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["required_lph_for_desired_runtime"] is None
+
+
+def test_irrigation_sizing_equipment_with_an_explicit_zero_rate_does_not_divide_by_zero(
+    client: TestClient, db_session
+) -> None:
+    """A nozzle explicitly recorded at water_delivery_lph=0 (distinct from
+    no rate set at all, which the query itself filters out) still sums to
+    a real, non-null 0.0 total - required_runtime_hours_per_week must stay
+    null rather than raising, since dividing by that 0.0 total would
+    otherwise crash."""
+    bed_id = _create_bed(client)
+    tomato = _create_plant(db_session, "test-tomato", water_needs_mm_per_week=25)
+    _plant_bed(client, bed_id, tomato)
+    assert (
+        client.post(
+            "/api/bed-equipment",
+            json={"bed_id": bed_id, "equipment_type": "drip_line", "water_delivery_lph": 0},
+            params={"is_initial_state": "true"},
+        ).status_code
+        == 201
+    )
+
+    data = client.get(f"/api/beds/{bed_id}/irrigation-sizing").json()
+    assert data["total_water_delivery_lph"] == pytest.approx(0.0)
+    assert data["required_runtime_hours_per_week"] is None
+
+
 def test_irrigation_sizing_polygon_bed_area_uses_shoelace_formula(client: TestClient) -> None:
     # A right triangle, legs 100cm and 200cm: area = 0.5 * 100 * 200 =
     # 10000 cm^2 = 1 m^2.
