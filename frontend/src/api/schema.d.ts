@@ -1013,6 +1013,43 @@ export interface paths {
         patch: operations["update_compost_bin_api_compost_bins__compost_bin_id__patch"];
         trace?: never;
     };
+    "/api/equipment-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Equipment Types */
+        get: operations["list_equipment_types_api_equipment_types_get"];
+        put?: never;
+        /** Create Equipment Type */
+        post: operations["create_equipment_type_api_equipment_types_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/equipment-types/{equipment_type_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Equipment Type */
+        get: operations["get_equipment_type_api_equipment_types__equipment_type_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Equipment Type */
+        delete: operations["delete_equipment_type_api_equipment_types__equipment_type_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Equipment Type */
+        patch: operations["update_equipment_type_api_equipment_types__equipment_type_id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1182,6 +1219,8 @@ export interface components {
             id?: number | null;
             /** Bed Id */
             bed_id?: number | null;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Equipment Type */
             equipment_type: string;
             /** Height Cm */
@@ -1197,6 +1236,8 @@ export interface components {
         BedEquipmentCreate: {
             /** Bed Id */
             bed_id?: number | null;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Equipment Type */
             equipment_type: string;
             /** Height Cm */
@@ -1212,6 +1253,8 @@ export interface components {
         BedEquipmentUpdate: {
             /** Bed Id */
             bed_id?: number | null;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Equipment Type */
             equipment_type?: string | null;
             /** Height Cm */
@@ -1421,6 +1464,49 @@ export interface components {
             amount?: string | null;
             /** Notes */
             notes?: string | null;
+        };
+        /**
+         * EquipmentCategory
+         * @enum {string}
+         */
+        EquipmentCategory: "bed_bound" | "garden_bound_decorative" | "garden_bound_functional";
+        /** EquipmentType */
+        EquipmentType: {
+            /** Id */
+            id?: number | null;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            category: components["schemas"]["EquipmentCategory"];
+            /** Default Height Cm */
+            default_height_cm?: number | null;
+            /** Default Geometry */
+            default_geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+        };
+        /** EquipmentTypeCreate */
+        EquipmentTypeCreate: {
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            category: components["schemas"]["EquipmentCategory"];
+            /** Default Height Cm */
+            default_height_cm?: number | null;
+            /** Default Geometry */
+            default_geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+        };
+        /** EquipmentTypeUpdate */
+        EquipmentTypeUpdate: {
+            /** Slug */
+            slug?: string | null;
+            /** Name */
+            name?: string | null;
+            category?: components["schemas"]["EquipmentCategory"] | null;
+            /** Default Height Cm */
+            default_height_cm?: number | null;
+            /** Default Geometry */
+            default_geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
         /**
          * ExampleBed
@@ -6034,6 +6120,154 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CompostBin"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_equipment_types_api_equipment_types_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentType"][];
+                };
+            };
+        };
+    };
+    create_equipment_type_api_equipment_types_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EquipmentTypeCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentType"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_equipment_type_api_equipment_types__equipment_type_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                equipment_type_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentType"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_equipment_type_api_equipment_types__equipment_type_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                equipment_type_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_equipment_type_api_equipment_types__equipment_type_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                equipment_type_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["EquipmentTypeUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EquipmentType"];
                 };
             };
             /** @description Validation Error */

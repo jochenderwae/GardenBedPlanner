@@ -13,6 +13,16 @@ class BedEquipment(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True)
     bed_id: int | None = Field(default=None, foreign_key="bed.id")
+    # Garden-bound placement (#207) - a rain barrel, compost bin, pathway,
+    # etc. that belongs to the garden as a whole rather than to one bed.
+    # Mutually exclusive with bed_id, enforced at the API layer
+    # (app/api/routes/bed_equipment.py), not a DB check constraint - both
+    # null still means unplaced inventory, same as today. Garden is
+    # effectively a singleton today (see app/models/garden.py's own
+    # docstring), so this will almost always point at the one existing row
+    # in practice, but a real FK keeps the schema honest for whenever
+    # multi-garden support actually happens.
+    garden_id: int | None = Field(default=None, foreign_key="garden.id")
     # Open-ended (trellis | drip_line | stake | cold_frame | ...), same
     # free-text-not-enum reasoning as Bed.category.
     equipment_type: str

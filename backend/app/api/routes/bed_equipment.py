@@ -63,6 +63,17 @@ def _get_or_404(session: Session, equipment_id: int) -> BedEquipmentTable:
     return equipment
 
 
+def _check_bed_garden_mutually_exclusive(bed_id: int | None, garden_id: int | None) -> None:
+    """#207: bed_id and garden_id can't both be set - equipment is either
+    bed-local, garden-wide, or unplaced inventory (both null), never both at
+    once. Enforced here rather than a DB check constraint, same "API-layer,
+    not schema-layer" precedent as this module's other cross-field rules."""
+    if bed_id is not None and garden_id is not None:
+        raise HTTPException(
+            status_code=400, detail="bed_id and garden_id can't both be set on the same equipment"
+        )
+
+
 @router.get("", response_model=list[BedEquipment])
 def list_bed_equipment(session: Session = Depends(get_session)) -> list[BedEquipment]:  # type: ignore[valid-type]
     rows = list(session.exec(select(BedEquipmentTable)).all())
@@ -83,6 +94,7 @@ def create_bed_equipment(
     """is_initial_state: set when backfilling equipment that's already in
     place in the real garden, not when the gardener is placing it now -
     skips auto-generating an install_equipment task (#192)."""
+    _check_bed_garden_mutually_exclusive(equipment.bed_id, equipment.garden_id)
     row = BedEquipmentTable(**equipment.model_dump())
     session.add(row)
     commit_or_409(session)
@@ -102,7 +114,11 @@ def update_bed_equipment(
     equipment_id: int, update: _BedEquipmentUpdate, session: Session = Depends(get_session)  # type: ignore[valid-type]
 ) -> BedEquipment:  # type: ignore[valid-type]
     equipment = _get_or_404(session, equipment_id)
-    for field, value in update.model_dump(exclude_unset=True).items():
+    data = update.model_dump(exclude_unset=True)
+    new_bed_id = data.get("bed_id", equipment.bed_id)
+    new_garden_id = data.get("garden_id", equipment.garden_id)
+    _check_bed_garden_mutually_exclusive(new_bed_id, new_garden_id)
+    for field, value in data.items():
         setattr(equipment, field, value)
     session.add(equipment)
     commit_or_409(session)
