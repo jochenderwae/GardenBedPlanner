@@ -78,7 +78,28 @@ test.describe("Bed canvas drag/pan/marquee-select (#14)", () => {
   });
 
   test.afterEach(async ({ request }) => {
+    // #210 (still open): DELETE /api/beds/{id} 500s (raw ForeignKeyViolation)
+    // whenever an Action row references the bed - and every bed created here
+    // gets one for free via generate_bed_tasks() on creation. Swallowing that
+    // failure (as this used to do) let every test in this file leave its
+    // bed(s) behind, which is exactly what caused the tester's initial #14
+    // re-verification pass to see a false "marquee-select regression": by
+    // the time the single-bed-marquee test ran, several stale beds from
+    // earlier tests in the same run had piled up in garden_test and were
+    // landing inside its marquee rectangle too, tipping a 1-bed hit into a
+    // 2+-bed hit and correctly routing through the app's multi-select branch
+    // instead of opening BedPanel. Deleting each bed's own dependent Action
+    // rows first (a test-code workaround for #210, not a fix to it - out of
+    // this file's boundary) keeps this suite self-cleaning and repeatable
+    // regardless of when #210 itself lands.
     for (const id of createdBedIds) {
+      const actionsRes = await request.get("/api/actions").catch(() => null);
+      if (actionsRes?.ok()) {
+        const actions = (await actionsRes.json()) as { id: number; bed_id: number | null }[];
+        for (const action of actions.filter((a) => a.bed_id === id)) {
+          await request.delete(`/api/actions/${action.id}`).catch(() => {});
+        }
+      }
       await request.delete(`/api/beds/${id}`).catch(() => {});
     }
   });
