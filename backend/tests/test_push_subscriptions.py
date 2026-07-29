@@ -80,6 +80,43 @@ def test_send_test_push_503_when_vapid_not_configured(client: TestClient, monkey
     assert response.status_code == 503
 
 
+def test_send_test_push_404_for_missing_subscription(client: TestClient, monkeypatch) -> None:
+    monkeypatch.setattr(settings, "vapid_private_key", "fake-private-key")
+    monkeypatch.setattr(settings, "vapid_public_key", "fake-public-key")
+    response = client.post("/api/push-subscriptions/999999/send-test", json={})
+    assert response.status_code == 404
+
+
+def test_send_test_push_succeeds_through_the_real_route_with_vapid_configured(
+    client: TestClient, monkeypatch
+) -> None:
+    """test_send_push_notification_success (below) already covers the
+    underlying service function directly - this exercises the actual HTTP
+    route the ticket's own "How to test" step 2 describes (POST .../
+    send-test), which nothing else in this file drives all the way through
+    with a *working* (not 503-unconfigured) send."""
+    monkeypatch.setattr(settings, "vapid_private_key", "fake-private-key")
+    monkeypatch.setattr(settings, "vapid_public_key", "fake-public-key")
+    subscription_id = _register(client, "https://push.example.com/route-success")["id"]
+
+    import app.services.push as push_module
+
+    monkeypatch.setattr(push_module, "webpush", lambda **kwargs: "ok")
+    response = client.post(f"/api/push-subscriptions/{subscription_id}/send-test", json={})
+    assert response.status_code == 200, response.text
+    assert response.json() == {"sent": True}
+
+
+def test_list_push_subscriptions_returns_every_registered_device(client: TestClient) -> None:
+    _register(client, "https://push.example.com/device-a")
+    _register(client, "https://push.example.com/device-b")
+
+    response = client.get("/api/push-subscriptions")
+    assert response.status_code == 200
+    endpoints = {s["endpoint"] for s in response.json()}
+    assert endpoints == {"https://push.example.com/device-a", "https://push.example.com/device-b"}
+
+
 def test_send_push_notification_success(db_session, monkeypatch) -> None:
     monkeypatch.setattr(settings, "vapid_private_key", "fake-private-key")
     monkeypatch.setattr(settings, "vapid_public_key", "fake-public-key")
