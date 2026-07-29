@@ -10,30 +10,40 @@ import { test, expect, type APIRequestContext, type Page } from "@playwright/tes
  * this still needs an actual human/tester keyboard pass before being
  * called verified." This drives exactly that keyboard pass.
  *
- * CONFIRMED REAL BUG while writing this, reproducible and root-caused via
- * direct DOM inspection (not a Playwright timing artifact - a hover-based
- * positive control using identical detection logic passes cleanly):
- *
- * - The Button-wrapped tooltip pattern (Toolbar's Undo/Redo/Fit view,
- *   EquipmentPanel's Unplace - `<Tooltip content="..."><Button>...</Button>
- *   </Tooltip>`) genuinely does open on keyboard focus, not just hover -
- *   `Button` forwards refs into a real `<button>` DOM element, which
- *   `Tooltip.Trigger`'s underlying base-ui primitive renders as/wraps
- *   correctly, tabindex and all.
- * - `FieldHint` - the icon-based pattern used for the vast majority of the
- *   53 occurrences this ticket replaced (every field-label row, every
- *   table column header, every section heading) - is a different story.
- *   `Tooltip.Trigger`'s `render={children}` merges the trigger's props
- *   directly onto whatever `children` is; for `FieldHint` that's a bare
- *   `<Info />` from `lucide-react`, which renders as a raw `<svg>` with no
- *   `tabindex` at all and `aria-hidden="true"` (lucide's own decorative-icon
- *   default). The result: every single field-level tooltip hint in the app
- *   is completely unreachable via keyboard Tab and hidden from assistive
- *   tech - confirmed directly in the DOM snapshot below, not inferred.
- *   This is the exact "keyboard/touch inaccessible" problem #145 exists to
- *   fix, now reproduced for the pattern covering the overwhelming majority
- *   of its own 53 occurrences.
+ * FieldHint's original bare-`<svg>` keyboard-inaccessibility bug (found by
+ * an earlier version of this spec, filed on #145) was fixed in commit
+ * 12c31cb - it's now wrapped in a real `<button type="button">`, matching
+ * the already-working Button-wrapped Tooltip pattern (Toolbar's Undo/Redo/
+ * Fit view). That fix's own follow-up comment flagged a real, separate
+ * subtlety this spec's `FieldHint` test methodology needs to account for:
+ * a bare `.focus()` call right after a mouse click does NOT reliably open
+ * the tooltip, because Base UI's `Tooltip` gates its focus-triggered open
+ * on real `:focus-visible` semantics (`floating-ui-react`'s `useFocus`),
+ * and Chromium doesn't grant `:focus-visible` to a *programmatic* `.focus()`
+ * call once "mouse modality" was established earlier in the same page
+ * session (exactly what clicking the bed to open BedPanel does) - a genuine
+ * keyboard Tab keypress always re-arms it regardless of what came before.
+ * The FieldHint test below reaches its target via real `Tab` keypresses
+ * (the actual keyboard-user path), not `.focus()`, for that reason - see
+ * `tabUntilFocused`'s own doc.
  */
+
+/** Presses Tab up to `maxPresses` times, stopping as soon as `target` is
+ * the focused element - real keyboard traversal, not a guessed exact
+ * tab-index position (this component's DOM order isn't this spec's concern
+ * to hard-code) and not a bare `.focus()` call, which doesn't satisfy
+ * `:focus-visible` the same way after a prior mouse interaction - see this
+ * file's own top-of-file doc for why that distinction matters here. */
+async function tabUntilFocused(page: Page, target: import("@playwright/test").Locator, maxPresses = 15): Promise<void> {
+  for (let i = 0; i < maxPresses; i++) {
+    if (await target.evaluate((el) => el === document.activeElement).catch(() => false)) return;
+    await page.keyboard.press("Tab");
+  }
+  // One last check after the final press, so a target reached on exactly
+  // the maxPresses'th Tab still counts.
+  if (await target.evaluate((el) => el === document.activeElement).catch(() => false)) return;
+  throw new Error(`target not reached via Tab within ${maxPresses} presses`);
+}
 
 type Rect = { type: "rectangle"; x: number; y: number; width: number; height: number; rotation: number };
 
@@ -100,14 +110,6 @@ test.describe("Accessible Tooltip component (#145)", () => {
     page,
     request,
   }) => {
-    // KNOWN REAL BUG (found by this test, filed on #145 - see that issue's
-    // tester comment): `FieldHint`'s bare `<Info />` (lucide-react) renders
-    // as a raw `<svg>` with no `tabindex` and `aria-hidden="true"` - it's
-    // never reachable via keyboard Tab, so this assertion fails at
-    // `toBeFocused()` before even getting to the tooltip-visibility check.
-    // This affects every field-label row, table column header, and section
-    // heading FieldHint in the app - the overwhelming majority of the 53
-    // occurrences this ticket set out to fix. Left failing on purpose.
     const bed = await createBed(request, "E2E Tooltip Bed 3", rect(40, 40, 100, 100));
     try {
       await page.goto("/layout");
@@ -128,7 +130,11 @@ test.describe("Accessible Tooltip component (#145)", () => {
         .first();
       await expect(nameFieldHint).toBeVisible();
 
-      await nameFieldHint.focus();
+      // Real Tab traversal, not `.focus()` - see this file's own top-of-file
+      // doc for why a bare `.focus()` right after the mouse click above
+      // wouldn't reliably satisfy `:focus-visible` the way a genuine
+      // keyboard user's Tab keypress does.
+      await tabUntilFocused(page, nameFieldHint);
       await expect(nameFieldHint).toBeFocused();
       await expect(page.getByText("The bed's display name")).toBeVisible();
     } finally {
