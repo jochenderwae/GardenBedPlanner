@@ -9,6 +9,7 @@ from app.api.routes import (
     beds,
     compost_bins,
     compost_fertilization_logs,
+    decorations,
     equipment_types,
     example_garden,
     garden,
@@ -84,6 +85,7 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     app.include_router(compost_fertilization_logs.router, prefix="/api")
     app.include_router(compost_bins.router, prefix="/api")
     app.include_router(equipment_types.router, prefix="/api")
+    app.include_router(decorations.router, prefix="/api")
 
     return app
 
