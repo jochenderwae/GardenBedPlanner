@@ -19,83 +19,55 @@
       "plantings": [
         {
           "plant_slug": "brandywine-tomato",
-          "x_cm": 10.0,
-          "y_cm": 0.0
-        },
-        {
-          "plant_slug": "brandywine-tomato",
-          "x_cm": 60.0,
-          "y_cm": 0.0
-        },
-        {
-          "plant_slug": "brandywine-tomato",
-          "x_cm": 10.0,
-          "y_cm": 50.0
-        },
-        {
-          "plant_slug": "brandywine-tomato",
-          "x_cm": 60.0,
-          "y_cm": 50.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 70,
+            "height": 50.0,
+            "rotation": 0
+          },
+          "spacing_cm": 50.0
         },
         {
           "plant_slug": "cherry-tomato",
-          "x_cm": 12.5,
-          "y_cm": 52.5
-        },
-        {
-          "plant_slug": "cherry-tomato",
-          "x_cm": 57.5,
-          "y_cm": 52.5
-        },
-        {
-          "plant_slug": "cherry-tomato",
-          "x_cm": 12.5,
-          "y_cm": 97.5
-        },
-        {
-          "plant_slug": "cherry-tomato",
-          "x_cm": 57.5,
-          "y_cm": 97.5
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 50.0,
+            "width": 70,
+            "height": 50.0,
+            "rotation": 0
+          },
+          "spacing_cm": 45.0
         },
         {
           "plant_slug": "basil",
-          "x_cm": 12.5,
-          "y_cm": 102.5
-        },
-        {
-          "plant_slug": "basil",
-          "x_cm": 57.5,
-          "y_cm": 102.5
-        },
-        {
-          "plant_slug": "basil",
-          "x_cm": 12.5,
-          "y_cm": 147.5
-        },
-        {
-          "plant_slug": "basil",
-          "x_cm": 57.5,
-          "y_cm": 147.5
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 100.0,
+            "width": 70,
+            "height": 50.0,
+            "rotation": 0
+          },
+          "spacing_cm": 45.0
         },
         {
           "plant_slug": "bell-pepper",
-          "x_cm": 12.5,
-          "y_cm": 152.5
-        },
-        {
-          "plant_slug": "bell-pepper",
-          "x_cm": 57.5,
-          "y_cm": 152.5
-        },
-        {
-          "plant_slug": "bell-pepper",
-          "x_cm": 12.5,
-          "y_cm": 197.5
-        },
-        {
-          "plant_slug": "bell-pepper",
-          "x_cm": 57.5,
-          "y_cm": 197.5
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 150.0,
+            "width": 70,
+            "height": 50.0,
+            "rotation": 0
+          },
+          "spacing_cm": 45.0
         }
       ]
     },
@@ -117,83 +89,42 @@
       "plantings": [
         {
           "plant_slug": "cucumber",
-          "x_cm": 5.0,
-          "y_cm": 18.3
-        },
-        {
-          "plant_slug": "cucumber",
-          "x_cm": 35.0,
-          "y_cm": 18.3
-        },
-        {
-          "plant_slug": "cucumber",
-          "x_cm": 65.0,
-          "y_cm": 18.3
-        },
-        {
-          "plant_slug": "cucumber",
-          "x_cm": 5.0,
-          "y_cm": 48.3
-        },
-        {
-          "plant_slug": "cucumber",
-          "x_cm": 35.0,
-          "y_cm": 48.3
-        },
-        {
-          "plant_slug": "cucumber",
-          "x_cm": 65.0,
-          "y_cm": 48.3
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 3.3,
+            "width": 70,
+            "height": 60.0,
+            "rotation": 0
+          },
+          "spacing_cm": 30.0
         },
         {
           "plant_slug": "beans-bush",
-          "x_cm": 16.0,
-          "y_cm": 100.0
-        },
-        {
-          "plant_slug": "beans-bush",
-          "x_cm": 23.6,
-          "y_cm": 100.0
-        },
-        {
-          "plant_slug": "beans-bush",
-          "x_cm": 31.2,
-          "y_cm": 100.0
-        },
-        {
-          "plant_slug": "beans-bush",
-          "x_cm": 38.8,
-          "y_cm": 100.0
-        },
-        {
-          "plant_slug": "beans-bush",
-          "x_cm": 46.4,
-          "y_cm": 100.0
-        },
-        {
-          "plant_slug": "beans-bush",
-          "x_cm": 54.0,
-          "y_cm": 100.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 12.2,
+            "y": 96.2,
+            "width": 45.6,
+            "height": 7.6,
+            "rotation": 0
+          },
+          "spacing_cm": 7.6
         },
         {
           "plant_slug": "dill",
-          "x_cm": 10.0,
-          "y_cm": 141.6
-        },
-        {
-          "plant_slug": "dill",
-          "x_cm": 60.0,
-          "y_cm": 141.6
-        },
-        {
-          "plant_slug": "dill",
-          "x_cm": 10.0,
-          "y_cm": 191.6
-        },
-        {
-          "plant_slug": "dill",
-          "x_cm": 60.0,
-          "y_cm": 191.6
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 133.3,
+            "width": 70,
+            "height": 66.7,
+            "rotation": 0
+          },
+          "spacing_cm": 50.0
         }
       ]
     },
@@ -215,73 +146,42 @@
       "plantings": [
         {
           "plant_slug": "eggplant",
-          "x_cm": 5.0,
-          "y_cm": 18.3
-        },
-        {
-          "plant_slug": "eggplant",
-          "x_cm": 35.0,
-          "y_cm": 18.3
-        },
-        {
-          "plant_slug": "eggplant",
-          "x_cm": 65.0,
-          "y_cm": 18.3
-        },
-        {
-          "plant_slug": "eggplant",
-          "x_cm": 5.0,
-          "y_cm": 48.3
-        },
-        {
-          "plant_slug": "eggplant",
-          "x_cm": 35.0,
-          "y_cm": 48.3
-        },
-        {
-          "plant_slug": "eggplant",
-          "x_cm": 65.0,
-          "y_cm": 48.3
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 3.3,
+            "width": 70,
+            "height": 60.0,
+            "rotation": 0
+          },
+          "spacing_cm": 30.0
         },
         {
           "plant_slug": "zucchini",
-          "x_cm": 1.7,
-          "y_cm": 66.7
-        },
-        {
-          "plant_slug": "zucchini",
-          "x_cm": 68.3,
-          "y_cm": 66.7
-        },
-        {
-          "plant_slug": "zucchini",
-          "x_cm": 1.7,
-          "y_cm": 133.4
-        },
-        {
-          "plant_slug": "zucchini",
-          "x_cm": 68.3,
-          "y_cm": 133.4
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 66.7,
+            "width": 70,
+            "height": 66.7,
+            "rotation": 0
+          },
+          "spacing_cm": 66.7
         },
         {
           "plant_slug": "african-marigold",
-          "x_cm": 5.0,
-          "y_cm": 136.6
-        },
-        {
-          "plant_slug": "african-marigold",
-          "x_cm": 65.0,
-          "y_cm": 136.6
-        },
-        {
-          "plant_slug": "african-marigold",
-          "x_cm": 5.0,
-          "y_cm": 196.6
-        },
-        {
-          "plant_slug": "african-marigold",
-          "x_cm": 65.0,
-          "y_cm": 196.6
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 133.3,
+            "width": 70,
+            "height": 66.7,
+            "rotation": 0
+          },
+          "spacing_cm": 60.0
         }
       ]
     },
@@ -303,53 +203,29 @@
       "plantings": [
         {
           "plant_slug": "acorn-squash",
-          "x_cm": 5.0,
-          "y_cm": 35.0
-        },
-        {
-          "plant_slug": "acorn-squash",
-          "x_cm": 35.0,
-          "y_cm": 35.0
-        },
-        {
-          "plant_slug": "acorn-squash",
-          "x_cm": 65.0,
-          "y_cm": 35.0
-        },
-        {
-          "plant_slug": "acorn-squash",
-          "x_cm": 5.0,
-          "y_cm": 65.0
-        },
-        {
-          "plant_slug": "acorn-squash",
-          "x_cm": 35.0,
-          "y_cm": 65.0
-        },
-        {
-          "plant_slug": "acorn-squash",
-          "x_cm": 65.0,
-          "y_cm": 65.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 20.0,
+            "width": 70,
+            "height": 60.0,
+            "rotation": 0
+          },
+          "spacing_cm": 30.0
         },
         {
           "plant_slug": "borage",
-          "x_cm": 10.0,
-          "y_cm": 125.0
-        },
-        {
-          "plant_slug": "borage",
-          "x_cm": 60.0,
-          "y_cm": 125.0
-        },
-        {
-          "plant_slug": "borage",
-          "x_cm": 10.0,
-          "y_cm": 175.0
-        },
-        {
-          "plant_slug": "borage",
-          "x_cm": 60.0,
-          "y_cm": 175.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 100.0,
+            "width": 70,
+            "height": 100.0,
+            "rotation": 0
+          },
+          "spacing_cm": 50.0
         }
       ]
     },
@@ -371,73 +247,42 @@
       "plantings": [
         {
           "plant_slug": "carrot",
-          "x_cm": 6.4,
-          "y_cm": 7.4
-        },
-        {
-          "plant_slug": "carrot",
-          "x_cm": 15.0,
-          "y_cm": 7.4
-        },
-        {
-          "plant_slug": "carrot",
-          "x_cm": 23.6,
-          "y_cm": 7.4
-        },
-        {
-          "plant_slug": "carrot",
-          "x_cm": 6.4,
-          "y_cm": 16.0
-        },
-        {
-          "plant_slug": "carrot",
-          "x_cm": 15.0,
-          "y_cm": 16.0
-        },
-        {
-          "plant_slug": "carrot",
-          "x_cm": 23.6,
-          "y_cm": 16.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 2.1,
+            "y": 3.1,
+            "width": 25.7,
+            "height": 17.1,
+            "rotation": 0
+          },
+          "spacing_cm": 8.6
         },
         {
           "plant_slug": "french-breakfast-radish",
-          "x_cm": 7.5,
-          "y_cm": 27.5
-        },
-        {
-          "plant_slug": "french-breakfast-radish",
-          "x_cm": 22.5,
-          "y_cm": 27.5
-        },
-        {
-          "plant_slug": "french-breakfast-radish",
-          "x_cm": 7.5,
-          "y_cm": 42.5
-        },
-        {
-          "plant_slug": "french-breakfast-radish",
-          "x_cm": 22.5,
-          "y_cm": 42.5
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 23.3,
+            "width": 30.0,
+            "height": 23.3,
+            "rotation": 0
+          },
+          "spacing_cm": 15.0
         },
         {
           "plant_slug": "chives",
-          "x_cm": 3.3,
-          "y_cm": 46.7
-        },
-        {
-          "plant_slug": "chives",
-          "x_cm": 26.7,
-          "y_cm": 46.7
-        },
-        {
-          "plant_slug": "chives",
-          "x_cm": 3.3,
-          "y_cm": 70.0
-        },
-        {
-          "plant_slug": "chives",
-          "x_cm": 26.7,
-          "y_cm": 70.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 46.7,
+            "width": 30,
+            "height": 23.3,
+            "rotation": 0
+          },
+          "spacing_cm": 23.3
         }
       ]
     },
@@ -459,63 +304,42 @@
       "plantings": [
         {
           "plant_slug": "lettuce",
-          "x_cm": 3.3,
-          "y_cm": 0.0
-        },
-        {
-          "plant_slug": "lettuce",
-          "x_cm": 26.7,
-          "y_cm": 0.0
-        },
-        {
-          "plant_slug": "lettuce",
-          "x_cm": 3.3,
-          "y_cm": 23.3
-        },
-        {
-          "plant_slug": "lettuce",
-          "x_cm": 26.7,
-          "y_cm": 23.3
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 30,
+            "height": 23.3,
+            "rotation": 0
+          },
+          "spacing_cm": 23.3
         },
         {
           "plant_slug": "spinach",
-          "x_cm": 5.0,
-          "y_cm": 25.0
-        },
-        {
-          "plant_slug": "spinach",
-          "x_cm": 25.0,
-          "y_cm": 25.0
-        },
-        {
-          "plant_slug": "spinach",
-          "x_cm": 5.0,
-          "y_cm": 45.0
-        },
-        {
-          "plant_slug": "spinach",
-          "x_cm": 25.0,
-          "y_cm": 45.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 23.3,
+            "width": 30,
+            "height": 23.3,
+            "rotation": 0
+          },
+          "spacing_cm": 20.0
         },
         {
           "plant_slug": "arugula",
-          "x_cm": 7.5,
-          "y_cm": 50.9
-        },
-        {
-          "plant_slug": "arugula",
-          "x_cm": 22.5,
-          "y_cm": 50.9
-        },
-        {
-          "plant_slug": "arugula",
-          "x_cm": 7.5,
-          "y_cm": 65.9
-        },
-        {
-          "plant_slug": "arugula",
-          "x_cm": 22.5,
-          "y_cm": 65.9
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 46.7,
+            "width": 30.0,
+            "height": 23.3,
+            "rotation": 0
+          },
+          "spacing_cm": 15.0
         }
       ]
     },
@@ -537,63 +361,42 @@
       "plantings": [
         {
           "plant_slug": "beet",
-          "x_cm": 6.2,
-          "y_cm": 2.9
-        },
-        {
-          "plant_slug": "beet",
-          "x_cm": 23.8,
-          "y_cm": 2.9
-        },
-        {
-          "plant_slug": "beet",
-          "x_cm": 6.2,
-          "y_cm": 20.4
-        },
-        {
-          "plant_slug": "beet",
-          "x_cm": 23.8,
-          "y_cm": 20.4
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 30,
+            "height": 23.3,
+            "rotation": 0
+          },
+          "spacing_cm": 17.5
         },
         {
           "plant_slug": "golden-beet",
-          "x_cm": 3.3,
-          "y_cm": 23.3
-        },
-        {
-          "plant_slug": "golden-beet",
-          "x_cm": 26.7,
-          "y_cm": 23.3
-        },
-        {
-          "plant_slug": "golden-beet",
-          "x_cm": 3.3,
-          "y_cm": 46.6
-        },
-        {
-          "plant_slug": "golden-beet",
-          "x_cm": 26.7,
-          "y_cm": 46.6
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 23.3,
+            "width": 30,
+            "height": 23.3,
+            "rotation": 0
+          },
+          "spacing_cm": 23.3
         },
         {
           "plant_slug": "lambs-lettuce",
-          "x_cm": 7.5,
-          "y_cm": 50.9
-        },
-        {
-          "plant_slug": "lambs-lettuce",
-          "x_cm": 22.5,
-          "y_cm": 50.9
-        },
-        {
-          "plant_slug": "lambs-lettuce",
-          "x_cm": 7.5,
-          "y_cm": 65.9
-        },
-        {
-          "plant_slug": "lambs-lettuce",
-          "x_cm": 22.5,
-          "y_cm": 65.9
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 46.7,
+            "width": 30.0,
+            "height": 23.3,
+            "rotation": 0
+          },
+          "spacing_cm": 15.0
         }
       ]
     },
@@ -647,103 +450,68 @@
       "plantings": [
         {
           "plant_slug": "raspberry",
-          "x_cm": 0.0,
-          "y_cm": 20.0
-        },
-        {
-          "plant_slug": "raspberry",
-          "x_cm": 80.0,
-          "y_cm": 20.0
-        },
-        {
-          "plant_slug": "raspberry",
-          "x_cm": 0.0,
-          "y_cm": 100.0
-        },
-        {
-          "plant_slug": "raspberry",
-          "x_cm": 80.0,
-          "y_cm": 100.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 80,
+            "height": 120.0,
+            "rotation": 0
+          },
+          "spacing_cm": 80
         },
         {
           "plant_slug": "blueberry",
-          "x_cm": 0.0,
-          "y_cm": 140.0
-        },
-        {
-          "plant_slug": "blueberry",
-          "x_cm": 80.0,
-          "y_cm": 140.0
-        },
-        {
-          "plant_slug": "blueberry",
-          "x_cm": 0.0,
-          "y_cm": 220.0
-        },
-        {
-          "plant_slug": "blueberry",
-          "x_cm": 80.0,
-          "y_cm": 220.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 120.0,
+            "width": 80,
+            "height": 120.0,
+            "rotation": 0
+          },
+          "spacing_cm": 80
         },
         {
           "plant_slug": "red-currant",
-          "x_cm": 0.0,
-          "y_cm": 260.0
-        },
-        {
-          "plant_slug": "red-currant",
-          "x_cm": 80.0,
-          "y_cm": 260.0
-        },
-        {
-          "plant_slug": "red-currant",
-          "x_cm": 0.0,
-          "y_cm": 340.0
-        },
-        {
-          "plant_slug": "red-currant",
-          "x_cm": 80.0,
-          "y_cm": 340.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 240.0,
+            "width": 80,
+            "height": 120.0,
+            "rotation": 0
+          },
+          "spacing_cm": 80
         },
         {
           "plant_slug": "gooseberry",
-          "x_cm": 0.0,
-          "y_cm": 380.0
-        },
-        {
-          "plant_slug": "gooseberry",
-          "x_cm": 80.0,
-          "y_cm": 380.0
-        },
-        {
-          "plant_slug": "gooseberry",
-          "x_cm": 0.0,
-          "y_cm": 460.0
-        },
-        {
-          "plant_slug": "gooseberry",
-          "x_cm": 80.0,
-          "y_cm": 460.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 360.0,
+            "width": 80,
+            "height": 120.0,
+            "rotation": 0
+          },
+          "spacing_cm": 80
         },
         {
           "plant_slug": "sunflower",
-          "x_cm": 10.0,
-          "y_cm": 510.0
-        },
-        {
-          "plant_slug": "sunflower",
-          "x_cm": 70.0,
-          "y_cm": 510.0
-        },
-        {
-          "plant_slug": "sunflower",
-          "x_cm": 10.0,
-          "y_cm": 570.0
-        },
-        {
-          "plant_slug": "sunflower",
-          "x_cm": 70.0,
-          "y_cm": 570.0
+          "placement_type": "field",
+          "geometry": {
+            "type": "rectangle",
+            "x": 0.0,
+            "y": 480.0,
+            "width": 80,
+            "height": 120.0,
+            "rotation": 0
+          },
+          "spacing_cm": 60.0
         }
       ]
     },
@@ -765,8 +533,15 @@
       "plantings": [
         {
           "plant_slug": "sour-cherry",
-          "x_cm": 75.0,
-          "y_cm": 75.0
+          "placement_type": "individual",
+          "geometry": {
+            "type": "rectangle",
+            "x": 65.0,
+            "y": 65.0,
+            "width": 20.0,
+            "height": 20.0,
+            "rotation": 0
+          }
         }
       ]
     },
@@ -788,8 +563,15 @@
       "plantings": [
         {
           "plant_slug": "pear",
-          "x_cm": 75.0,
-          "y_cm": 75.0
+          "placement_type": "individual",
+          "geometry": {
+            "type": "rectangle",
+            "x": 65.0,
+            "y": 65.0,
+            "width": 20.0,
+            "height": 20.0,
+            "rotation": 0
+          }
         }
       ]
     }

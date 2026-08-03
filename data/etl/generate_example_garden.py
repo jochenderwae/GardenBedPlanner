@@ -106,15 +106,36 @@ the bed's own fixed footprint, not a plant's height_cm.
 ## Planting placement algorithm
 
 For each bed, plants share the bed's long axis in equal-length strips (one
-strip per distinct plant), and within its strip each plant is arranged in a
-small centered grid using max(spread_cm, row_spacing_cm) as the spacing
-(falling back to a conservative 40cm default for the handful of plants with
-neither - e.g. brandywine-tomato, sour-cherry, pear - flagged in the per-bed
-notes). Instance count per plant is capped at 6 - this is an illustrative
-fixture, not an attempt to fill every possible cm, so a bed reads clearly as
-"there's a stand of X here" without the file (or the canvas) getting
-cluttered. A lone tree in a fruit_tree bed is just placed at the bed's
-center - a grid doesn't apply to a single plant.
+strip per distinct plant). Within its strip, each plant's grid dimensions
+(cols x rows) are computed using max(spread_cm, row_spacing_cm) as the
+spacing (falling back to a conservative 40cm default for the handful of
+plants with neither - e.g. brandywine-tomato, sour-cherry, pear - flagged in
+the per-bed notes), same math as before. Total cell count per plant is
+capped at 6 - this is an illustrative fixture, not an attempt to fill every
+possible cm, so a bed reads clearly as "there's a stand of X here" without
+the file (or the canvas) getting cluttered.
+
+**Updated 2026-08-04 (GitHub issue #234):** rather than emitting one
+`individual`-placement Planting per grid cell (N separate JSON planting
+records for a single stand of the same plant), a strip whose grid has more
+than one cell now emits a single `field`-placement Planting instead - one
+JSON record carrying a `geometry` rectangle sized to the grid's own
+cols*spacing x rows*spacing footprint (clamped to the strip's real bounds)
+and an explicit `spacing_cm`, from which the frontend's own
+`fieldMarkerPositions` (frontend/src/pages/layout/geometry.ts, #150/#155)
+renders the same cols x rows individual plant markers off that one Planting
+- matching how a real user's own multi-plant stand would be recorded, not
+an artifact of how this fixture happens to be generated. `row` (the other
+placement type #150/#155 already render multiple markers from) isn't used
+here: `field`'s geometry is always axis-aligned (no rotation math needed,
+unlike `row`'s drag-angle-derived rectangle) and its marker grid already
+degenerates to a single line when one axis's cell count is 1 - exactly the
+common case for this fixture's narrow strips/planters - so it covers both
+the "grid" and "line" cases losslessly without needing two code paths. A
+strip whose grid reduces to exactly one cell (either a single-plant
+fruit_tree bed, or a strip too small/spacing too wide for more than one
+instance) still emits `individual`, a single 20cm-square marker centered on
+the strip - unchanged from before, since there's nothing to group.
 
 Run from data/: uv run python -m etl.generate_example_garden
 """
@@ -128,6 +149,12 @@ OUT_PATH = DATA_DIR / "example_garden.json"
 _DEFAULT_SPACING_CM = 40.0
 _MAX_INSTANCES_PER_PLANT = 6
 _MARGIN_CM = 5.0
+# A single `individual` marker's half-size (cm) - matches the real Planting
+# marker convention (backend/app/scripts/import_example_garden.py's own
+# _PLANTING_HALF_SIZE_CM), mirrored here now that this generator emits full
+# geometry directly rather than a flat x_cm/y_cm point for the importer to
+# convert (GitHub issue #234).
+_INDIVIDUAL_HALF_SIZE_CM = 10.0
 
 # Categories confidently known to be built as raised-bed kits (root
 # CLAUDE.md describes both planter sizes as such). Everything else in this
@@ -231,7 +258,14 @@ def _spacing_for(slug: str, plant: dict) -> tuple[float, bool]:
     return _DEFAULT_SPACING_CM, True
 
 
-def _grid_positions(width_cm: float, length_cm: float, spacing: float, max_count: int) -> list[tuple[float, float]]:
+def _grid_dims(width_cm: float, length_cm: float, spacing: float, max_count: int) -> tuple[int, int]:
+    """cols, rows for a grid of markers filling width_cm x length_cm at
+    spacing_cm intervals (after the usual margin), capped to at most
+    max_count total cells - same capping order (reduce rows first, then
+    cols) the old per-marker version used. No longer returns individual
+    marker positions (GitHub issue #234): callers now use just the cell
+    counts to size a single `field`-placement geometry rectangle instead of
+    emitting one `individual` Planting per cell."""
     usable_w = max(width_cm - 2 * _MARGIN_CM, spacing)
     usable_l = max(length_cm - 2 * _MARGIN_CM, spacing)
     cols = max(1, int(usable_w // spacing) + 1)
@@ -241,22 +275,48 @@ def _grid_positions(width_cm: float, length_cm: float, spacing: float, max_count
         rows -= 1
     while cols * rows > max_count and cols > 1:
         cols -= 1
+    return cols, rows
 
-    grid_w = (cols - 1) * spacing
-    grid_l = (rows - 1) * spacing
-    x_start = _MARGIN_CM + (width_cm - 2 * _MARGIN_CM - grid_w) / 2
-    y_start = _MARGIN_CM + (length_cm - 2 * _MARGIN_CM - grid_l) / 2
 
-    positions = []
-    for r in range(rows):
-        for c in range(cols):
-            positions.append((round(x_start + c * spacing, 1), round(y_start + r * spacing, 1)))
-    return positions
+def _point_geometry(x_cm: float, y_cm: float) -> dict:
+    """A 20cm square centered on (x_cm, y_cm) - an `individual` placement's
+    marker, per _INDIVIDUAL_HALF_SIZE_CM."""
+    half = _INDIVIDUAL_HALF_SIZE_CM
+    return {
+        "type": "rectangle",
+        "x": round(x_cm - half, 1),
+        "y": round(y_cm - half, 1),
+        "width": 2 * half,
+        "height": 2 * half,
+        "rotation": 0,
+    }
+
+
+def _field_geometry(width_cm: float, strip_y0: float, strip_length: float, spacing: float, cols: int, rows: int) -> dict:
+    """Bounding rectangle for a `field` placement covering a cols x rows
+    grid of spacing_cm-spaced markers, centered within the bed's width and
+    the plant's own strip - sized (cols*spacing x rows*spacing, clamped to
+    the strip's real bounds) so the frontend's own fieldMarkerPositions
+    (frontend/src/pages/layout/geometry.ts's segmentCount) recomputes the
+    same cols x rows marker count from this geometry + spacing_cm alone."""
+    width = min(cols * spacing, width_cm)
+    height = min(rows * spacing, strip_length)
+    x = (width_cm - width) / 2
+    y = strip_y0 + (strip_length - height) / 2
+    return {
+        "type": "rectangle",
+        "x": round(x, 1),
+        "y": round(y, 1),
+        "width": round(width, 1),
+        "height": round(height, 1),
+        "rotation": 0,
+    }
 
 
 def _build_bed(name, category, width_cm, length_cm, height_cm, has_greenhouse, pos_x, pos_y, notes, plant_slugs):
     plantings = []
     defaults_used = []
+    marker_count = 0  # total rendered plant markers, for main()'s summary print - not written to the fixture
 
     if plant_slugs:
         n = len(plant_slugs)
@@ -273,11 +333,41 @@ def _build_bed(name, category, width_cm, length_cm, height_cm, has_greenhouse, p
             strip_y0 = i * strip_length
             if n == 1 and category == "fruit_tree":
                 # A lone tree: one point at the bed's center, no grid.
-                plantings.append({"plant_slug": slug, "x_cm": round(width_cm / 2, 1), "y_cm": round(length_cm / 2, 1)})
+                plantings.append(
+                    {
+                        "plant_slug": slug,
+                        "placement_type": "individual",
+                        "geometry": _point_geometry(width_cm / 2, strip_length / 2),
+                    }
+                )
+                marker_count += 1
                 continue
 
-            for x, y in _grid_positions(width_cm, strip_length, min(spacing, strip_length, width_cm), _MAX_INSTANCES_PER_PLANT):
-                plantings.append({"plant_slug": slug, "x_cm": x, "y_cm": round(strip_y0 + y, 1)})
+            effective_spacing = min(spacing, strip_length, width_cm)
+            cols, rows = _grid_dims(width_cm, strip_length, effective_spacing, _MAX_INSTANCES_PER_PLANT)
+            marker_count += cols * rows
+            if cols * rows == 1:
+                # Grid reduces to a single cell - nothing to group, same
+                # `individual` marker a real single-plant placement would be.
+                plantings.append(
+                    {
+                        "plant_slug": slug,
+                        "placement_type": "individual",
+                        "geometry": _point_geometry(width_cm / 2, strip_y0 + strip_length / 2),
+                    }
+                )
+            else:
+                # One `field` Planting covers the whole cols x rows stand -
+                # the frontend renders cols*rows individual markers off of
+                # it (see this module's docstring, GitHub issue #234).
+                plantings.append(
+                    {
+                        "plant_slug": slug,
+                        "placement_type": "field",
+                        "geometry": _field_geometry(width_cm, strip_y0, strip_length, effective_spacing, cols, rows),
+                        "spacing_cm": round(effective_spacing, 1),
+                    }
+                )
 
     bed_notes = notes
     if defaults_used:
@@ -301,15 +391,20 @@ def _build_bed(name, category, width_cm, length_cm, height_cm, has_greenhouse, p
     }
     if plantings:
         bed["plantings"] = plantings
-    return bed
+    return bed, marker_count
 
 
 def main() -> None:
-    beds = [_build_bed(*b) for b in _BEDS]
+    built = [_build_bed(*b) for b in _BEDS]
+    beds = [bed for bed, _ in built]
     out = {"_notes": _NOTES, "beds": beds}
     OUT_PATH.write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     total_plantings = sum(len(b.get("plantings", [])) for b in beds)
-    print(f"[example-garden] wrote {OUT_PATH} - {len(beds)} beds, {total_plantings} planting instances")
+    total_markers = sum(count for _, count in built)
+    print(
+        f"[example-garden] wrote {OUT_PATH} - {len(beds)} beds, {total_plantings} Planting records "
+        f"rendering {total_markers} plant markers"
+    )
 
 
 if __name__ == "__main__":

@@ -28,15 +28,27 @@ Ordering dependency: Planting.plant_slug is a FK to plant.slug, so
 app.scripts.import_plants must have already been run against the same
 database - this script does NOT create Plant rows, it only references them.
 
-Geometry conversion: the fixture's plantings are flat bed-local x_cm/y_cm
-points (see app/api/routes/example_garden.py's ExamplePlanting - that
-endpoint deliberately kept this simpler shape rather than the real Planting
-model's Geometry column), but Planting.geometry has no bare point/marker
-variant (app/models/geometry.py's Geometry union is rectangle|polygon only).
-Each point becomes a small rectangle centered on it - 20cm square, matching
-the frontend's own DEFAULT_PLANTING_DIAMETER_CM fallback
-(frontend/src/pages/layout/geometry.ts) for a planting with no real
-spread_cm/row_spacing_cm to size a marker off of.
+Geometry conversion: originally every fixture planting was a flat bed-local
+x_cm/y_cm point (see app/api/routes/example_garden.py's ExamplePlanting -
+that endpoint deliberately kept this simpler shape rather than the real
+Planting model's Geometry column), converted here into a small rectangle
+centered on it - 20cm square, matching the frontend's own
+DEFAULT_PLANTING_DIAMETER_CM fallback (frontend/src/pages/layout/
+geometry.ts) for a planting with no real spread_cm/row_spacing_cm to size a
+marker off of.
+
+**Updated 2026-08-04 (GitHub issue #234):** data/etl/generate_example_
+garden.py now emits full `geometry`/`placement_type`/`spacing_cm` per
+planting directly (one `field`-placement Planting covering a whole cols x
+rows stand instead of N `individual` ones - see that module's own
+docstring), matching the real Planting shape closely enough that this
+importer just uses it as-is rather than deriving it. The old flat x_cm/y_cm
+-> centered-rectangle conversion is kept as a fallback for any fixture that
+still uses it (e.g. backend/tests/test_import_example_garden.py's and
+test_example_garden_route.py's own small hand-written fixtures, and
+app/api/routes/example_garden.py's ExamplePlanting/GET response model,
+which - unlike this importer - still hard-requires the old x_cm/y_cm shape;
+see data/suggestions.md for the follow-up needed there).
 
 Run from backend/: uv run python -m app.scripts.import_example_garden
 
@@ -67,7 +79,7 @@ _PLANTING_HALF_SIZE_CM = 10.0  # -> a 20cm square, centered on x_cm/y_cm
 _GARDEN_MARGIN_CM = 100.0  # breathing room around the beds' own bounding box
 
 
-def _planting_geometry(x_cm: float, y_cm: float) -> dict:
+def _legacy_point_geometry(x_cm: float, y_cm: float) -> dict:
     return {
         "type": "rectangle",
         "x": x_cm - _PLANTING_HALF_SIZE_CM,
@@ -76,6 +88,18 @@ def _planting_geometry(x_cm: float, y_cm: float) -> dict:
         "height": 2 * _PLANTING_HALF_SIZE_CM,
         "rotation": 0,
     }
+
+
+def _planting_fields(p: dict) -> tuple[str, dict, float | None]:
+    """(placement_type, geometry, spacing_cm) for a fixture planting -
+    prefers the real shape (`geometry`/`placement_type`/`spacing_cm`, as
+    data/etl/generate_example_garden.py emits as of GitHub issue #234, and
+    example_garden_de_heuvel.json already used) when present, falling back
+    to the older flat x_cm/y_cm point -> centered-rectangle conversion for
+    any fixture that still uses it (see this module's own docstring)."""
+    if "geometry" in p:
+        return p.get("placement_type", "individual"), p["geometry"], p.get("spacing_cm")
+    return "individual", _legacy_point_geometry(p["x_cm"], p["y_cm"]), None
 
 
 _BED_SCALAR_FIELDS = ["category", "border_geometry", "height_cm", "has_greenhouse", "soil_type", "sun_level", "notes"]
@@ -154,11 +178,14 @@ def import_garden(session: Session, beds_data: list[dict]) -> None:
 def import_plantings(session: Session, bed: Bed, plantings: list[dict]) -> None:
     session.exec(delete(Planting).where(Planting.bed_id == bed.id))
     for p in plantings:
+        placement_type, geometry, spacing_cm = _planting_fields(p)
         session.add(
             Planting(
                 bed_id=bed.id,
                 plant_slug=p["plant_slug"],
-                geometry=_planting_geometry(p["x_cm"], p["y_cm"]),
+                placement_type=placement_type,
+                geometry=geometry,
+                spacing_cm=spacing_cm,
             )
         )
     session.commit()
