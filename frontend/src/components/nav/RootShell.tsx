@@ -19,6 +19,7 @@ import { MobileLogging } from "@/pages/mobile/MobileLogging";
 import { MobileNotifications } from "@/pages/mobile/MobileNotifications";
 import { MobileSeedGuide } from "@/pages/mobile/MobileSeedGuide";
 import { SeedGuide } from "@/pages/SeedGuide";
+import { Settings } from "@/pages/Settings";
 
 /** Root of the route tree - switches between the desktop canvas-editor app
  * and a genuinely separate, simplified mobile/PWA route set based on
@@ -65,6 +66,7 @@ export function RootShell() {
         <Route path="/equipment" element={<Equipment />} />
         <Route path="/garden-plan" element={<GardenPlan />} />
         <Route path="/yield-history" element={<YieldHistory />} />
+        <Route path="/settings" element={<Settings />} />
       </Route>
     </Routes>
   );

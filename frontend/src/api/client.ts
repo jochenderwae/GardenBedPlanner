@@ -168,6 +168,30 @@ export function putGarden(garden: GardenPut): Promise<Garden> {
   });
 }
 
+export type GardenWrite = components["schemas"]["GardenWrite"];
+
+/** Real list-style multi-garden CRUD (#238/#239) - every `Garden` row, not
+ * just whichever one is currently active (`getGarden`/`putGarden` above
+ * stay the "always the active one" singular resource, unchanged). First
+ * consumed by the Settings page's active-garden switcher. */
+export function listGardens(): Promise<Garden[]> {
+  return apiFetch(`/api/gardens`);
+}
+
+/** Always creates an *inactive* garden (the backend's own rule - see
+ * `app/api/routes/garden.py`'s `create_garden` docstring) - switching to it
+ * is the separate `activateGarden` call below. */
+export function createGarden(garden: GardenWrite): Promise<Garden> {
+  return apiFetch(`/api/gardens`, {
+    method: "POST",
+    body: JSON.stringify(garden),
+  });
+}
+
+export function activateGarden(id: number): Promise<Garden> {
+  return apiFetch(`/api/gardens/${id}/activate`, { method: "POST" });
+}
+
 export function getExampleGarden(): Promise<ExampleGarden> {
   return apiFetch(`/api/example-garden`);
 }

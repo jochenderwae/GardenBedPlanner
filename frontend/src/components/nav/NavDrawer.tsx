@@ -11,6 +11,7 @@ import {
   Wrench,
   ClipboardList,
   TrendingUp,
+  Settings as SettingsIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ const NAV_ITEMS = [
   { to: "/agenda", label: "Agenda", icon: CalendarDays },
   { to: "/timeline", label: "Timeline", icon: ChartGantt },
   { to: "/seed-guide", label: "Seed Guide", icon: ShoppingBasket },
+  { to: "/settings", label: "Settings", icon: SettingsIcon },
 ];
 
 export function NavDrawer() {
