@@ -78,7 +78,14 @@ def _get_or_404(session: Session, bed_id: int) -> BedTable:
 
 @router.get("", response_model=list[Bed])
 def list_beds(session: Session = Depends(get_session)) -> list[Bed]:  # type: ignore[valid-type]
-    rows = list(session.exec(select(BedTable)).all())
+    # #258: scoped to whichever garden is currently active - unfiltered only
+    # when no Garden exists at all yet (get_active_garden returns None),
+    # same as every list route before multi-garden support existed.
+    query = select(BedTable)
+    active_garden = get_active_garden(session)
+    if active_garden is not None:
+        query = query.where(BedTable.garden_id == active_garden.id)
+    rows = list(session.exec(query).all())
     return [_to_api_bed(row) for row in rows]
 
 

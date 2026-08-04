@@ -39,11 +39,20 @@ def test_create_second_garden_starts_inactive_with_own_ground_bed(client: TestCl
     second = second_response.json()
     assert second["is_active"] is False
 
-    beds = client.get("/api/beds").json()
-    ground_beds = [b for b in beds if b["name"] == "Ground"]
-    assert len(ground_beds) == 2
-    assert any(b["garden_id"] == first["id"] for b in ground_beds)
-    assert any(b["garden_id"] == second["id"] for b in ground_beds)
+    # #258: GET /api/beds is scoped to whichever garden is currently
+    # active - only the first garden's own ground bed shows while it's
+    # active, not the second garden's (created but never activated).
+    beds_while_first_active = client.get("/api/beds").json()
+    ground_beds_while_first_active = [b for b in beds_while_first_active if b["name"] == "Ground"]
+    assert len(ground_beds_while_first_active) == 1
+    assert ground_beds_while_first_active[0]["garden_id"] == first["id"]
+
+    # Activating the second garden switches which ground bed is visible.
+    client.post(f"/api/gardens/{second['id']}/activate")
+    beds_while_second_active = client.get("/api/beds").json()
+    ground_beds_while_second_active = [b for b in beds_while_second_active if b["name"] == "Ground"]
+    assert len(ground_beds_while_second_active) == 1
+    assert ground_beds_while_second_active[0]["garden_id"] == second["id"]
 
 
 def test_activate_garden_switches_the_single_active_flag(client: TestClient) -> None:
@@ -151,7 +160,7 @@ def test_delete_garden_refused_when_only_garden(client: TestClient) -> None:
     assert client.get(f"/api/gardens/{only['id']}").status_code == 200
 
 
-def test_delete_inactive_non_only_garden_succeeds_when_no_dependents(client: TestClient) -> None:
+def test_delete_inactive_non_only_garden_succeeds_when_no_dependents(client: TestClient, db_session) -> None:
     client.put(
         "/api/garden", json={"name": "Garden One", "border_geometry": rectangle(width=500, height=500)}
     ).json()
@@ -160,9 +169,17 @@ def test_delete_inactive_non_only_garden_succeeds_when_no_dependents(client: Tes
     ).json()
 
     # Delete the auto-created ground bed first - a real FK, not the
-    # active/only-garden 409 check, would otherwise block this.
-    ground_bed = next(b for b in client.get("/api/beds").json() if b["garden_id"] == second["id"])
-    assert client.delete(f"/api/beds/{ground_bed['id']}", params={"cascade": "true"}).status_code == 204
+    # active/only-garden 409 check, would otherwise block this. Found via a
+    # direct DB query (not GET /api/beds, which #258 now scopes to the
+    # *active* garden - first, not second, here) rather than switching the
+    # active garden back and forth just to look this up.
+    from app.models.bed import Bed as BedTable
+    from sqlmodel import select
+
+    ground_bed = db_session.exec(
+        select(BedTable).where(BedTable.garden_id == second["id"], BedTable.name == "Ground")
+    ).one()
+    assert client.delete(f"/api/beds/{ground_bed.id}", params={"cascade": "true"}).status_code == 204
 
     response = client.delete(f"/api/gardens/{second['id']}")
     assert response.status_code == 204, response.text

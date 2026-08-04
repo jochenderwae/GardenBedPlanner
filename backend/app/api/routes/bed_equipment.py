@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, create_model
+from sqlalchemy import and_, or_
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import active_garden_bed_ids, commit_or_409, get_active_garden
 from app.core.db import get_session
 from app.models.bed_equipment import BedEquipment as BedEquipmentTable
 from app.models.bed_equipment import EquipmentCondition
@@ -85,6 +86,21 @@ def list_bed_equipment(
     session: Session = Depends(get_session),
 ) -> list[BedEquipment]:  # type: ignore[valid-type]
     query = select(BedEquipmentTable)
+    # #258: BedEquipment can be bed-local (bed_id), garden-wide (garden_id),
+    # or unplaced inventory (both null) - see this model's own docstring.
+    # Scoped to the active garden's own beds/garden_id directly; unplaced
+    # inventory (both null) always shows, same "not tied to any one garden
+    # yet" reasoning as an Action with no bed_id at all.
+    active_garden = get_active_garden(session)
+    if active_garden is not None:
+        bed_ids = active_garden_bed_ids(session, active_garden=active_garden) or []
+        query = query.where(
+            or_(
+                BedEquipmentTable.garden_id == active_garden.id,
+                BedEquipmentTable.bed_id.in_(bed_ids),
+                and_(BedEquipmentTable.bed_id.is_(None), BedEquipmentTable.garden_id.is_(None)),
+            )
+        )
     if condition is not None:
         query = query.where(BedEquipmentTable.condition == condition)
     rows = list(session.exec(query).all())

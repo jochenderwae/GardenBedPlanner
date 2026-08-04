@@ -2,9 +2,10 @@ from datetime import date
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, create_model
+from sqlalchemy import or_
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import active_garden_bed_ids, commit_or_409
 from app.core.db import get_session
 from app.models.action import Action as ActionTable
 from app.models.action import ActionStatus, ActionType
@@ -64,6 +65,14 @@ def list_actions(
     session: Session = Depends(get_session),
 ) -> list[ActionTable]:
     query = select(ActionTable)
+    # #258: Action.bed_id is nullable (a general compost turn with no
+    # bed/plant/equipment reference at all is legitimate - see
+    # app/models/action.py's own docstring) - scope to the active garden's
+    # own beds *or* no bed at all, rather than hiding every
+    # not-bed-specific action once a garden is active.
+    bed_ids = active_garden_bed_ids(session)
+    if bed_ids is not None:
+        query = query.where(or_(ActionTable.bed_id.in_(bed_ids), ActionTable.bed_id.is_(None)))
     if due_from is not None:
         query = query.where(ActionTable.due_date_start >= due_from)
     if due_to is not None:

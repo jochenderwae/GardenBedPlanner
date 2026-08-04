@@ -2,9 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, create_model
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import active_garden_bed_ids, commit_or_409
 from app.core.db import get_session
 from app.models.harvest_log import HarvestLog as HarvestLogTable
+from app.models.planting import Planting as PlantingTable
 
 router = APIRouter(prefix="/harvest-logs", tags=["harvest-logs"])
 
@@ -43,6 +44,15 @@ def list_harvest_logs(
     session: Session = Depends(get_session),
 ) -> list[HarvestLogTable]:
     query = select(HarvestLogTable)
+    # #258: no garden_id or bed_id of its own - transitively scoped two hops
+    # out, via its own planting_id -> Planting.bed_id -> Bed.garden_id
+    # (planting_id is always set, and every Planting's bed_id is always
+    # set too - see each model's own docstring).
+    active_bed_ids = active_garden_bed_ids(session)
+    if active_bed_ids is not None:
+        query = query.join(PlantingTable, PlantingTable.id == HarvestLogTable.planting_id).where(
+            PlantingTable.bed_id.in_(active_bed_ids)
+        )
     if planting_id is not None:
         query = query.where(HarvestLogTable.planting_id == planting_id)
     return list(session.exec(query).all())

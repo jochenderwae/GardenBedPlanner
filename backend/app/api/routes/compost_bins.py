@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, create_model
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import active_garden_bed_ids, commit_or_409
 from app.core.db import get_session
 from app.models.compost_bin import CompostBin as CompostBinTable
 
@@ -43,6 +43,11 @@ def list_compost_bins(
     session: Session = Depends(get_session),
 ) -> list[CompostBinTable]:
     query = select(CompostBinTable)
+    # #258: no garden_id of its own - transitively scoped via bed_id
+    # (always set - CompostBin is a strict 1:1 with a Bed).
+    active_bed_ids = active_garden_bed_ids(session)
+    if active_bed_ids is not None:
+        query = query.where(CompostBinTable.bed_id.in_(active_bed_ids))
     if bed_id is not None:
         query = query.where(CompostBinTable.bed_id == bed_id)
     return list(session.exec(query).all())

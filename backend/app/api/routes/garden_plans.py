@@ -90,7 +90,13 @@ def _get_entry_or_404(session: Session, plan_id: int, entry_id: int) -> GardenPl
 
 @router.get("", response_model=list[GardenPlanTable])
 def list_garden_plans(session: Session = Depends(get_session)) -> list[GardenPlanTable]:
-    return list(session.exec(select(GardenPlanTable)).all())
+    # #258: GardenPlan carries its own garden_id directly (#238), same as
+    # Bed - scoped the same way list_beds is.
+    query = select(GardenPlanTable)
+    active_garden = get_active_garden(session)
+    if active_garden is not None:
+        query = query.where(GardenPlanTable.garden_id == active_garden.id)
+    return list(session.exec(query).all())
 
 
 @router.get("/{plan_id}", response_model=GardenPlanDetail)

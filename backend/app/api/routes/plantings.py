@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, create_model
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import active_garden_bed_ids, commit_or_409
 from app.core.db import get_session
 from app.models.geometry import Geometry, parse_geometry
 from app.models.planting import Planting as PlantingTable
@@ -61,7 +61,15 @@ def _get_or_404(session: Session, planting_id: int) -> PlantingTable:
 
 @router.get("", response_model=list[Planting])
 def list_plantings(session: Session = Depends(get_session)) -> list[Planting]:  # type: ignore[valid-type]
-    rows = list(session.exec(select(PlantingTable)).all())
+    # #258: Planting has no garden_id of its own - transitively scoped via
+    # its own bed_id (always set, unlike BedEquipment's), same
+    # "everything else keys off bed_id" reasoning app/models/garden.py
+    # documents.
+    query = select(PlantingTable)
+    bed_ids = active_garden_bed_ids(session)
+    if bed_ids is not None:
+        query = query.where(PlantingTable.bed_id.in_(bed_ids))
+    rows = list(session.exec(query).all())
     return [_to_api_planting(row) for row in rows]
 
 

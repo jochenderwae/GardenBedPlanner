@@ -32,3 +32,26 @@ def get_active_garden(session: Session):
     if active is not None:
         return active
     return session.exec(select(Garden)).first()
+
+
+def active_garden_bed_ids(session: Session, active_garden=None) -> list[int] | None:
+    """#258: bed ids belonging to the currently active garden, for
+    garden-scoping every list route whose only path to a garden is via
+    bed_id (Planting, Action, CompostBin, CompostFertilizationLog,
+    HarvestLog via Planting, BedEquipment - see app/models/garden.py's own
+    docstring: "everything else keys off bed_id and is transitively scoped
+    once Bed is"). Returns None (not an empty list) when there's no active
+    garden at all (get_active_garden returns None - no Garden row exists
+    yet) - callers should skip filtering entirely in that case, not filter
+    to an impossible empty set, so every pre-#238 flow keeps returning
+    everything unfiltered exactly as it did before multi-garden support
+    existed. `active_garden` can be passed in by a caller that already
+    resolved it (e.g. to also compare against Garden.id directly, like
+    BedEquipment.garden_id) to avoid a second get_active_garden lookup."""
+    from app.models.bed import Bed
+
+    if active_garden is None:
+        active_garden = get_active_garden(session)
+    if active_garden is None:
+        return None
+    return list(session.exec(select(Bed.id).where(Bed.garden_id == active_garden.id)).all())

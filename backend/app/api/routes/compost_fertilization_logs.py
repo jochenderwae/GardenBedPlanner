@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, create_model
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import active_garden_bed_ids, commit_or_409
 from app.core.db import get_session
 from app.models.compost_fertilization_log import CompostFertilizationLog as CompostFertilizationLogTable
 
@@ -47,6 +47,11 @@ def list_compost_fertilization_logs(
     session: Session = Depends(get_session),
 ) -> list[CompostFertilizationLogTable]:
     query = select(CompostFertilizationLogTable)
+    # #258: no garden_id of its own - transitively scoped via bed_id
+    # (always set).
+    active_bed_ids = active_garden_bed_ids(session)
+    if active_bed_ids is not None:
+        query = query.where(CompostFertilizationLogTable.bed_id.in_(active_bed_ids))
     if bed_id is not None:
         query = query.where(CompostFertilizationLogTable.bed_id == bed_id)
     if log_date_from is not None:
