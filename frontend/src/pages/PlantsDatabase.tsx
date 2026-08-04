@@ -1,11 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Popover } from "@base-ui/react/popover";
 import { ChevronDown, ChevronRight, Pencil, Plus, Search, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Dialog, DialogPopup, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input, Select } from "@/components/ui/input";
+import {
+  Autocomplete,
+  AutocompleteInput,
+  AutocompleteItem,
+  AutocompleteList,
+  AutocompletePopup,
+} from "@/components/ui/autocomplete";
+import { PlantSearchList } from "@/components/PlantSearchList";
 import { cn } from "@/lib/utils";
 import { createPlant, listPlants, type Plant } from "@/api/client";
 
@@ -264,7 +273,7 @@ export function PlantsDatabase() {
     <div className="mx-auto max-w-4xl p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h1 className="text-xl font-medium">Plants database</h1>
-        <AddPlantForm onCreated={openPlant} />
+        <AddPlantForm plants={data ?? []} onCreated={openPlant} />
       </div>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
@@ -594,15 +603,31 @@ function PlantRow({
  * own follow-up bug report). Resets its own fields back to blank each time
  * it opens (not just on mount, now that mounting happens once and `open`
  * toggles thereafter) so a previous attempt's half-filled values don't
- * linger into the next one. */
-function AddPlantForm({ onCreated }: { onCreated: (slug: string) => void }) {
+ * linger into the next one.
+ *
+ * #257 additions: a "Cultivar of…" parent-picker (reusing the same
+ * popover-anchored `PlantSearchList` pattern `CompanionColumn` in
+ * `plant-detail/SatelliteSections.tsx` already uses) wired to
+ * `parent_plant_slug`; when a parent is picked, family/genus become a
+ * read-only "from parent" line instead of editable inputs (they're
+ * properties of the species, already established on the parent); when no
+ * parent is picked, family/genus become `Autocomplete` combo boxes offering
+ * every distinct family/genus name already on file; a live slug preview
+ * under Common name so a collision is diagnosable before submitting instead
+ * of only from a raw error message afterward; `botanical_name` is no longer
+ * required at creation (still fillable later via its `FieldInput` on the
+ * plant detail page, same as family/genus already were). */
+function AddPlantForm({ plants, onCreated }: { plants: Plant[]; onCreated: (slug: string) => void }) {
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [commonName, setCommonName] = useState("");
   const [botanicalName, setBotanicalName] = useState("");
   const [family, setFamily] = useState("");
   const [genus, setGenus] = useState("");
+  const [parentSlug, setParentSlug] = useState<string | null>(null);
+  const [parentPickerOpen, setParentPickerOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const parentAnchorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -610,17 +635,38 @@ function AddPlantForm({ onCreated }: { onCreated: (slug: string) => void }) {
     setBotanicalName("");
     setFamily("");
     setGenus("");
+    setParentSlug(null);
+    setParentPickerOpen(false);
     setError(null);
   }, [open]);
+
+  const parent = parentSlug ? (plants.find((p) => p.slug === parentSlug) ?? null) : null;
+
+  const familyOptions = useMemo(() => {
+    const names = new Set<string>();
+    for (const plant of plants) if (plant.family?.name) names.add(plant.family.name);
+    return Array.from(names).sort((a, b) => a.localeCompare(b));
+  }, [plants]);
+  const genusOptions = useMemo(() => {
+    const names = new Set<string>();
+    for (const plant of plants) if (plant.genus?.name) names.add(plant.genus.name);
+    return Array.from(names).sort((a, b) => a.localeCompare(b));
+  }, [plants]);
+
+  const slugPreview = slugify(commonName);
 
   const mutation = useMutation({
     mutationFn: () =>
       createPlant({
-        slug: slugify(commonName),
+        slug: slugPreview,
         common_name: commonName.trim(),
         botanical_name: botanicalName.trim(),
-        family: family.trim() || null,
-        genus: genus.trim() || null,
+        // Family/genus come from the parent species when creating a
+        // cultivar - the backend already derives its own family/genus from
+        // the parent's, so these are left unset rather than re-sent.
+        family: parent ? null : family.trim() || null,
+        genus: parent ? null : genus.trim() || null,
+        parent_plant_slug: parentSlug,
       }),
     onSuccess: (plant) => {
       queryClient.invalidateQueries({ queryKey: ["plants"] });
@@ -635,8 +681,8 @@ function AddPlantForm({ onCreated }: { onCreated: (slug: string) => void }) {
   function submit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    if (!commonName.trim() || !botanicalName.trim()) {
-      setError("Common name and botanical name are required.");
+    if (!commonName.trim()) {
+      setError("Common name is required.");
       return;
     }
     mutation.mutate();
@@ -652,7 +698,7 @@ function AddPlantForm({ onCreated }: { onCreated: (slug: string) => void }) {
         }
       />
       <DialogPopup>
-        <Card className="w-full max-w-sm p-4">
+        <Card className="w-full max-w-md p-4">
           <form className="flex flex-col gap-3" onSubmit={submit}>
             <div className="flex items-center justify-between">
               <DialogTitle className="text-base font-medium">Add plant</DialogTitle>
@@ -668,19 +714,105 @@ function AddPlantForm({ onCreated }: { onCreated: (slug: string) => void }) {
                 onChange={(e) => setCommonName(e.target.value)}
                 autoFocus
               />
+              <span className="text-xs text-muted-foreground">URL: /plants/{slugPreview || "…"}</span>
             </label>
+
             <label className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-muted-foreground">Botanical name</span>
+              <span className="text-xs font-medium text-muted-foreground">Botanical name (optional)</span>
               <Input value={botanicalName} onChange={(e) => setBotanicalName(e.target.value)} />
             </label>
-            <label className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-muted-foreground">Family (optional)</span>
-              <Input value={family} onChange={(e) => setFamily(e.target.value)} />
-            </label>
-            <label className="flex flex-col gap-1">
-              <span className="text-xs font-medium text-muted-foreground">Genus (optional)</span>
-              <Input value={genus} onChange={(e) => setGenus(e.target.value)} />
-            </label>
+
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-medium text-muted-foreground">Cultivar of (optional)</span>
+              {parent ? (
+                <div className="flex items-center justify-between gap-2 rounded-md border border-input bg-background px-2.5 py-1.5 text-sm">
+                  <span>{parent.common_name}</span>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    type="button"
+                    aria-label="Clear parent plant"
+                    onClick={() => setParentSlug(null)}
+                  >
+                    <X />
+                  </Button>
+                </div>
+              ) : (
+                <div ref={parentAnchorRef}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    className="w-full justify-start text-muted-foreground"
+                    onClick={() => setParentPickerOpen(true)}
+                  >
+                    <Search /> Pick a parent plant…
+                  </Button>
+                </div>
+              )}
+              <Popover.Root open={parentPickerOpen} onOpenChange={setParentPickerOpen}>
+                <Popover.Portal>
+                  {/* z-[60], above the Dialog's own z-50 (dialog.tsx's fixed
+                      inset-0 wrapper) - without an explicit z-index here this
+                      popover paints *behind* the dialog it's nested inside
+                      (z-index:auto positioned descendants paint before any
+                      explicit z-index sibling, regardless of DOM/mount
+                      order) and is functionally unreachable. Not an issue
+                      for CompanionColumn's identical pattern elsewhere,
+                      since that popover isn't nested inside a Dialog. */}
+                  <Popover.Positioner anchor={parentAnchorRef} side="bottom" align="start" sideOffset={4} className="z-[60]">
+                    <Popover.Popup className="w-64 rounded-md border bg-popover p-2 text-popover-foreground shadow-md outline-none">
+                      <PlantSearchList
+                        plants={plants}
+                        onPick={(slug) => {
+                          setParentSlug(slug);
+                          setParentPickerOpen(false);
+                        }}
+                      />
+                    </Popover.Popup>
+                  </Popover.Positioner>
+                </Popover.Portal>
+              </Popover.Root>
+            </div>
+
+            {parent ? (
+              <p className="text-xs text-muted-foreground">
+                Family: {parent.family?.name ?? "—"} · Genus: {parent.genus?.name ?? "—"} (from parent)
+              </p>
+            ) : (
+              <>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-muted-foreground">Family (optional)</span>
+                  <Autocomplete items={familyOptions} value={family} onValueChange={setFamily} openOnInputClick>
+                    <AutocompleteInput placeholder="e.g. Solanaceae" />
+                    <AutocompletePopup>
+                      <AutocompleteList>
+                        {(item: string) => (
+                          <AutocompleteItem key={item} value={item}>
+                            {item}
+                          </AutocompleteItem>
+                        )}
+                      </AutocompleteList>
+                    </AutocompletePopup>
+                  </Autocomplete>
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-xs font-medium text-muted-foreground">Genus (optional)</span>
+                  <Autocomplete items={genusOptions} value={genus} onValueChange={setGenus} openOnInputClick>
+                    <AutocompleteInput placeholder="e.g. Solanum" />
+                    <AutocompletePopup>
+                      <AutocompleteList>
+                        {(item: string) => (
+                          <AutocompleteItem key={item} value={item}>
+                            {item}
+                          </AutocompleteItem>
+                        )}
+                      </AutocompleteList>
+                    </AutocompletePopup>
+                  </Autocomplete>
+                </label>
+              </>
+            )}
 
             {error && <p className="text-sm text-destructive">{error}</p>}
 
