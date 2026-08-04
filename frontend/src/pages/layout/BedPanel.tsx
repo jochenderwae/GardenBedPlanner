@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { RulerDimensionLine, Trash2, X } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -16,10 +16,119 @@ import {
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FieldHint } from "@/components/ui/tooltip";
 import { useSnackbar } from "@/components/Snackbar";
-import { ApiError, deleteBed, updateBed, type Bed, type BedEquipment, type BedUpdate, type Plant, type Planting, type RectangleGeometry } from "@/api/client";
+import {
+  ApiError,
+  deleteBed,
+  listCompostBins,
+  updateBed,
+  updateCompostBin,
+  type Bed,
+  type BedEquipment,
+  type BedUpdate,
+  type CompostBin,
+  type CompostBinUpdate,
+  type Plant,
+  type Planting,
+  type RectangleGeometry,
+} from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 import { boundingRect, plantingsOutsideBounds, rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
 import { todayIsoDate } from "./plantingLifecycle";
+
+/** The still-entirely-unconsumed `CompostBin` fields (#39's original scope,
+ * finally wired into the UI by #242) - fill state/last turned/estimated
+ * maturity/notes, each autosaving independently exactly like every other
+ * `BedPanel` field. Only rendered once `bin` confirms a compost bin actually
+ * exists for this bed (gated by the caller, not by `bed.category` or
+ * anything else - a bed's "type" is now expressed by which button created
+ * it, #242's own Objects-tab redesign). A separate small component (not
+ * inlined into `BedPanel` itself) since it owns a second draft/mutation
+ * pair scoped to a different id (the `CompostBin` row's own id, not the
+ * bed's) - keeping that state machine self-contained avoids `BedPanel`'s
+ * own `draft`/`mutation` accidentally reaching into it. */
+function CompostBinSection({ bin }: { bin: CompostBin }) {
+  const queryClient = useQueryClient();
+  const [draft, setDraft] = useState(bin);
+  useEffect(() => setDraft(bin), [bin]);
+
+  const mutation = useMutation({
+    mutationFn: (patch: CompostBinUpdate) => updateCompostBin(bin.id as number, patch),
+    onSuccess: (updated) => {
+      queryClient.setQueryData<CompostBin[]>(["compost-bins"], (old) =>
+        old ? old.map((b) => (b.id === updated.id ? updated : b)) : old,
+      );
+    },
+  });
+
+  function commit(patch: CompostBinUpdate) {
+    setDraft((prev) => ({ ...prev, ...patch }));
+    mutation.mutate(patch);
+  }
+
+  return (
+    <div className="flex flex-col gap-3 border-t pt-3">
+      <span className="text-xs font-medium text-muted-foreground">Compost bin</span>
+
+      <label className="flex flex-col gap-1" htmlFor="compost-bin-field-fill-state">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+          Fill state
+          <FieldHint description="How full this bin currently is." />
+        </span>
+        <Select
+          id="compost-bin-field-fill-state"
+          value={draft.fill_state}
+          onChange={(e) => commit({ fill_state: e.target.value as CompostBin["fill_state"] })}
+        >
+          <option value="empty">Empty</option>
+          <option value="filling">Filling</option>
+          <option value="full">Full</option>
+          <option value="curing">Curing</option>
+        </Select>
+      </label>
+
+      <div className="grid grid-cols-2 gap-2">
+        <label className="flex flex-col gap-1" htmlFor="compost-bin-field-last-turned">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Last turned
+            <FieldHint description="When this bin's contents were last turned/mixed." />
+          </span>
+          <Input
+            id="compost-bin-field-last-turned"
+            type="date"
+            value={draft.last_turned_date ?? ""}
+            onChange={(e) => commit({ last_turned_date: e.target.value || null })}
+          />
+        </label>
+        <label className="flex flex-col gap-1" htmlFor="compost-bin-field-maturity">
+          <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+            Est. maturity
+            <FieldHint description="Estimated date this batch will be ready to use." />
+          </span>
+          <Input
+            id="compost-bin-field-maturity"
+            type="date"
+            value={draft.estimated_maturity_date ?? ""}
+            onChange={(e) => commit({ estimated_maturity_date: e.target.value || null })}
+          />
+        </label>
+      </div>
+
+      <label className="flex flex-col gap-1" htmlFor="compost-bin-field-notes">
+        <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+          Notes
+          <FieldHint description="Any other notes about this compost bin." />
+        </span>
+        <Textarea
+          id="compost-bin-field-notes"
+          rows={2}
+          value={draft.notes}
+          onChange={(e) => setDraft((prev) => ({ ...prev, notes: e.target.value }))}
+          onBlur={() => draft.notes !== bin.notes && commit({ notes: draft.notes })}
+        />
+      </label>
+    </div>
+  );
+}
 
 interface BedPanelProps {
   bed: Bed;
@@ -66,6 +175,14 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
   // swallowed, which is what happened before this.
   const [confirmCascadeOpen, setConfirmCascadeOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  // #242: the "Compost bin" section below only renders once this confirms a
+  // linked CompostBin row actually exists for this bed - not gated on
+  // bed.category or anything else. Own useQuery here (not threaded down as
+  // a prop from Layout.tsx) - same "owns its own scoped list query" pattern
+  // EquipmentPanel.tsx's own zonesQuery already uses for irrigation zones.
+  const compostBinsQuery = useQuery({ queryKey: ["compost-bins"], queryFn: listCompostBins });
+  const compostBin = compostBinsQuery.data?.find((b) => b.bed_id === bed.id) ?? null;
 
   useEffect(() => setDraft(bed), [bed]);
 
@@ -203,11 +320,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
         <label className="flex flex-col gap-1" htmlFor="bed-field-category">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Category (optional)
-            <FieldHint description="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list." />
+            <FieldHint description="Free-text grouping, e.g. raised planter, ground bed, berry row - not a fixed list. Use the dedicated 'Add compost bin' button to mark a bed as a compost bin, not this field." />
           </span>
           <Input
             id="bed-field-category"
-            placeholder="e.g. raised planter, ground bed, compost..."
+            placeholder="e.g. raised planter, ground bed, berry row..."
             value={draft.category ?? ""}
             onChange={(e) => setDraft((prev) => ({ ...prev, category: e.target.value || null }))}
             onBlur={() => draft.category !== bed.category && commit({ category: draft.category })}
@@ -359,6 +476,8 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
         >
           <RulerDimensionLine /> View technical drawing
         </Link>
+
+        {compostBin && <CompostBinSection bin={compostBin} />}
 
         <div className="flex flex-col gap-1.5 border-t pt-3">
           <span className="text-xs font-medium text-muted-foreground">History</span>

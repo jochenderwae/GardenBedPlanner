@@ -10,18 +10,23 @@ import type { PlacementMode } from "./PlantPlacementLayer";
 export type ViewMode = "mine" | "example";
 
 /** Order here doubles as the intended workflow progression (shape the
- * garden, then place beds within it, then plants, then equipment last) and
- * the tab-implied-locking sequence: each tab makes only its own object type
- * interactive (`GardenBoundary`/`BedNode`/`PlantPlacementLayer`/
+ * garden, then place footprint objects - beds, compost bins, decorations -
+ * within it, then plants, then equipment last) and the tab-implied-locking
+ * sequence: each tab makes only its own object type interactive
+ * (`GardenBoundary`/`BedNode`/`DecorationLayer`/`PlantPlacementLayer`/
  * `EquipmentLayer` each gate on exactly one tab), which - since only one
  * tab can be active at a time - automatically locks every *other* step,
  * not just the immediately-preceding one. The user can always switch back
- * to an earlier tab to edit it again; nothing here prevents that. */
+ * to an earlier tab to edit it again; nothing here prevents that.
+ *
+ * "planters" is kept as the internal `PlacementTab` value even though the
+ * visible label is now "Objects" (#242) - purely a label change, minimizing
+ * churn across every other file that branches on this value. */
 export type PlacementTab = "garden" | "planters" | "plants" | "equipment";
 
 const TAB_LABELS: Record<PlacementTab, string> = {
   garden: "Garden",
-  planters: "Beds",
+  planters: "Objects",
   plants: "Plants",
   equipment: "Equipment",
 };
@@ -49,17 +54,24 @@ interface ToolbarProps {
   onTabChange: (tab: PlacementTab) => void;
   zoomPercent: number;
   onFitView: () => void;
-  /** The "Add bed" trigger button + its dialog, as one self-contained
-   * element (`AddBedForm`, built and passed in by `Layout.tsx`) - not a
-   * plain callback the way this used to work, so the actual clickable
+  /** The Objects tab's three creation triggers (Add bed/Add compost bin/
+   * Add decoration), each its own trigger button + dialog, as one
+   * self-contained fragment (built and passed in by `Layout.tsx`) - not a
+   * plain callback the way this used to work, so each actual clickable
    * button can be a real `Dialog.Trigger` (see `dialog.tsx`'s own doc on
    * why that's load-bearing for focus-return-on-close, not just a styling
-   * choice - #144's own follow-up bug report). */
-  addBedForm: ReactNode;
+   * choice - #144's own follow-up bug report). Was a single `AddBedForm`
+   * slot before #242 split the Objects tab into three creation buttons. */
+  objectsToolbar: ReactNode;
   /** The "Pipe network" trigger button + its dialog (`PipeNetworkDialog`,
    * built and passed in by `Layout.tsx`), same lifted-up-render-prop
-   * pattern as `addBedForm` above (#209). */
+   * pattern as `objectsToolbar` above (#209). */
   pipeNetworkTrigger: ReactNode;
+  /** The Equipment tab's "Quick add" trigger + popover (`QuickAddEquipment`,
+   * #242) - one-click create-and-place-in-garden for garden-bound equipment
+   * (rain barrel, pathway, etc.), alongside `pipeNetworkTrigger`. Same
+   * lifted-up-render-prop pattern. */
+  equipmentQuickAdd: ReactNode;
   armedPlant: Plant | null;
   onClearArmedPlant: () => void;
   /** The "Pick a plant" trigger button + its popover, as one self-contained
@@ -88,14 +100,15 @@ interface ToolbarProps {
  *
  * Row 1 - navigation, always the same width regardless of mode/tab: view
  * mode (Edit your own beds today / View a read-only, date-scrubbable
- * snapshot of your real garden - see #180), the Garden/Beds/Plants/
+ * snapshot of your real garden - see #180), the Garden/Objects/Plants/
  * Equipment tab switcher, zoom readout + "Fit view".
  *
- * Row 2 - whichever tools are specific to the active mode/tab (Add bed on
- * the Beds tab; pick-a-plant + Point/Row/Area mode on the Plants tab; the
- * date scrubber on the View tab). Always rendered (with a fixed min-height
- * even when it has no tools for the current tab) so switching tabs never
- * causes row 1 to jump up/down.
+ * Row 2 - whichever tools are specific to the active mode/tab (Add bed/Add
+ * compost bin/Add decoration on the Objects tab; pipe network + Quick add on
+ * the Equipment tab; pick-a-plant + Point/Row/Area mode on the Plants tab;
+ * the date scrubber on the View tab). Always rendered (with a fixed
+ * min-height even when it has no tools for the current tab) so switching
+ * tabs never causes row 1 to jump up/down.
  *
  * Consolidated out of what used to be ad hoc JSX directly in Layout.tsx
  * specifically so future tool-mode controls (pan/select, once those land)
@@ -109,8 +122,9 @@ export function Toolbar({
   onTabChange,
   zoomPercent,
   onFitView,
-  addBedForm,
+  objectsToolbar,
   pipeNetworkTrigger,
+  equipmentQuickAdd,
   armedPlant,
   onClearArmedPlant,
   plantPicker,
@@ -155,8 +169,13 @@ export function Toolbar({
         </div>
       </div>
       <div className="flex min-h-7 items-center gap-2">
-        {mode === "mine" && tab === "planters" && addBedForm}
-        {mode === "mine" && tab === "equipment" && pipeNetworkTrigger}
+        {mode === "mine" && tab === "planters" && objectsToolbar}
+        {mode === "mine" && tab === "equipment" && (
+          <>
+            {pipeNetworkTrigger}
+            {equipmentQuickAdd}
+          </>
+        )}
         {mode === "mine" && tab === "plants" && (
           <>
             {plantPicker}

@@ -129,11 +129,11 @@ export function AddBedForm({ onCreated, nextPosition }: AddBedFormProps) {
             <label className="flex flex-col gap-1" htmlFor="add-bed-field-category">
               <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Category (optional)
-                <FieldHint description="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list." />
+                <FieldHint description="Free-text grouping, e.g. raised planter, ground bed, berry row - not a fixed list. Use the dedicated 'Add compost bin' button to mark a bed as a compost bin, not this field." />
               </span>
               <Input
                 id="add-bed-field-category"
-                placeholder="e.g. raised planter, ground bed, compost..."
+                placeholder="e.g. raised planter, ground bed, berry row..."
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />

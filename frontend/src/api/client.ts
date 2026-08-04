@@ -62,6 +62,10 @@ export type CompostBinCreate = components["schemas"]["CompostBinCreate"];
 export type CompostBinUpdate = components["schemas"]["CompostBinUpdate"];
 export type CompostBinFillState = components["schemas"]["CompostBinFillState"];
 
+export type Decoration = components["schemas"]["Decoration"];
+export type DecorationCreate = components["schemas"]["DecorationCreate"];
+export type DecorationUpdate = components["schemas"]["DecorationUpdate"];
+
 export type IrrigationZone = components["schemas"]["IrrigationZone"];
 export type IrrigationZoneCreate = components["schemas"]["IrrigationZoneCreate"];
 export type IrrigationZoneUpdate = components["schemas"]["IrrigationZoneUpdate"];
@@ -394,6 +398,32 @@ export function updateCompostBin(id: number, patch: CompostBinUpdate): Promise<C
 
 export function deleteCompostBin(id: number): Promise<void> {
   return apiFetch(`/api/compost-bins/${id}`, { method: "DELETE" });
+}
+
+/** Purely cosmetic garden objects (#241/#242) - a path, bench, garden gnome,
+ * etc. Same list-everything-then-filter-client-side convention every other
+ * garden-wide resource here uses (no bed_id/garden_id to filter by - see
+ * `Decoration`'s own backend docstring on why it carries neither). */
+export function listDecorations(): Promise<Decoration[]> {
+  return apiFetch(`/api/decorations`);
+}
+
+export function createDecoration(decoration: DecorationCreate): Promise<Decoration> {
+  return apiFetch(`/api/decorations`, {
+    method: "POST",
+    body: JSON.stringify(decoration),
+  });
+}
+
+export function updateDecoration(id: number, patch: DecorationUpdate): Promise<Decoration> {
+  return apiFetch(`/api/decorations/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteDecoration(id: number): Promise<void> {
+  return apiFetch(`/api/decorations/${id}`, { method: "DELETE" });
 }
 
 /** The single-zone detail response (#36/#200) - member equipment plus

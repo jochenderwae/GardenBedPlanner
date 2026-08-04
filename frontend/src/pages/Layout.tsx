@@ -23,18 +23,22 @@ import {
   getGarden,
   listBedEquipment,
   listBeds,
+  listDecorations,
   listEquipmentTypes,
   listPlantings,
   listPlants,
   putGarden,
   updateBed,
   updateBedEquipment,
+  updateDecoration,
   updatePlanting,
   type Bed,
   type BedEquipment,
   type BedEquipmentUpdate,
   type BedUpdate,
   type CompanionMatch,
+  type Decoration,
+  type DecorationUpdate,
   type Garden,
   type GardenPut,
   type Geometry,
@@ -50,8 +54,12 @@ import {
 import { BedNode } from "./layout/BedNode";
 import { BedPanel, type BedPanelHandle } from "./layout/BedPanel";
 import { AddBedForm } from "./layout/AddBedForm";
+import { AddCompostBinForm } from "./layout/AddCompostBinForm";
+import { AddDecorationForm } from "./layout/AddDecorationForm";
 import { BulkPlantingPanel, type BulkPlantingPanelHandle } from "./layout/BulkPlantingPanel";
 import { compassBoundingBox, compassCenter, CompassWidget } from "./layout/CompassWidget";
+import { DecorationLayer } from "./layout/DecorationLayer";
+import { DecorationPanel, type DecorationPanelHandle } from "./layout/DecorationPanel";
 import { findEquipmentType } from "./layout/equipmentTypes";
 import { GardenBoundary } from "./layout/GardenBoundary";
 import { GardenPanel } from "./layout/GardenPanel";
@@ -61,6 +69,7 @@ import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPan
 import { GrowthHabitLegend } from "./layout/GrowthHabitLegend";
 import { OnboardingPrompt } from "./layout/OnboardingPrompt";
 import { PipeNetworkDialog } from "./layout/PipeNetworkDialog";
+import { QuickAddEquipment } from "./layout/QuickAddEquipment";
 import { PlantPlacementLayer, type PlacementMode, type PlantPlacementLayerHandle } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel, type PlantingPanelHandle } from "./layout/PlantingPanel";
@@ -137,11 +146,14 @@ function GridLines({ canvasSize, viewport }: { canvasSize: Size; viewport: Viewp
   return <>{lines}</>;
 }
 
-/** Simple cascading placement for a newly-added bed so it doesn't land
- * exactly on top of an existing one - just an starting point, the user
- * drags it wherever it actually belongs. */
-function nextBedPosition(beds: Bed[]): { pos_x: number; pos_y: number } {
-  const offset = (beds.length % 8) * 30;
+/** Simple cascading placement for a newly-added footprint object (bed,
+ * compost bin, decoration - #242) so it doesn't land exactly on top of an
+ * existing one - just a starting point, the user drags it wherever it
+ * actually belongs. Takes a plain count rather than a specific array so
+ * `AddCompostBinForm`/`AddDecorationForm` can each cascade against their own
+ * object count independently, same as `AddBedForm` always has. */
+function nextObjectPosition(count: number): { pos_x: number; pos_y: number } {
+  const offset = (count % 8) * 30;
   return { pos_x: 20 + offset, pos_y: 20 + offset };
 }
 
@@ -267,6 +279,11 @@ export function Layout() {
   const queryClient = useQueryClient();
   const { show: showSnackbar } = useSnackbar();
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  // A selected decoration (#242) - kept separate from the bed's own
+  // `selectedId` (different object type, different id space) but mutually
+  // exclusive with it in the UI: selecting one clears the other, so only one
+  // of BedPanel/DecorationPanel ever shows at a time on the Objects tab.
+  const [selectedDecorationId, setSelectedDecorationId] = useState<number | null>(null);
   const [mode, setMode] = useState<ViewMode>("mine");
   const [tab, setTab] = useState<PlacementTab>("garden");
   // View tab's date scrubber (#180) - drives which of the garden's real
@@ -347,6 +364,7 @@ export function Layout() {
   // action as that panel's own trash button - see the "Keyboard shortcuts"
   // backlog item.
   const bedPanelRef = useRef<BedPanelHandle>(null);
+  const decorationPanelRef = useRef<DecorationPanelHandle>(null);
   const plantingPanelRef = useRef<PlantingPanelHandle>(null);
   const bulkPlantingPanelRef = useRef<BulkPlantingPanelHandle>(null);
   const plantPlacementRef = useRef<PlantPlacementLayerHandle>(null);
@@ -455,6 +473,15 @@ export function Layout() {
     queryFn: listEquipmentTypes,
     enabled: mode === "mine",
   });
+  // Decorations (#242) - Edit-tab-only, same gating as equipment above (the
+  // View tab's read-only snapshot doesn't render them - purely cosmetic
+  // objects have no "was this here as of this date" history worth
+  // scrubbing through).
+  const decorationsQuery = useQuery({
+    queryKey: ["decorations"],
+    queryFn: listDecorations,
+    enabled: mode === "mine",
+  });
   const plantsQuery = useQuery({
     queryKey: ["plants"],
     queryFn: () => listPlants(500),
@@ -559,6 +586,14 @@ export function Layout() {
       );
     },
   });
+  const decorationGeometryMutation = useMutation({
+    mutationFn: ({ id, patch }: { id: number; patch: DecorationUpdate }) => updateDecoration(id, patch),
+    onSuccess: (updated) => {
+      queryClient.setQueryData<Decoration[]>(["decorations"], (old) =>
+        old ? old.map((d) => (d.id === updated.id ? updated : d)) : old,
+      );
+    },
+  });
 
   const beds = data ?? [];
   const garden = gardenQuery.data ?? null;
@@ -570,7 +605,9 @@ export function Layout() {
   const plantings = plantingsQuery.data ?? [];
   const equipmentList = equipmentQuery.data ?? [];
   const equipmentTypes = equipmentTypesQuery.data ?? [];
+  const decorations = decorationsQuery.data ?? [];
   const selectedBed = beds.find((b) => b.id === selectedId) ?? null;
+  const selectedDecoration = decorations.find((d) => d.id === selectedDecorationId) ?? null;
   const selectedPlanting = plantings.find((p) => p.id === selectedPlantingId) ?? null;
   const today = todayIsoDate();
   // Edit tab (#180/#201): stays a fixed "today" view, no scrubber - a
@@ -606,6 +643,7 @@ export function Layout() {
   function switchTab(next: PlacementTab) {
     setTab(next);
     setSelectedId(null);
+    setSelectedDecorationId(null);
     setSelectedBedIds(new Set());
     // No explicit PlantPicker-close needed here (unlike the old
     // plantPickerOpen state this replaced) - Toolbar.tsx only renders the
@@ -846,6 +884,29 @@ export function Layout() {
       redo: () => applyBedGeometry(bedId, geometry),
     });
     warnIfPlantingsNowOutOfBounds(bed, previousGeometry, geometry);
+  }
+
+  /** A decoration's own drag/resize/rotate/vertex-drag (#242) - the fifth
+   * of undo/redo's tracked geometry-mutation sites (bed, garden boundary,
+   * planting, equipment, decoration), same optimistic-update-then-PATCH
+   * shape as `applyBedGeometry` above. No `warnIfPlantingsNowOutOfBounds`
+   * equivalent - a decoration never has plantings placed inside it. */
+  function applyDecorationGeometry(decorationId: number, geometry: Geometry) {
+    queryClient.setQueryData<Decoration[]>(["decorations"], (old) =>
+      old ? old.map((d) => (d.id === decorationId ? { ...d, border_geometry: geometry } : d)) : old,
+    );
+    decorationGeometryMutation.mutate({ id: decorationId, patch: { border_geometry: geometry } });
+  }
+
+  function handleDecorationChange(decoration: Decoration, geometry: Geometry) {
+    if (decoration.id == null) return;
+    const decorationId = decoration.id;
+    const previousGeometry = decoration.border_geometry;
+    applyDecorationGeometry(decorationId, geometry);
+    history.push({
+      undo: () => applyDecorationGeometry(decorationId, previousGeometry),
+      redo: () => applyDecorationGeometry(decorationId, geometry),
+    });
   }
 
   /** Arrow-key nudge for the currently-selected bed - see the "Keyboard
@@ -1129,6 +1190,20 @@ export function Layout() {
     });
   }
 
+  /** "Quick add" (#242) - `QuickAddEquipment` already created `item` as a
+   * plain unplaced inventory row (bed_id/garden_id both null, same as
+   * `EquipmentPanel`'s own inventory form creates); this adds it to the
+   * `bed-equipment` query cache first (mirroring `EquipmentPanel`'s own
+   * `createMutation.onSuccess`) so `handleEquipmentPlaceInGarden`'s own
+   * `applyEquipmentPatch` - which only ever *updates* an existing cache
+   * entry by id, never inserts one - can actually find it, then runs that
+   * exact same placement logic. One click, two already-shipped operations
+   * composed together - see that component's own doc. */
+  function handleQuickAddEquipmentCreated(item: BedEquipment) {
+    queryClient.setQueryData<BedEquipment[]>(["bed-equipment"], (old) => (old ? [...old, item] : [item]));
+    handleEquipmentPlaceInGarden(item);
+  }
+
   function handleEquipmentReturnToInventory(item: BedEquipment) {
     if (item.id == null) return;
     const itemId = item.id;
@@ -1148,6 +1223,7 @@ export function Layout() {
   function handleModeChange(next: ViewMode) {
     if (next === "example") {
       setSelectedId(null);
+      setSelectedDecorationId(null);
       setSelectedBedIds(new Set());
       setSelectedPlantingIds(new Set());
     }
@@ -1209,6 +1285,7 @@ export function Layout() {
           setArmedPlant(null);
         } else if (tab === "planters") {
           setSelectedId(null);
+          setSelectedDecorationId(null);
           setSelectedBedIds(new Set());
         } else if (tab === "plants") {
           setSelectedPlantingId(null);
@@ -1221,6 +1298,9 @@ export function Layout() {
         if (tab === "planters" && selectedId != null) {
           e.preventDefault();
           bedPanelRef.current?.requestDelete();
+        } else if (tab === "planters" && selectedDecorationId != null) {
+          e.preventDefault();
+          decorationPanelRef.current?.requestDelete();
         } else if (tab === "plants" && selectedPlantingIds.size > 0) {
           e.preventDefault();
           bulkPlantingPanelRef.current?.requestDelete();
@@ -1250,7 +1330,7 @@ export function Layout() {
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [mode, tab, armedPlant, selectedId, selectedPlantingId, selectedPlantingIds, historyUndo, historyRedo]);
+  }, [mode, tab, armedPlant, selectedId, selectedDecorationId, selectedPlantingId, selectedPlantingIds, historyUndo, historyRedo]);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-2 overflow-hidden p-3">
@@ -1261,8 +1341,35 @@ export function Layout() {
         onTabChange={switchTab}
         zoomPercent={viewport.scale * 100}
         onFitView={handleFitView}
-        addBedForm={<AddBedForm onCreated={(bed) => setSelectedId(bed.id ?? null)} nextPosition={nextBedPosition(beds)} />}
+        objectsToolbar={
+          <>
+            <AddBedForm
+              onCreated={(bed) => {
+                setSelectedDecorationId(null);
+                setSelectedId(bed.id ?? null);
+              }}
+              nextPosition={nextObjectPosition(beds.length)}
+            />
+            <AddCompostBinForm
+              onCreated={(bed) => {
+                setSelectedDecorationId(null);
+                setSelectedId(bed.id ?? null);
+              }}
+              nextPosition={nextObjectPosition(beds.length)}
+            />
+            <AddDecorationForm
+              onCreated={(decoration) => {
+                setSelectedId(null);
+                setSelectedDecorationId(decoration.id ?? null);
+              }}
+              nextPosition={nextObjectPosition(decorations.length)}
+            />
+          </>
+        }
         pipeNetworkTrigger={<PipeNetworkDialog />}
+        equipmentQuickAdd={
+          <QuickAddEquipment equipmentTypes={equipmentTypes} disabled={!garden} onCreated={handleQuickAddEquipmentCreated} />
+        }
         armedPlant={armedPlant}
         onClearArmedPlant={() => setArmedPlant(null)}
         plantPicker={
@@ -1382,6 +1489,7 @@ export function Layout() {
                     }
                     onSelect={() => {
                       setSelectedId(bed.id ?? null);
+                      setSelectedDecorationId(null);
                       setSelectedBedIds(new Set());
                     }}
                     onChange={(geometry) => handleBedChange(bed, geometry)}
@@ -1407,6 +1515,20 @@ export function Layout() {
                     );
                   })()}
               </Layer>
+              {tab === "planters" && (
+                <DecorationLayer
+                  decorations={decorations}
+                  selectedId={selectedDecorationId}
+                  onSelect={(id) => {
+                    setSelectedDecorationId(id);
+                    setSelectedId(null);
+                    setSelectedBedIds(new Set());
+                  }}
+                  onChange={handleDecorationChange}
+                  viewport={viewport}
+                  bounds={gardenBounds}
+                />
+              )}
               {tab === "equipment" && <EquipmentLayer beds={beds} garden={garden} equipment={equipmentList} />}
               {tab === "plants" && (
                 <PlantPlacementLayer
@@ -1463,6 +1585,16 @@ export function Layout() {
                 plantsBySlug={plantsBySlug}
                 onClose={() => setSelectedId(null)}
                 onDeleted={() => setSelectedId(null)}
+              />
+            </div>
+          )}
+          {tab === "planters" && !selectedBed && selectedDecoration && (
+            <div className="h-full overflow-y-auto">
+              <DecorationPanel
+                ref={decorationPanelRef}
+                decoration={selectedDecoration}
+                onClose={() => setSelectedDecorationId(null)}
+                onDeleted={() => setSelectedDecorationId(null)}
               />
             </div>
           )}
