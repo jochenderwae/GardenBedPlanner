@@ -3,8 +3,22 @@ import { Link, useParams } from "react-router-dom";
 import { RulerDimensionLine } from "lucide-react";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { getAction, getBed, getPlant, listBedEquipment, updateAction, type Action, type ActionStatus } from "@/api/client";
+import {
+  getAction,
+  getBed,
+  getPlant,
+  listBedEquipment,
+  listHarvestLogs,
+  listPlantings,
+  updateAction,
+  type Action,
+  type ActionStatus,
+  type HarvestLog,
+  type HarvestQuality,
+} from "@/api/client";
 import { ACTION_TYPE_LABELS } from "@/pages/agenda/taskAgenda";
+import { HarvestLogDialog } from "@/pages/harvest/HarvestLogDialog";
+import { harvestDisabledReason, resolveHarvestPlanting } from "@/pages/harvest/harvestPlanting";
 
 /** "March 1 - May 31, 2026" for a real window, or just the one date when a
  * task collapses to a single day (a `clear` task, whose window is always
@@ -24,6 +38,28 @@ const STATUS_LABELS: Record<ActionStatus, string> = {
   completed: "Completed",
   skipped: "Skipped",
 };
+
+const HARVEST_QUALITY_LABELS: Record<HarvestQuality, string> = {
+  poor: "Poor",
+  fair: "Fair",
+  good: "Good",
+  excellent: "Excellent",
+};
+
+function formatHarvestDate(iso: string): string {
+  return new Date(`${iso}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
+/** "2.5 kg — Good — Jul 28, 2026" - amount+unit and quality are both
+ * optional (#221's own minimal-validation rule only requires *one* of
+ * amount/quality/notes), so each piece only joins in when present. */
+function harvestLogSummary(log: HarvestLog): string {
+  const parts: string[] = [];
+  if (log.yield_amount != null) parts.push(`${log.yield_amount}${log.yield_unit ? ` ${log.yield_unit}` : ""}`);
+  if (log.quality) parts.push(HARVEST_QUALITY_LABELS[log.quality]);
+  parts.push(formatHarvestDate(log.harvest_date));
+  return parts.join(" — ");
+}
 
 /** A single garden task's own detail view (#181) - the "click a task ->
  * see its detail" page the agenda (`TaskAgendaView.tsx`) and, eventually,
@@ -58,6 +94,20 @@ export function TaskDetail() {
     queryKey: ["bed-equipment"],
     queryFn: listBedEquipment,
     enabled: action?.equipment_id != null,
+  });
+
+  // #221: harvest tasks specifically need their own Planting resolved (see
+  // harvestPlanting.ts's own doc on why Action alone can't say which one) -
+  // both for gating "Log a harvest" and for this planting's own harvest
+  // history list below.
+  const isHarvestTask = action?.action_type === "harvest";
+  const plantingsQuery = useQuery({ queryKey: ["plantings"], queryFn: listPlantings, enabled: isHarvestTask });
+  const { planting: harvestPlanting, matchCount: harvestMatchCount } =
+    isHarvestTask && action ? resolveHarvestPlanting(plantingsQuery.data ?? [], action) : { planting: null, matchCount: 0 };
+  const harvestLogsQuery = useQuery({
+    queryKey: ["harvest-logs", harvestPlanting?.id],
+    queryFn: () => listHarvestLogs(harvestPlanting?.id as number),
+    enabled: harvestPlanting?.id != null,
   });
 
   // completed_date follows status here (rather than the other way around,
@@ -160,6 +210,38 @@ export function TaskDetail() {
               </div>
             )}
           </dl>
+
+          {isHarvestTask && (
+            <div className="mt-4 flex flex-col gap-3 border-t pt-3">
+              <HarvestLogDialog
+                action={action}
+                planting={harvestPlanting}
+                disabledReason={harvestDisabledReason(harvestMatchCount)}
+                plantCommonName={plantQuery.data?.common_name ?? action.plant_slug ?? "this plant"}
+                bedName={bedQuery.data?.name ?? `Bed #${action.bed_id}`}
+              />
+
+              <div>
+                <span className="text-xs font-medium text-muted-foreground">Harvest log</span>
+                {harvestLogsQuery.isPending && harvestPlanting && (
+                  <p className="mt-1 text-xs text-muted-foreground">Loading…</p>
+                )}
+                {(harvestLogsQuery.data ?? []).length === 0 && !harvestLogsQuery.isPending && (
+                  <p className="mt-1 text-xs text-muted-foreground">No harvests logged yet for this planting.</p>
+                )}
+                <ul className="mt-1 flex flex-col gap-1">
+                  {[...(harvestLogsQuery.data ?? [])]
+                    .sort((a, b) => b.harvest_date.localeCompare(a.harvest_date))
+                    .map((log) => (
+                      <li key={log.id} className="text-xs">
+                        {harvestLogSummary(log)}
+                        {log.notes && <span className="block text-muted-foreground">"{log.notes}"</span>}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </div>
+          )}
         </Card>
       )}
     </div>

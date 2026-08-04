@@ -6,17 +6,25 @@ import { Input, Select, Textarea } from "@/components/ui/input";
 import {
   createCompostBin,
   createCompostFertilizationLog,
+  listActions,
   listBeds,
   listCompostBins,
   listCompostFertilizationLogs,
+  listPlantings,
+  listPlants,
   updateCompostBin,
+  type Action,
   type Bed,
   type CompostBin,
   type CompostBinUpdate,
   type CompostFertilizationLog,
   type CompostFertilizationLogCreate,
+  type Plant,
+  type Planting,
 } from "@/api/client";
 import { todayIsoDate } from "@/pages/layout/plantingLifecycle";
+import { HarvestLogDialog } from "@/pages/harvest/HarvestLogDialog";
+import { harvestDisabledReason, resolveHarvestPlanting } from "@/pages/harvest/harvestPlanting";
 
 const FILL_STATE_OPTIONS: { value: CompostBin["fill_state"]; label: string }[] = [
   { value: "empty", label: "Empty" },
@@ -291,25 +299,122 @@ function RecentLogsList({ logs, bedsById }: { logs: CompostFertilizationLog[]; b
   );
 }
 
+/** One open harvest task's own row - plant+bed label plus the shared
+ * `HarvestLogDialog` trigger (#221). A flat list (no date-grouping) since
+ * this is "log something now," not the due-date agenda `TaskAgendaView.tsx`
+ * already covers. */
+function HarvestTaskRow({
+  action,
+  bedsById,
+  plantsBySlug,
+  plantings,
+}: {
+  action: Action;
+  bedsById: Map<number, Bed>;
+  plantsBySlug: Map<string, Plant>;
+  plantings: Planting[];
+}) {
+  const bed = action.bed_id != null ? bedsById.get(action.bed_id) : undefined;
+  const plant = action.plant_slug ? plantsBySlug.get(action.plant_slug) : undefined;
+  const { planting, matchCount } = resolveHarvestPlanting(plantings, action);
+
+  return (
+    <div className="flex items-center justify-between gap-2 border-t pt-3 first:border-t-0 first:pt-0">
+      <span className="text-sm">
+        <span className="font-medium">{plant?.common_name ?? action.plant_slug}</span>
+        <span className="block text-xs text-muted-foreground">{bed?.name ?? `Bed #${action.bed_id}`}</span>
+      </span>
+      <HarvestLogDialog
+        action={action}
+        planting={planting}
+        disabledReason={harvestDisabledReason(matchCount)}
+        plantCommonName={plant?.common_name ?? action.plant_slug ?? "this plant"}
+        bedName={bed?.name ?? `Bed #${action.bed_id}`}
+        triggerLabel="Log harvest"
+      />
+    </div>
+  );
+}
+
+/** Flat list of every pending `harvest` task, each opening the shared
+ * `HarvestLogDialog` (#221) - the ticket's own required check that the
+ * dialog works identically from this entry point, not just `TaskDetail`'s. */
+function HarvestTasksSection({
+  actions,
+  bedsById,
+  plantsBySlug,
+  plantings,
+}: {
+  actions: Action[];
+  bedsById: Map<number, Bed>;
+  plantsBySlug: Map<string, Plant>;
+  plantings: Planting[];
+}) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm">Harvest</CardTitle>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-3">
+        {actions.length === 0 && (
+          <p className="text-xs text-muted-foreground">
+            No harvests to log right now - tasks with an open harvest window show up here.
+          </p>
+        )}
+        {actions.map((action) => (
+          <HarvestTaskRow
+            key={action.id}
+            action={action}
+            bedsById={bedsById}
+            plantsBySlug={plantsBySlug}
+            plantings={plantings}
+          />
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
 /** Compost/fertilization logging (#223) - product/amount/date/notes against
  * a bed, plus compost bin status tracking (fill state, last turned,
  * estimated maturity). Mobile-only per this ticket's own settled Platform
  * note (matches root CLAUDE.md's mobile route-set convention: logging is a
  * mobile-first quick action, no desktop equivalent required here). Harvest
- * logging (#221) is this same tab's other half - lives alongside this,
- * not merged into it. */
+ * logging (#221, `HarvestTasksSection` above) is this same tab's other
+ * half - lives alongside this, not merged into it. */
 export function MobileLogging() {
   const bedsQuery = useQuery({ queryKey: ["beds"], queryFn: listBeds });
   const logsQuery = useQuery({ queryKey: ["compost-fertilization-logs"], queryFn: listCompostFertilizationLogs });
   const binsQuery = useQuery({ queryKey: ["compost-bins"], queryFn: listCompostBins });
+  const harvestActionsQuery = useQuery({
+    queryKey: ["actions", "harvest-pending"],
+    queryFn: () => listActions({ status: "pending", actionType: "harvest" }),
+  });
+  const plantsQuery = useQuery({ queryKey: ["plants"], queryFn: () => listPlants(500) });
+  const plantingsQuery = useQuery({ queryKey: ["plantings"], queryFn: listPlantings });
 
   const beds = bedsQuery.data ?? [];
   const logs = logsQuery.data ?? [];
   const bins = binsQuery.data ?? [];
   const bedsById = new Map(beds.filter((b) => b.id != null).map((b) => [b.id as number, b]));
+  const plantsBySlug = new Map((plantsQuery.data ?? []).map((p) => [p.slug, p]));
+  const harvestActions = harvestActionsQuery.data ?? [];
+  const plantings = plantingsQuery.data ?? [];
 
-  const isPending = bedsQuery.isPending || logsQuery.isPending || binsQuery.isPending;
-  const isError = bedsQuery.isError || logsQuery.isError || binsQuery.isError;
+  const isPending =
+    bedsQuery.isPending ||
+    logsQuery.isPending ||
+    binsQuery.isPending ||
+    harvestActionsQuery.isPending ||
+    plantsQuery.isPending ||
+    plantingsQuery.isPending;
+  const isError =
+    bedsQuery.isError ||
+    logsQuery.isError ||
+    binsQuery.isError ||
+    harvestActionsQuery.isError ||
+    plantsQuery.isError ||
+    plantingsQuery.isError;
 
   return (
     <div className="flex flex-col gap-3">
@@ -323,6 +428,12 @@ export function MobileLogging() {
 
       {!isPending && !isError && (
         <>
+          <HarvestTasksSection
+            actions={harvestActions}
+            bedsById={bedsById}
+            plantsBySlug={plantsBySlug}
+            plantings={plantings}
+          />
           <CompostLogForm beds={beds} />
           <CompostBinsSection beds={beds} bins={bins} />
           {logs.length > 0 && <RecentLogsList logs={logs} bedsById={bedsById} />}

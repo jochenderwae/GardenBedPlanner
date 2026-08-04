@@ -40,6 +40,11 @@ export type BedEquipmentUpdate = components["schemas"]["BedEquipmentUpdate"];
 export type EquipmentType = components["schemas"]["EquipmentType"];
 export type EquipmentCategory = components["schemas"]["EquipmentCategory"];
 
+export type HarvestLog = components["schemas"]["HarvestLog"];
+export type HarvestLogCreate = components["schemas"]["HarvestLogCreate"];
+export type HarvestLogUpdate = components["schemas"]["HarvestLogUpdate"];
+export type HarvestQuality = components["schemas"]["HarvestQuality"];
+
 export type GardenPlan = components["schemas"]["GardenPlan"];
 export type GardenPlanCreate = components["schemas"]["GardenPlanCreate"];
 export type GardenPlanUpdate = components["schemas"]["GardenPlanUpdate"];
@@ -232,6 +237,31 @@ export function listEquipmentTypes(): Promise<EquipmentType[]> {
 
 export function listIrrigationZones(): Promise<IrrigationZone[]> {
   return apiFetch(`/api/irrigation-zones`);
+}
+
+/** #221: a Planting's own harvest history, or every harvest logged across
+ * the whole garden when `plantingId` is omitted. */
+export function listHarvestLogs(plantingId?: number): Promise<HarvestLog[]> {
+  const query = plantingId != null ? `?planting_id=${plantingId}` : "";
+  return apiFetch(`/api/harvest-logs${query}`);
+}
+
+export function createHarvestLog(log: HarvestLogCreate): Promise<HarvestLog> {
+  return apiFetch(`/api/harvest-logs`, {
+    method: "POST",
+    body: JSON.stringify(log),
+  });
+}
+
+export function updateHarvestLog(id: number, patch: HarvestLogUpdate): Promise<HarvestLog> {
+  return apiFetch(`/api/harvest-logs/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteHarvestLog(id: number): Promise<void> {
+  return apiFetch(`/api/harvest-logs/${id}`, { method: "DELETE" });
 }
 
 /** #220: a season/year's plant wishlist header - see `getGardenPlan` for
