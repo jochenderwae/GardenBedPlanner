@@ -39,22 +39,22 @@ def _get_or_404(session: Session, connection_id: int) -> IrrigationConnectionTab
     return connection
 
 
-def _check_not_self_connection(from_part_id: int, to_part_id: int) -> None:
-    if from_part_id == to_part_id:
-        raise HTTPException(status_code=400, detail="A part cannot connect to itself")
+def _check_not_self_connection(from_instance_id: int, to_instance_id: int) -> None:
+    if from_instance_id == to_instance_id:
+        raise HTTPException(status_code=400, detail="A part instance cannot connect to itself")
 
 
 @router.get("", response_model=list[IrrigationConnectionTable])
 def list_irrigation_connections(
-    part_id: int | None = Query(default=None, description="Only connections touching this part"),
+    instance_id: int | None = Query(default=None, description="Only connections touching this part instance"),
     session: Session = Depends(get_session),
 ) -> list[IrrigationConnectionTable]:
     query = select(IrrigationConnectionTable)
-    if part_id is not None:
+    if instance_id is not None:
         query = query.where(
             or_(
-                IrrigationConnectionTable.from_part_id == part_id,
-                IrrigationConnectionTable.to_part_id == part_id,
+                IrrigationConnectionTable.from_instance_id == instance_id,
+                IrrigationConnectionTable.to_instance_id == instance_id,
             )
         )
     return list(session.exec(query).all())
@@ -72,7 +72,7 @@ def create_irrigation_connection(
     connection: _IrrigationConnectionCreate,  # type: ignore[valid-type]
     session: Session = Depends(get_session),
 ) -> IrrigationConnectionTable:
-    _check_not_self_connection(connection.from_part_id, connection.to_part_id)
+    _check_not_self_connection(connection.from_instance_id, connection.to_instance_id)
     row = IrrigationConnectionTable(**connection.model_dump())
     session.add(row)
     commit_or_409(session)
@@ -88,8 +88,8 @@ def update_irrigation_connection(
 ) -> IrrigationConnectionTable:
     connection = _get_or_404(session, connection_id)
     data = update.model_dump(exclude_unset=True)
-    new_from = data.get("from_part_id", connection.from_part_id)
-    new_to = data.get("to_part_id", connection.to_part_id)
+    new_from = data.get("from_instance_id", connection.from_instance_id)
+    new_to = data.get("to_instance_id", connection.to_instance_id)
     _check_not_self_connection(new_from, new_to)
     for field, value in data.items():
         setattr(connection, field, value)

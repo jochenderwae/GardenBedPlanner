@@ -1023,6 +1023,43 @@ export interface paths {
         patch: operations["update_irrigation_part_api_irrigation_parts__part_id__patch"];
         trace?: never;
     };
+    "/api/irrigation-part-instances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Irrigation Part Instances */
+        get: operations["list_irrigation_part_instances_api_irrigation_part_instances_get"];
+        put?: never;
+        /** Create Irrigation Part Instance */
+        post: operations["create_irrigation_part_instance_api_irrigation_part_instances_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/irrigation-part-instances/{instance_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Irrigation Part Instance */
+        get: operations["get_irrigation_part_instance_api_irrigation_part_instances__instance_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Irrigation Part Instance */
+        delete: operations["delete_irrigation_part_instance_api_irrigation_part_instances__instance_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Irrigation Part Instance */
+        patch: operations["update_irrigation_part_instance_api_irrigation_part_instances__instance_id__patch"];
+        trace?: never;
+    };
     "/api/irrigation-connections": {
         parameters: {
             query?: never;
@@ -2196,26 +2233,31 @@ export interface components {
         HarvestQuality: "poor" | "fair" | "good" | "excellent";
         /**
          * IrrigationConnection
-         * @description Records that one IrrigationPart physically connects to another (e.g.
-         *     a nozzle plugs into a T-junction) - the "pipe network" edge list #37
-         *     asks for, so the exact watering layout can eventually be drawn out
-         *     rather than only reasoned about in the abstract. A flat edge list (two
-         *     FKs into irrigation_part), not a general graph model - matches this
-         *     garden's actual scale (a handful of parts), same reasoning as
-         *     IrrigationZone's own docstring on why a flat FK is enough here.
+         * @description Records that one physically-placed IrrigationPartInstance connects to
+         *     another (e.g. a nozzle plugs into a T-junction) - the "pipe network"
+         *     edge list #37 asks for, so the exact watering layout can eventually be
+         *     drawn out rather than only reasoned about in the abstract. A flat edge
+         *     list (two FKs into irrigation_part_instance), not a general graph model
+         *     - matches this garden's actual scale (a handful of parts), same
+         *     reasoning as IrrigationZone's own docstring on why a flat FK is enough
+         *     here.
          *
-         *     from_part_id/to_part_id are undirected in practice (a connection is
-         *     just "these two parts are connected", not implying a flow direction) -
-         *     named from_/to_ only to give each end a distinct column name, not to
-         *     encode directionality.
+         *     #254: originally pointed at irrigation_part directly (one diagram node
+         *     per part type), which couldn't represent owning several physical units
+         *     of the same part connected to different neighbors - re-pointed at
+         *     IrrigationPartInstance so each physical unit has its own independent
+         *     set of connections. from_instance_id/to_instance_id are undirected in
+         *     practice (a connection is just "these two instances are connected", not
+         *     implying a flow direction) - named from_/to_ only to give each end a
+         *     distinct column name, not to encode directionality.
          */
         IrrigationConnection: {
             /** Id */
             id?: number | null;
-            /** From Part Id */
-            from_part_id: number;
-            /** To Part Id */
-            to_part_id: number;
+            /** From Instance Id */
+            from_instance_id: number;
+            /** To Instance Id */
+            to_instance_id: number;
             /**
              * Notes
              * @default
@@ -2224,10 +2266,10 @@ export interface components {
         };
         /** IrrigationConnectionCreate */
         IrrigationConnectionCreate: {
-            /** From Part Id */
-            from_part_id: number;
-            /** To Part Id */
-            to_part_id: number;
+            /** From Instance Id */
+            from_instance_id: number;
+            /** To Instance Id */
+            to_instance_id: number;
             /**
              * Notes
              * @default
@@ -2236,10 +2278,10 @@ export interface components {
         };
         /** IrrigationConnectionUpdate */
         IrrigationConnectionUpdate: {
-            /** From Part Id */
-            from_part_id?: number | null;
-            /** To Part Id */
-            to_part_id?: number | null;
+            /** From Instance Id */
+            from_instance_id?: number | null;
+            /** To Instance Id */
+            to_instance_id?: number | null;
             /** Notes */
             notes?: string | null;
         };
@@ -2252,12 +2294,15 @@ export interface components {
          *     analysis: a gardener thinks "I have 6 of these", not in terms of six
          *     individually-tracked rows. Additive to IrrigationZone (#36's zone-level
          *     grouping) and BedEquipment (placed equipment) - this table is about
-         *     unplaced part-level inventory and how parts connect to each other
-         *     (see IrrigationConnection), not placement on the canvas.
+         *     unplaced part-level inventory, not placement on the canvas or how
+         *     individual physical units connect to each other (see
+         *     IrrigationPartInstance/IrrigationConnection for that - #254 split
+         *     per-instance diagram position out of this table, since a stock row can
+         *     represent several independently-placed physical items).
          *
          *     "Needs purchase" is deliberately not a stored column here - it's derived
-         *     by comparing quantity_on_hand against how many times a part is
-         *     referenced by IrrigationConnection rows, computed at read time (see
+         *     by comparing quantity_on_hand against how many IrrigationPartInstance
+         *     rows exist for this part, computed at read time (see
          *     app/api/routes/irrigation_parts.py), same spirit as #41's seed-buying
          *     agenda deriving "need to buy" from existing data rather than a stored
          *     flag.
@@ -2281,10 +2326,6 @@ export interface components {
             notes: string;
             /** Connector Size Mm */
             connector_size_mm?: number | null;
-            /** Diagram X */
-            diagram_x?: number | null;
-            /** Diagram Y */
-            diagram_y?: number | null;
         };
         /** IrrigationPartCreate */
         IrrigationPartCreate: {
@@ -2304,19 +2345,17 @@ export interface components {
             notes: string;
             /** Connector Size Mm */
             connector_size_mm?: number | null;
-            /** Diagram X */
-            diagram_x?: number | null;
-            /** Diagram Y */
-            diagram_y?: number | null;
         };
         /**
          * IrrigationPartDetail
          * @description GET /irrigation-parts/{part_id} response: the part plus its derived
-         *     "needs purchase" status - #37's test criterion 4. connections_needed is
-         *     how many times this part is referenced by an IrrigationConnection (each
-         *     connection implies one physical unit of this part is in use); this is
-         *     never stored, only computed here from the recorded network, same "no
-         *     dedicated flag" reasoning as #41's seed-buying agenda.
+         *     "needs purchase" status - #37's test criterion 4, redefined by #254 in
+         *     terms of placed instances rather than connections. instance_count is how
+         *     many IrrigationPartInstance rows exist for this part (each one a
+         *     physical unit placed on the diagram); this is never stored, only
+         *     computed here, same "no dedicated flag" reasoning as #41's seed-buying
+         *     agenda. needs_purchase flags (never blocks) placing more instances than
+         *     quantity_on_hand actually covers - #254's own test criterion 3.
          */
         IrrigationPartDetail: {
             /** Id */
@@ -2331,10 +2370,59 @@ export interface components {
             notes: string;
             /** Connector Size Mm */
             connector_size_mm: number | null;
-            /** Connections Needed */
-            connections_needed: number;
+            /** Instance Count */
+            instance_count: number;
             /** Needs Purchase */
             needs_purchase: boolean;
+        };
+        /**
+         * IrrigationPartInstance
+         * @description One physically-placed unit of an IrrigationPart catalog/stock row -
+         *     #254's fix for the "I own 6 of these, each connected to a different
+         *     neighbor in the real network" gap: IrrigationPart stays the catalog-
+         *     level "how many I own" stock row (its own docstring), while each
+         *     IrrigationPartInstance is a single physical item of that part type with
+         *     its own diagram position and its own independent set of
+         *     IrrigationConnection edges. Deleting one instance only removes that
+         *     instance's own connections, not every connection involving the part
+         *     type - see irrigation_part_instances.py's delete route.
+         *
+         *     part_id references the stock row this instance is one physical unit
+         *     of. How many instances exist for a part vs its quantity_on_hand is
+         *     surfaced, not enforced - same "needs purchase" derived-not-blocked
+         *     reasoning #37/#209 already use at the part level (see instance_count/
+         *     needs_purchase on IrrigationPartDetail in irrigation_parts.py) - a
+         *     legitimate workflow exists where you place instances ahead of buying
+         *     the stock to match, same as recording a connection ahead of buying the
+         *     part it needs today.
+         */
+        IrrigationPartInstance: {
+            /** Id */
+            id?: number | null;
+            /** Part Id */
+            part_id: number;
+            /** Diagram X */
+            diagram_x?: number | null;
+            /** Diagram Y */
+            diagram_y?: number | null;
+        };
+        /** IrrigationPartInstanceCreate */
+        IrrigationPartInstanceCreate: {
+            /** Part Id */
+            part_id: number;
+            /** Diagram X */
+            diagram_x?: number | null;
+            /** Diagram Y */
+            diagram_y?: number | null;
+        };
+        /** IrrigationPartInstanceUpdate */
+        IrrigationPartInstanceUpdate: {
+            /** Part Id */
+            part_id?: number | null;
+            /** Diagram X */
+            diagram_x?: number | null;
+            /** Diagram Y */
+            diagram_y?: number | null;
         };
         /** IrrigationPartUpdate */
         IrrigationPartUpdate: {
@@ -2348,10 +2436,6 @@ export interface components {
             notes?: string | null;
             /** Connector Size Mm */
             connector_size_mm?: number | null;
-            /** Diagram X */
-            diagram_x?: number | null;
-            /** Diagram Y */
-            diagram_y?: number | null;
         };
         /** IrrigationSizing */
         IrrigationSizing: {
@@ -6365,11 +6449,171 @@ export interface operations {
             };
         };
     };
+    list_irrigation_part_instances_api_irrigation_part_instances_get: {
+        parameters: {
+            query?: {
+                /** @description Only instances of this part */
+                part_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartInstance"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_irrigation_part_instance_api_irrigation_part_instances_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationPartInstanceCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartInstance"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_irrigation_part_instance_api_irrigation_part_instances__instance_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                instance_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartInstance"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_irrigation_part_instance_api_irrigation_part_instances__instance_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                instance_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_irrigation_part_instance_api_irrigation_part_instances__instance_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                instance_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationPartInstanceUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartInstance"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     list_irrigation_connections_api_irrigation_connections_get: {
         parameters: {
             query?: {
-                /** @description Only connections touching this part */
-                part_id?: number | null;
+                /** @description Only connections touching this part instance */
+                instance_id?: number | null;
             };
             header?: never;
             path?: never;

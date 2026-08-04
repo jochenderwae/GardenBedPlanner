@@ -9,12 +9,15 @@ class IrrigationPart(SQLModel, table=True):
     analysis: a gardener thinks "I have 6 of these", not in terms of six
     individually-tracked rows. Additive to IrrigationZone (#36's zone-level
     grouping) and BedEquipment (placed equipment) - this table is about
-    unplaced part-level inventory and how parts connect to each other
-    (see IrrigationConnection), not placement on the canvas.
+    unplaced part-level inventory, not placement on the canvas or how
+    individual physical units connect to each other (see
+    IrrigationPartInstance/IrrigationConnection for that - #254 split
+    per-instance diagram position out of this table, since a stock row can
+    represent several independently-placed physical items).
 
     "Needs purchase" is deliberately not a stored column here - it's derived
-    by comparing quantity_on_hand against how many times a part is
-    referenced by IrrigationConnection rows, computed at read time (see
+    by comparing quantity_on_hand against how many IrrigationPartInstance
+    rows exist for this part, computed at read time (see
     app/api/routes/irrigation_parts.py), same spirit as #41's seed-buying
     agenda deriving "need to buy" from existing data rather than a stored
     flag."""
@@ -36,10 +39,3 @@ class IrrigationPart(SQLModel, table=True):
     # legitimate configuration exists (reducer/dripper fittings) where sizes
     # genuinely differ.
     connector_size_mm: float | None = None
-    # Node position on the pipe-network diagram canvas (#209), independent
-    # of any bed/garden position - IrrigationPart is catalog-level stock, not
-    # placed equipment (no bed_id/geometry the way BedEquipment has). None
-    # means "not yet added to the diagram", same "unplaced but still valid
-    # inventory" state as an unplaced BedEquipment item.
-    diagram_x: float | None = None
-    diagram_y: float | None = None

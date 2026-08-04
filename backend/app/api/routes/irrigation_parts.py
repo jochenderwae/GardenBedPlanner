@@ -8,6 +8,7 @@ from app.api.deps import commit_or_409
 from app.core.db import get_session
 from app.models.irrigation_connection import IrrigationConnection as IrrigationConnectionTable
 from app.models.irrigation_part import IrrigationPart as IrrigationPartTable
+from app.models.irrigation_part_instance import IrrigationPartInstance as IrrigationPartInstanceTable
 
 router = APIRouter(prefix="/irrigation-parts", tags=["irrigation-parts"])
 
@@ -35,11 +36,13 @@ _IrrigationPartUpdate = create_model(
 
 class IrrigationPartDetail(BaseModel):
     """GET /irrigation-parts/{part_id} response: the part plus its derived
-    "needs purchase" status - #37's test criterion 4. connections_needed is
-    how many times this part is referenced by an IrrigationConnection (each
-    connection implies one physical unit of this part is in use); this is
-    never stored, only computed here from the recorded network, same "no
-    dedicated flag" reasoning as #41's seed-buying agenda."""
+    "needs purchase" status - #37's test criterion 4, redefined by #254 in
+    terms of placed instances rather than connections. instance_count is how
+    many IrrigationPartInstance rows exist for this part (each one a
+    physical unit placed on the diagram); this is never stored, only
+    computed here, same "no dedicated flag" reasoning as #41's seed-buying
+    agenda. needs_purchase flags (never blocks) placing more instances than
+    quantity_on_hand actually covers - #254's own test criterion 3."""
 
     id: int
     name: str
@@ -47,7 +50,7 @@ class IrrigationPartDetail(BaseModel):
     quantity_on_hand: int
     notes: str
     connector_size_mm: float | None
-    connections_needed: int
+    instance_count: int
     needs_purchase: bool
 
 
@@ -58,20 +61,15 @@ def _get_or_404(session: Session, part_id: int) -> IrrigationPartTable:
     return part
 
 
-def _connections_needed(session: Session, part_id: int) -> int:
+def _instance_count(session: Session, part_id: int) -> int:
     rows = session.exec(
-        select(IrrigationConnectionTable).where(
-            or_(
-                IrrigationConnectionTable.from_part_id == part_id,
-                IrrigationConnectionTable.to_part_id == part_id,
-            )
-        )
+        select(IrrigationPartInstanceTable).where(IrrigationPartInstanceTable.part_id == part_id)
     ).all()
     return len(rows)
 
 
 def _to_detail(session: Session, part: IrrigationPartTable) -> IrrigationPartDetail:
-    needed = _connections_needed(session, part.id)
+    count = _instance_count(session, part.id)
     return IrrigationPartDetail(
         id=part.id,
         name=part.name,
@@ -79,8 +77,8 @@ def _to_detail(session: Session, part: IrrigationPartTable) -> IrrigationPartDet
         quantity_on_hand=part.quantity_on_hand,
         notes=part.notes,
         connector_size_mm=part.connector_size_mm,
-        connections_needed=needed,
-        needs_purchase=needed > part.quantity_on_hand,
+        instance_count=count,
+        needs_purchase=count > part.quantity_on_hand,
     )
 
 
@@ -122,20 +120,37 @@ def update_irrigation_part(
 @router.delete("/{part_id}", status_code=204)
 def delete_irrigation_part(part_id: int, session: Session = Depends(get_session)) -> None:
     part = _get_or_404(session, part_id)
-    # Connections referencing this part would otherwise FK-violate on
-    # delete - clean those up first rather than surfacing a raw 409 for
-    # what's a legitimate "remove this part and its connections" action.
-    connections = list(
-        session.exec(
-            select(IrrigationConnectionTable).where(
-                or_(
-                    IrrigationConnectionTable.from_part_id == part_id,
-                    IrrigationConnectionTable.to_part_id == part_id,
-                )
-            )
-        ).all()
+    # #254: connections now hang off this part's IrrigationPartInstance rows,
+    # not off the part directly - clean up every instance's connections,
+    # then the instances themselves, before the part row, rather than
+    # surfacing a raw 409 for what's a legitimate "remove this part, its
+    # placed instances, and their connections" action.
+    instances = list(
+        session.exec(select(IrrigationPartInstanceTable).where(IrrigationPartInstanceTable.part_id == part_id)).all()
     )
-    for connection in connections:
-        session.delete(connection)
+    instance_ids = [instance.id for instance in instances]
+    if instance_ids:
+        connections = list(
+            session.exec(
+                select(IrrigationConnectionTable).where(
+                    or_(
+                        IrrigationConnectionTable.from_instance_id.in_(instance_ids),
+                        IrrigationConnectionTable.to_instance_id.in_(instance_ids),
+                    )
+                )
+            ).all()
+        )
+        for connection in connections:
+            session.delete(connection)
+    # Explicit flushes between each level - with no ORM relationship()
+    # declared between these tables (deliberately, per every model here's
+    # own "flat FK, not a graph model" docstring), SQLAlchemy's unit-of-work
+    # doesn't know connection -> instance -> part is a dependency chain and
+    # won't otherwise guarantee DELETE statements go out in that order,
+    # which would FK-violate deleting a still-referenced instance/part.
+    session.flush()
+    for instance in instances:
+        session.delete(instance)
+    session.flush()
     session.delete(part)
     commit_or_409(session)
