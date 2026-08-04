@@ -34,3 +34,9 @@ class Planting(SQLModel, table=True):
     # remembered per-placement instead of always falling back to the
     # plant's default spread.
     spacing_cm: float | None = None
+    # Per-placement row-spacing override (cm) for "field" placements only -
+    # same shape/semantics as spacing_cm above, but for the row axis rather
+    # than the in-row axis (Plant.row_spacing_cm is the species-level
+    # default this overrides). None means "use the plant's own
+    # row_spacing_cm". See #265.
+    row_spacing_cm: float | None = None

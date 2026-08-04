@@ -3034,6 +3034,8 @@ export interface components {
             removed_date?: string | null;
             /** Spacing Cm */
             spacing_cm?: number | null;
+            /** Row Spacing Cm */
+            row_spacing_cm?: number | null;
             /** Geometry */
             geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
         };
@@ -3051,6 +3053,8 @@ export interface components {
             removed_date?: string | null;
             /** Spacing Cm */
             spacing_cm?: number | null;
+            /** Row Spacing Cm */
+            row_spacing_cm?: number | null;
             /** Geometry */
             geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
         };
@@ -3067,6 +3071,8 @@ export interface components {
             removed_date?: string | null;
             /** Spacing Cm */
             spacing_cm?: number | null;
+            /** Row Spacing Cm */
+            row_spacing_cm?: number | null;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };

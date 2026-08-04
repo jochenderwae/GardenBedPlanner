@@ -177,6 +177,67 @@ def test_spacing_cm_edge_cases(client: TestClient, db_session) -> None:
     assert client.get(f"/api/plantings/{individual_id}").json()["spacing_cm"] == 30.0
 
 
+def test_row_spacing_cm_persists_independently_of_spacing_cm(client: TestClient, db_session) -> None:
+    bed_id = _create_bed(client)
+    plant_slug = _create_plant(db_session)
+
+    # No row_spacing_cm supplied -> falls back to None (client-side default
+    # to the plant's own row_spacing_cm), independent of spacing_cm.
+    create_response = client.post(
+        "/api/plantings",
+        json={
+            "bed_id": bed_id,
+            "plant_slug": plant_slug,
+            "placement_type": "field",
+            "geometry": rectangle(width=100, height=100),
+            "spacing_cm": 15.5,
+        },
+    )
+    assert create_response.status_code == 201, create_response.text
+    planting_id = create_response.json()["id"]
+    assert create_response.json()["row_spacing_cm"] is None
+    assert create_response.json()["spacing_cm"] == 15.5
+
+    # Explicit row_spacing_cm on create is persisted and returned alongside
+    # spacing_cm, independently.
+    with_row_id = client.post(
+        "/api/plantings",
+        json={
+            "bed_id": bed_id,
+            "plant_slug": plant_slug,
+            "placement_type": "field",
+            "geometry": rectangle(width=100, height=100),
+            "spacing_cm": 15.5,
+            "row_spacing_cm": 40.0,
+        },
+    ).json()["id"]
+    get_response = client.get(f"/api/plantings/{with_row_id}")
+    assert get_response.json()["row_spacing_cm"] == 40.0
+    assert get_response.json()["spacing_cm"] == 15.5
+
+    # PATCH updates row_spacing_cm.
+    update_response = client.patch(f"/api/plantings/{planting_id}", json={"row_spacing_cm": 40})
+    assert update_response.status_code == 200
+    assert update_response.json()["row_spacing_cm"] == 40
+    assert update_response.json()["spacing_cm"] == 15.5
+
+    # A PATCH that omits row_spacing_cm entirely leaves the existing value
+    # untouched (same exclude_unset partial-update semantics every other
+    # nullable field on this model already has).
+    unrelated_update = client.patch(
+        f"/api/plantings/{planting_id}", json={"planted_date": "2026-04-01"}
+    )
+    assert unrelated_update.status_code == 200
+    assert unrelated_update.json()["row_spacing_cm"] == 40
+    assert unrelated_update.json()["planted_date"] == "2026-04-01"
+
+    # Explicitly clearing back to null persists as null.
+    clear_response = client.patch(f"/api/plantings/{planting_id}", json={"row_spacing_cm": None})
+    assert clear_response.status_code == 200
+    assert clear_response.json()["row_spacing_cm"] is None
+    assert client.get(f"/api/plantings/{planting_id}").json()["row_spacing_cm"] is None
+
+
 def test_changing_bed_id_without_new_geometry_is_rejected(client: TestClient, db_session) -> None:
     bed_id = _create_bed(client, "Bed A")
     other_bed_id = _create_bed(client, "Bed B")
