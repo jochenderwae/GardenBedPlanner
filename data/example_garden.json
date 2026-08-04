@@ -575,5 +575,89 @@
         }
       ]
     }
-  ]
+  ],
+  "secondary_garden": {
+    "name": "New Plot",
+    "notes": "Illustrative second example garden (GitHub issue #240, built on #238's multi-garden backend groundwork) - a fresh 'just getting started this season' plot: fewer beds than the main example garden, one still completely unplanted, the other holding just a single quick crop rather than the main garden's full companion-planted layout. Always imported inactive (Garden.is_active=False) - exists to be switched to via POST /api/gardens/{id}/activate, the main example garden stays the default active one unchanged.",
+    "beds": [
+      {
+        "name": "New Raised Bed 1",
+        "category": "large_planter",
+        "border_geometry": {
+          "type": "rectangle",
+          "x": 0,
+          "y": 0,
+          "width": 70,
+          "height": 200,
+          "rotation": 0
+        },
+        "height_cm": 70,
+        "has_greenhouse": false,
+        "is_raised": true,
+        "notes": "Just built this season - only lettuce sown so far.",
+        "plantings": [
+          {
+            "plant_slug": "lettuce",
+            "placement_type": "field",
+            "geometry": {
+              "type": "rectangle",
+              "x": 0.0,
+              "y": 70.0,
+              "width": 70,
+              "height": 60.0,
+              "rotation": 0
+            },
+            "spacing_cm": 30.0
+          }
+        ]
+      },
+      {
+        "name": "New Raised Bed 2",
+        "category": "large_planter",
+        "border_geometry": {
+          "type": "rectangle",
+          "x": 130,
+          "y": 0,
+          "width": 70,
+          "height": 200,
+          "rotation": 0
+        },
+        "height_cm": 70,
+        "has_greenhouse": false,
+        "is_raised": true,
+        "notes": "Just built this season - nothing sown yet."
+      },
+      {
+        "name": "New Small Planter",
+        "category": "small_planter",
+        "border_geometry": {
+          "type": "rectangle",
+          "x": 0,
+          "y": 300,
+          "width": 30,
+          "height": 70,
+          "rotation": 0
+        },
+        "height_cm": 70,
+        "has_greenhouse": false,
+        "is_raised": true,
+        "notes": "A quick radish crop just sown to test the soil before committing to anything bigger.",
+        "plantings": [
+          {
+            "plant_slug": "french-breakfast-radish",
+            "placement_type": "field",
+            "geometry": {
+              "type": "rectangle",
+              "x": 0.0,
+              "y": 12.5,
+              "width": 30.0,
+              "height": 45.0,
+              "rotation": 0
+            },
+            "spacing_cm": 15.0
+          }
+        ]
+      }
+    ]
+  }
 }

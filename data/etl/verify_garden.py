@@ -107,17 +107,15 @@ def _rectangles_overlap(a: dict, b: dict) -> bool:
     )
 
 
-def main() -> None:
-    path = Path(sys.argv[1]) if len(sys.argv) > 1 else EXAMPLE_GARDEN_PATH
-    if not path.exists():
-        print(f"No garden fixture at {path}")
-        sys.exit(1)
-
-    data = json.loads(path.read_text(encoding="utf-8"))
-    beds = data["beds"]
-    known_slugs = {p.stem for p in PLANTS_OUT_DIR.glob("*.json")}
-
-    print(f"{len(beds)} beds total")
+def _check_beds(label: str, beds: list[dict], known_slugs: set[str]) -> int:
+    """Runs every field/bounds/slug/overlap check against one garden's own
+    `beds` list, independent of any other garden's - GitHub issue #240 added
+    a second garden (`secondary_garden` in the fixture) with its own
+    independent garden-space coordinates, so overlap is only ever checked
+    within a single garden's own beds, never across two different gardens'
+    (which don't share a coordinate space at all). Returns the problem
+    count found, printing details of each along the way."""
+    print(f"{label}: {len(beds)} beds")
     problems = 0
 
     for b in beds:
@@ -155,7 +153,25 @@ def main() -> None:
         min_y = min(y for x, y, w, h in rects)
         max_x = max(x + w for x, y, w, h in rects)
         max_y = max(y + h for x, y, w, h in rects)
-        print(f"garden bounding box: {max_x - min_x}cm x {max_y - min_y}cm (origin {min_x},{min_y})")
+        print(f"{label} bounding box: {max_x - min_x}cm x {max_y - min_y}cm (origin {min_x},{min_y})")
+
+    return problems
+
+
+def main() -> None:
+    path = Path(sys.argv[1]) if len(sys.argv) > 1 else EXAMPLE_GARDEN_PATH
+    if not path.exists():
+        print(f"No garden fixture at {path}")
+        sys.exit(1)
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+    known_slugs = {p.stem for p in PLANTS_OUT_DIR.glob("*.json")}
+
+    problems = _check_beds("main garden", data["beds"], known_slugs)
+
+    secondary = data.get("secondary_garden")
+    if secondary is not None:
+        problems += _check_beds(f"secondary garden {secondary['name']!r}", secondary["beds"], known_slugs)
 
     if problems:
         print(f"FAILED: {problems} problem(s) found")

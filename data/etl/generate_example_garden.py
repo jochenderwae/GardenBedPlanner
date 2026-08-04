@@ -137,6 +137,43 @@ fruit_tree bed, or a strip too small/spacing too wide for more than one
 instance) still emits `individual`, a single 20cm-square marker centered on
 the strip - unchanged from before, since there's nothing to group.
 
+## Second garden (2026-08-04, GitHub issue #240)
+
+Multi-garden support landed on the backend (#238: `Garden.is_active`, a
+nullable `garden_id` FK on `Bed`/`GardenPlan`, `/api/gardens` CRUD +
+`/activate`) with nothing real to switch *to* yet - the output now also
+carries a `secondary_garden` key (`{name, notes, beds}`, same per-bed shape
+as the main garden's `beds`) describing a second, deliberately
+less-complete garden: fewer beds, some left completely unplanted, the
+planted one holding just a single quick crop rather than the main garden's
+full companion-planted layout - a "just got started this season" state, not
+a smaller copy of the main garden. Always imported inactive
+(`Garden.is_active=False`) - the main garden stays the default active one
+unchanged, this one exists only to be switched to.
+
+`secondary_garden` is a new, additive top-level key, not a `gardens: []`
+list replacing the existing flat `beds` key - deliberately, to avoid
+breaking `GET /api/example-garden` (`backend/app/api/routes/
+example_garden.py`'s `ExampleGarden`/`ExampleBed`/`ExamplePlanting`
+Pydantic models, an API route outside data-engineer's write boundary,
+already flagged once in #243 for #234's planting-shape change): Pydantic
+v2's default `extra="ignore"` behavior means that route keeps validating
+and serving just the main garden's `beds` untouched, silently ignoring the
+new key, rather than 500ing - the same reasoning that route's own
+maintainer would need to extend it to actually *expose* the second garden
+through that preview endpoint, which is out of scope here (filed alongside
+#243 rather than attempted).
+
+`backend/app/scripts/import_example_garden.py` (data-engineer's own "future
+analogous importer" exception) is the one that actually understands
+`secondary_garden` and creates a real second `Garden` row for it - see that
+script's own docstring for the import-side half of this.
+
+Neither garden carries any harvest-log or Action/task data - this fixture
+format doesn't model either entity at all (only `Bed`/`Planting`), for
+either garden, matching the main garden's own existing scope; not a gap
+#240 introduces.
+
 Run from data/: uv run python -m etl.generate_example_garden
 """
 
@@ -232,6 +269,44 @@ _BEDS = [
         "Pear Tree", "fruit_tree", 150, 150, 0, False, 300, 500,
         "Pear - data/plants/pear.json (Pyrus communis) is a direct match.",
         ["pear"],
+    ),
+]
+
+# GitHub issue #240: a second, deliberately less-complete garden - its own
+# independent garden-space coordinates (unrelated to _BEDS' layout above),
+# a handful of beds, one left completely unplanted, one holding just a
+# single quick crop rather than a full companion-planted layout. See this
+# module's own docstring, "Second garden" section, for the full reasoning.
+_SECONDARY_GARDEN_NAME = "New Plot"
+_SECONDARY_GARDEN_NOTES = (
+    "Illustrative second example garden (GitHub issue #240, built on #238's "
+    "multi-garden backend groundwork) - a fresh 'just getting started this "
+    "season' plot: fewer beds than the main example garden, one still "
+    "completely unplanted, the other holding just a single quick crop "
+    "rather than the main garden's full companion-planted layout. Always "
+    "imported inactive (Garden.is_active=False) - exists to be switched to "
+    "via POST /api/gardens/{id}/activate, the main example garden stays the "
+    "default active one unchanged."
+)
+
+# Same (name, category, width_cm, length_cm, height_cm, has_greenhouse,
+# pos_x, pos_y, notes, plant_slugs) shape as _BEDS.
+_SECONDARY_BEDS = [
+    (
+        "New Raised Bed 1", "large_planter", 70, 200, 70, False, 0, 0,
+        "Just built this season - only lettuce sown so far.",
+        ["lettuce"],
+    ),
+    (
+        "New Raised Bed 2", "large_planter", 70, 200, 70, False, 130, 0,
+        "Just built this season - nothing sown yet.",
+        [],
+    ),
+    (
+        "New Small Planter", "small_planter", 30, 70, 70, False, 0, 300,
+        "A quick radish crop just sown to test the soil before committing "
+        "to anything bigger.",
+        ["french-breakfast-radish"],
     ),
 ]
 
@@ -397,13 +472,30 @@ def _build_bed(name, category, width_cm, length_cm, height_cm, has_greenhouse, p
 def main() -> None:
     built = [_build_bed(*b) for b in _BEDS]
     beds = [bed for bed, _ in built]
-    out = {"_notes": _NOTES, "beds": beds}
+
+    secondary_built = [_build_bed(*b) for b in _SECONDARY_BEDS]
+    secondary_beds = [bed for bed, _ in secondary_built]
+
+    out = {
+        "_notes": _NOTES,
+        "beds": beds,
+        "secondary_garden": {
+            "name": _SECONDARY_GARDEN_NAME,
+            "notes": _SECONDARY_GARDEN_NOTES,
+            "beds": secondary_beds,
+        },
+    }
     OUT_PATH.write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
     total_plantings = sum(len(b.get("plantings", [])) for b in beds)
     total_markers = sum(count for _, count in built)
+    secondary_total_plantings = sum(len(b.get("plantings", [])) for b in secondary_beds)
+    secondary_total_markers = sum(count for _, count in secondary_built)
     print(
-        f"[example-garden] wrote {OUT_PATH} - {len(beds)} beds, {total_plantings} Planting records "
-        f"rendering {total_markers} plant markers"
+        f"[example-garden] wrote {OUT_PATH} - main garden: {len(beds)} beds, {total_plantings} Planting "
+        f"records rendering {total_markers} plant markers; secondary garden {_SECONDARY_GARDEN_NAME!r}: "
+        f"{len(secondary_beds)} beds, {secondary_total_plantings} Planting records rendering "
+        f"{secondary_total_markers} plant markers"
     )
 
 
