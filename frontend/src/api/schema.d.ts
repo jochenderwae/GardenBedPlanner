@@ -435,7 +435,32 @@ export interface paths {
          */
         put: operations["put_garden_api_garden_put"];
         post?: never;
-        delete?: never;
+        /**
+         * Delete Active Garden
+         * @description #218: no DELETE /api/garden existed at all - a real gap for e2e
+         *     specs (garden_test) that create a Garden fixture and had no way to
+         *     clean it up afterward short of raw SQL, letting leaked Garden rows
+         *     silently pollute later, Garden-agnostic specs (their beds getting
+         *     clamped to the leaked garden's own boundary). Deletes whichever garden
+         *     GET /api/garden itself would resolve to (the active garden, falling
+         *     back to the first if none is flagged) - deliberately no active/only-
+         *     garden refusal the way DELETE /api/gardens/{id} (#238) has, since this
+         *     route's whole purpose is unconditional test cleanup, not the real
+         *     multi-garden deletion-safety question that route answers.
+         *
+         *     Every Bed under this garden (garden_id, including the ground Bed
+         *     put_garden auto-creates - #238) and every GardenPlan under it get the
+         *     same cascade cleanup DELETE /api/beds/{id}?cascade=true and DELETE
+         *     /api/garden-plans/{id}?cascade=true already give individually
+         *     (cascade_delete_bed_dependents is the exact same helper delete_bed's
+         *     own cascade path uses) - otherwise this route would 409 on its own
+         *     auto-created ground Bed on literally every real call, defeating the
+         *     whole point. Every SELECT this needs runs before any session.delete()
+         *     call, same "gather everything first" invariant as delete_bed's own
+         *     cascade fix (#215/#217) - see cascade_delete_bed_dependents' own
+         *     docstring for why that ordering matters.
+         */
+        delete: operations["delete_active_garden_api_garden_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -4322,6 +4347,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
                 };
+            };
+        };
+    };
+    delete_active_garden_api_garden_delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

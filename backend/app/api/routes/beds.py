@@ -136,93 +136,109 @@ def update_bed(
     return _to_api_bed(bed)
 
 
+def cascade_delete_bed_dependents(session: Session, bed_ids: list[int]) -> None:
+    """Gathers and deletes every dependent row one or more Beds can have
+    (Actions, Plantings, HarvestLogs, BedEquipment, CompostFertilizationLog,
+    CompostBin) - shared by delete_bed's own cascade=true path (a single-
+    element list) and app/api/routes/garden.py's delete_active_garden
+    (#218), which needs the exact same cleanup for every Bed under a Garden
+    being deleted (potentially several at once). Does NOT delete the Bed
+    row(s) themselves or flush - callers own that.
+
+    #215/#217: both were the same class of bug - SQLAlchemy's default
+    autoflush=True means any SELECT issued *after* a session.delete() has
+    already been queued can silently flush that pending delete out of
+    order (or, for the #215 case, drop an attribute mutation on an object
+    also pending deletion) and hit a real FK violation before
+    commit_or_409's try/except ever gets a chance to catch it - it only
+    wraps the final explicit commit, not any earlier implicit flush. Fixed
+    structurally here, not per-table: every dependent row is gathered via
+    SELECT *first*, before a single session.delete() call - no SELECT ever
+    runs once deletion starts, so there's nothing left to autoflush out of
+    order. Callers passing more than one bed_id must gather everything
+    *they* need via SELECT before calling this too, for the same reason -
+    this function's own internal SELECTs would otherwise autoflush
+    whatever the caller already queued for deletion.
+    """
+    if not bed_ids:
+        return
+    bed_actions = list(session.exec(select(Action).where(Action.bed_id.in_(bed_ids))).all())
+    bed_action_ids = [action.id for action in bed_actions]
+    plantings = list(session.exec(select(Planting).where(Planting.bed_id.in_(bed_ids))).all())
+    planting_ids = [planting.id for planting in plantings]
+    # #217: HarvestLog references planting_id with no ON DELETE CASCADE and
+    # (like every other satellite table here) no relationship() - a bed
+    # with a logged harvest against one of its plantings couldn't be
+    # cascade-deleted at all before this, 500ing instead of the clean
+    # 204/409 every other dependent table already gets.
+    harvest_logs = (
+        list(session.exec(select(HarvestLog).where(HarvestLog.planting_id.in_(planting_ids))).all())
+        if planting_ids
+        else []
+    )
+    # install_equipment tasks reference equipment_id (every
+    # install_equipment/prepare_bed/sow/etc. task against a bed already has
+    # bed_id set to that same bed - see app/services/task_generation.py -
+    # so bed_actions above already covers equipment-referencing actions
+    # too, not just bed-referencing ones).
+    equipment_rows = list(session.exec(select(BedEquipment).where(BedEquipment.bed_id.in_(bed_ids))).all())
+    # CompostFertilizationLog (#38) and CompostBin (#39) are also
+    # plain-FK-only satellite tables on bed_id - a bed with any logged
+    # compost/fertilization history, or one marked as a compost bin, needs
+    # the same explicit cleanup or it could never be deleted at all
+    # (cascade or not).
+    compost_logs = list(
+        session.exec(select(CompostFertilizationLog).where(CompostFertilizationLog.bed_id.in_(bed_ids))).all()
+    )
+    compost_bins = list(session.exec(select(CompostBin).where(CompostBin.bed_id.in_(bed_ids))).all())
+
+    if bed_action_ids:
+        # Null out any depends_on_action_id (one of these beds' own, or
+        # another bed's - #192's self-FK dependency isn't scoped to a
+        # single bed) pointing at one of the actions about to be deleted,
+        # before deleting them - otherwise a still-referencing row would
+        # trip the FK constraint on the flush below.
+        #
+        # #215: a real bulk UPDATE, not "load the dependent Action rows via
+        # the ORM and mutate the attribute" - the common case is a bed's
+        # own `sow` Action depending on that same bed's own `prepare_bed`
+        # Action (both already in bed_actions, about to be deleted below).
+        # SQLAlchemy's unit-of-work never emits a separate UPDATE for an
+        # object that's also pending deletion in the same flush - the
+        # DELETE supersedes it, so the attribute mutation was silently
+        # dropped, and Action.depends_on_action_id has no relationship()
+        # (self-FK, same reasoning as every other satellite table here)
+        # telling the unit-of-work it must order the sow delete before the
+        # prepare_bed delete either. A genuine, separately-flushed
+        # statement sidesteps both problems. This runs before any
+        # session.delete() below, so it can't itself trigger an
+        # out-of-order autoflush.
+        session.exec(
+            update(Action)
+            .where(Action.depends_on_action_id.in_(bed_action_ids))
+            .values(depends_on_action_id=None)
+        )
+    for harvest_log in harvest_logs:
+        session.delete(harvest_log)
+    for action in bed_actions:
+        session.delete(action)
+    for planting in plantings:
+        session.delete(planting)
+    for equipment in equipment_rows:
+        session.delete(equipment)
+    for log in compost_logs:
+        session.delete(log)
+    for compost_bin in compost_bins:
+        session.delete(compost_bin)
+
+
 @router.delete("/{bed_id}", status_code=204)
 def delete_bed(
     bed_id: int, cascade: bool = False, session: Session = Depends(get_session)
 ) -> None:
     bed = _get_or_404(session, bed_id)
     if cascade:
-        # #215/#217: both were the same class of bug - SQLAlchemy's default
-        # autoflush=True means any SELECT issued *after* a session.delete()
-        # has already been queued can silently flush that pending delete
-        # out of order (or, for the #215 case, drop an attribute mutation
-        # on an object also pending deletion) and hit a real FK violation
-        # before commit_or_409's try/except ever gets a chance to catch it
-        # - it only wraps the final explicit commit, not any earlier
-        # implicit flush. Fixed structurally here, not per-table: every
-        # dependent row this cascade needs is gathered via SELECT *first*,
-        # before a single session.delete() call - no SELECT ever runs once
-        # deletion starts, so there's nothing left to autoflush out of
-        # order.
-        bed_actions = list(session.exec(select(Action).where(Action.bed_id == bed_id)).all())
-        bed_action_ids = [action.id for action in bed_actions]
-        plantings = list(session.exec(select(Planting).where(Planting.bed_id == bed_id)).all())
-        planting_ids = [planting.id for planting in plantings]
-        # #217: HarvestLog references planting_id with no ON DELETE CASCADE
-        # and (like every other satellite table here) no relationship() -
-        # a bed with a logged harvest against one of its plantings couldn't
-        # be cascade-deleted at all before this, 500ing instead of the
-        # clean 204/409 every other dependent table already gets.
-        harvest_logs = (
-            list(session.exec(select(HarvestLog).where(HarvestLog.planting_id.in_(planting_ids))).all())
-            if planting_ids
-            else []
-        )
-        # install_equipment tasks reference equipment_id (every
-        # install_equipment/prepare_bed/sow/etc. task against this bed
-        # already has bed_id set to this same bed - see
-        # app/services/task_generation.py - so bed_actions above already
-        # covers equipment-referencing actions too, not just bed-
-        # referencing ones).
-        equipment_rows = list(session.exec(select(BedEquipment).where(BedEquipment.bed_id == bed_id)).all())
-        # CompostFertilizationLog (#38) and CompostBin (#39) are also
-        # plain-FK-only satellite tables on bed_id - a bed with any logged
-        # compost/fertilization history, or one marked as a compost bin,
-        # needs the same explicit cleanup or it could never be deleted at
-        # all (cascade or not).
-        compost_logs = list(
-            session.exec(select(CompostFertilizationLog).where(CompostFertilizationLog.bed_id == bed_id)).all()
-        )
-        compost_bins = list(session.exec(select(CompostBin).where(CompostBin.bed_id == bed_id)).all())
-
-        if bed_action_ids:
-            # Null out any depends_on_action_id (this bed's own, or another
-            # bed's - #192's self-FK dependency isn't scoped to a single
-            # bed) pointing at one of the actions about to be deleted,
-            # before deleting them - otherwise a still-referencing row
-            # would trip the FK constraint on the flush below.
-            #
-            # #215: a real bulk UPDATE, not "load the dependent Action rows
-            # via the ORM and mutate the attribute" - the common case is a
-            # bed's own `sow` Action depending on that same bed's own
-            # `prepare_bed` Action (both already in bed_actions, about to be
-            # deleted below). SQLAlchemy's unit-of-work never emits a
-            # separate UPDATE for an object that's also pending deletion in
-            # the same flush - the DELETE supersedes it, so the attribute
-            # mutation was silently dropped, and Action.depends_on_action_id
-            # has no relationship() (self-FK, same reasoning as every other
-            # satellite table here) telling the unit-of-work it must order
-            # the sow delete before the prepare_bed delete either. A
-            # genuine, separately-flushed statement sidesteps both
-            # problems. This runs before any session.delete() below, so it
-            # can't itself trigger an out-of-order autoflush.
-            session.exec(
-                update(Action)
-                .where(Action.depends_on_action_id.in_(bed_action_ids))
-                .values(depends_on_action_id=None)
-            )
-        for harvest_log in harvest_logs:
-            session.delete(harvest_log)
-        for action in bed_actions:
-            session.delete(action)
-        for planting in plantings:
-            session.delete(planting)
-        for equipment in equipment_rows:
-            session.delete(equipment)
-        for log in compost_logs:
-            session.delete(log)
-        for compost_bin in compost_bins:
-            session.delete(compost_bin)
+        cascade_delete_bed_dependents(session, [bed_id])
         # No SQLAlchemy `relationship()` links Bed to Planting/BedEquipment/
         # CompostFertilizationLog/CompostBin/HarvestLog (plain FK columns
         # only - see each model's own docstring), so the ORM's unit-of-work

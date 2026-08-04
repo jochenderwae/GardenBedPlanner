@@ -3,9 +3,11 @@ from pydantic import BaseModel, create_model
 from sqlmodel import Session, select
 
 from app.api.deps import commit_or_409, get_active_garden
+from app.api.routes.beds import cascade_delete_bed_dependents
 from app.core.db import get_session
 from app.models.bed import Bed
 from app.models.garden import Garden as GardenTable
+from app.models.garden_plan import GardenPlan, GardenPlanEntry
 from app.models.geometry import Geometry, parse_geometry
 
 # Singular, legacy-shaped resource (GET/PUT /api/garden - always operates on
@@ -145,6 +147,56 @@ def put_garden(payload: _GardenWrite, session: Session = Depends(get_session)) -
     commit_or_409(session)
     session.refresh(row)
     return _to_api_garden(row)
+
+
+@router.delete("", status_code=204)
+def delete_active_garden(session: Session = Depends(get_session)) -> None:
+    """#218: no DELETE /api/garden existed at all - a real gap for e2e
+    specs (garden_test) that create a Garden fixture and had no way to
+    clean it up afterward short of raw SQL, letting leaked Garden rows
+    silently pollute later, Garden-agnostic specs (their beds getting
+    clamped to the leaked garden's own boundary). Deletes whichever garden
+    GET /api/garden itself would resolve to (the active garden, falling
+    back to the first if none is flagged) - deliberately no active/only-
+    garden refusal the way DELETE /api/gardens/{id} (#238) has, since this
+    route's whole purpose is unconditional test cleanup, not the real
+    multi-garden deletion-safety question that route answers.
+
+    Every Bed under this garden (garden_id, including the ground Bed
+    put_garden auto-creates - #238) and every GardenPlan under it get the
+    same cascade cleanup DELETE /api/beds/{id}?cascade=true and DELETE
+    /api/garden-plans/{id}?cascade=true already give individually
+    (cascade_delete_bed_dependents is the exact same helper delete_bed's
+    own cascade path uses) - otherwise this route would 409 on its own
+    auto-created ground Bed on literally every real call, defeating the
+    whole point. Every SELECT this needs runs before any session.delete()
+    call, same "gather everything first" invariant as delete_bed's own
+    cascade fix (#215/#217) - see cascade_delete_bed_dependents' own
+    docstring for why that ordering matters."""
+    row = _get_garden_row(session)
+    if row is None:
+        raise HTTPException(status_code=404, detail="No garden defined yet")
+
+    beds = list(session.exec(select(Bed).where(Bed.garden_id == row.id)).all())
+    bed_ids = [bed.id for bed in beds]
+    plans = list(session.exec(select(GardenPlan).where(GardenPlan.garden_id == row.id)).all())
+    plan_ids = [plan.id for plan in plans]
+    entries = (
+        list(session.exec(select(GardenPlanEntry).where(GardenPlanEntry.garden_plan_id.in_(plan_ids))).all())
+        if plan_ids
+        else []
+    )
+
+    cascade_delete_bed_dependents(session, bed_ids)
+    for entry in entries:
+        session.delete(entry)
+    for plan in plans:
+        session.delete(plan)
+    for bed in beds:
+        session.delete(bed)
+    session.flush()
+    session.delete(row)
+    commit_or_409(session)
 
 
 @gardens_router.get("", response_model=list[Garden])
