@@ -142,8 +142,13 @@ test.describe("Bed delete confirm + cascade dialog + error handling (#83)", () =
 
       // Delete the bed out from under the UI via the API directly, right
       // before confirming - the panel's own eventual DELETE call will now
-      // 404 (a real, non-409 error) instead of succeeding.
-      await request.delete(`/api/beds/${bed.id}`);
+      // 404 (a real, non-409 error) instead of succeeding. cascade=true:
+      // every bed auto-generates a background prepare_bed Action the
+      // moment it's created (#192), which 409s a plain delete even for a
+      // bed with no real plantings/equipment (#219) - without cascade this
+      // pre-delete wouldn't actually remove the bed, and the scenario this
+      // test constructs (a genuine non-409 404) would never happen.
+      await request.delete(`/api/beds/${bed.id}?cascade=true`);
 
       await firstDialog.getByRole("button", { name: "Delete bed" }).click();
 

@@ -16,7 +16,7 @@ import {
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { FieldHint } from "@/components/ui/tooltip";
 import { useSnackbar } from "@/components/Snackbar";
-import { ApiError, deleteBed, updateBed, type Bed, type BedUpdate, type Plant, type Planting, type RectangleGeometry } from "@/api/client";
+import { ApiError, deleteBed, updateBed, type Bed, type BedEquipment, type BedUpdate, type Plant, type Planting, type RectangleGeometry } from "@/api/client";
 import { ShapeTypeToggle } from "./ShapeTypeToggle";
 import { boundingRect, plantingsOutsideBounds, rotationFromGardenRelative, rotationRelativeToGarden } from "./geometry";
 import { todayIsoDate } from "./plantingLifecycle";
@@ -33,6 +33,12 @@ interface BedPanelProps {
    * date-filtered) - used to build the read-only History section below
    * (#180): this bed's own already-removed plantings, most recent first. */
   plantings: Planting[];
+  /** Every equipment item across the whole garden (not just this bed) -
+   * same whole-garden-then-filter-by-bed.id convention `plantings` above
+   * already uses. Used only to distinguish a genuinely empty bed from an
+   * occupied one on delete (#219) - this panel has no equipment-editing UI
+   * of its own (that's `EquipmentPanel`'s job). */
+  equipment: BedEquipment[];
   plantsBySlug: Map<string, Plant>;
   onClose: () => void;
   onDeleted: () => void;
@@ -47,7 +53,7 @@ export interface BedPanelHandle {
 }
 
 export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPanel(
-  { bed, gardenOrientationDeg = 0, plantings, plantsBySlug, onClose, onDeleted },
+  { bed, gardenOrientationDeg = 0, plantings, equipment, plantsBySlug, onClose, onDeleted },
   ref,
 ) {
   const queryClient = useQueryClient();
@@ -70,6 +76,11 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
     },
   }));
 
+  // #219: whether this bed has any *real* content worth warning about
+  // before a cascade delete - see deleteMutation's onError below.
+  const bedPlantingsCount = plantings.filter((p) => p.bed_id === bed.id).length;
+  const bedEquipmentCount = equipment.filter((e) => e.bed_id === bed.id).length;
+
   const mutation = useMutation({
     mutationFn: (patch: BedUpdate) => updateBed(bed.id!, patch),
     onSuccess: (updated) => {
@@ -85,8 +96,28 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
       queryClient.setQueryData<Bed[]>(["beds"], (old) => old?.filter((b) => b.id !== bed.id));
       onDeleted();
     },
-    onError: (err: unknown) => {
+    onError: (err: unknown, cascade) => {
       if (err instanceof ApiError && err.status === 409) {
+        // #219: every bed - even one that's never had a planting or
+        // equipment item placed in it - auto-generates a background
+        // prepare_bed Action the moment it's created (#192), which is
+        // enough on its own to 409 a plain (non-cascade) delete. Showing
+        // this bed's own dialog copy ("still has plantings or equipment")
+        // for a genuinely empty bed would be actively misleading, so a
+        // bed with zero *real* content (checked against already-loaded
+        // plantings/equipment, not another round-trip) retries silently
+        // with cascade=true instead - restoring #81/#83's original
+        // "confirming deletes an empty bed directly, with no second
+        // dialog" behavior. Only a bed with real plantings/equipment
+        // attached gets the cascade-confirm dialog, still accurate for
+        // that case. The `cascade` guard against the mutation's own
+        // second (cascade=true) attempt avoids an infinite retry loop if
+        // that one somehow also 409s (a different dependent row - the
+        // dialog is still the right fallback there).
+        if (!cascade && bedPlantingsCount === 0 && bedEquipmentCount === 0) {
+          deleteMutation.mutate(true);
+          return;
+        }
         setDeleteError(null);
         setConfirmCascadeOpen(true);
       } else {

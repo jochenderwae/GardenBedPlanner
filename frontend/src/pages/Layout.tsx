@@ -1459,6 +1459,7 @@ export function Layout() {
                 bed={selectedBed}
                 gardenOrientationDeg={garden?.orientation_deg}
                 plantings={plantings}
+                equipment={equipmentList}
                 plantsBySlug={plantsBySlug}
                 onClose={() => setSelectedId(null)}
                 onDeleted={() => setSelectedId(null)}
