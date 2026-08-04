@@ -75,6 +75,12 @@ export type IrrigationPart = components["schemas"]["IrrigationPart"];
 export type IrrigationPartCreate = components["schemas"]["IrrigationPartCreate"];
 export type IrrigationPartUpdate = components["schemas"]["IrrigationPartUpdate"];
 export type IrrigationPartDetail = components["schemas"]["IrrigationPartDetail"];
+// #254: one physically-placed unit of an IrrigationPart catalog row - see
+// that model's own schema.d.ts docstring. diagram_x/diagram_y live here now,
+// not on IrrigationPart.
+export type IrrigationPartInstance = components["schemas"]["IrrigationPartInstance"];
+export type IrrigationPartInstanceCreate = components["schemas"]["IrrigationPartInstanceCreate"];
+export type IrrigationPartInstanceUpdate = components["schemas"]["IrrigationPartInstanceUpdate"];
 export type IrrigationConnection = components["schemas"]["IrrigationConnection"];
 export type IrrigationConnectionCreate = components["schemas"]["IrrigationConnectionCreate"];
 
@@ -453,11 +459,13 @@ export function deleteIrrigationZone(id: number): Promise<void> {
   return apiFetch(`/api/irrigation-zones/${id}`, { method: "DELETE" });
 }
 
-// Catalog-level irrigation parts/connections (#37/#209/#212) - the "pipe
-// network" diagram's own data, distinct from IrrigationZone (equipment
-// grouping) and BedEquipment (bed-placed items). `IrrigationPart` has no
-// `bed_id`/`geometry`, only a free-standing `diagram_x`/`diagram_y` for the
-// dialog's own schematic canvas - see PipeNetworkDialog.tsx.
+// Catalog-level irrigation parts/instances/connections (#37/#209/#212/#254)
+// - the "pipe network" diagram's own data, distinct from IrrigationZone
+// (equipment grouping) and BedEquipment (bed-placed items). `IrrigationPart`
+// is catalog-only stock (no `bed_id`/`geometry`, no diagram position) - each
+// independently-placed physical unit is its own `IrrigationPartInstance`,
+// which owns the `diagram_x`/`diagram_y` for the dialog's own schematic
+// canvas - see PipeNetworkDialog.tsx.
 
 export function listIrrigationParts(): Promise<IrrigationPart[]> {
   return apiFetch(`/api/irrigation-parts`);
@@ -485,12 +493,42 @@ export function deleteIrrigationPart(id: number): Promise<void> {
   return apiFetch(`/api/irrigation-parts/${id}`, { method: "DELETE" });
 }
 
-/** No `partId` filter passed by the pipe-network dialog - it fetches every
- * connection once, on open, and derives per-part connection counts/edges
- * client-side rather than issuing one filtered request per part (simpler at
- * this app's "a handful of parts" scale - see backend's own docstring). */
-export function listIrrigationConnections(partId?: number): Promise<IrrigationConnection[]> {
+/** #254: one physically-placed unit of an `IrrigationPart` stock row - see
+ * that model's own docstring. `partId` filters to instances of one part. */
+export function listIrrigationPartInstances(partId?: number): Promise<IrrigationPartInstance[]> {
   const query = partId != null ? `?part_id=${partId}` : "";
+  return apiFetch(`/api/irrigation-part-instances${query}`);
+}
+
+export function getIrrigationPartInstance(id: number): Promise<IrrigationPartInstance> {
+  return apiFetch(`/api/irrigation-part-instances/${id}`);
+}
+
+export function createIrrigationPartInstance(instance: IrrigationPartInstanceCreate): Promise<IrrigationPartInstance> {
+  return apiFetch(`/api/irrigation-part-instances`, {
+    method: "POST",
+    body: JSON.stringify(instance),
+  });
+}
+
+export function updateIrrigationPartInstance(id: number, patch: IrrigationPartInstanceUpdate): Promise<IrrigationPartInstance> {
+  return apiFetch(`/api/irrigation-part-instances/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteIrrigationPartInstance(id: number): Promise<void> {
+  return apiFetch(`/api/irrigation-part-instances/${id}`, { method: "DELETE" });
+}
+
+/** No `instanceId` filter passed by the pipe-network dialog - it fetches
+ * every connection once, on open, and derives per-instance connection
+ * counts/edges client-side rather than issuing one filtered request per
+ * instance (simpler at this app's "a handful of parts" scale - see
+ * backend's own docstring). */
+export function listIrrigationConnections(instanceId?: number): Promise<IrrigationConnection[]> {
+  const query = instanceId != null ? `?instance_id=${instanceId}` : "";
   return apiFetch(`/api/irrigation-connections${query}`);
 }
 
