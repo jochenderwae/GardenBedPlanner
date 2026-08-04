@@ -1,6 +1,17 @@
 import { useState } from "react";
 import { Dialog } from "@base-ui/react/dialog";
-import { Menu, Sprout, LayoutGrid, LayoutTemplate, CalendarDays, ChartGantt, ShoppingBasket, Wrench, ClipboardList } from "lucide-react";
+import {
+  Menu,
+  Sprout,
+  LayoutGrid,
+  LayoutTemplate,
+  CalendarDays,
+  ChartGantt,
+  ShoppingBasket,
+  Wrench,
+  ClipboardList,
+  TrendingUp,
+} from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -11,6 +22,7 @@ const NAV_ITEMS = [
   { to: "/plants", label: "Plants Database", icon: Sprout },
   { to: "/equipment", label: "Equipment", icon: Wrench },
   { to: "/garden-plan", label: "Garden Plan", icon: ClipboardList },
+  { to: "/yield-history", label: "Yield History", icon: TrendingUp },
   { to: "/agenda", label: "Agenda", icon: CalendarDays },
   { to: "/timeline", label: "Timeline", icon: ChartGantt },
   { to: "/seed-guide", label: "Seed Guide", icon: ShoppingBasket },
