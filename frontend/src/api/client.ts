@@ -40,6 +40,15 @@ export type BedEquipmentUpdate = components["schemas"]["BedEquipmentUpdate"];
 export type EquipmentType = components["schemas"]["EquipmentType"];
 export type EquipmentCategory = components["schemas"]["EquipmentCategory"];
 
+export type CompostFertilizationLog = components["schemas"]["CompostFertilizationLog"];
+export type CompostFertilizationLogCreate = components["schemas"]["CompostFertilizationLogCreate"];
+export type CompostFertilizationLogUpdate = components["schemas"]["CompostFertilizationLogUpdate"];
+export type CompostFertilizationLogType = components["schemas"]["CompostFertilizationLogType"];
+export type CompostBin = components["schemas"]["CompostBin"];
+export type CompostBinCreate = components["schemas"]["CompostBinCreate"];
+export type CompostBinUpdate = components["schemas"]["CompostBinUpdate"];
+export type CompostBinFillState = components["schemas"]["CompostBinFillState"];
+
 export type IrrigationZone = components["schemas"]["IrrigationZone"];
 export type IrrigationZoneCreate = components["schemas"]["IrrigationZoneCreate"];
 export type IrrigationZoneUpdate = components["schemas"]["IrrigationZoneUpdate"];
@@ -215,6 +224,60 @@ export function listEquipmentTypes(): Promise<EquipmentType[]> {
 
 export function listIrrigationZones(): Promise<IrrigationZone[]> {
   return apiFetch(`/api/irrigation-zones`);
+}
+
+/** #223: every log across the whole garden - no `bed_id` query param exists
+ * on this route (see `schema.d.ts`), so a caller wanting one bed's own
+ * history filters client-side, same convention `BedPanel.tsx`'s own
+ * `plantings`/`equipment` props already use. */
+export function listCompostFertilizationLogs(): Promise<CompostFertilizationLog[]> {
+  return apiFetch(`/api/compost-fertilization-logs`);
+}
+
+export function createCompostFertilizationLog(log: CompostFertilizationLogCreate): Promise<CompostFertilizationLog> {
+  return apiFetch(`/api/compost-fertilization-logs`, {
+    method: "POST",
+    body: JSON.stringify(log),
+  });
+}
+
+export function updateCompostFertilizationLog(
+  id: number,
+  patch: CompostFertilizationLogUpdate,
+): Promise<CompostFertilizationLog> {
+  return apiFetch(`/api/compost-fertilization-logs/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteCompostFertilizationLog(id: number): Promise<void> {
+  return apiFetch(`/api/compost-fertilization-logs/${id}`, { method: "DELETE" });
+}
+
+/** Every compost bin across the whole garden - 1:1 with whichever `Bed` its
+ * own `bed_id` points at (backend enforces the uniqueness, see
+ * `CompostBin`'s own schema doc), so at most one bin per bed. */
+export function listCompostBins(): Promise<CompostBin[]> {
+  return apiFetch(`/api/compost-bins`);
+}
+
+export function createCompostBin(bin: CompostBinCreate): Promise<CompostBin> {
+  return apiFetch(`/api/compost-bins`, {
+    method: "POST",
+    body: JSON.stringify(bin),
+  });
+}
+
+export function updateCompostBin(id: number, patch: CompostBinUpdate): Promise<CompostBin> {
+  return apiFetch(`/api/compost-bins/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteCompostBin(id: number): Promise<void> {
+  return apiFetch(`/api/compost-bins/${id}`, { method: "DELETE" });
 }
 
 /** The single-zone detail response (#36/#200) - member equipment plus
