@@ -26,6 +26,17 @@ Planting bed equipment has polygon geometry. The geometry can have a surface but
 
 When not placed on a planting bed, equipment is in inventory.
 
+**Added later (2026-08, #225):** each equipment item also tracks a `condition` (good/damaged/retired) - what happened to it the last time it was unplaced from a bed, so a broken item isn't silently offered back as available stock. Not part of the original description above - documented here for completeness. See `docs/schema.md`'s `BED_EQUIPMENT` entity.
+
+## Decorations
+Not part of the original data model sketch above - added later (2026-08, #241). A purely cosmetic garden object (a path, bench, garden gnome, etc.) with a name, a user-chosen render color, and a drawn rectangle/polygon footprint - no functional data or app behavior otherwise, distinct from `Bed`/`BedEquipment`. See `docs/schema.md`'s `DECORATION` entity (and its own note there flagging a real gap: decorations aren't yet scoped per-garden the way beds are, unlike what multi-garden support below would suggest).
+
+## Multiple gardens
+Not part of the original data model sketch above - added later (2026-08, #238). Exactly one `Garden` is "active" at a time; beds and garden plans optionally belong to a specific garden (`garden_id`), resolved to whichever garden is active when not supplied explicitly. Lets a user model more than one physical garden/plot (e.g. a home garden and an allotment) without the app assuming there's only ever one. See `docs/schema.md`'s "Modeling decisions worth revisiting" for the full reasoning, including what still keys off `bed_id` transitively rather than a direct `garden_id`.
+
+## Soil rotation
+Not part of the original data model sketch above - added later (2026-08, #228/#229). Some gardeners don't practice crop rotation between fixed beds the way this domain model's "Garden plan"/family-based rotation logic (see root `CLAUDE.md`'s domain notes) assumes - instead, they physically move topsoil between beds every few years, in a cycle that isn't necessarily a closed loop or a simple pairwise swap. A logged "moving day" (`SoilRotationEvent`) records however many bed-to-bed soil transfers it involved (`SoilRotationTransfer`, with a nullable source for "filled with fresh/external soil" rather than moved from another tracked bed); the family-risk history that soil carries with it is copied forward at that point (`SoilFamilyHistory`) so rotation warnings stay accurate for soil that's physically moved, not just for a bed that's stayed planted with the same family repeatedly. See `docs/schema.md`'s `SOIL_ROTATION_EVENT`/`SOIL_ROTATION_TRANSFER`/`SOIL_FAMILY_HISTORY` entities.
+
 ## Garden plan
 You need to be able to plan the growing season: what vegetables does the user want to plant / harvest. The plan will give rise to actions / tasks on the calendar like composting, sowing, planting, harvesting, clearing, ...
 
@@ -34,6 +45,8 @@ A calendar based view on all the actions or tasks that need to be performed. The
 
 ## Actions
 The garden plan and calendar can link to actions that need to be performed like fertilizing, adding compost, preparing beds, sowing, planting, installing or removing equipment, harvesting, clearing, collecting seeds, ...
+
+**Added later (2026-08):** actions can be snoozed (#230, `snoozed_until` - suppresses further reminder pushes until a set date, without changing the task's actual due window) and, for manually-created tasks, made to recur on a schedule (#226, `recurrence_unit`/`recurrence_interval`/`recurrence_end_date` - e.g. "turn the compost bin every 3 weeks"; a completed occurrence generates the next one, linked back via `recurrence_source_action_id`, kept distinct from the existing `depends_on_action_id` predecessor link). Neither was part of the original description above - documented here for completeness. See `docs/schema.md`'s `ACTION` entity.
 
 ## Harvest logs
 A log of what was harvested, when, and how it went - yield amount/unit (free text, since produce is measured too many different ways: weight for tomatoes, count for peppers, bunches for herbs), a coarse quality rating (poor/fair/good/excellent), and notes - to inform next year's planning (see root `CLAUDE.md`'s domain notes). Each entry links to a specific planting instance, not just a bed, so a per-crop yield history survives multiple different plantings occupying the same bed over time. Not part of the original data model sketch above - added later (`HarvestLog`, see `docs/schema.md`'s `HARVEST_LOG` entity), documented here for completeness.

@@ -130,6 +130,7 @@ erDiagram
     GARDEN {
         int id PK
         string name
+        boolean is_active "exactly one True at a time across every row - soft invariant, API-enforced not DB-enforced"
         jsonb border_geometry "rectangle|polygon, garden-space cm - see Geometry format"
         string climate_zone
         string location
@@ -139,6 +140,7 @@ erDiagram
 
     PLANTING_BED {
         int id PK
+        int garden_id FK "nullable - multi-garden support, resolved server-side to the active garden when not supplied"
         string name
         string category "free-text - examples of what a bed can be, not a closed type list"
         jsonb border_geometry "rectangle|polygon, garden-space cm - see Geometry format"
@@ -146,6 +148,14 @@ erDiagram
         boolean has_greenhouse
         string soil_type
         string sun_level
+        string notes
+    }
+
+    DECORATION {
+        int id PK
+        string name
+        string color "hex, defaults to a neutral stone-gray preset swatch"
+        jsonb border_geometry "rectangle|polygon, garden-space cm - see Geometry format, always set (no unplaced state)"
         string notes
     }
 
@@ -169,6 +179,7 @@ erDiagram
         float height_cm
         float water_delivery_lph "irrigation only"
         int zone_id FK "nullable - which IRRIGATION_ZONE this equipment belongs to, if any"
+        string condition "good | damaged | retired, default good - what happened to this item when last unplaced from a bed"
     }
 
     EQUIPMENT_TYPE {
@@ -235,6 +246,7 @@ erDiagram
 
     GARDEN_PLAN {
         int id PK
+        int garden_id FK "nullable - multi-garden support, same resolution rule as PLANTING_BED.garden_id"
         string season_name
         int year
         string notes
@@ -262,6 +274,34 @@ erDiagram
         int equipment_id FK "optional"
         int depends_on_action_id FK "optional, self-referencing - single predecessor, not a general DAG"
         string notes
+        date snoozed_until "suppresses further reminder pushes until this date, independent of due_date_start/end"
+        string recurrence_unit "daily | weekly | monthly | yearly, null means not recurring"
+        int recurrence_interval "every N units, default 1 - inert unless recurrence_unit is set"
+        date recurrence_end_date "null means open-ended"
+        int recurrence_source_action_id FK "optional, self-referencing - links a generated occurrence back to its source, distinct from depends_on_action_id"
+    }
+
+    SOIL_ROTATION_EVENT {
+        int id PK
+        date event_date
+        string notes
+    }
+
+    SOIL_ROTATION_TRANSFER {
+        int id PK
+        int soil_rotation_event_id FK
+        int from_bed_id FK "nullable - null means fresh/external soil, not sourced from another tracked bed"
+        int to_bed_id FK
+    }
+
+    SOIL_FAMILY_HISTORY {
+        int id PK
+        int bed_id FK "the bed whose current soil this fact now travels with"
+        int family_id FK
+        date source_planted_date "original planting date this fact derives from, for lookback_days filtering"
+        int source_bed_id "provenance only, not a live FK - where the risk originated, may no longer hold this soil"
+        string source_plant_slug "provenance only, not a live FK - display-only"
+        int soil_rotation_event_id FK "which event carried this fact forward"
     }
 
     PLANT ||--o{ PLANT_DATA_SOURCE : "documented by"
@@ -289,6 +329,8 @@ erDiagram
     PLANTING_BED o|--o{ ACTION : "site of"
     PLANTING_BED o|--o| COMPOST_BIN : "has compost state"
     PLANTING ||--o{ HARVEST_LOG : "yields"
+    GARDEN o|--o{ PLANTING_BED : "contains (multi-garden support, nullable garden_id)"
+    GARDEN o|--o{ GARDEN_PLAN : "scopes (multi-garden support, nullable garden_id)"
     GARDEN o|--o{ BED_EQUIPMENT : "hosts (garden-bound)"
     IRRIGATION_ZONE o|--o{ BED_EQUIPMENT : "groups"
     IRRIGATION_PART o|--o{ IRRIGATION_CONNECTION : "from"
@@ -298,14 +340,22 @@ erDiagram
     GARDEN_PLAN_ENTRY o|--o{ ACTION : "generates"
     BED_EQUIPMENT o|--o{ ACTION : "concerns"
     ACTION o|--o{ ACTION : "depends on (self-referencing)"
+    ACTION o|--o{ ACTION : "recurs from (self-referencing, recurrence_source_action_id)"
+
+    PLANTING_BED o|--o{ SOIL_ROTATION_TRANSFER : "source of (from_bed_id, nullable)"
+    PLANTING_BED ||--o{ SOIL_ROTATION_TRANSFER : "destination of (to_bed_id)"
+    PLANTING_BED ||--o{ SOIL_FAMILY_HISTORY : "carries"
+    SOIL_ROTATION_EVENT ||--o{ SOIL_ROTATION_TRANSFER : "contains"
+    SOIL_ROTATION_EVENT ||--o{ SOIL_FAMILY_HISTORY : "carried forward by"
+    FAMILY ||--o{ SOIL_FAMILY_HISTORY : "classifies"
 ```
 
 ## Geometry format
 
-All geometry fields (`GARDEN.border_geometry`, `PLANTING_BED.border_geometry`, `PLANTING.geometry`, `BED_EQUIPMENT.geometry`) are `jsonb`, holding a small GeoJSON-flavored shape rather than a `geometry`/`geography` PostGIS column or an SVG string — see the discussion above the diagram for why (single-user, no real spatial queries, direct fit with `react-konva`). All units are centimeters; there is no CRS, just a flat local coordinate plane. Implemented as `backend/app/models/geometry.py`'s `Geometry` Pydantic type (a discriminated union, validated at the API boundary — stored as a raw `dict` at the SQLModel table level, same split the rest of this schema already uses for taxonomy FK-in-table/nested-object-in-API).
+All geometry fields (`GARDEN.border_geometry`, `PLANTING_BED.border_geometry`, `PLANTING.geometry`, `BED_EQUIPMENT.geometry`, `DECORATION.border_geometry`) are `jsonb`, holding a small GeoJSON-flavored shape rather than a `geometry`/`geography` PostGIS column or an SVG string — see the discussion above the diagram for why (single-user, no real spatial queries, direct fit with `react-konva`). All units are centimeters; there is no CRS, just a flat local coordinate plane. Implemented as `backend/app/models/geometry.py`'s `Geometry` Pydantic type (a discriminated union, validated at the API boundary — stored as a raw `dict` at the SQLModel table level, same split the rest of this schema already uses for taxonomy FK-in-table/nested-object-in-API).
 
 **Coordinate spaces** — two, matching how Konva nests groups:
-- **Garden space** — `GARDEN.border_geometry` and `PLANTING_BED.border_geometry`. Absolute coordinates on the whole-garden canvas, origin `(0, 0)` at a fixed reference point (e.g. the NW corner of the plot). `PLANTING_BED.orientation` (a separate coarse compass label) was removed 2026-07-20 (#75) once bed rotation became garden-relative (#68) off `GARDEN.orientation_deg` (#69) — a standalone free-text compass field on the bed was redundant once that landed; shade-casting reasoning per root `CLAUDE.md`'s domain notes should derive orientation from `border_geometry`'s `rotation` relative to the garden's own `orientation_deg`, not from a bed-level field.
+- **Garden space** — `GARDEN.border_geometry`, `PLANTING_BED.border_geometry`, and `DECORATION.border_geometry` (a decoration's footprint is drawn directly on the whole-garden canvas, same space as a bed's own border, not nested inside one — see the `DECORATION` entity note below). Absolute coordinates on the whole-garden canvas, origin `(0, 0)` at a fixed reference point (e.g. the NW corner of the plot). `PLANTING_BED.orientation` (a separate coarse compass label) was removed 2026-07-20 (#75) once bed rotation became garden-relative (#68) off `GARDEN.orientation_deg` (#69) — a standalone free-text compass field on the bed was redundant once that landed; shade-casting reasoning per root `CLAUDE.md`'s domain notes should derive orientation from `border_geometry`'s `rotation` relative to the garden's own `orientation_deg`, not from a bed-level field.
 - **Bed-local space** — `PLANTING.geometry` and `BED_EQUIPMENT.geometry`. Origin `(0, 0)` at the top-left corner of the bed's bounding box, unrotated. The frontend positions each bed's Konva `Group` using `border_geometry` and renders plantings/equipment as children in that group's local coordinates, so it doesn't have to re-derive offsets.
 
 **Shape types** (discriminated union on `type`):
@@ -328,6 +378,7 @@ type Geometry =
 | `PLANTING_BED.border_geometry` | `rectangle`, `polygon` | Same rectangle-default/polygon-toggle convention as `GARDEN`. |
 | `PLANTING.geometry` | `rectangle`, `polygon` | `individual` → small rectangle (frontend defaults to a 20cm square, `DEFAULT_PLANTING_DIAMETER_CM`); `row`/`field` → `polygon`. |
 | `BED_EQUIPMENT.geometry` | `rectangle`, `polygon` | `null` when `bed_id` is `null` (item is in inventory, not placed) or, in practice, whenever the equipment-placement UI hasn't been given a geometry (that tab is form-based, not drag/resize — see the frontend note below). |
+| `DECORATION.border_geometry` | `rectangle`, `polygon` | Always set at creation time — a decoration has no "unplaced"/inventory state the way `BED_EQUIPMENT` does, so this is never `null`. |
 
 **Examples:**
 
@@ -355,7 +406,7 @@ type Geometry =
 - `GARDEN_SETTINGS` is left unlinked (singleton config), per the domain model's vague "overarching data" description. **Folded into `GARDEN` when implemented** (below) rather than kept as a separate table — both are singleton/overarching concerns about the same one garden, so a second always-one-row table alongside `GARDEN` would just be a 1:1 split with no independent lifecycle.
 - `PLANTING_BED.width_cm` / `length_cm` were dropped in favor of deriving footprint from `border_geometry` (see [Geometry format](#geometry-format)) — `height_cm` stays since it's a true vertical dimension the 2D geometry can't express.
 - **`GARDEN`/`PLANTING_BED`/`PLANTING`/`BED_EQUIPMENT` are now implemented** (`backend/app/models/garden.py`, `bed.py`, `planting.py`, `bed_equipment.py`; migrations `create_garden_table`, `generalize_bed_geometry`, `create_planting_table`, `create_bed_equipment_table`). `PLANTING_BED`'s originally-sketched `bed_type` (a closed 5-value enum: `large_planter`/`small_planter`/`berry_row`/`compost_bin`/`fruit_tree`) shipped first as written, then was replaced by free-text `category` once real usage showed those 5 values were only ever meant as *examples* of what a bed could be, not an exhaustive list — the enum and its Postgres type were dropped in the same migration that added `border_geometry`, not layered alongside it.
-- **`GARDEN` has no persisted FK relationship to `PLANTING_BED`** (deliberately not drawn as a relationship line in the diagram above) — the only link between them is a one-time convenience default: the API (`GET`/`PUT /api/garden`, singular, get-or-create semantics) auto-creates one ordinary `PLANTING_BED` row matching the `GARDEN`'s own shape the *first* time a garden is created (`category="Ground"`) — the default "plant directly in the garden" surface, so every `PLANTING.bed_id` can stay required/non-nullable instead of needing a nullable garden-space-vs-bed-local branch. That bed is ordinary afterward — the user can reshape, rename, or delete it like any other, and it is not kept in sync with later edits to the garden's own boundary.
+- **`GARDEN` originally had no persisted FK relationship to `PLANTING_BED`** — the only link was a one-time convenience default: the API (`GET`/`PUT /api/garden`, singular, get-or-create semantics) auto-creates one ordinary `PLANTING_BED` row matching the `GARDEN`'s own shape the *first* time a garden is created (`category="Ground"`) — the default "plant directly in the garden" surface, so every `PLANTING.bed_id` can stay required/non-nullable instead of needing a nullable garden-space-vs-bed-local branch. That bed is ordinary afterward — the user can reshape, rename, or delete it like any other, and it is not kept in sync with later edits to the garden's own boundary. **Superseded 2026-08 by multi-garden support (#238, below)** — `PLANTING_BED.garden_id` is now a real (nullable) FK, so the relationship line is drawn in the diagram above.
 - **The `PLANT` cluster is implemented** — `backend/app/models/plant.py` + the `create_plant_tables` migration. All fields except `slug`/`common_name`/`botanical_name` (and each satellite table's own identity/FK columns) are nullable: this table is meant to be bulk-populated from heterogeneous external sources via the ETL in `data/`, which won't have every field for every plant. Don't assume non-null without checking. The JSON import format that feeds the ETL is `data/plant.schema.json` (JSON Schema), designed to map ~1:1 onto this schema - one JSON object per plant, with `seed_info`/`periods`/`companions`/`pest_interactions`/`bedding_needs`/`data_sources` nested as the satellite-table data.
 - **`PLANT` gained a second wave of fields** (`add_taxonomy_climate_succession_fields_and_pest_interactions` migration) after cross-referencing candidate data sources against the original field list: `family`/`genus` (taxonomy - the rotation/succession-family domain note had no field to actually key off before this), `min_temperature_c`/`max_temperature_c` (natural habitat range, chosen over a US hardiness zone since it's directly usable for the Belgium climate-adjustment goal), `days_to_maturity`, `soil_ph_min`/`soil_ph_max` (checked 0-14), `is_toxic`/`toxicity_notes`, `is_edible`/`edible_parts`, and `succession_enabled`/`succession_interval_days`/`succession_max_sowings`. `PLANT_COMPANION` gained `mechanism` (open-ended, e.g. "pest-deterrent"). `PLANT_PEST_INTERACTION` is a new table for plant-to-insect relationships (attracts/repels/vulnerable_to) - deliberately separate from `PLANT_COMPANION`, which is plant-to-plant. Explicitly skipped: a "lunar planting affinity" field seen in one candidate source - folk-practice data, low value for this project.
 - **`PLANT_GROWING_INFORMATION`** (`add_plant_growing_information` migration) holds long-form, deliberately *unstructured* text - book excerpts (Project Gutenberg has old gardening books with a section per plant) rather than a discrete field. It's raw material for a not-yet-built extraction pass meant to fill the fields nothing structured covers (`composting_needs`, `fertilizer_needs`, `needs_wind_cover`/`needs_rain_cover`, `seed_info.pretreatment`, `bedding_needs` - see `data/CLAUDE.md`'s "Fields still needing a source"). `record_type` (`raw`/`consolidated`) distinguishes a single source's excerpt from a synthesized combination of several. `generic_for_species` flags text written about the species/genus generally (e.g. old books describing "pumpkins" rather than a specific cultivar) rather than this specific cultivar - the text still gets copied into every matching cultivar's own record (see the `PLANT_COMPANION`/matching note in `data/etl/CLAUDE.md` about why cultivars stay separate records), just marked so it isn't mistaken for cultivar-specific advice. No separate "species" entity was introduced for this - keeping it as a flag on the per-cultivar copy was the simpler option and what was asked for.
@@ -379,3 +430,13 @@ type Geometry =
 - **`COMPOST_BIN` added** (#39) - compost-specific state (fill state, last-turned date, estimated maturity) for one of the garden's compost bins, kept as a small satellite 1:1 with `PLANTING_BED` (`bed_id` unique) rather than extending `PLANTING_BED` itself, since `category` is deliberately free-text/open-ended and these fields only ever apply to one bed out of many. `estimated_maturity_date` is a plain gardener-set field, not derived from `last_turned_date` - no single reliable formula exists to compute it from turn history alone.
 - **`HARVEST_LOG` added** - not sketched in this doc's original diagram at all (unlike `COMPOST_FERTILIZATION_LOG`); designed from scratch following that table's own pattern (a log row referencing what it's about, a date, free-text notes) plus yield-adjacent fields. Linked via `planting_id` rather than `bed_id`, so a per-crop yield history survives multiple plantings occupying the same bed over time - per root `CLAUDE.md`'s domain note that harvest logs should inform next year's planning.
 - **`ACTION.due_date` split into `due_date_start`/`due_date_end`** (#192) - a due *window* derived from the matching `PLANT_PERIOD`'s `start_month`/`end_month`, not a single instant; "what can I pick up right now" is `due_date_start <= today`, ordered by `due_date_end` ascending. A clearing task collapses this to a single day (`due_date_start == due_date_end == PLANTING.removed_date`) since clearing isn't templated off species data. `completed_date` remains separate and independent, recording the actual completion event. `ACTION` also gained `depends_on_action_id` (a single optional self-referencing predecessor, not a general DAG - e.g. sowing shouldn't start before bed prep is done) and a `thin` `action_type` value (#192's own technical analysis - no per-species thinning window exists in the plant data today, so this stays a manually-created task type, never auto-generated).
+
+**The following bullets were added 2026-08-04 during a routine data-engineer doc-accuracy audit (see root `CLAUDE.md`'s "Keeping the domain model and schema accurate") - the diagram above was already updated to match; these explain why:**
+
+- **Multi-garden support landed** (`multi_garden_support` migration, #238) - `GARDEN` gained `is_active` (exactly one `True` at a time across every row, a soft invariant enforced at the API layer, not a DB constraint - same pattern `BED_EQUIPMENT.bed_id`/`garden_id` mutual exclusivity already uses). `PLANTING_BED` and `GARDEN_PLAN` each gained a nullable `garden_id` FK, resolved server-side to whichever garden is currently active when a client doesn't supply one explicitly, rather than trusting a client-supplied value per call site - existing rows (and rows created outside the normal API, e.g. `app/scripts/import_example_garden.py`) stay valid without a backfill. Everything else (`PLANTING`, `ACTION`, `HARVEST_LOG`, ...) keys off `bed_id` and is transitively scoped once `PLANTING_BED` is, so no direct `garden_id` FK is needed on those tables. `GET`/`PUT /api/garden` (singular) now resolves to whichever garden is active; `GET`/`POST /api/gardens` + `GET`/`PATCH`/`DELETE /api/gardens/{id}` + `POST /api/gardens/{id}/activate` is the real list-style CRUD. Garden deletion has no cascade path - refused (409) outright if it's the active garden or the only garden. **`DECORATION` (below) was not updated to carry a `garden_id`** even though it was added in the same 2026-08-04 window - see that entity's own note for why this is flagged as a real gap, not a deliberate design choice.
+- **`DECORATION` added** (`create_decoration_table` migration, #241) - a purely cosmetic garden object (path, bench, garden gnome, ...): a name, a user-chosen render `color` (hex, defaulting to a neutral stone-gray swatch), and a drawn `border_geometry` footprint in garden space, carrying no functional data or app behavior otherwise. No FKs to anything and nothing else references it, so it has none of `PLANTING_BED`'s cascade-delete concerns. **Flagged, not fixed here (out of this agent's `data/`-only scope):** `DECORATION` has no `garden_id` at all - its own model docstring says this "matches `Bed`'s own precedent of not having one yet (Garden is a singleton today)," but that reasoning was true only briefly: the `create_decoration_table` migration landed *before* `multi_garden_support` the same day (2026-08-04, ~3.5 hours apart per migration file timestamps), and `Decoration`'s own docstring was never revisited once `Bed`/`GardenPlan` actually gained real `garden_id` FKs. Confirmed live in code: `GET /api/decorations` (`app/api/routes/decorations.py`'s `list_decorations`) still returns every decoration globally, unscoped by garden - unlike the garden-owned list endpoints #258 scoped to the active garden. Logged to `data/suggestions.md` for `backend-developer`/the user, since this is a real schema/behavior gap (decorations from one garden would appear in every other garden), not just a doc-accuracy issue.
+- **`SOIL_ROTATION_EVENT`/`SOIL_ROTATION_TRANSFER`/`SOIL_FAMILY_HISTORY` added** (`create_soil_rotation_tables` migration, #228/#229) - models a real workflow this app's actual user doesn't practice as fixed-bed crop rotation: instead, topsoil itself gets physically moved between beds every few years, not necessarily as a closed loop or pairwise swap. `SOIL_ROTATION_EVENT` is one "moving day"; `SOIL_ROTATION_TRANSFER` is one edge in that day's cycle (N rows under one event represents an N-way cycle, e.g. A→B→C→A), with `from_bed_id` nullable to represent "fresh/external soil" as a transfer with no source rather than a separate mechanism. `SOIL_FAMILY_HISTORY` is the derived summary that actually travels with a bed's soil - copied forward at rotation-event time (append-only, never mutated) rather than reassigning the original `PLANTING` rows themselves, since `PLANTING.geometry` is bed-local and must stay physically accurate for history rendering (#180). `source_bed_id`/`source_plant_slug` are deliberately plain columns, not live FKs - they're provenance for a warning tooltip's wording (#229), and the bed a fact originated from may no longer hold that soil by the time the fact is read.
+- **`BED_EQUIPMENT` gained `condition`** (#225) - `good` (default) | `damaged` | `retired`, recording what happened to an item the last time it was unplaced from a bed. Independent of `bed_id`/`garden_id` being null - unplacing on its own never implied "unusable" before this field existed and still doesn't by default; the gardener sets `condition` explicitly, matching the same "record what's observed" spirit as `COMPOST_BIN.estimated_maturity_date`.
+- **`ACTION` gained `snoozed_until`** (#230, "remind me later") - suppresses further reminder pushes (`app/services/reminders.py`'s `due_actions`) until this date, without touching `due_date_start`/`due_date_end` (the task's actual due window) at all. Once passed, the action reappears automatically - no separate "unsnooze" step. Doesn't interact with `actionable_now` (#192) - snoozing only affects the reminder push, never the task's own due window/urgency ordering.
+- **`ACTION` gained `recurrence_unit`/`recurrence_interval`/`recurrence_end_date`/`recurrence_source_action_id`** (#226, manually-created recurring/repeating tasks, e.g. "turn the compost bin every 3 weeks") - `recurrence_unit` (`daily`/`weekly`/`monthly`/`yearly`) is `null` by default (and for every existing/#192-auto-generated row), meaning not recurring; `recurrence_interval`/`recurrence_end_date` are inert unless it's set. `recurrence_source_action_id` is a distinct self-referencing FK from `depends_on_action_id` - recurrence chaining (linking a generated occurrence back to the action it was generated from) is never conflated with dependency ordering, even though both are single-predecessor self-FKs on the same table.
+- **`PUSH_SUBSCRIPTION` (`app/models/push_subscription.py`) is deliberately not drawn in the diagram above** - a browser's Web Push registration (endpoint + encryption keys), infrastructure/notification plumbing rather than garden domain data, same category of omission as this doc never having modeled auth/session tables. Noted here explicitly (rather than left unexplained) since every other real table in `app/models/` is accounted for in this diagram.
