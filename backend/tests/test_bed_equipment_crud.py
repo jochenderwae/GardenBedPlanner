@@ -123,3 +123,60 @@ def test_create_bed_equipment_with_nonexistent_garden_id_is_409_not_500(client: 
         "/api/bed-equipment", json={"equipment_type": "rain_barrel", "garden_id": 999999}
     )
     assert response.status_code == 409
+
+
+def test_bed_equipment_condition_defaults_to_good(client: TestClient) -> None:
+    """#225: every row (existing pre-migration rows included, via the
+    migration's own server_default) defaults to "good" - unplacing on its
+    own never implied "unusable" before this field existed, and still
+    doesn't by default."""
+    response = client.post("/api/bed-equipment", json={"equipment_type": "trellis"})
+    assert response.status_code == 201, response.text
+    assert response.json()["condition"] == "good"
+
+
+def test_patch_bed_equipment_condition_persists_and_survives_other_updates(client: TestClient) -> None:
+    equipment_id = client.post(
+        "/api/bed-equipment", json={"equipment_type": "trellis", "height_cm": 180}
+    ).json()["id"]
+
+    damaged_response = client.patch(f"/api/bed-equipment/{equipment_id}", json={"condition": "damaged"})
+    assert damaged_response.status_code == 200, damaged_response.text
+    assert damaged_response.json()["condition"] == "damaged"
+
+    other_field_response = client.patch(f"/api/bed-equipment/{equipment_id}", json={"height_cm": 200})
+    assert other_field_response.status_code == 200
+    assert other_field_response.json()["height_cm"] == 200
+    # condition survives an update to an unrelated field.
+    assert other_field_response.json()["condition"] == "damaged"
+
+    retired_response = client.patch(f"/api/bed-equipment/{equipment_id}", json={"condition": "retired"})
+    assert retired_response.status_code == 200
+    assert retired_response.json()["condition"] == "retired"
+
+
+def test_create_bed_equipment_rejects_an_invalid_condition(client: TestClient) -> None:
+    response = client.post(
+        "/api/bed-equipment", json={"equipment_type": "trellis", "condition": "not-a-real-condition"}
+    )
+    assert response.status_code == 422
+
+
+def test_list_bed_equipment_filters_by_condition(client: TestClient) -> None:
+    good_id = client.post("/api/bed-equipment", json={"equipment_type": "trellis"}).json()["id"]
+    damaged_id = client.post(
+        "/api/bed-equipment", json={"equipment_type": "stake", "condition": "damaged"}
+    ).json()["id"]
+
+    good_only = client.get("/api/bed-equipment", params={"condition": "good"}).json()
+    assert good_id in {e["id"] for e in good_only}
+    assert damaged_id not in {e["id"] for e in good_only}
+
+    damaged_only = client.get("/api/bed-equipment", params={"condition": "damaged"}).json()
+    assert damaged_id in {e["id"] for e in damaged_only}
+    assert good_id not in {e["id"] for e in damaged_only}
+
+    unfiltered = client.get("/api/bed-equipment").json()
+    ids = {e["id"] for e in unfiltered}
+    assert good_id in ids
+    assert damaged_id in ids

@@ -1,6 +1,14 @@
+from enum import Enum
+
 from sqlalchemy import Column
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
+
+
+class EquipmentCondition(str, Enum):
+    good = "good"
+    damaged = "damaged"
+    retired = "retired"
 
 
 class BedEquipment(SQLModel, table=True):
@@ -37,3 +45,12 @@ class BedEquipment(SQLModel, table=True):
     # drip lines/emitters can exist unzoned (placed but not yet wired into a
     # planned watering circuit). See app/models/irrigation_zone.py.
     zone_id: int | None = Field(default=None, foreign_key="irrigation_zone.id")
+    # #225: what happened to this item when it was last unplaced from a bed
+    # - "returned to usable inventory" (good, the default) vs. "broken,
+    # don't silently offer it as available stock again" (damaged/retired).
+    # Independent of bed_id/garden_id being null - unplacing on its own
+    # never implied "unusable" before this field existed, and still
+    # doesn't by default; the gardener sets condition explicitly when it's
+    # actually damaged/retired, same "record what's observed" spirit as
+    # CompostBin.estimated_maturity_date.
+    condition: EquipmentCondition = EquipmentCondition.good

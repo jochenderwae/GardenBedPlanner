@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, create_model
 from sqlmodel import Session, select
 
 from app.api.deps import commit_or_409
 from app.core.db import get_session
 from app.models.bed_equipment import BedEquipment as BedEquipmentTable
+from app.models.bed_equipment import EquipmentCondition
 from app.models.geometry import Geometry, parse_geometry
 from app.services.task_generation import generate_equipment_tasks
 
@@ -75,8 +76,18 @@ def _check_bed_garden_mutually_exclusive(bed_id: int | None, garden_id: int | No
 
 
 @router.get("", response_model=list[BedEquipment])
-def list_bed_equipment(session: Session = Depends(get_session)) -> list[BedEquipment]:  # type: ignore[valid-type]
-    rows = list(session.exec(select(BedEquipmentTable)).all())
+def list_bed_equipment(
+    condition: EquipmentCondition | None = Query(
+        default=None,
+        description="Only equipment in this condition - e.g. condition=good for an "
+        "'available to place' picker that shouldn't silently offer damaged/retired items.",
+    ),
+    session: Session = Depends(get_session),
+) -> list[BedEquipment]:  # type: ignore[valid-type]
+    query = select(BedEquipmentTable)
+    if condition is not None:
+        query = query.where(BedEquipmentTable.condition == condition)
+    rows = list(session.exec(query).all())
     return [_to_api_equipment(row) for row in rows]
 
 

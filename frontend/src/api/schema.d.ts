@@ -1482,6 +1482,8 @@ export interface components {
             water_delivery_lph?: number | null;
             /** Zone Id */
             zone_id?: number | null;
+            /** @default good */
+            condition: components["schemas"]["EquipmentCondition"];
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -1499,6 +1501,8 @@ export interface components {
             water_delivery_lph?: number | null;
             /** Zone Id */
             zone_id?: number | null;
+            /** @default good */
+            condition: components["schemas"]["EquipmentCondition"];
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -1516,6 +1520,7 @@ export interface components {
             water_delivery_lph?: number | null;
             /** Zone Id */
             zone_id?: number | null;
+            condition?: components["schemas"]["EquipmentCondition"] | null;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -1772,6 +1777,11 @@ export interface components {
          * @enum {string}
          */
         EquipmentCategory: "bed_bound" | "garden_bound_decorative" | "garden_bound_functional";
+        /**
+         * EquipmentCondition
+         * @enum {string}
+         */
+        EquipmentCondition: "good" | "damaged" | "retired";
         /** EquipmentType */
         EquipmentType: {
             /** Id */
@@ -4879,7 +4889,10 @@ export interface operations {
     };
     list_bed_equipment_api_bed_equipment_get: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Only equipment in this condition - e.g. condition=good for an 'available to place' picker that shouldn't silently offer damaged/retired items. */
+                condition?: components["schemas"]["EquipmentCondition"] | null;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -4893,6 +4906,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BedEquipment"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
