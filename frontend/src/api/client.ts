@@ -40,6 +40,14 @@ export type BedEquipmentUpdate = components["schemas"]["BedEquipmentUpdate"];
 export type EquipmentType = components["schemas"]["EquipmentType"];
 export type EquipmentCategory = components["schemas"]["EquipmentCategory"];
 
+export type GardenPlan = components["schemas"]["GardenPlan"];
+export type GardenPlanCreate = components["schemas"]["GardenPlanCreate"];
+export type GardenPlanUpdate = components["schemas"]["GardenPlanUpdate"];
+export type GardenPlanDetail = components["schemas"]["GardenPlanDetail"];
+export type GardenPlanEntry = components["schemas"]["GardenPlanEntry"];
+export type GardenPlanEntryCreate = components["schemas"]["GardenPlanEntryCreate"];
+export type GardenPlanEntryUpdate = components["schemas"]["GardenPlanEntryUpdate"];
+
 export type CompostFertilizationLog = components["schemas"]["CompostFertilizationLog"];
 export type CompostFertilizationLogCreate = components["schemas"]["CompostFertilizationLogCreate"];
 export type CompostFertilizationLogUpdate = components["schemas"]["CompostFertilizationLogUpdate"];
@@ -224,6 +232,60 @@ export function listEquipmentTypes(): Promise<EquipmentType[]> {
 
 export function listIrrigationZones(): Promise<IrrigationZone[]> {
   return apiFetch(`/api/irrigation-zones`);
+}
+
+/** #220: a season/year's plant wishlist header - see `getGardenPlan` for
+ * the plan-plus-entries detail shape. */
+export function listGardenPlans(): Promise<GardenPlan[]> {
+  return apiFetch(`/api/garden-plans`);
+}
+
+export function getGardenPlan(id: number): Promise<GardenPlanDetail> {
+  return apiFetch(`/api/garden-plans/${id}`);
+}
+
+export function createGardenPlan(plan: GardenPlanCreate): Promise<GardenPlan> {
+  return apiFetch(`/api/garden-plans`, {
+    method: "POST",
+    body: JSON.stringify(plan),
+  });
+}
+
+export function updateGardenPlan(id: number, patch: GardenPlanUpdate): Promise<GardenPlan> {
+  return apiFetch(`/api/garden-plans/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+/** `cascade=true` deletes the plan's own entries along with it - a plan
+ * with 1+ entries 409s without it, same "explicit cascade=true, not a
+ * silent default" convention `deleteBed`/`deleteGardenPlan` share
+ * (`app/api/routes/garden_plans.py`). */
+export function deleteGardenPlan(id: number, cascade = false): Promise<void> {
+  return apiFetch(`/api/garden-plans/${id}${cascade ? "?cascade=true" : ""}`, { method: "DELETE" });
+}
+
+export function createGardenPlanEntry(planId: number, entry: GardenPlanEntryCreate): Promise<GardenPlanEntry> {
+  return apiFetch(`/api/garden-plans/${planId}/entries`, {
+    method: "POST",
+    body: JSON.stringify(entry),
+  });
+}
+
+export function updateGardenPlanEntry(
+  planId: number,
+  entryId: number,
+  patch: GardenPlanEntryUpdate,
+): Promise<GardenPlanEntry> {
+  return apiFetch(`/api/garden-plans/${planId}/entries/${entryId}`, {
+    method: "PATCH",
+    body: JSON.stringify(patch),
+  });
+}
+
+export function deleteGardenPlanEntry(planId: number, entryId: number): Promise<void> {
+  return apiFetch(`/api/garden-plans/${planId}/entries/${entryId}`, { method: "DELETE" });
 }
 
 /** #223: every log across the whole garden - no `bed_id` query param exists
