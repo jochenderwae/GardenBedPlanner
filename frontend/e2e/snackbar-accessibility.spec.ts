@@ -10,6 +10,11 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
  * attributes are present with the right values when a snackbar appears,
  * the message/Undo interaction still works with them in place, and the
  * auto-dismiss timing.
+ *
+ * #213/#237 update: the plant name is now a click-to-edit
+ * InlineEditableField (plain text/button until clicked), not an
+ * always-editable textbox - each test below clicks it first to reveal the
+ * real input before filling it.
  */
 
 async function createPlant(request: APIRequestContext, slug: string, commonName: string): Promise<void> {
@@ -33,6 +38,7 @@ test.describe("Snackbar accessibility (#146)", () => {
       // leftover status region.
       await expect(page.locator('[role="status"]')).toHaveCount(0);
 
+      await page.getByRole("button", { name: "E2E Snackbar Plant" }).click();
       const commonNameInput = page.getByRole("textbox", { name: "Common name" });
       await commonNameInput.fill("E2E Snackbar Plant Renamed");
       await commonNameInput.blur();
@@ -54,6 +60,7 @@ test.describe("Snackbar accessibility (#146)", () => {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Snackbar Undo Plant" })).toBeVisible();
 
+      await page.getByRole("button", { name: "E2E Snackbar Undo Plant" }).click();
       const commonNameInput = page.getByRole("textbox", { name: "Common name" });
       await commonNameInput.fill("E2E Snackbar Undo Plant Renamed");
       await commonNameInput.blur();
@@ -81,6 +88,7 @@ test.describe("Snackbar accessibility (#146)", () => {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Snackbar Dismiss Plant" })).toBeVisible();
 
+      await page.getByRole("button", { name: "E2E Snackbar Dismiss Plant" }).click();
       const commonNameInput = page.getByRole("textbox", { name: "Common name" });
       await commonNameInput.fill("E2E Snackbar Dismiss Plant Renamed");
       await commonNameInput.blur();

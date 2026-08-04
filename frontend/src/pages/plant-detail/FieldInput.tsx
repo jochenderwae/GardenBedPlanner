@@ -27,6 +27,13 @@ function FieldLabel({ field }: { field: FieldConfig }) {
 
 export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   const [draft, setDraft] = useState(value);
+  // #213: field.key is unique within one page's SCALAR_FIELDS render (one
+  // plant at a time) - an explicit id/htmlFor pair overrides the browser's
+  // implicit label-association algorithm entirely (it only falls back to
+  // "first labelable descendant" when `for` is absent), so FieldHint's own
+  // <button> sitting before the real control inside the same <label> no
+  // longer steals the label's accessible-name association from it.
+  const fieldId = `plant-field-${field.key}`;
 
   // Reflect external changes (initial load, or an Undo reverting this same
   // field) without clobbering what the user is actively typing otherwise.
@@ -49,9 +56,10 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
     const selectValue = value === null || value === undefined ? "" : String(value);
 
     return (
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1" htmlFor={fieldId}>
         <FieldLabel field={field} />
         <Select
+          id={fieldId}
           value={selectValue}
           onChange={(e) => {
             const raw = e.target.value;
@@ -72,9 +80,10 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
 
   if (field.type === "number") {
     return (
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1" htmlFor={fieldId}>
         <FieldLabel field={field} />
         <Input
+          id={fieldId}
           type="number"
           value={draft === null || draft === undefined ? "" : String(draft)}
           onChange={(e) => setDraft(e.target.value === "" ? null : Number(e.target.value))}
@@ -139,9 +148,10 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
 
   if (field.type === "textarea") {
     return (
-      <label className="flex flex-col gap-1 sm:col-span-2">
+      <label className="flex flex-col gap-1 sm:col-span-2" htmlFor={fieldId}>
         <FieldLabel field={field} />
         <Textarea
+          id={fieldId}
           rows={3}
           value={typeof draft === "string" ? draft : ""}
           onChange={(e) => setDraft(e.target.value)}
@@ -152,9 +162,10 @@ export function FieldInput({ field, value, onCommit }: FieldInputProps) {
   }
 
   return (
-    <label className="flex flex-col gap-1">
+    <label className="flex flex-col gap-1" htmlFor={fieldId}>
       <FieldLabel field={field} />
       <Input
+        id={fieldId}
         type="text"
         value={typeof draft === "string" ? draft : ""}
         onChange={(e) => setDraft(e.target.value)}

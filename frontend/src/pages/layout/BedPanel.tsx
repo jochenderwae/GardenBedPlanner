@@ -183,24 +183,30 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
       </div>
 
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1">
+        {/* #213: explicit htmlFor/id on every field below - overrides the
+            browser's implicit label-association algorithm entirely, so
+            FieldHint's own <button> (rendered before the real control)
+            never steals it. */}
+        <label className="flex flex-col gap-1" htmlFor="bed-field-name">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Name
             <FieldHint description="The bed's display name, e.g. 'North planter'." />
           </span>
           <Input
+            id="bed-field-name"
             value={draft.name}
             onChange={(e) => setDraft((prev) => ({ ...prev, name: e.target.value }))}
             onBlur={() => draft.name !== bed.name && commit({ name: draft.name })}
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" htmlFor="bed-field-category">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Category (optional)
             <FieldHint description="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list." />
           </span>
           <Input
+            id="bed-field-category"
             placeholder="e.g. raised planter, ground bed, compost..."
             value={draft.category ?? ""}
             onChange={(e) => setDraft((prev) => ({ ...prev, category: e.target.value || null }))}
@@ -215,12 +221,13 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
 
         {draft.border_geometry.type === "rectangle" ? (
           <div className="grid grid-cols-3 gap-2">
-            <label className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1" htmlFor="bed-field-width">
               <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Width (cm)
                 <FieldHint description="Bed width in centimeters." />
               </span>
               <Input
+                id="bed-field-width"
                 type="number"
                 variant="numeric"
                 value={draft.border_geometry.width}
@@ -232,12 +239,13 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
                 }}
               />
             </label>
-            <label className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1" htmlFor="bed-field-length">
               <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Length (cm)
                 <FieldHint description="Bed length in centimeters." />
               </span>
               <Input
+                id="bed-field-length"
                 type="number"
                 variant="numeric"
                 value={draft.border_geometry.height}
@@ -249,12 +257,13 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
                 }}
               />
             </label>
-            <label className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1" htmlFor="bed-field-rotation">
               <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Rotation (°)
                 <FieldHint description="Rotation in degrees, clockwise, relative to the garden's own orientation - 0 means aligned with the garden, not with the canvas." />
               </span>
               <Input
+                id="bed-field-rotation"
                 type="number"
                 variant="numeric"
                 value={Math.round(rotationRelativeToGarden(draft.border_geometry.rotation, gardenOrientationDeg))}
@@ -276,12 +285,13 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           <p className="text-xs text-muted-foreground">Polygon shape - edit vertices directly on the canvas.</p>
         )}
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" htmlFor="bed-field-height">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Height (cm)
             <FieldHint description="Height above ground, in centimeters - 0 for a flat/ground-level bed. Any height above ground draws the bed with a thicker outline on the canvas." />
           </span>
           <Input
+            id="bed-field-height"
             type="number"
             value={draft.height_cm}
             onChange={(e) => setDraft((prev) => ({ ...prev, height_cm: Number(e.target.value) }))}
@@ -289,12 +299,13 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" htmlFor="bed-field-sun-level">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Sun level
             <FieldHint description="How much direct sun this bed gets." />
           </span>
           <Select
+            id="bed-field-sun-level"
             value={draft.sun_level ?? ""}
             onChange={(e) => commit({ sun_level: (e.target.value || null) as Bed["sun_level"] })}
           >
@@ -305,12 +316,13 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           </Select>
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" htmlFor="bed-field-soil-type">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Soil type
             <FieldHint description="Free-text soil description, e.g. loam, sandy, compost-amended." />
           </span>
           <Input
+            id="bed-field-soil-type"
             value={draft.soil_type ?? ""}
             onChange={(e) => setDraft((prev) => ({ ...prev, soil_type: e.target.value || null }))}
             onBlur={() => draft.soil_type !== bed.soil_type && commit({ soil_type: draft.soil_type })}
@@ -327,12 +339,13 @@ export const BedPanel = forwardRef<BedPanelHandle, BedPanelProps>(function BedPa
           <FieldHint description="Whether this bed is inside/covered by a greenhouse." />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" htmlFor="bed-field-notes">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Notes
             <FieldHint description="Any other notes about this bed." />
           </span>
           <Textarea
+            id="bed-field-notes"
             rows={3}
             value={draft.notes}
             onChange={(e) => setDraft((prev) => ({ ...prev, notes: e.target.value }))}

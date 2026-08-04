@@ -9,6 +9,11 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
  * render as genuine tri-state (Yes/No/Unknown, not defaulting an unset
  * `null` to "No" - per #177's own "true-or-null, never a derived false"
  * data convention) and that edits persist through a real PATCH.
+ *
+ * #213/#237 update: these three fields are "secondary" tier in #237's
+ * Option A layout (technical/niche, not everyday-relevant), so they now
+ * render collapsed behind the "Show more details" disclosure rather than
+ * always visible - each test below expands it first.
  */
 
 async function createPlant(
@@ -31,6 +36,7 @@ test.describe("Plant-detail sowing tri-state fields (#197)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Sowing Flags Plant" })).toBeVisible();
+      await page.getByRole("button", { name: "Show more details" }).click();
 
       await expect(page.getByLabel("Sow indoors")).toHaveValue("true");
       await expect(page.getByLabel("Sow direct")).toHaveValue("false");
@@ -47,6 +53,7 @@ test.describe("Plant-detail sowing tri-state fields (#197)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Sowing Flags Unset Plant" })).toBeVisible();
+      await page.getByRole("button", { name: "Show more details" }).click();
 
       // Konva-free, this is a plain HTML <select> - value "" maps to the
       // "Unknown" option per FieldInput.tsx's own tristate branch.
@@ -65,6 +72,7 @@ test.describe("Plant-detail sowing tri-state fields (#197)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Sowing Flags Edit Plant" })).toBeVisible();
+      await page.getByRole("button", { name: "Show more details" }).click();
 
       const sowIndoors = page.getByLabel("Sow indoors");
       await sowIndoors.selectOption("true");

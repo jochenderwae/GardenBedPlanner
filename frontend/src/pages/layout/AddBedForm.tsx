@@ -110,33 +110,42 @@ export function AddBedForm({ onCreated, nextPosition }: AddBedFormProps) {
               </Button>
             </div>
 
-            <label className="flex flex-col gap-1">
+            {/* #213: explicit htmlFor/id on Name/Category - overrides the
+                browser's implicit label-association algorithm entirely, so
+                FieldHint's own <button> never steals it. Shape isn't a
+                single real control (ShapeTypeToggle is a button group, no
+                one element to point htmlFor at) - a plain <div> instead of
+                a <label> sidesteps implicit association entirely, which is
+                more honest anyway (it was never really "labeling" one
+                control). */}
+            <label className="flex flex-col gap-1" htmlFor="add-bed-field-name">
               <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Name
                 <FieldHint description="The bed's display name, e.g. 'North planter'." />
               </span>
-              <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus />
+              <Input id="add-bed-field-name" value={name} onChange={(e) => setName(e.target.value)} autoFocus />
             </label>
 
-            <label className="flex flex-col gap-1">
+            <label className="flex flex-col gap-1" htmlFor="add-bed-field-category">
               <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Category (optional)
                 <FieldHint description="Free-text grouping, e.g. raised planter, ground bed, compost bin - not a fixed list." />
               </span>
               <Input
+                id="add-bed-field-category"
                 placeholder="e.g. raised planter, ground bed, compost..."
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               />
             </label>
 
-            <label className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1">
               <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                 Shape
                 <FieldHint description="Rectangle is the default and works for most beds; switch to Polygon for an irregular shape." />
               </span>
               <ShapeTypeToggle geometry={geometry} onChange={setGeometry} />
-            </label>
+            </div>
 
             <p className="text-xs text-muted-foreground">
               Starts at {DEFAULT_WIDTH_CM}×{DEFAULT_HEIGHT_CM}cm - drag/resize/rotate (or edit vertices, for a

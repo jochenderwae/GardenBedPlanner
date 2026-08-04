@@ -16,6 +16,14 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
  * Base UI's popover stays open while clicking checkboxes inside it (only
  * outside-click/Escape/another-trigger closes it), so a single open is
  * enough for the whole sequence.
+ *
+ * #213/#237 update: edible_parts is a "secondary" tier field in #237's
+ * Option A layout, so it's now collapsed behind the "Show more details"
+ * disclosure - expanded once below before interacting with it. Every
+ * "Edible parts" button-role query below is `{ exact: true }` - the
+ * plant's own name ("E2E Edible Parts Plant") would otherwise fuzzy-
+ * substring-match too, now that the identity heading is a real
+ * role="button" element (#237's click-to-edit name).
  */
 
 async function createPlant(
@@ -45,16 +53,17 @@ test.describe("Plant-detail edible_parts checkbox multiselect (#134)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Edible Parts Plant" })).toBeVisible();
+      await page.getByRole("button", { name: "Show more details" }).click();
 
       // Before opening it: the collapsed trigger shows a comma-joined
       // summary of the current selection, in the options' own declared
       // order (fruit before seeds, even though this plant was created with
       // ["fruit", "seeds"] - not necessarily insertion order).
-      await expect(page.getByRole("button", { name: "Edible parts" })).toHaveText("Fruit, Seeds");
+      await expect(page.getByRole("button", { name: "Edible parts", exact: true })).toHaveText("Fruit, Seeds");
 
       // Checkboxes live inside a collapsed popover now (#134) - open it
       // once before interacting with anything inside.
-      await page.getByRole("button", { name: "Edible parts" }).click();
+      await page.getByRole("button", { name: "Edible parts", exact: true }).click();
 
       const fruitCheckbox = page.getByRole("checkbox", { name: "Fruit" });
       const seedsCheckbox = page.getByRole("checkbox", { name: "Seeds" });
@@ -122,7 +131,7 @@ test.describe("Plant-detail edible_parts checkbox multiselect (#134)", () => {
           message: "Undo never restored the prior edible_parts value",
         })
         .toEqual(["leaves"]);
-      await page.getByRole("button", { name: "Edible parts" }).click();
+      await page.getByRole("button", { name: "Edible parts", exact: true }).click();
       await expect(leavesCheckbox).toBeChecked();
       await expect(fruitCheckbox).not.toBeChecked();
     } finally {

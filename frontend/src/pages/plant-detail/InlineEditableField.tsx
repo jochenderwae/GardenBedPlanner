@@ -19,6 +19,17 @@ interface InlineEditableFieldProps {
    * something smaller/muted, same identity-line visual hierarchy the old
    * plain `<h1>`/`<p>` header already established. */
   className?: string;
+  /** True only for the plant name instance, which `PlantDetail.tsx` wraps
+   * in a real `<h1>` - the collapsed trigger button's own visible text
+   * *is* the page's title there, so it should be the h1's accessible name
+   * too (plain content-based computation), not the usual "Edit <field>"
+   * override (which, for a plant literally named e.g. "Growth Habit
+   * Plant", would otherwise substring-collide with `getByLabel("Growth
+   * habit")`-style queries against an unrelated field elsewhere on the
+   * same page - a real regression this flag exists to avoid). Family/
+   * genus/every other caller keeps the "Edit <field>" override, which
+   * carries real context their own bare value text doesn't. */
+  skipEditAriaLabel?: boolean;
 }
 
 /** Click-to-edit text (#237's Option A layout spec) - plain text by
@@ -30,7 +41,14 @@ interface InlineEditableFieldProps {
  * existing save mechanism, not a new one. `Escape` reverts without saving;
  * `Enter`/blur commits. Deliberately name-only (no separate label text) -
  * see `ariaLabel`'s own doc. */
-export function InlineEditableField({ value, ariaLabel, placeholder, onCommit, className }: InlineEditableFieldProps) {
+export function InlineEditableField({
+  value,
+  ariaLabel,
+  placeholder,
+  onCommit,
+  className,
+  skipEditAriaLabel = false,
+}: InlineEditableFieldProps) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value ?? "");
 
@@ -85,7 +103,7 @@ export function InlineEditableField({ value, ariaLabel, placeholder, onCommit, c
   return (
     <button
       type="button"
-      aria-label={`Edit ${ariaLabel}`}
+      aria-label={skipEditAriaLabel ? undefined : `Edit ${ariaLabel}`}
       onClick={startEditing}
       onKeyDown={handleTriggerKeyDown}
       className={cn(

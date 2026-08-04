@@ -87,12 +87,15 @@ export function GardenPanel({ garden }: GardenPanelProps) {
           shape afterward. Also creates a ground-level bed you can plant directly into.
         </p>
         <div className="flex flex-col gap-3">
-          <label className="flex flex-col gap-1">
+          {/* #213: explicit htmlFor/id overrides implicit label
+              association, so FieldHint's own <button> (rendered before the
+              real control) never steals it. */}
+          <label className="flex flex-col gap-1" htmlFor="garden-field-name">
             <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
               Name
               <FieldHint description="Your garden's display name." />
             </span>
-            <Input value={name} onChange={(e) => setName(e.target.value)} autoFocus={shouldAutoFocusName} />
+            <Input id="garden-field-name" value={name} onChange={(e) => setName(e.target.value)} autoFocus={shouldAutoFocusName} />
           </label>
           <Button
             size="sm"
@@ -127,48 +130,55 @@ export function GardenPanel({ garden }: GardenPanelProps) {
       <h2 className="mb-3 text-sm font-medium">Edit garden</h2>
 
       <div className="flex flex-col gap-3">
-        <label className="flex flex-col gap-1">
+        {/* #213: explicit htmlFor/id on every field below - overrides the
+            browser's implicit label-association algorithm entirely, so
+            FieldHint's own <button> never steals it. */}
+        <label className="flex flex-col gap-1" htmlFor="garden-field-name">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Name
             <FieldHint description="Your garden's display name." />
           </span>
           <Input
+            id="garden-field-name"
             value={draft.name}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, name: e.target.value } : prev))}
             onBlur={() => draft.name !== garden?.name && commit({ name: draft.name })}
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" htmlFor="garden-field-climate-zone">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Climate zone
             <FieldHint description="Free-text climate zone, e.g. a Köppen or USDA hardiness zone code, if you track one." />
           </span>
           <Input
+            id="garden-field-climate-zone"
             value={draft.climate_zone ?? ""}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, climate_zone: e.target.value || null } : prev))}
             onBlur={() => draft.climate_zone !== garden?.climate_zone && commit({ climate_zone: draft.climate_zone })}
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" htmlFor="garden-field-location">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Location
             <FieldHint description="Free-text location, e.g. a city or address." />
           </span>
           <Input
+            id="garden-field-location"
             value={draft.location ?? ""}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, location: e.target.value || null } : prev))}
             onBlur={() => draft.location !== garden?.location && commit({ location: draft.location })}
           />
         </label>
 
-        <label className="flex flex-col gap-1">
+        <label className="flex flex-col gap-1" htmlFor="garden-field-notes">
           <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
             Notes
             <FieldHint description="Any other notes about the garden." />
           </span>
           <Textarea
+            id="garden-field-notes"
             rows={3}
             value={draft.notes}
             onChange={(e) => setDraft((prev) => (prev ? { ...prev, notes: e.target.value } : prev))}

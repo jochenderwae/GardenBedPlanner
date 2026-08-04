@@ -219,20 +219,25 @@ export function SeedInfoSection({ slug, seedInfo }: { slug: string; seedInfo: Se
         <FieldHint description="Seed-specific details used by the seed buying guide and sowing plans." />
       </h2>
       <div className={rowClass}>
-        <label className="flex items-center gap-1.5">
+        {/* #213: explicit htmlFor/id - FieldHint's own <button> would
+            otherwise steal the implicit label association from the real
+            Input. */}
+        <label className="flex items-center gap-1.5" htmlFor="seed-info-seeds-per-gram">
           Seeds/gram
           <FieldHint description="How many seeds of this plant weigh one gram - used to convert a seed count to a weight, or vice versa." />
           <Input
+            id="seed-info-seeds-per-gram"
             type="number"
             className="w-auto"
             defaultValue={current.seeds_per_gram ?? ""}
             onBlur={(e) => save({ seeds_per_gram: e.target.value === "" ? null : Number(e.target.value) })}
           />
         </label>
-        <label className="flex items-center gap-1.5">
+        <label className="flex items-center gap-1.5" htmlFor="seed-info-pretreatment">
           Pretreatment
           <FieldHint description="Any treatment seeds need before sowing, e.g. soaking, stratification, scarification." />
           <Input
+            id="seed-info-pretreatment"
             type="text"
             className="w-auto"
             defaultValue={current.pretreatment ?? ""}

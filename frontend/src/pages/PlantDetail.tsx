@@ -109,25 +109,39 @@ export function PlantDetail() {
                 be. parent_plant_slug (#236) joins it as a plain link
                 (there's no editable "reassign parent" field to make this
                 inline-editable too, see LineageSection's own doc). */}
-            <InlineEditableField
-              value={data.common_name}
-              ariaLabel="Common name"
-              placeholder="Add name…"
-              onCommit={(v, p) => saveField("common_name", "common name", v, p)}
-              className="text-xl font-medium"
-            />
+            {/* A real <h1> - #237's InlineEditableField swap-to-<button>
+                display mode has no heading semantics of its own.
+                skipEditAriaLabel: the collapsed button's visible text (the
+                plant's own name) should be the h1's accessible name as-is
+                (plain content-based computation) - the usual "Edit
+                <field>" override every other InlineEditableField instance
+                keeps would make the h1's own name "Edit Common name"
+                instead, and could substring-collide with an unrelated
+                field's own getByLabel query for a plant literally named
+                e.g. "... Growth Habit ..." (a real regression this flag
+                exists to avoid). */}
+            <h1>
+              <InlineEditableField
+                value={data.common_name}
+                ariaLabel="Common name"
+                placeholder="Add name…"
+                onCommit={(v, p) => saveField("common_name", "Common name", v, p)}
+                className="text-xl font-medium"
+                skipEditAriaLabel
+              />
+            </h1>
             <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
               <InlineEditableField
                 value={fieldValue(data, "family") as string | null}
                 ariaLabel="Family"
                 placeholder="Add family…"
-                onCommit={(v, p) => saveField("family", "family", v, p)}
+                onCommit={(v, p) => saveField("family", "Family", v, p)}
               />
               <InlineEditableField
                 value={fieldValue(data, "genus") as string | null}
                 ariaLabel="Genus"
                 placeholder="Add genus…"
-                onCommit={(v, p) => saveField("genus", "genus", v, p)}
+                onCommit={(v, p) => saveField("genus", "Genus", v, p)}
               />
               {parent && (
                 <Link to={`/plants/${parent.slug}`} className="underline-offset-2 hover:underline">

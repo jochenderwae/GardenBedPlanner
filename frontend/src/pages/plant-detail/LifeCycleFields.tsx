@@ -116,12 +116,16 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
 
   return (
     <>
-      <label className="flex flex-col gap-1">
+      {/* #213: explicit htmlFor/id overrides implicit label association
+          entirely, so FieldHint's own <button> (rendered before the real
+          control) no longer steals it. */}
+      <label className="flex flex-col gap-1" htmlFor="plant-field-life_cycle">
         <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
           Life cycle
           <FieldHint description="Whether this plant completes its life in one season (annual), two (biennial), or lives on for several years (perennial)." />
         </span>
         <Select
+          id="plant-field-life_cycle"
           value={lifeCycle ?? ""}
           onChange={(e) => commitLifeCycle((e.target.value || null) as LifeCycle)}
         >
@@ -133,12 +137,13 @@ export function LifeCycleFields({ lifeCycle, lifeCycleYears, onSave }: LifeCycle
           ))}
         </Select>
       </label>
-      <label className="flex flex-col gap-1">
+      <label className="flex flex-col gap-1" htmlFor="plant-field-life_cycle_years">
         <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
           Life cycle years (productive lifespan)
           <FieldHint description="How many years this plant stays productive - fixed at 1 for annual and 2 for biennial, free-form for perennial." />
         </span>
         <Input
+          id="plant-field-life_cycle_years"
           type="number"
           value={yearsDraft === null || yearsDraft === undefined ? "" : String(yearsDraft)}
           onChange={(e) => setYearsDraft(e.target.value === "" ? null : Number(e.target.value))}

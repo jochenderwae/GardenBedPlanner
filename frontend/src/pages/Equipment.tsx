@@ -114,6 +114,11 @@ export function Equipment() {
       geometry: null,
       height_cm: heightCm ? Number(heightCm) : null,
       water_delivery_lph: waterDeliveryLph ? Number(waterDeliveryLph) : null,
+      // Matches BedEquipmentCreate's own server-side default - a brand new
+      // inventory item always starts in good condition, no condition-
+      // picker UI in this quick "add to inventory" form (that's a separate
+      // backlog item's job).
+      condition: "good",
     });
   }
 
@@ -212,31 +217,35 @@ export function Equipment() {
             </CardHeader>
             <CardContent>
               <form className="flex flex-col gap-3" onSubmit={submit}>
-                <label className="flex flex-col gap-1">
+                {/* #213: explicit htmlFor/id - overrides the browser's
+                    implicit label-association algorithm entirely, so
+                    FieldHint's own <button> never steals it. */}
+                <label className="flex flex-col gap-1" htmlFor="equipment-page-field-type">
                   <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                     Type
                     <FieldHint description="Free-text equipment type, e.g. trellis, drip line, stake." />
                   </span>
                   <Input
+                    id="equipment-page-field-type"
                     placeholder="e.g. trellis, drip line, stake..."
                     value={equipmentType}
                     onChange={(e) => setEquipmentType(e.target.value)}
                   />
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  <label className="flex flex-col gap-1">
+                  <label className="flex flex-col gap-1" htmlFor="equipment-page-field-height">
                     <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                       Height (cm)
                       <FieldHint description="How tall this equipment stands, in centimeters." />
                     </span>
-                    <Input type="number" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} />
+                    <Input id="equipment-page-field-height" type="number" value={heightCm} onChange={(e) => setHeightCm(e.target.value)} />
                   </label>
-                  <label className="flex flex-col gap-1">
+                  <label className="flex flex-col gap-1" htmlFor="equipment-page-field-water">
                     <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                       Water (L/h)
                       <FieldHint description="Water delivery rate in liters per hour, for irrigation equipment." />
                     </span>
-                    <Input type="number" value={waterDeliveryLph} onChange={(e) => setWaterDeliveryLph(e.target.value)} />
+                    <Input id="equipment-page-field-water" type="number" value={waterDeliveryLph} onChange={(e) => setWaterDeliveryLph(e.target.value)} />
                   </label>
                 </div>
                 {formError && <p className="text-sm text-destructive">{formError}</p>}
