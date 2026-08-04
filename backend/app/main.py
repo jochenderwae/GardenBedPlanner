@@ -69,6 +69,7 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     app.include_router(period_types.router, prefix="/api")
     app.include_router(example_garden.router, prefix="/api")
     app.include_router(garden.router, prefix="/api")
+    app.include_router(garden.gardens_router, prefix="/api")
     app.include_router(plantings.router, prefix="/api")
     app.include_router(bed_equipment.router, prefix="/api")
     app.include_router(rotation.router, prefix="/api")

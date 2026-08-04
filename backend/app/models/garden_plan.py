@@ -10,6 +10,11 @@ class GardenPlan(SQLModel, table=True):
     __tablename__ = "garden_plan"
 
     id: int | None = Field(default=None, primary_key=True)
+    # Multi-garden support (#238) - nullable, same reasoning as Bed.garden_id
+    # (see that model's own docstring): resolved server-side to whichever
+    # Garden is active when not supplied explicitly, existing rows stay
+    # valid without a backfill.
+    garden_id: int | None = Field(default=None, foreign_key="garden.id")
     season_name: str
     year: int
     notes: str = ""

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, create_model
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import commit_or_409, get_active_garden
 from app.core.db import get_session
 from app.models.action import Action
 from app.models.bed import Bed as BedTable
@@ -96,6 +96,16 @@ def create_bed(
     prepare_bed task (#192) so backfilling doesn't spam the task list with
     things that already happened."""
     data = bed.model_dump()
+    # #238: resolve garden_id server-side against whichever garden is
+    # currently active, but only when the client didn't supply one
+    # explicitly (model_fields_set, not just "is it None") - and only when
+    # a garden actually exists (get_active_garden returns None otherwise,
+    # same as if this field never existed, for every flow that predates
+    # multi-garden support).
+    if "garden_id" not in bed.model_fields_set:
+        active_garden = get_active_garden(session)
+        if active_garden is not None:
+            data["garden_id"] = active_garden.id
     row = BedTable(**data)
     session.add(row)
     commit_or_409(session)

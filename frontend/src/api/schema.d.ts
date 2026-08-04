@@ -428,13 +428,83 @@ export interface paths {
         get: operations["get_garden_api_garden_get"];
         /**
          * Put Garden
-         * @description Get-or-create: creates the garden on first call, updates it on every
-         *     call after. Only the *first* creation also auto-creates a matching
-         *     ground-level Bed (see the docstring on that block below) - subsequent
-         *     PUTs never touch Bed rows.
+         * @description Get-or-create against whichever garden is active (#238): creates the
+         *     garden - and activates it - on first call, updates the active garden on
+         *     every call after. Only the *first* creation also auto-creates a
+         *     matching ground-level Bed - subsequent PUTs never touch Bed rows.
          */
         put: operations["put_garden_api_garden_put"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gardens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Gardens */
+        get: operations["list_gardens_api_gardens_get"];
+        put?: never;
+        /**
+         * Create Garden
+         * @description Every additional garden starts inactive (is_active=False) - switching
+         *     to it is a separate, explicit step (POST /api/gardens/{id}/activate),
+         *     never implicit on creation.
+         */
+        post: operations["create_garden_api_gardens_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/gardens/{garden_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Garden By Id */
+        get: operations["get_garden_by_id_api_gardens__garden_id__get"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Garden
+         * @description #238: garden deletion has no cascade path yet (deliberately, matching
+         *     this app's existing pattern of only building cascade-delete where a
+         *     real, immediate need exists) - refused outright (409) if it's the
+         *     active garden or the only garden, rather than left to whatever a raw FK
+         *     violation on its dependent Beds/GardenPlans would otherwise produce.
+         */
+        delete: operations["delete_garden_api_gardens__garden_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Garden */
+        patch: operations["update_garden_api_gardens__garden_id__patch"];
+        trace?: never;
+    };
+    "/api/gardens/{garden_id}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Activate Garden
+         * @description Sets this garden is_active=True and every other garden is_active=False,
+         *     in one transaction - never both/neither.
+         */
+        post: operations["activate_garden_api_gardens__garden_id__activate_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1217,6 +1287,8 @@ export interface components {
             id?: number | null;
             /** Name */
             name: string;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Category */
             category?: string | null;
             /**
@@ -1244,6 +1316,8 @@ export interface components {
         BedCreate: {
             /** Name */
             name: string;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Category */
             category?: string | null;
             /**
@@ -1324,6 +1398,8 @@ export interface components {
         BedUpdate: {
             /** Name */
             name?: string | null;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Category */
             category?: string | null;
             /** Height Cm */
@@ -1681,6 +1757,11 @@ export interface components {
              * @default My Garden
              */
             name: string;
+            /**
+             * Is Active
+             * @default false
+             */
+            is_active: boolean;
             /** Climate Zone */
             climate_zone?: string | null;
             /** Location */
@@ -1708,6 +1789,8 @@ export interface components {
         GardenPlan: {
             /** Id */
             id?: number | null;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Season Name */
             season_name: string;
             /** Year */
@@ -1720,6 +1803,8 @@ export interface components {
         };
         /** GardenPlanCreate */
         GardenPlanCreate: {
+            /** Garden Id */
+            garden_id?: number | null;
             /** Season Name */
             season_name: string;
             /** Year */
@@ -1739,6 +1824,8 @@ export interface components {
         GardenPlanDetail: {
             /** Id */
             id: number;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Season Name */
             season_name: string;
             /** Year */
@@ -1809,6 +1896,8 @@ export interface components {
         };
         /** GardenPlanUpdate */
         GardenPlanUpdate: {
+            /** Garden Id */
+            garden_id?: number | null;
             /** Season Name */
             season_name?: string | null;
             /** Year */
@@ -1816,8 +1905,23 @@ export interface components {
             /** Notes */
             notes?: string | null;
         };
-        /** GardenPut */
-        GardenPut: {
+        /** GardenUpdate */
+        GardenUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Climate Zone */
+            climate_zone?: string | null;
+            /** Location */
+            location?: string | null;
+            /** Orientation Deg */
+            orientation_deg?: number | null;
+            /** Notes */
+            notes?: string | null;
+            /** Border Geometry */
+            border_geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
+        };
+        /** GardenWrite */
+        GardenWrite: {
             /**
              * Name
              * @default My Garden
@@ -4197,9 +4301,188 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GardenPut"];
+                "application/json": components["schemas"]["GardenWrite"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Garden"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_gardens_api_gardens_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Garden"][];
+                };
+            };
+        };
+    };
+    create_garden_api_gardens_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenWrite"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Garden"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_garden_by_id_api_gardens__garden_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                garden_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Garden"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_garden_api_gardens__garden_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                garden_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_garden_api_gardens__garden_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                garden_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GardenUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Garden"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    activate_garden_api_gardens__garden_id__activate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                garden_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {

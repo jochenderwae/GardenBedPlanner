@@ -2,7 +2,7 @@ from pydantic import BaseModel, create_model
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import commit_or_409, get_active_garden
 from app.core.db import get_session
 from app.models.garden_plan import GardenPlan as GardenPlanTable
 from app.models.garden_plan import GardenPlanEntry as GardenPlanEntryTable
@@ -65,6 +65,7 @@ class GardenPlanDetail(BaseModel):
     detail response that assembles satellite rows."""
 
     id: int
+    garden_id: int | None = None
     season_name: str
     year: int
     notes: str = ""
@@ -107,7 +108,15 @@ def get_garden_plan(plan_id: int, session: Session = Depends(get_session)) -> Ga
 def create_garden_plan(
     plan: _GardenPlanCreate, session: Session = Depends(get_session)  # type: ignore[valid-type]
 ) -> GardenPlanTable:
-    row = GardenPlanTable(**plan.model_dump())
+    data = plan.model_dump()
+    # #238: same server-side active-garden resolution as beds.py's
+    # create_bed - only when the client didn't supply garden_id explicitly,
+    # and only when a garden actually exists yet.
+    if "garden_id" not in plan.model_fields_set:
+        active_garden = get_active_garden(session)
+        if active_garden is not None:
+            data["garden_id"] = active_garden.id
+    row = GardenPlanTable(**data)
     session.add(row)
     commit_or_409(session)
     session.refresh(row)

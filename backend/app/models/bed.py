@@ -8,6 +8,14 @@ from app.models.plant import SunLevel
 class Bed(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str
+    # Multi-garden support (#238) - nullable so existing rows created before
+    # a garden concept existed at all (or created outside the normal API,
+    # e.g. app/scripts/import_example_garden.py) stay valid without a
+    # backfill. POST /api/beds resolves this server-side to whichever
+    # Garden is currently active when the client doesn't supply it
+    # explicitly (app/api/deps.py's get_active_garden) rather than trusting
+    # a client-supplied garden_id per call site.
+    garden_id: int | None = Field(default=None, foreign_key="garden.id")
     # Free-text, not a closed enum - was bed_type (large_planter|small_planter|
     # berry_row|compost_bin|fruit_tree) until real usage showed those were
     # only ever meant as examples of what a planter could be, not an
