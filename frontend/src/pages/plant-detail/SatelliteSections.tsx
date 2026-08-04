@@ -36,7 +36,14 @@ import {
   type SeedInfo,
 } from "@/api/client";
 
-const sectionClass = "flex flex-col gap-2 border-t pt-4";
+// Was "flex flex-col gap-2 border-t pt-4" - the border-t/pt-4 separator was
+// how these 7 sections visually distinguished themselves from each other
+// and from the scalar-fields grid above, back when they all rendered in one
+// flat flex-col. #237's Option A layout wraps each section in its own
+// bordered Card instead (see PlantDetail.tsx) - that Card already supplies
+// the visual separation, so an inner border-t/pt-4 here would just double
+// it up.
+const sectionClass = "flex flex-col gap-2";
 const rowClass = "flex flex-wrap items-center gap-2 text-sm";
 
 /** Shared plumbing for the five satellite tables shaped like (int id PK,

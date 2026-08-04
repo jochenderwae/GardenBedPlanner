@@ -1,10 +1,14 @@
+import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { useSnackbar } from "@/components/Snackbar";
 import { getPlant, listPlants, updatePlant, type PlantDetail as PlantDetailData, type PlantUpdate } from "@/api/client";
 import { SCALAR_FIELDS, fieldValue, type FieldValue } from "@/pages/plant-detail/fields";
 import { FieldInput } from "@/pages/plant-detail/FieldInput";
+import { InlineEditableField } from "@/pages/plant-detail/InlineEditableField";
 import { LifeCycleFields } from "@/pages/plant-detail/LifeCycleFields";
 import { LineageSection } from "@/pages/plant-detail/LineageSection";
 import {
@@ -16,6 +20,11 @@ import {
   PestInteractionsSection,
   SeedInfoSection,
 } from "@/pages/plant-detail/SatelliteSections";
+
+// The identity line (name/family/genus/parent) renders these three via
+// InlineEditableField directly, not through the generic tiered loop below -
+// see fields.ts's own FieldConfig.tier doc.
+const IDENTITY_KEYS = new Set<string>(["common_name", "family", "genus"]);
 
 function usePlantAutosave(slug: string) {
   const queryClient = useQueryClient();
@@ -71,20 +80,61 @@ export function PlantDetail() {
     queryFn: () => getPlant(slug),
     enabled: Boolean(slug),
   });
-  // Candidate list for the Companions section's plant pickers - same
-  // pattern (and same limit) as the layout editor's own plant query.
+  // Candidate list for the Companions section's plant pickers, and for
+  // LineageSection's cultivar lookup / this page's own parent-plant lookup
+  // below - same pattern (and same limit) as the layout editor's own plant
+  // query.
   const plantsQuery = useQuery({ queryKey: ["plants"], queryFn: () => listPlants(500) });
   const { saveField, savePatch } = usePlantAutosave(slug);
+  const [showMore, setShowMore] = useState(false);
+
+  const primaryFields = useMemo(() => SCALAR_FIELDS.filter((f) => f.tier === "primary" && !IDENTITY_KEYS.has(f.key)), []);
+  const secondaryFields = useMemo(() => SCALAR_FIELDS.filter((f) => f.tier === "secondary"), []);
+
+  const parent = data?.parent_plant_slug
+    ? (plantsQuery.data ?? []).find((p) => p.slug === data.parent_plant_slug)
+    : null;
 
   return (
     <div className="mx-auto max-w-3xl p-6">
-      <div className="mb-4 flex items-center gap-3">
+      <div className="mb-4 flex items-start gap-3">
         <Link to="/plants" className={buttonVariants({ variant: "outline", size: "sm" })}>
           Back
         </Link>
         {data && (
           <div>
-            <h1 className="text-xl font-medium">{data.common_name}</h1>
+            {/* Identity line (#237's Option A layout): name/family/genus as
+                click-to-edit inline fields, plain text until clicked -
+                not the always-visible <h1>/FieldInput rows this used to
+                be. parent_plant_slug (#236) joins it as a plain link
+                (there's no editable "reassign parent" field to make this
+                inline-editable too, see LineageSection's own doc). */}
+            <InlineEditableField
+              value={data.common_name}
+              ariaLabel="Common name"
+              placeholder="Add name…"
+              onCommit={(v, p) => saveField("common_name", "common name", v, p)}
+              className="text-xl font-medium"
+            />
+            <div className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
+              <InlineEditableField
+                value={fieldValue(data, "family") as string | null}
+                ariaLabel="Family"
+                placeholder="Add family…"
+                onCommit={(v, p) => saveField("family", "family", v, p)}
+              />
+              <InlineEditableField
+                value={fieldValue(data, "genus") as string | null}
+                ariaLabel="Genus"
+                placeholder="Add genus…"
+                onCommit={(v, p) => saveField("genus", "genus", v, p)}
+              />
+              {parent && (
+                <Link to={`/plants/${parent.slug}`} className="underline-offset-2 hover:underline">
+                  Parent: {parent.common_name}
+                </Link>
+              )}
+            </div>
             <p className="text-xs text-muted-foreground">{data.slug}</p>
           </div>
         )}
@@ -94,9 +144,9 @@ export function PlantDetail() {
       {isError && <p className="text-sm text-destructive">Failed to load plant.</p>}
 
       {data && (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-4">
           <section className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {SCALAR_FIELDS.map((field) => (
+            {primaryFields.map((field) => (
               <FieldInput
                 key={field.key}
                 field={field}
@@ -107,14 +157,58 @@ export function PlantDetail() {
             <LifeCycleFields lifeCycle={data.life_cycle} lifeCycleYears={data.life_cycle_years} onSave={savePatch} />
           </section>
 
+          <div>
+            <button
+              type="button"
+              aria-expanded={showMore}
+              aria-controls="plant-detail-secondary-fields"
+              onClick={() => setShowMore((v) => !v)}
+              className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground hover:text-foreground"
+            >
+              {showMore ? "Hide details" : "Show more details"}
+              {showMore ? <ChevronUp className="size-3.5" /> : <ChevronDown className="size-3.5" />}
+            </button>
+            {showMore && (
+              <section id="plant-detail-secondary-fields" className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {secondaryFields.map((field) => (
+                  <FieldInput
+                    key={field.key}
+                    field={field}
+                    value={fieldValue(data, field.key)}
+                    onCommit={(newValue, previousValue) => saveField(field.key, field.label, newValue, previousValue)}
+                  />
+                ))}
+              </section>
+            )}
+          </div>
+
           <LineageSection plant={data} allPlants={plantsQuery.data ?? []} />
-          <DataSourcesSection slug={slug} items={data.data_sources} />
-          <SeedInfoSection slug={slug} seedInfo={data.seed_info} />
-          <PeriodsSection slug={slug} items={data.periods} />
-          <CompanionsSection slug={slug} items={data.companions} allPlants={plantsQuery.data ?? []} />
-          <BeddingNeedsSection slug={slug} items={data.bedding_needs} />
-          <PestInteractionsSection slug={slug} items={data.pest_interactions} />
-          <GrowingInfoSection slug={slug} items={data.growing_information} />
+
+          {/* Satellite sections, each its own bordered Card (#237's Option A
+              layout), reordered by everyday-use frequency - Companions
+              (planning-relevant) and Periods (agenda-relevant timing) first,
+              Data sources (provenance metadata) last. */}
+          <Card className="p-4">
+            <CompanionsSection slug={slug} items={data.companions} allPlants={plantsQuery.data ?? []} />
+          </Card>
+          <Card className="p-4">
+            <PeriodsSection slug={slug} items={data.periods} />
+          </Card>
+          <Card className="p-4">
+            <BeddingNeedsSection slug={slug} items={data.bedding_needs} />
+          </Card>
+          <Card className="p-4">
+            <SeedInfoSection slug={slug} seedInfo={data.seed_info} />
+          </Card>
+          <Card className="p-4">
+            <PestInteractionsSection slug={slug} items={data.pest_interactions} />
+          </Card>
+          <Card className="p-4">
+            <GrowingInfoSection slug={slug} items={data.growing_information} />
+          </Card>
+          <Card className="p-4">
+            <DataSourcesSection slug={slug} items={data.data_sources} />
+          </Card>
         </div>
       )}
     </div>

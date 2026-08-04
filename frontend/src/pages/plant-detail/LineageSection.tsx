@@ -1,53 +1,46 @@
 import { Link } from "react-router-dom";
-import { buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import type { Plant, PlantDetail as PlantDetailData } from "@/api/client";
 
-/** Cross-links a cultivar to its parent species and/or a parent species to
- * its own cultivars (#236) - `parent_plant_slug` already existed as data
+/** Every other plant whose own `parent_plant_slug` points back at this one
+ * (#236) - `parent_plant_slug` already existed as data
  * (`backend/app/models/plant.py`, self-referencing FK, #110/#64) but wasn't
- * surfaced anywhere in the frontend before this ticket, only consumed by
- * the generated `schema.d.ts`. Mirrors `PlantsDatabase.tsx`'s own new
- * third-tier grouping of the same relationship. `allPlants` is the
- * already-loaded full plant list `PlantDetail.tsx` fetches for
- * `CompanionsSection`'s own cross-plant lookups - no dedicated "list
- * children of this plant" API route exists, and doesn't need to for a
- * client-side filter over data already in memory. Read-only: no editable
- * field for changing which species a plant belongs to exists in
- * `FieldInput`'s `SCALAR_FIELDS` today, and this ticket doesn't ask for
- * one. Renders nothing at all - not an empty placeholder - for a plant with
- * neither a parent nor any cultivars. */
+ * surfaced anywhere in the frontend before #236, only consumed by the
+ * generated `schema.d.ts`. The *forward* direction (a cultivar's own link
+ * back to its parent) moved onto `PlantDetail.tsx`'s identity line as part
+ * of #237's layout pass - alongside name/family/genus, not its own separate
+ * section, since it's a single identifying fact about the plant rather than
+ * a list. This component now only ever renders the reverse direction (a
+ * parent species's list of cultivars), which stays list-shaped and so
+ * doesn't fit the identity line the same way.
+ *
+ * `allPlants` is the already-loaded full plant list `PlantDetail.tsx`
+ * fetches for `CompanionsSection`'s own cross-plant lookups - no dedicated
+ * "list children of this plant" API route exists, and doesn't need to for a
+ * client-side filter over data already in memory. Read-only. Wrapped in a
+ * `Card`, matching #237's "every satellite section gets a bordered panel"
+ * convention even though it isn't one of the ticket's own named 7 - it's
+ * the same kind of grouped, optional content. Renders nothing at all - not
+ * an empty placeholder/empty Card - for a plant with no cultivars. */
 export function LineageSection({ plant, allPlants }: { plant: PlantDetailData; allPlants: Plant[] }) {
-  const parent = plant.parent_plant_slug ? allPlants.find((p) => p.slug === plant.parent_plant_slug) : null;
   const cultivars = allPlants
     .filter((p) => p.parent_plant_slug === plant.slug)
     .sort((a, b) => a.common_name.localeCompare(b.common_name));
 
-  if (!parent && cultivars.length === 0) return null;
+  if (cultivars.length === 0) return null;
 
   return (
-    <section className="flex flex-col gap-3 border-t pt-4">
-      {parent && (
-        <div className="flex items-center gap-2 text-sm">
-          <span className="text-xs font-medium text-muted-foreground">Parent plant</span>
-          <Link to={`/plants/${parent.slug}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
-            {parent.common_name}
-          </Link>
-        </div>
-      )}
-      {cultivars.length > 0 && (
-        <div className="flex flex-col gap-1.5">
-          <h2 className="text-sm font-semibold">Cultivars ({cultivars.length})</h2>
-          <ul className="flex flex-col gap-1">
-            {cultivars.map((cultivar) => (
-              <li key={cultivar.slug}>
-                <Link to={`/plants/${cultivar.slug}`} className="text-sm underline-offset-2 hover:underline">
-                  {cultivar.common_name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </section>
+    <Card className="flex flex-col gap-1.5 p-4">
+      <h2 className="text-sm font-semibold">Cultivars ({cultivars.length})</h2>
+      <ul className="flex flex-col gap-1">
+        {cultivars.map((cultivar) => (
+          <li key={cultivar.slug}>
+            <Link to={`/plants/${cultivar.slug}`} className="text-sm underline-offset-2 hover:underline">
+              {cultivar.common_name}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </Card>
   );
 }
