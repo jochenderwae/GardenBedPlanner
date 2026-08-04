@@ -62,6 +62,25 @@ export function sortedDueDates(byDate: Map<string, Action[]>): string[] {
   return [...byDate.keys()].sort();
 }
 
+/** Closest-deadline-first ordering for a flat (ungrouped) list of actions -
+ * the same "urgency" convention the backend's own `actionable_now` filter
+ * (#192) sorts by server-side and `groupActionsByDueDate` applies per day,
+ * just not scoped to a single day. First consumed by #224's mobile Home
+ * tab, which needs one ranked list across every actionable task rather than
+ * a day-by-day breakdown. An action with no `due_date_end` at all (a
+ * manually-created task with no computed window) sorts last, not first -
+ * "no deadline" reads as less urgent than any actual deadline, not more.
+ * Ties (including the "no due_date_end" bucket) break by `action_type`
+ * alphabetically, mirroring `groupActionsByDueDate`'s own tiebreak. */
+export function sortByUrgency(actions: Action[]): Action[] {
+  return [...actions].sort((a, b) => {
+    const aEnd = a.due_date_end ?? "9999-12-31";
+    const bEnd = b.due_date_end ?? "9999-12-31";
+    if (aEnd !== bEnd) return aEnd.localeCompare(bEnd);
+    return a.action_type.localeCompare(b.action_type);
+  });
+}
+
 /** "Tuesday, July 28, 2026" - day-level, so a locale-aware `Date` format
  * reads better than hand-rolling one the way `agendaMonths.ts`'s
  * month-only `MONTH_NAMES` does (a plain month name has no such

@@ -454,18 +454,23 @@ export function deleteIrrigationConnection(id: number): Promise<void> {
  * *window* (`due_date_start >= dueFrom`, `due_date_end <= dueTo`), matching
  * the backend's own `due_from`/`due_to` query params (see
  * `backend/app/api/routes/actions.py`), not a single `due_date` the way an
- * earlier pre-#192 version of this model had. */
+ * earlier pre-#192 version of this model had. `actionableNow` (#192, first
+ * consumed by #224's mobile Home tab) maps to the backend's own
+ * `actionable_now` flag - pending actions whose window has already opened,
+ * pre-sorted by `due_date_end` ascending server-side. */
 export function listActions(filter?: {
   dueFrom?: string;
   dueTo?: string;
   status?: ActionStatus;
   actionType?: ActionType;
+  actionableNow?: boolean;
 }): Promise<Action[]> {
   const params = new URLSearchParams();
   if (filter?.dueFrom) params.set("due_from", filter.dueFrom);
   if (filter?.dueTo) params.set("due_to", filter.dueTo);
   if (filter?.status) params.set("status", filter.status);
   if (filter?.actionType) params.set("action_type", filter.actionType);
+  if (filter?.actionableNow) params.set("actionable_now", "true");
   const query = params.toString();
   return apiFetch(`/api/actions${query ? `?${query}` : ""}`);
 }
