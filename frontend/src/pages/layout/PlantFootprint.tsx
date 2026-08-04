@@ -1,5 +1,5 @@
 import type Konva from "konva";
-import { Circle, Group, Rect, RegularPolygon, Ring, Star } from "react-konva";
+import { Circle, Group, Rect, RegularPolygon, Ring } from "react-konva";
 import type { Geometry, PlacementType, Plant } from "@/api/client";
 import { colorForSlug, plantingMarkerPositions } from "./geometry";
 
@@ -76,17 +76,24 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
   const habit = normalizeHabit(growthHabit);
 
   switch (habit) {
-    case "upright":
-      // A narrow, upward-pointed diamond - grows in a tight column rather
-      // than spreading out to fill its footprint (e.g. staked tomatoes, corn).
+    case "upright": {
+      // A narrow, rounded-end vertical capsule - grows in a tight column
+      // rather than spreading out to fill its footprint (e.g. staked
+      // tomatoes, corn). Replaced the diamond this used to be (#259) - a
+      // 4-sided polygon sitting next to the other angular shapes read as one
+      // more spike in the vocabulary; a capsule has zero sharp corners.
+      const width = radius * 0.8;
+      const height = radius * 2;
       return (
-        <RegularPolygon
+        <Rect
           ref={nodeRef}
           x={x}
           y={y}
-          sides={4}
-          radius={radius}
-          rotation={45}
+          offsetX={width / 2}
+          offsetY={height / 2}
+          width={width}
+          height={height}
+          cornerRadius={width / 2}
           fill={fill}
           opacity={opacity}
           stroke={stroke}
@@ -95,6 +102,7 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
           {...events}
         />
       );
+    }
     case "climbing":
       // An upward-pointing triangle - reaches up a support (trellis, pole)
       // instead of occupying its footprint evenly (e.g. peas, pole beans).
@@ -113,25 +121,39 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
           {...events}
         />
       );
-    case "spreading":
-      // An 8-point star - spreads outward in multiple directions (runners,
-      // sprawling stems) rather than staying compact (e.g. squash, strawberries).
+    case "spreading": {
+      // A trefoil - three equal circles arranged 120° apart around the
+      // center, spreading outward in multiple directions (runners, sprawling
+      // stems) rather than staying compact (e.g. squash, strawberries).
+      // Replaced the 8-point star this used to be (#259) - 16 spiky line
+      // segments turned into a scribble once several mature-size outlines
+      // overlapped; all-curves-no-straight-edges reads as soft overlapping
+      // circles instead. Same Group-of-primitives pattern the `tree` case
+      // below already establishes.
+      const petalRadius = radius * 0.6;
+      const petalOffset = radius * 0.4;
+      const petalAngles = [-90, 30, 150]; // degrees, 120° apart, one pointed up
       return (
-        <Star
-          ref={nodeRef}
-          x={x}
-          y={y}
-          numPoints={8}
-          innerRadius={radius * 0.55}
-          outerRadius={radius}
-          fill={fill}
-          opacity={opacity}
-          stroke={stroke}
-          strokeWidth={strokeWidth}
-          dash={dash}
-          {...events}
-        />
+        <Group ref={nodeRef} x={x} y={y} {...events}>
+          {petalAngles.map((deg) => {
+            const rad = (deg * Math.PI) / 180;
+            return (
+              <Circle
+                key={deg}
+                x={Math.cos(rad) * petalOffset}
+                y={Math.sin(rad) * petalOffset}
+                radius={petalRadius}
+                fill={fill}
+                opacity={opacity}
+                stroke={stroke}
+                strokeWidth={strokeWidth}
+                dash={dash}
+              />
+            );
+          })}
+        </Group>
       );
+    }
     case "rosette":
       // A ring - a low cluster of leaves radiating from a center point
       // (e.g. lettuce, cabbage before it heads up).
@@ -159,7 +181,11 @@ export function PlantFootprint({ growthHabit, x, y, radius, fill, opacity, strok
       // base position.
       return (
         <Group ref={nodeRef} x={x} y={y} {...events}>
-          <Rect x={-radius * 0.12} y={0} width={radius * 0.24} height={radius} fill={stroke} listening={false} />
+          {/* #259: was missing opacity, so the trunk stayed fully opaque even
+              in SpreadOutline's translucent-outline mode, unlike the canopy
+              right below it (and every other habit) which already fades
+              correctly. */}
+          <Rect x={-radius * 0.12} y={0} width={radius * 0.24} height={radius} fill={stroke} opacity={opacity} listening={false} />
           <Circle y={-radius * 0.15} radius={radius * 0.75} fill={fill} opacity={opacity} stroke={stroke} strokeWidth={strokeWidth} dash={dash} />
         </Group>
       );
