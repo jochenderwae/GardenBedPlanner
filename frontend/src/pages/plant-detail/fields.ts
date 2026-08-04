@@ -1,4 +1,5 @@
 import type { PlantDetail, PlantUpdate } from "@/api/client";
+import { KNOWN_HABITS } from "@/pages/layout/PlantFootprint";
 
 export type FieldType = "text" | "textarea" | "number" | "select" | "tristate" | "multiselect";
 
@@ -34,6 +35,25 @@ const SUN_LEVEL_OPTIONS: SelectOption[] = [
   { value: "half_sun", label: "Half sun" },
   { value: "shadow", label: "Shadow" },
 ];
+
+/** #260: `growth_habit` used to be free text, but it only ever means
+ * something to the layout editor when it's one of `PlantFootprint.tsx`'s
+ * `KNOWN_HABITS` (that's the exact set it normalizes/matches against to
+ * pick a footprint shape, falling back to a generic circle otherwise) - so
+ * constrain the editor to that same fixed set rather than free text,
+ * imported from there rather than re-declared so the two can't drift apart.
+ * Confirmed via a real-database check (`SELECT growth_habit, count(*) FROM
+ * plant GROUP BY growth_habit`) that every non-null value already on file is
+ * one of these five - a plain closed select is safe, no off-list values to
+ * preserve. */
+const GROWTH_HABIT_LABELS: Record<(typeof KNOWN_HABITS)[number], string> = {
+  upright: "Upright",
+  spreading: "Spreading",
+  climbing: "Climbing",
+  rosette: "Rosette",
+  tree: "Tree",
+};
+const GROWTH_HABIT_OPTIONS: SelectOption[] = KNOWN_HABITS.map((habit) => ({ value: habit, label: GROWTH_HABIT_LABELS[habit] }));
 
 /** Exported for `LifeCycleFields`, which renders `life_cycle` alongside
  * `life_cycle_years` (see that component's own doc for why those two don't
@@ -130,9 +150,9 @@ export const SCALAR_FIELDS: FieldConfig[] = [
   {
     key: "growth_habit",
     label: "Growth habit",
-    type: "text",
-    description:
-      "How this plant grows, e.g. upright, spreading, climbing, rosette, tree - free text, but upright/spreading/climbing/rosette/tree are the values the layout editor recognizes to pick a distinct footprint shape.",
+    type: "select",
+    options: GROWTH_HABIT_OPTIONS,
+    description: "How this plant grows - determines the distinct footprint shape the layout editor renders for it.",
     tier: "primary",
   },
   {
