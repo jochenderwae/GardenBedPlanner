@@ -1114,6 +1114,88 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/irrigation-part-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Irrigation Part Types
+         * @description Defaults to only part types belonging to an active resource pack -
+         *     #251's own test criterion 3: this is the list the "add a new part"
+         *     suggestion UI consumes, and an inactive pack's parts shouldn't show up
+         *     there. Pass include_inactive=true for a management view that needs to
+         *     see/edit every part type regardless of its pack's toggle state (e.g.
+         *     when reactivating a pack).
+         */
+        get: operations["list_irrigation_part_types_api_irrigation_part_types_get"];
+        put?: never;
+        /** Create Irrigation Part Type */
+        post: operations["create_irrigation_part_type_api_irrigation_part_types_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/irrigation-part-types/{part_type_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Irrigation Part Type */
+        get: operations["get_irrigation_part_type_api_irrigation_part_types__part_type_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Irrigation Part Type */
+        delete: operations["delete_irrigation_part_type_api_irrigation_part_types__part_type_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Irrigation Part Type */
+        patch: operations["update_irrigation_part_type_api_irrigation_part_types__part_type_id__patch"];
+        trace?: never;
+    };
+    "/api/resource-packs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Resource Packs */
+        get: operations["list_resource_packs_api_resource_packs_get"];
+        put?: never;
+        /** Create Resource Pack */
+        post: operations["create_resource_pack_api_resource_packs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/resource-packs/{pack_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Resource Pack */
+        get: operations["get_resource_pack_api_resource_packs__pack_id__get"];
+        put?: never;
+        post?: never;
+        /** Delete Resource Pack */
+        delete: operations["delete_resource_pack_api_resource_packs__pack_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Resource Pack */
+        patch: operations["update_resource_pack_api_resource_packs__pack_id__patch"];
+        trace?: never;
+    };
     "/api/compost-fertilization-logs": {
         parameters: {
             query?: never;
@@ -2424,6 +2506,76 @@ export interface components {
             /** Diagram Y */
             diagram_y?: number | null;
         };
+        /**
+         * IrrigationPartType
+         * @description Reference lookup for IrrigationPart.part_type's real-world shape
+         *     (#251) - the drip-irrigation equivalent of EquipmentType
+         *     (app/models/equipment_type.py) for BedEquipment.equipment_type, same
+         *     "seeded catalog, matched by normalized string, not a hard FK" pattern.
+         *
+         *     connection_count is how many physical ports the part has (a
+         *     T-junction has 3, a straight connector 2, an end cap 1, ...) - needed
+         *     to eventually validate/render the pipe network diagram (#245-C/#245-F
+         *     referenced by this ticket). part_number is the vendor's own SKU/name,
+         *     for shopping-list generation (#245-F). icon_key is an opaque string a
+         *     future frontend icon set keys off of (#245-C) - not an enum here since
+         *     the actual icon set doesn't exist yet and this table shouldn't need a
+         *     migration every time one is added.
+         *
+         *     Unlike EquipmentType, this table's slug IS matched against
+         *     IrrigationPart.part_type the same non-FK way (a part_type string with
+         *     no matching row here still works, just without a rendered
+         *     default/connection count - see that model's own docstring), but each
+         *     row here DOES carry a hard FK to the ResourcePack it belongs to
+         *     (resource_pack_id) - a part type is only ever offered as a suggestion
+         *     while its pack is active (see app/api/routes/irrigation_part_types.py).
+         */
+        IrrigationPartType: {
+            /** Id */
+            id?: number | null;
+            /** Resource Pack Id */
+            resource_pack_id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /** Connection Count */
+            connection_count: number;
+            /** Part Number */
+            part_number?: string | null;
+            /** Icon Key */
+            icon_key?: string | null;
+        };
+        /** IrrigationPartTypeCreate */
+        IrrigationPartTypeCreate: {
+            /** Resource Pack Id */
+            resource_pack_id: number;
+            /** Slug */
+            slug: string;
+            /** Name */
+            name: string;
+            /** Connection Count */
+            connection_count: number;
+            /** Part Number */
+            part_number?: string | null;
+            /** Icon Key */
+            icon_key?: string | null;
+        };
+        /** IrrigationPartTypeUpdate */
+        IrrigationPartTypeUpdate: {
+            /** Resource Pack Id */
+            resource_pack_id?: number | null;
+            /** Slug */
+            slug?: string | null;
+            /** Name */
+            name?: string | null;
+            /** Connection Count */
+            connection_count?: number | null;
+            /** Part Number */
+            part_number?: string | null;
+            /** Icon Key */
+            icon_key?: string | null;
+        };
         /** IrrigationPartUpdate */
         IrrigationPartUpdate: {
             /** Name */
@@ -3163,6 +3315,55 @@ export interface components {
          * @enum {string}
          */
         RecurrenceUnit: "daily" | "weekly" | "monthly" | "yearly";
+        /**
+         * ResourcePack
+         * @description A named grouping of IrrigationPartType rows - e.g. "Gardena" - the
+         *     user can toggle active/inactive as a whole (#251). Modeling a real
+         *     IrrigationPartType catalog as a single flat table would force every
+         *     vendor's parts into one undifferentiated list with no way to say "I
+         *     don't own any Gardena gear, hide those suggestions"; a pack is the
+         *     minimal grouping that lets several vendors' parts coexist without one
+         *     hardcoded vendor baked into the schema.
+         *
+         *     is_active is a plain toggle (no DB constraint requiring at least one
+         *     active pack) - same "soft invariant enforced at the API layer, not the
+         *     DB" spirit as Garden.is_active, except here having zero (or several)
+         *     active packs at once is a perfectly legitimate state, not something
+         *     that needs enforcing at all. IrrigationPartType.resource_pack_id is a
+         *     real FK (unlike EquipmentType/IrrigationPart's slug-matched,
+         *     non-FK precedent) since a part type only exists in the context of
+         *     belonging to exactly one pack - there's no free-text part-type-without-
+         *     a-pack case to preserve here the way there is for BedEquipment/
+         *     IrrigationPart matching against their respective catalogs by string.
+         */
+        ResourcePack: {
+            /** Id */
+            id?: number | null;
+            /** Name */
+            name: string;
+            /**
+             * Is Active
+             * @default true
+             */
+            is_active: boolean;
+        };
+        /** ResourcePackCreate */
+        ResourcePackCreate: {
+            /** Name */
+            name: string;
+            /**
+             * Is Active
+             * @default true
+             */
+            is_active: boolean;
+        };
+        /** ResourcePackUpdate */
+        ResourcePackUpdate: {
+            /** Name */
+            name?: string | null;
+            /** Is Active */
+            is_active?: boolean | null;
+        };
         /** RotationWarning */
         RotationWarning: {
             /** Has Warning */
@@ -6796,6 +6997,313 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["IrrigationSizing"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_irrigation_part_types_api_irrigation_part_types_get: {
+        parameters: {
+            query?: {
+                include_inactive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartType"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_irrigation_part_type_api_irrigation_part_types_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationPartTypeCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartType"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_irrigation_part_type_api_irrigation_part_types__part_type_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part_type_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartType"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_irrigation_part_type_api_irrigation_part_types__part_type_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part_type_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_irrigation_part_type_api_irrigation_part_types__part_type_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                part_type_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IrrigationPartTypeUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IrrigationPartType"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_resource_packs_api_resource_packs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourcePack"][];
+                };
+            };
+        };
+    };
+    create_resource_pack_api_resource_packs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourcePackCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourcePack"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_resource_pack_api_resource_packs__pack_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourcePack"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_resource_pack_api_resource_packs__pack_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_resource_pack_api_resource_packs__pack_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                pack_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourcePackUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourcePack"];
                 };
             };
             /** @description Validation Error */
