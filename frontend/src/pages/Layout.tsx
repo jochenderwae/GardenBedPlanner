@@ -70,6 +70,7 @@ import { GrowthHabitLegend } from "./layout/GrowthHabitLegend";
 import { OnboardingPrompt } from "./layout/OnboardingPrompt";
 import { PipeNetworkDialog } from "./layout/PipeNetworkDialog";
 import { QuickAddEquipment } from "./layout/QuickAddEquipment";
+import { SoilRotationDialog } from "./layout/SoilRotationDialog";
 import { PlantPlacementLayer, type PlacementMode, type PlantPlacementLayerHandle } from "./layout/PlantPlacementLayer";
 import { PlantPicker } from "./layout/PlantPicker";
 import { PlantingPanel, type PlantingPanelHandle } from "./layout/PlantingPanel";
@@ -198,11 +199,26 @@ function bedCentroidGeometry(bed: Bed, thicknessCm: number): Geometry {
  * Not reused for the arm-time "flag the already-placed conflicting planting
  * itself" case (see `rotationReasonForExisting` below) - self-referencing
  * "same family as itself" would read as nonsense on that marker's own
- * tooltip. */
-function rotationReasonForCandidate(warning: RotationWarning): string | null {
+ * tooltip.
+ *
+ * #229: a conflict can now be *inherited* via a logged soil-rotation
+ * transfer rather than grown directly in this bed - `warning.
+ * conflicting_via_soil_transfer`/`conflicting_source_bed_id` distinguish the
+ * two so the tooltip can name where the risk actually came from ("soil
+ * moved here from {bed}") instead of implying this bed grew the conflicting
+ * crop itself. The " - " separator matches this file's own existing
+ * appended-detail convention (see the antagonist/companion reason strings
+ * below), not a new punctuation pattern. Only the arm-time-anchored-to-an-
+ * existing-planting case (`rotationReasonForExisting`) has no inherited-only
+ * equivalent yet - see #232. */
+function rotationReasonForCandidate(warning: RotationWarning, bedsById: Map<number, Bed>): string | null {
   if (!warning.has_warning) return null;
   const name = warning.conflicting_plant_common_name ?? warning.conflicting_plant_slug ?? "a recent planting";
   const datePart = warning.conflicting_planted_date ? ` (planted ${warning.conflicting_planted_date})` : "";
+  if (warning.conflicting_via_soil_transfer && warning.conflicting_source_bed_id != null) {
+    const sourceBedName = bedsById.get(warning.conflicting_source_bed_id)?.name ?? "another bed";
+    return `Rotation: same family as ${name}${datePart} - soil moved here from ${sourceBedName}`;
+  }
   return `Rotation: same family as ${name}${datePart}`;
 }
 
@@ -533,7 +549,7 @@ export function Layout() {
       // worth surfacing as an error for a purely advisory indicator.
       checkRotation(created.bed_id, created.plant_slug)
         .then((warning) => {
-          const reason = rotationReasonForCandidate(warning);
+          const reason = rotationReasonForCandidate(warning, bedsById);
           if (!reason) return;
           setCommittedWarnings((prev) => {
             const next = new Map(prev);
@@ -639,6 +655,11 @@ export function Layout() {
   const bedRectsById = new Map(
     beds.filter((b) => b.id != null).map((b) => [b.id as number, boundingRect(b.border_geometry)]),
   );
+  // #229: resolves a RotationWarning.conflicting_source_bed_id to its own
+  // name for the provenance-aware tooltip clause below - same
+  // list-then-Map-by-id convention every other id-resolution in this app
+  // uses (e.g. TaskAgendaView.tsx's bedsById).
+  const bedsById = new Map(beds.filter((b) => b.id != null).map((b) => [b.id as number, b]));
 
   function switchTab(next: PlacementTab) {
     setTab(next);
@@ -1364,6 +1385,14 @@ export function Layout() {
               }}
               nextPosition={nextObjectPosition(decorations.length)}
             />
+            {/* #229: soil rotation is bed-level bookkeeping, same tab beds
+                themselves are created/managed in - not plant- or
+                equipment-scoped. Predates #242's objectsToolbar
+                composition (this ticket's own design spec still describes
+                the older single addBedForm slot it replaced) - added
+                directly into that same composed fragment rather than
+                reintroducing a parallel single-purpose Toolbar prop. */}
+            <SoilRotationDialog beds={beds} />
           </>
         }
         pipeNetworkTrigger={<PipeNetworkDialog />}

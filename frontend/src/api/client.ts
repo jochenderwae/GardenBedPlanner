@@ -658,6 +658,26 @@ export function deleteSeedInfo(slug: string): Promise<void> {
 
 export type RotationWarning = components["schemas"]["RotationWarning"];
 
+export type SoilRotationEventCreate = components["schemas"]["SoilRotationEventCreate"];
+export type SoilRotationEventDetail = components["schemas"]["SoilRotationEventDetail"];
+export type SoilRotationTransfer = components["schemas"]["SoilRotationTransfer"];
+export type SoilRotationTransferCreate = components["schemas"]["SoilRotationTransferCreate"];
+
+/** Logs one "moving day" (#228/#229) - an N-way soil-transfer cycle between
+ * beds (or from fresh/external soil, `from_bed_id: null`) in one request/one
+ * transaction. No PATCH/DELETE exposed here - a logged rotation event is a
+ * historical fact, not something this app's UI lets users edit after the
+ * fact (see the backend route's own docstring). `list`/`get` exist
+ * server-side too but have no frontend call site yet - a rotation-event
+ * history view is a deliberately deferred follow-up, not this ticket's
+ * scope (see SoilRotationDialog.tsx's own doc). */
+export function createSoilRotationEvent(event: SoilRotationEventCreate): Promise<SoilRotationEventDetail> {
+  return apiFetch(`/api/soil-rotation-events`, {
+    method: "POST",
+    body: JSON.stringify(event),
+  });
+}
+
 /** Same-family crop-rotation check for a candidate plant in a given bed -
  * see backend/app/services/rotation.py's own docstring for the exact
  * semantics (family-based, not exact-species; ignores undated plantings).
