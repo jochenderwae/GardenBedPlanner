@@ -268,6 +268,60 @@ def test_cascade_delete_bed_with_both_compost_log_and_compost_bin_should_succeed
     assert client.get(f"/api/beds/{bed_id}").status_code == 404
 
 
+def test_cascade_delete_bed_with_self_referential_sow_action_should_not_500(client: TestClient, db_session) -> None:
+    """#215: the common case of a bed whose own auto-generated `sow` Action
+    (#192) depends on that same bed's own auto-generated `prepare_bed`
+    Action - both belong to bed_actions in delete_bed's cascade block, so
+    the old "mutate depends_on_action_id then delete the same ORM object in
+    the same flush" approach silently dropped the null-out (SQLAlchemy's
+    unit-of-work never emits a separate UPDATE for an object also pending
+    deletion), producing a raw FK-violation 500 instead of a clean 204."""
+    from app.models.plant import PeriodType, Plant, PlantPeriod
+
+    if db_session.get(PeriodType, "sowing") is None:
+        db_session.add(PeriodType(code="sowing", description="sowing"))
+        db_session.commit()
+
+    # Not is_initial_state - a real prepare_bed Action gets auto-generated
+    # (#192), which is exactly the dependency the self-referential sow
+    # Action below points at.
+    bed_id = client.post(
+        "/api/beds", json={"name": "Bed With Sown Planting", "border_geometry": rectangle()}
+    ).json()["id"]
+
+    db_session.add(Plant(slug="test-sow-cascade", common_name="Test", botanical_name="Testus sowus"))
+    db_session.commit()
+    db_session.add(PlantPeriod(plant_slug="test-sow-cascade", period_type="sowing", start_month=3, end_month=4))
+    db_session.commit()
+
+    planting_response = client.post(
+        "/api/plantings",
+        json={
+            "bed_id": bed_id,
+            "plant_slug": "test-sow-cascade",
+            "placement_type": "individual",
+            "geometry": rectangle(width=20, height=20),
+            "planted_date": "2027-04-01",
+        },
+        # started_from_seed defaults to True - the sow Action this
+        # generates depends_on_action_id's this same bed's prepare_bed
+        # Action, the self-referential shape #215 is about.
+    )
+    assert planting_response.status_code == 201, planting_response.text
+
+    actions = client.get("/api/actions").json()
+    bed_actions = [a for a in actions if a["bed_id"] == bed_id]
+    assert any(a["action_type"] == "prepare_bed" for a in bed_actions)
+    sow_action = next(a for a in bed_actions if a["action_type"] == "sow")
+    prepare_bed_action = next(a for a in bed_actions if a["action_type"] == "prepare_bed")
+    assert sow_action["depends_on_action_id"] == prepare_bed_action["id"]
+
+    cascade_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
+    assert cascade_response.status_code == 204, cascade_response.text
+    assert client.get(f"/api/beds/{bed_id}").status_code == 404
+    assert [a for a in client.get("/api/actions").json() if a["bed_id"] == bed_id] == []
+
+
 def test_delete_bed_with_no_dependents_works_the_same_with_or_without_cascade(client: TestClient) -> None:
     # is_initial_state=true: a plain (non-backfill) create would auto-
     # generate a prepare_bed task against the bed (#192), which is exactly

@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, create_model
-from sqlmodel import Session, select
+from sqlmodel import Session, select, update
 
 from app.api.deps import commit_or_409, get_active_garden
 from app.core.db import get_session
@@ -157,10 +157,25 @@ def delete_bed(
             # bed) pointing at one of the actions about to be deleted,
             # before deleting them - otherwise a still-referencing row
             # would trip the FK constraint on the flush below.
-            for dependent in session.exec(
-                select(Action).where(Action.depends_on_action_id.in_(bed_action_ids))
-            ).all():
-                dependent.depends_on_action_id = None
+            #
+            # #215: a real bulk UPDATE, not "load the dependent Action rows
+            # via the ORM and mutate the attribute" - the common case is a
+            # bed's own `sow` Action depending on that same bed's own
+            # `prepare_bed` Action (both already in bed_actions, about to be
+            # deleted in the loop right below). SQLAlchemy's unit-of-work
+            # never emits a separate UPDATE for an object that's also
+            # pending deletion in the same flush - the DELETE supersedes
+            # it, so the attribute mutation was silently dropped, and
+            # Action.depends_on_action_id has no relationship() (self-FK,
+            # same reasoning as Bed<->Planting/BedEquipment below) telling
+            # the unit-of-work it must order the sow delete before the
+            # prepare_bed delete either. A genuine, separately-flushed
+            # statement sidesteps both problems.
+            session.exec(
+                update(Action)
+                .where(Action.depends_on_action_id.in_(bed_action_ids))
+                .values(depends_on_action_id=None)
+            )
         for action in bed_actions:
             session.delete(action)
         for planting in session.exec(select(Planting).where(Planting.bed_id == bed_id)).all():
