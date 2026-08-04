@@ -121,13 +121,17 @@ export function periodsForPlant(periods: PlantPeriod[], plantSlug: string): Plan
   return periods.filter((p) => p.plant_slug === plantSlug).sort((a, b) => a.period_type.localeCompare(b.period_type));
 }
 
-/** An action counts as "belonging to" a given planting's own Gantt row when
- * it targets the same bed *and* the same plant (`Action` has no direct
+/** An action counts as "belonging to" a given `(bed, plant)` Gantt row when
+ * it targets that same bed *and* plant (`Action` has no direct
  * `planting_id` FK - see `backend/app/models/action.py`'s own doc on why -
  * so this is the best available match, per #182's own technical analysis).
- * A planting missing its own `id`/`bed_id` never matches anything. */
-export function actionsForPlanting(actions: Action[], planting: Planting): Action[] {
-  return actions.filter((a) => a.bed_id === planting.bed_id && a.plant_slug === planting.plant_slug);
+ * Named after the row it feeds (not `actionsForPlanting`, its pre-#233
+ * name) since a row now groups every `Planting` sharing that `(bed_id,
+ * plant_slug)` pair rather than representing exactly one - this always only
+ * read `.bed_id`/`.plant_slug` off its argument anyway, never anything
+ * planting-instance-specific. */
+export function actionsForRow(actions: Action[], bedId: number, plantSlug: string): Action[] {
+  return actions.filter((a) => a.bed_id === bedId && a.plant_slug === plantSlug);
 }
 
 /** Bed-scoped tasks with no specific plant attached (`prepare_bed`,
@@ -155,13 +159,24 @@ export function bedIdsWithBedOnlyActions(actions: Action[]): Set<number> {
   return ids;
 }
 
-/** Every distinct (bed_id, plant_slug) pair with a `Planting` overlapping
- * the selected year - each becomes one Gantt row, sorted by plant common
- * name then bed name for a stable, scannable order. Plantings that don't
- * resolve to a known `Bed`/`Plant` (stale FK, still-loading query) are
+/** Every distinct `(bed_id, plant_slug)` pair with 1+ `Planting`s overlapping
+ * the selected year - each becomes one Gantt row (#233), grouping every
+ * individually-placed planting of the same species in the same bed onto one
+ * row instead of one row per `Planting` (the "6 rows of acorn squash"
+ * clutter this ticket fixes). Per-bed, not garden-wide - the same species in
+ * two different beds still gets two separate rows (settled design decision,
+ * see the ticket body's own "garden-wide grouping was considered and
+ * rejected" note: it would need a bed-count subtitle and per-action bed
+ * attribution just to keep saying which bed a mark belongs to, for no real
+ * benefit at this app's scale). `plantings` is sorted by `planted_date`
+ * ascending (an unset date sorts first, treated as "earliest/unknown"
+ * rather than pushed to the end) so a row's own detail panel always lists
+ * them in a stable, chronological order. Sorted by plant common name then
+ * bed name for the row order itself, unchanged from before. Plantings that
+ * don't resolve to a known `Bed`/`Plant` (stale FK, still-loading query) are
  * skipped rather than rendered with placeholder text. */
 export interface TimelineRow {
-  planting: Planting;
+  plantings: Planting[];
   plant: Plant;
   bed: Bed;
 }
@@ -172,14 +187,23 @@ export function timelineRows(
   plantsBySlug: Map<string, Plant>,
   bedsById: Map<number, Bed>,
 ): TimelineRow[] {
-  const rows: TimelineRow[] = [];
+  const groups = new Map<string, { plant: Plant; bed: Bed; plantings: Planting[] }>();
   for (const planting of plantings) {
     if (!plantingOverlapsYear(planting, year)) continue;
     const plant = plantsBySlug.get(planting.plant_slug);
     const bed = bedsById.get(planting.bed_id);
     if (!plant || !bed) continue;
-    rows.push({ planting, plant, bed });
+    const key = `${planting.bed_id}::${planting.plant_slug}`;
+    const group = groups.get(key);
+    if (group) group.plantings.push(planting);
+    else groups.set(key, { plant, bed, plantings: [planting] });
   }
+
+  const rows: TimelineRow[] = [...groups.values()].map(({ plant, bed, plantings: groupPlantings }) => ({
+    plant,
+    bed,
+    plantings: [...groupPlantings].sort((a, b) => (a.planted_date ?? "").localeCompare(b.planted_date ?? "")),
+  }));
   rows.sort((a, b) => a.plant.common_name.localeCompare(b.plant.common_name) || a.bed.name.localeCompare(b.bed.name));
   return rows;
 }

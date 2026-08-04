@@ -1,13 +1,14 @@
 import { describe, expect, it } from "vitest";
-import type { Action, Planting } from "@/api/client";
+import type { Action, Bed, Plant, Planting } from "@/api/client";
 import {
   actionDueDate,
   actionsForBedOnly,
-  actionsForPlanting,
+  actionsForRow,
   bedIdsWithBedOnlyActions,
   dayFractionInMonth,
   periodBarSegments,
   plantingOverlapsYear,
+  timelineRows,
   timelineYears,
   weekOfYear,
   weekRangeForMonths,
@@ -116,8 +117,7 @@ describe("weekOfYear / weekRangeForMonths", () => {
   });
 });
 
-describe("actionsForPlanting / actionsForBedOnly", () => {
-  const planting = makePlanting({ bed_id: 7, plant_slug: "tomato" });
+describe("actionsForRow / actionsForBedOnly", () => {
   const actions = [
     makeAction({ id: 1, bed_id: 7, plant_slug: "tomato" }),
     makeAction({ id: 2, bed_id: 7, plant_slug: "basil" }),
@@ -126,7 +126,7 @@ describe("actionsForPlanting / actionsForBedOnly", () => {
   ];
 
   it("matches on bed_id AND plant_slug", () => {
-    expect(actionsForPlanting(actions, planting).map((a) => a.id)).toEqual([1]);
+    expect(actionsForRow(actions, 7, "tomato").map((a) => a.id)).toEqual([1]);
   });
 
   it("bed-only actions have a bed_id but no plant_slug", () => {
@@ -145,6 +145,72 @@ describe("actionDueDate", () => {
 
   it("is null with neither date set", () => {
     expect(actionDueDate(makeAction({}))).toBeNull();
+  });
+});
+
+function makePlant(overrides: Partial<Plant>): Plant {
+  return { slug: "tomato", common_name: "Tomato", botanical_name: "Solanum lycopersicum", ...overrides } as Plant;
+}
+
+function makeBed(overrides: Partial<Bed>): Bed {
+  return { id: 1, name: "Bed A", height_cm: 0, has_greenhouse: false, ...overrides } as Bed;
+}
+
+describe("timelineRows", () => {
+  const plantsBySlug = new Map([
+    ["squash", makePlant({ slug: "squash", common_name: "Acorn squash" })],
+    ["tomato", makePlant({ slug: "tomato", common_name: "Tomato" })],
+  ]);
+  const bedsById = new Map([
+    [1, makeBed({ id: 1, name: "Bed A" })],
+    [2, makeBed({ id: 2, name: "Bed B" })],
+  ]);
+
+  it("groups several plantings of the same species in the same bed onto one row (#233)", () => {
+    const plantings = [
+      makePlanting({ id: 1, bed_id: 1, plant_slug: "squash", planted_date: "2026-05-01" }),
+      makePlanting({ id: 2, bed_id: 1, plant_slug: "squash", planted_date: "2026-05-02" }),
+      makePlanting({ id: 3, bed_id: 1, plant_slug: "squash", planted_date: "2026-05-03" }),
+    ];
+    const rows = timelineRows(plantings, 2026, plantsBySlug, bedsById);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].plantings.map((p) => p.id)).toEqual([1, 2, 3]);
+  });
+
+  it("keeps the same species in two different beds as two separate rows (per-bed grouping)", () => {
+    const plantings = [
+      makePlanting({ id: 1, bed_id: 1, plant_slug: "squash" }),
+      makePlanting({ id: 2, bed_id: 2, plant_slug: "squash" }),
+    ];
+    const rows = timelineRows(plantings, 2026, plantsBySlug, bedsById);
+    expect(rows).toHaveLength(2);
+    expect(rows.map((r) => r.bed.name).sort()).toEqual(["Bed A", "Bed B"]);
+  });
+
+  it("sorts a grouped row's own plantings by planted_date ascending", () => {
+    const plantings = [
+      makePlanting({ id: 1, bed_id: 1, plant_slug: "squash", planted_date: "2026-06-01" }),
+      makePlanting({ id: 2, bed_id: 1, plant_slug: "squash", planted_date: "2026-04-01" }),
+      makePlanting({ id: 3, bed_id: 1, plant_slug: "squash", planted_date: "2026-05-01" }),
+    ];
+    const rows = timelineRows(plantings, 2026, plantsBySlug, bedsById);
+    expect(rows[0].plantings.map((p) => p.id)).toEqual([2, 3, 1]);
+  });
+
+  it("a single planting in a bed still produces exactly one row (no regression)", () => {
+    const plantings = [makePlanting({ id: 1, bed_id: 1, plant_slug: "tomato" })];
+    const rows = timelineRows(plantings, 2026, plantsBySlug, bedsById);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].plantings).toHaveLength(1);
+  });
+
+  it("row order is unaffected by grouping - plant common name then bed name", () => {
+    const plantings = [
+      makePlanting({ id: 1, bed_id: 2, plant_slug: "tomato" }),
+      makePlanting({ id: 2, bed_id: 1, plant_slug: "squash" }),
+    ];
+    const rows = timelineRows(plantings, 2026, plantsBySlug, bedsById);
+    expect(rows.map((r) => r.plant.common_name)).toEqual(["Acorn squash", "Tomato"]);
   });
 });
 

@@ -76,12 +76,38 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+/** #233: a row can now represent several individually-placed `Planting`s of
+ * the same species in the same bed - the common single-planting case
+ * renders identically to before (a plain Planted/Removed `Field` pair, no
+ * regression), a grouped row instead lists every planting in the group
+ * (already sorted `planted_date` ascending by `timelineRows`) so nothing
+ * behind the row is hidden just because the Gantt view collapsed them onto
+ * one row. */
 function PlantingSummary({ row }: { row: TimelineRow }) {
+  const [planting, ...rest] = row.plantings;
+  const isGrouped = rest.length > 0;
+
   return (
     <dl className="flex flex-col gap-3">
       <Field label="Bed">{row.bed.name}</Field>
-      {row.planting.planted_date && <Field label="Planted">{row.planting.planted_date}</Field>}
-      {row.planting.removed_date && <Field label="Removed">{row.planting.removed_date}</Field>}
+      {!isGrouped && (
+        <>
+          {planting.planted_date && <Field label="Planted">{planting.planted_date}</Field>}
+          {planting.removed_date && <Field label="Removed">{planting.removed_date}</Field>}
+        </>
+      )}
+      {isGrouped && (
+        <Field label={`Plantings (${row.plantings.length})`}>
+          <ul className="flex flex-col gap-1.5">
+            {row.plantings.map((p) => (
+              <li key={p.id} className="border-l-2 pl-2">
+                {p.planted_date ? `Planted ${p.planted_date}` : "Planted date unknown"}
+                {p.removed_date ? ` · Removed ${p.removed_date}` : ""}
+              </li>
+            ))}
+          </ul>
+        </Field>
+      )}
       <Link to={`/plants/${row.plant.slug}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
         View plant details
       </Link>

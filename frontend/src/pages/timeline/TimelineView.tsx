@@ -20,7 +20,7 @@ import { ACTION_STATUS_DIAMOND_CLASS, periodTypeChartClass } from "./timelineCol
 import {
   actionDueDate,
   actionsForBedOnly,
-  actionsForPlanting,
+  actionsForRow,
   bedIdsWithBedOnlyActions,
   dayFractionInMonth,
   dayFractionInWeek,
@@ -354,20 +354,38 @@ export function TimelineView() {
       });
     });
 
-    const diamonds = diamondsForActions(actionsForPlanting(actions, row.planting), `${row.plant.common_name} in ${row.bed.name}`);
+    const bedId = row.bed.id;
+    const diamonds =
+      bedId != null
+        ? diamondsForActions(actionsForRow(actions, bedId, row.plant.slug), `${row.plant.common_name} in ${row.bed.name}`)
+        : [];
     const byCol = groupDiamondsByColumn(diamonds);
 
+    // #233: a row now groups every Planting sharing this (bed, plant) pair,
+    // not just one - the common single-planting case reads identically to
+    // before (plain plant name + bed name subtitle), a grouped row adds a
+    // "N plantings" count to both the subtitle and the accessible name so
+    // it's clear at a glance (and to a screen reader) that the row
+    // represents more than one physical plant.
+    const plantingCount = row.plantings.length;
+    const accessibleName =
+      plantingCount > 1
+        ? `${row.plant.common_name} — ${row.bed.name} (${plantingCount} plantings)`
+        : row.plant.common_name;
+
     return (
-      <div key={row.planting.id} className="relative grid" style={{ gridTemplateColumns: columns, height: ROW_HEIGHT_PX }}>
+      <div key={`${bedId}-${row.plant.slug}`} className="relative grid" style={{ gridTemplateColumns: columns, height: ROW_HEIGHT_PX }}>
         <button
           type="button"
           className="sticky left-0 z-10 truncate bg-background pr-2 text-left text-sm font-medium hover:underline"
           style={{ gridColumn: 1 }}
           onClick={() => setSelection({ type: "planting", row })}
-          title={row.plant.common_name}
+          title={accessibleName}
         >
           {row.plant.common_name}
-          <span className="block text-xs font-normal text-muted-foreground">{row.bed.name}</span>
+          <span className="block text-xs font-normal text-muted-foreground">
+            {plantingCount > 1 ? `${row.bed.name} · ${plantingCount} plantings` : row.bed.name}
+          </span>
         </button>
         {bars}
         {[...byCol.entries()].map(([col, ds]) => (
