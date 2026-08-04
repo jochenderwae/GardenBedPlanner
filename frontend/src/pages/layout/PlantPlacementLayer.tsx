@@ -112,6 +112,16 @@ interface PlantPlacementLayerProps {
  * pointer leaves the bed it started in, which is exactly what made the
  * marquee/row/field drag preview freeze or vanish mid-gesture - #19). */
 export interface PlantPlacementLayerHandle {
+  /** Starts a garden-space marquee-select drag from a mousedown that landed
+   * on true empty canvas (outside every bed) - Layout.tsx's
+   * `handleMineStageMouseDown` calls this on the Plants tab the same way it
+   * already calls `setBedMarquee` on the Planters tab, treating every bed as
+   * static background for this gesture rather than requiring the drag to
+   * start inside one (#19's third round). No-op while a plant is armed
+   * (`canSelect` below) - a click-drag with a plant armed is a draw
+   * gesture, not a selection one, and draw gestures always start inside a
+   * bed's own shape (nothing to place on empty canvas). */
+  handleStageMouseDown: (worldPos: { x: number; y: number }, additive: boolean) => void;
   /** `worldPos` is Stage-local (garden-space cm) - whatever
    * `stage.getRelativePointerPosition()` returns, same coordinate space
    * Layout.tsx's own `bedMarquee` already uses. No-op unless a draw/marquee
@@ -160,11 +170,18 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
   // still per-bed-shape: hit-testing *which* bed a gesture starts in is
   // exactly what a per-shape listener is reliable for) so later
   // Stage-forwarded updates know which bed's offset to convert through.
+  // Placement (drawing where a plant goes) always happens inside exactly one
+  // bed, so `draw` keeps this bed-local shape.
   const [draw, setDraw] = useState<{ bedId: number; start: { x: number; y: number }; current: { x: number; y: number } } | null>(
     null,
   );
+  // Selection, unlike placement, treats every bed as static background
+  // (#19's third round) - a marquee can start on empty garden canvas, cross
+  // multiple beds, and select plantings from all of them. `start`/`current`
+  // are therefore tracked directly in Stage-local/world (garden-space cm)
+  // coordinates rather than any one bed's local frame - no `bedId` at all.
   const [marquee, setMarquee] = useState<
-    { bedId: number; start: { x: number; y: number }; current: { x: number; y: number }; additive: boolean } | null
+    { start: { x: number; y: number }; current: { x: number; y: number }; additive: boolean } | null
   >(null);
 
   // Konva node registry (planting id -> its live Rect/PlantFootprint node),
@@ -231,15 +248,21 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
   }
 
   function handleMouseDown(bedId: number, e: Konva.KonvaEventObject<MouseEvent>) {
-    const pos = localPoint(e);
-    if (!pos) return;
     if (canDraw) {
       if (placementMode === "individual") return;
+      const pos = localPoint(e);
+      if (!pos) return;
       setDraw({ bedId, start: pos, current: pos });
       return;
     }
     if (canSelect) {
-      setMarquee({ bedId, start: pos, current: pos, additive: e.evt.shiftKey });
+      // A marquee starting on a bed's own shape is just the common case of
+      // the same garden-wide gesture `handleStageMouseDown` (below) starts
+      // from empty canvas - tracked in world coords either way, so this
+      // reads through the Stage rather than `localPoint`'s bed-local frame.
+      const worldPos = e.target.getStage()?.getRelativePointerPosition();
+      if (!worldPos) return;
+      setMarquee({ start: worldPos, current: worldPos, additive: e.evt.shiftKey });
     }
   }
 
@@ -277,14 +300,26 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
     (pos: { x: number; y: number }) => {
       if (!marquee) return;
       const marqueeRect = normalizedRect(marquee.start, pos);
-      const bedPlantings = plantingsByBed.get(marquee.bedId) ?? [];
-      const hitIds = bedPlantings
-        .filter((p) => p.id != null && rectanglesOverlap(marqueeRect, boundingRect(p.geometry)))
-        .map((p) => p.id as number);
+      // Every bed's plantings, converted to world/garden-space coordinates
+      // (each planting's own `geometry` is bed-local, matching
+      // `bedLocalPoint`'s offset) - not just one bed's, since the marquee
+      // itself is now garden-wide (#19's third round).
+      const hitIds: number[] = [];
+      for (const bed of beds) {
+        if (bed.id == null) continue;
+        const bedRect = boundingRect(bed.border_geometry);
+        const bedPlantings = plantingsByBed.get(bed.id) ?? [];
+        for (const planting of bedPlantings) {
+          if (planting.id == null) continue;
+          const local = boundingRect(planting.geometry);
+          const worldRect = { x: local.x + bedRect.x, y: local.y + bedRect.y, width: local.width, height: local.height };
+          if (rectanglesOverlap(marqueeRect, worldRect)) hitIds.push(planting.id);
+        }
+      }
       onMarqueeSelect(hitIds, marquee.additive);
       setMarquee(null);
     },
-    [marquee, plantingsByBed, onMarqueeSelect],
+    [marquee, beds, plantingsByBed, onMarqueeSelect],
   );
 
   // See PlantPlacementLayerHandle's own doc - Layout.tsx's Stage-level
@@ -294,6 +329,14 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
   useImperativeHandle(
     ref,
     () => ({
+      handleStageMouseDown(worldPos, additive) {
+        // Mirrors `handleMouseDown`'s own `canSelect` branch above - a plant
+        // armed for drawing means empty-canvas clicks aren't a selection
+        // gesture at all (and placement never starts outside a bed, so it
+        // has no equivalent empty-canvas case to handle here).
+        if (!canSelect) return;
+        setMarquee({ start: worldPos, current: worldPos, additive });
+      },
       handleStageMouseMove(worldPos) {
         if (draw) {
           const pos = bedLocalPoint(draw.bedId, worldPos);
@@ -301,8 +344,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
           return;
         }
         if (marquee) {
-          const pos = bedLocalPoint(marquee.bedId, worldPos);
-          if (pos) setMarquee((prev) => (prev ? { ...prev, current: pos } : prev));
+          setMarquee((prev) => (prev ? { ...prev, current: worldPos } : prev));
         }
       },
       handleStageMouseUp(worldPos) {
@@ -311,11 +353,11 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
           return;
         }
         if (marquee) {
-          completeMarquee(bedLocalPoint(marquee.bedId, worldPos) ?? marquee.current);
+          completeMarquee(worldPos);
         }
       },
     }),
-    [draw, marquee, bedLocalPoint, completeDraw, completeMarquee],
+    [draw, marquee, canSelect, bedLocalPoint, completeDraw, completeMarquee],
   );
 
   /** Registers (or, called with `null`, deregisters on unmount) a planting
@@ -376,6 +418,14 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
     dragGroupRef.current = null;
   }
 
+  // Garden-wide (world-space) marquee rectangle - rendered once, as a
+  // sibling of the per-bed Groups below rather than inside any one of them,
+  // since a Layer's own coordinate space already matches
+  // `stage.getRelativePointerPosition()`'s (no per-bed offset needed here,
+  // unlike `preview`, which stays bed-local because placement always
+  // happens inside exactly one bed - see `marquee`'s own doc above).
+  const marqueeRect = marquee ? normalizedRect(marquee.start, marquee.current) : null;
+
   return (
     <Layer>
       {beds.map((bed) => {
@@ -388,7 +438,6 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
               ? rowGeometryFromDrag(draw.start, draw.current, thicknessCm)
               : fieldGeometryFromDrag(draw.start, draw.current)
             : null;
-        const marqueeRect = marquee && marquee.bedId === bed.id ? normalizedRect(marquee.start, marquee.current) : null;
         return (
           <Group key={bed.id} x={rect.x} y={rect.y}>
             <Rect
@@ -405,16 +454,6 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
                 opacity={0.35}
                 stroke={colorForSlug(armedPlant?.slug ?? "")}
                 strokeWidth={1}
-                listening={false}
-              />
-            )}
-            {marqueeRect && (
-              <Rect
-                {...marqueeRect}
-                fill="#2563eb1a"
-                stroke="#2563eb"
-                strokeWidth={1}
-                dash={[4, 4]}
                 listening={false}
               />
             )}
@@ -457,6 +496,16 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
           </Group>
         );
       })}
+      {marqueeRect && (
+        <Rect
+          {...marqueeRect}
+          fill="#2563eb1a"
+          stroke="#2563eb"
+          strokeWidth={1}
+          dash={[4, 4]}
+          listening={false}
+        />
+      )}
     </Layer>
   );
 });

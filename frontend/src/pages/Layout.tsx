@@ -786,8 +786,12 @@ export function Layout() {
   /** The "mine" Stage's own mousedown - middle button starts a pan (see
    * handlePanMouseDown); a left-button mousedown that lands on empty canvas
    * (not on a bed or any other interactive node - `e.target === stage`)
-   * clears the current bed selection and, on the Planters tab, starts a
-   * marquee-select drag (see handleStageMouseMove/Up below). */
+   * clears the current bed selection and starts a marquee-select drag: a bed
+   * marquee on the Planters tab (tracked here directly), or a planting
+   * marquee on the Plants tab (forwarded to `PlantPlacementLayer`'s
+   * imperative handle) - beds are treated as static background for the
+   * Plants-tab gesture too (#19's third round), so this fires from any
+   * empty-canvas click regardless of tab, not just the Planters one. */
   function handleMineStageMouseDown(e: Konva.KonvaEventObject<MouseEvent>) {
     if (handlePanMouseDown(e)) return;
     if (e.evt.button !== 0) return;
@@ -798,6 +802,9 @@ export function Layout() {
     if (tab === "planters") {
       const pos = stage.getRelativePointerPosition();
       if (pos) setBedMarquee({ start: pos, current: pos });
+    } else if (tab === "plants") {
+      const pos = stage.getRelativePointerPosition();
+      if (pos) plantPlacementRef.current?.handleStageMouseDown(pos, e.evt.shiftKey);
     }
   }
 
