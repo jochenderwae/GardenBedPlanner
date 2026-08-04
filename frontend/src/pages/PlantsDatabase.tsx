@@ -12,10 +12,33 @@ import { createPlant, listPlants, type Plant } from "@/api/client";
 type SortKey = "common_name" | "botanical_name" | "family";
 type SortDir = "asc" | "desc";
 
+/** A species/cultivar-parent plant (`parent_plant_slug === null`, at least
+ * one other plant in the same genus group pointing back at it) plus its
+ * cultivars - the third tier this ticket adds (#236), nested one level
+ * inside a genus group the same way a genus group nests inside a family. */
+interface SpeciesGroup {
+  key: string;
+  parent: Plant;
+  cultivars: Plant[];
+}
+
 interface GenusGroup {
   key: string;
   genus: string | null;
   plants: Plant[];
+  /** Parent species with 2+ cultivars in this genus group - the collapsible
+   * third tier. A parent with no cultivars actually present in the current
+   * (possibly filtered) plant set isn't wrapped here; it's folded into
+   * singletonPlants instead, same "singleton collapses" precedent the
+   * family->genus tier already established. */
+  speciesGroups: SpeciesGroup[];
+  /** Plants with no cultivar relationship at all within this genus group -
+   * either a genuinely standalone plant, a parent species with no cultivars
+   * on file, or a cultivar whose own `parent_plant_slug` doesn't resolve to
+   * another plant in this same genus group (a data inconsistency, or the
+   * parent got filtered out by search/family/sun-level filters - rendered
+   * here rather than silently disappearing). */
+  singletonPlants: Plant[];
 }
 
 interface FamilyGroup {
@@ -61,6 +84,48 @@ function matchesSearch(plant: Plant, term: string): boolean {
   return haystack.includes(term);
 }
 
+/** Groups one genus's own plant list by `parent_plant_slug` (#236) - a
+ * plant with no parent (`parent_plant_slug === null`) that at least one
+ * other plant in this same list points back at becomes a `SpeciesGroup`
+ * (itself + its cultivars, nested one level deeper); everything else
+ * (a genuinely standalone plant, a parent with zero cultivars actually
+ * present here, or a cultivar whose parent isn't in this list) stays a
+ * flat `singletonPlants` entry at the existing depth - same "singleton
+ * collapses into a flat row" precedent `groupByFamilyThenGenus`'s own
+ * family->genus tier already uses. */
+function groupByParentSpecies(
+  plants: Plant[],
+  sortKey: SortKey,
+  sortDir: SortDir,
+): { speciesGroups: SpeciesGroup[]; singletonPlants: Plant[] } {
+  const bySlug = new Map(plants.map((p) => [p.slug, p]));
+  const childrenByParent = new Map<string, Plant[]>();
+  for (const plant of plants) {
+    if (plant.parent_plant_slug && bySlug.has(plant.parent_plant_slug)) {
+      const list = childrenByParent.get(plant.parent_plant_slug) ?? [];
+      list.push(plant);
+      childrenByParent.set(plant.parent_plant_slug, list);
+    }
+  }
+
+  const speciesGroups: SpeciesGroup[] = [];
+  const singletonPlants: Plant[] = [];
+  for (const plant of plants) {
+    // A cultivar whose parent is present in this same list is rendered
+    // nested under that parent's own SpeciesGroup, not as its own top-level
+    // entry here.
+    if (plant.parent_plant_slug && bySlug.has(plant.parent_plant_slug)) continue;
+    const cultivars = childrenByParent.get(plant.slug);
+    if (cultivars && cultivars.length > 0) {
+      speciesGroups.push({ key: `${plant.slug}::species`, parent: plant, cultivars: sortPlants(cultivars, sortKey, sortDir) });
+    } else {
+      singletonPlants.push(plant);
+    }
+  }
+  speciesGroups.sort((a, b) => a.parent.common_name.localeCompare(b.parent.common_name));
+  return { speciesGroups, singletonPlants: sortPlants(singletonPlants, sortKey, sortDir) };
+}
+
 /** Two-tier grouping: family, then genus within it (e.g. Solanaceae contains
  * Solanum - tomato/potato/eggplant - and Capsicum - peppers - as separate
  * sub-groups; they don't merge, since peppers are a different genus). Tested
@@ -90,10 +155,13 @@ function groupByFamilyThenGenus(plants: Plant[], sortKey: SortKey, sortDir: Sort
     const singletonPlants: Plant[] = [];
     for (const [genusKey, genusPlants] of byGenus) {
       if (genusPlants.length > 1) {
+        const { speciesGroups, singletonPlants: genusSingletons } = groupByParentSpecies(genusPlants, sortKey, sortDir);
         genusGroups.push({
           key: `${key}::${genusKey}`,
           genus: genusPlants[0].genus?.name ?? null,
           plants: sortPlants(genusPlants, sortKey, sortDir),
+          speciesGroups,
+          singletonPlants: genusSingletons,
         });
       } else {
         singletonPlants.push(genusPlants[0]);
@@ -128,6 +196,7 @@ export function PlantsDatabase() {
   const navigate = useNavigate();
   const [expandedFamilies, setExpandedFamilies] = useState<Set<string>>(new Set());
   const [expandedGenera, setExpandedGenera] = useState<Set<string>>(new Set());
+  const [expandedSpecies, setExpandedSpecies] = useState<Set<string>>(new Set());
   const [search, setSearch] = useState("");
   const [familyFilter, setFamilyFilter] = useState("");
   const [sunFilter, setSunFilter] = useState("");
@@ -169,6 +238,9 @@ export function PlantsDatabase() {
   }
   function toggleGenus(key: string) {
     setExpandedGenera((prev) => toggleInSet(prev, key));
+  }
+  function toggleSpecies(key: string) {
+    setExpandedSpecies((prev) => toggleInSet(prev, key));
   }
   function openPlant(slug: string) {
     navigate(`/plants/${encodeURIComponent(slug)}`);
@@ -261,8 +333,10 @@ export function PlantsDatabase() {
                     expanded={searchActive || expandedFamilies.has(family.key)}
                     onToggleFamily={() => toggleFamily(family.key)}
                     expandedGenera={expandedGenera}
+                    expandedSpecies={expandedSpecies}
                     searchActive={searchActive}
                     onToggleGenus={toggleGenus}
+                    onToggleSpecies={toggleSpecies}
                     onOpen={openPlant}
                   />
                 ))}
@@ -319,16 +393,20 @@ function FamilyRows({
   expanded,
   onToggleFamily,
   expandedGenera,
+  expandedSpecies,
   searchActive,
   onToggleGenus,
+  onToggleSpecies,
   onOpen,
 }: {
   family: FamilyGroup;
   expanded: boolean;
   onToggleFamily: () => void;
   expandedGenera: Set<string>;
+  expandedSpecies: Set<string>;
   searchActive: boolean;
   onToggleGenus: (key: string) => void;
+  onToggleSpecies: (key: string) => void;
   onOpen: (slug: string) => void;
 }) {
   return (
@@ -353,6 +431,9 @@ function FamilyRows({
               genus={genus}
               expanded={searchActive || expandedGenera.has(genus.key)}
               onToggle={() => onToggleGenus(genus.key)}
+              expandedSpecies={expandedSpecies}
+              searchActive={searchActive}
+              onToggleSpecies={onToggleSpecies}
               onOpen={onOpen}
             />
           ))}
@@ -369,11 +450,17 @@ function GenusRows({
   genus,
   expanded,
   onToggle,
+  expandedSpecies,
+  searchActive,
+  onToggleSpecies,
   onOpen,
 }: {
   genus: GenusGroup;
   expanded: boolean;
   onToggle: () => void;
+  expandedSpecies: Set<string>;
+  searchActive: boolean;
+  onToggleSpecies: (key: string) => void;
   onOpen: (slug: string) => void;
 }) {
   return (
@@ -388,8 +475,77 @@ function GenusRows({
         </td>
         <td className="py-2" />
       </tr>
-      {expanded &&
-        genus.plants.map((plant) => <PlantRow key={plant.slug} plant={plant} depth={2} onOpen={onOpen} />)}
+      {expanded && (
+        <>
+          {genus.speciesGroups.map((species) => (
+            <SpeciesRows
+              key={species.key}
+              species={species}
+              expanded={searchActive || expandedSpecies.has(species.key)}
+              onToggle={() => onToggleSpecies(species.key)}
+              onOpen={onOpen}
+            />
+          ))}
+          {genus.singletonPlants.map((plant) => (
+            <PlantRow key={plant.slug} plant={plant} depth={2} onOpen={onOpen} />
+          ))}
+        </>
+      )}
+    </>
+  );
+}
+
+/** A parent species with 2+ cultivars, the third tier this ticket adds
+ * (#236) - both an expandable group header (chevron toggles its cultivar
+ * list, same click-to-toggle convention `FamilyRows`/`GenusRows` already
+ * use) *and* a real, openable `Plant` in its own right (double-click, or
+ * its own edit button, both open the species' own detail page) - unlike a
+ * family/genus header, which is purely a grouping label with nothing of
+ * its own to open. */
+function SpeciesRows({
+  species,
+  expanded,
+  onToggle,
+  onOpen,
+}: {
+  species: SpeciesGroup;
+  expanded: boolean;
+  onToggle: () => void;
+  onOpen: (slug: string) => void;
+}) {
+  return (
+    <>
+      <tr
+        className="cursor-pointer border-b hover:bg-muted/50"
+        onClick={onToggle}
+        onDoubleClick={() => onOpen(species.parent.slug)}
+      >
+        <td className="py-2 pr-2 pl-16">
+          <span className="inline-flex items-center gap-1.5">
+            {expanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
+            {species.parent.common_name}
+            <span className="text-xs text-muted-foreground">
+              ({species.cultivars.length} cultivar{species.cultivars.length === 1 ? "" : "s"})
+            </span>
+          </span>
+        </td>
+        <td className="py-2 pr-2 text-muted-foreground">{species.parent.botanical_name}</td>
+        <td className="py-2 pr-2 text-muted-foreground">{species.parent.family?.name}</td>
+        <td className="py-2 text-right">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={`Edit ${species.parent.common_name}`}
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpen(species.parent.slug);
+            }}
+          >
+            <Pencil />
+          </Button>
+        </td>
+      </tr>
+      {expanded && species.cultivars.map((plant) => <PlantRow key={plant.slug} plant={plant} depth={3} onOpen={onOpen} />)}
     </>
   );
 }
@@ -400,7 +556,7 @@ function PlantRow({
   onOpen,
 }: {
   plant: Plant;
-  depth: number;
+  depth: 1 | 2 | 3;
   onOpen: (slug: string) => void;
 }) {
   return (
@@ -408,7 +564,7 @@ function PlantRow({
       className="cursor-pointer border-b hover:bg-muted/50"
       onDoubleClick={() => onOpen(plant.slug)}
     >
-      <td className={cn("py-2 pr-2", depth === 1 && "pl-8", depth === 2 && "pl-16")}>
+      <td className={cn("py-2 pr-2", depth === 1 && "pl-8", depth === 2 && "pl-16", depth === 3 && "pl-24")}>
         {plant.common_name}
       </td>
       <td className="py-2 pr-2 text-muted-foreground">{plant.botanical_name}</td>

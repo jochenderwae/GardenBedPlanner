@@ -6,6 +6,7 @@ import { getPlant, listPlants, updatePlant, type PlantDetail as PlantDetailData,
 import { SCALAR_FIELDS, fieldValue, type FieldValue } from "@/pages/plant-detail/fields";
 import { FieldInput } from "@/pages/plant-detail/FieldInput";
 import { LifeCycleFields } from "@/pages/plant-detail/LifeCycleFields";
+import { LineageSection } from "@/pages/plant-detail/LineageSection";
 import {
   BeddingNeedsSection,
   CompanionsSection,
@@ -106,6 +107,7 @@ export function PlantDetail() {
             <LifeCycleFields lifeCycle={data.life_cycle} lifeCycleYears={data.life_cycle_years} onSave={savePatch} />
           </section>
 
+          <LineageSection plant={data} allPlants={plantsQuery.data ?? []} />
           <DataSourcesSection slug={slug} items={data.data_sources} />
           <SeedInfoSection slug={slug} seedInfo={data.seed_info} />
           <PeriodsSection slug={slug} items={data.periods} />
