@@ -27,6 +27,13 @@ class ActionStatus(str, Enum):
     skipped = "skipped"
 
 
+class RecurrenceUnit(str, Enum):
+    daily = "daily"
+    weekly = "weekly"
+    monthly = "monthly"
+    yearly = "yearly"
+
+
 class Action(SQLModel, table=True):
     """A generic garden work item - fertilize, compost, sow, plant, harvest,
     etc. - so work can be tracked/reminded about regardless of which area it
@@ -76,3 +83,23 @@ class Action(SQLModel, table=True):
     # interact with actionable_now (#192) either - snoozing only affects
     # the reminder push, never the task's own due window/urgency ordering.
     snoozed_until: date | None = None
+    # #226: manually-created recurring/repeating tasks (e.g. "turn the
+    # compost bin every 3 weeks") - None (the default, and the only state
+    # for every existing/#192-auto-generated row) means not recurring.
+    # Only meaningful in combination: recurrence_interval/recurrence_end_date
+    # are inert unless recurrence_unit is also set. Only a manually-created
+    # Action (no garden_plan_entry_id tie) is expected to use these in
+    # practice, but nothing at the API layer enforces that - see this
+    # ticket's own note on why not.
+    recurrence_unit: RecurrenceUnit | None = None
+    # "every N units" (every 1 week, every 3 months, ...).
+    recurrence_interval: int = 1
+    # Stop generating new occurrences once this date is passed - None means
+    # open-ended (recurs forever).
+    recurrence_end_date: date | None = None
+    # Links a generated occurrence back to the action it was generated
+    # from (app/api/routes/actions.py's update_action, on completion) -
+    # self-FK to Action, same precedent depends_on_action_id already
+    # established, but a distinct field/relationship: recurrence chaining,
+    # not dependency ordering, the two are never conflated.
+    recurrence_source_action_id: int | None = Field(default=None, foreign_key="action.id")

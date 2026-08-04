@@ -8,6 +8,7 @@ from app.api.deps import commit_or_409
 from app.core.db import get_session
 from app.models.action import Action as ActionTable
 from app.models.action import ActionStatus, ActionType
+from app.services.recurrence import generate_next_occurrence
 from app.services.reminders import next_saturday
 
 router = APIRouter(prefix="/actions", tags=["actions"])
@@ -101,6 +102,7 @@ def update_action(
     action_id: int, update: _ActionUpdate, session: Session = Depends(get_session)  # type: ignore[valid-type]
 ) -> ActionTable:
     action = _get_or_404(session, action_id)
+    previous_status = action.status
     changes = update.model_dump(exclude_unset=True)
     # Setting a completed_date without an explicit status is "marking it
     # done" - default status to completed rather than leaving it pending,
@@ -112,6 +114,19 @@ def update_action(
     for field, value in changes.items():
         setattr(action, field, value)
     session.add(action)
+    # #226: generate the next occurrence of a recurring Action the moment
+    # it transitions into a terminal status (completed *or* skipped - a
+    # skipped chore isn't a cancelled recurrence, only recurrence_end_date
+    # stops generation). Gated on the *transition* (previous_status wasn't
+    # already terminal), not just "is currently completed/skipped", so a
+    # redundant PATCH re-saving an already-completed action doesn't
+    # generate a duplicate occurrence every time it's called.
+    newly_terminal = (
+        previous_status not in (ActionStatus.completed, ActionStatus.skipped)
+        and action.status in (ActionStatus.completed, ActionStatus.skipped)
+    )
+    if newly_terminal:
+        generate_next_occurrence(session, action)
     commit_or_409(session)
     session.refresh(action)
     return action

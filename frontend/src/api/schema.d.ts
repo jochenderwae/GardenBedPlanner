@@ -1314,6 +1314,16 @@ export interface components {
             notes: string;
             /** Snoozed Until */
             snoozed_until?: string | null;
+            recurrence_unit?: components["schemas"]["RecurrenceUnit"] | null;
+            /**
+             * Recurrence Interval
+             * @default 1
+             */
+            recurrence_interval: number;
+            /** Recurrence End Date */
+            recurrence_end_date?: string | null;
+            /** Recurrence Source Action Id */
+            recurrence_source_action_id?: number | null;
         };
         /** ActionCreate */
         ActionCreate: {
@@ -1343,6 +1353,16 @@ export interface components {
             notes: string;
             /** Snoozed Until */
             snoozed_until?: string | null;
+            recurrence_unit?: components["schemas"]["RecurrenceUnit"] | null;
+            /**
+             * Recurrence Interval
+             * @default 1
+             */
+            recurrence_interval: number;
+            /** Recurrence End Date */
+            recurrence_end_date?: string | null;
+            /** Recurrence Source Action Id */
+            recurrence_source_action_id?: number | null;
         };
         /**
          * ActionStatus
@@ -1378,6 +1398,13 @@ export interface components {
             notes?: string | null;
             /** Snoozed Until */
             snoozed_until?: string | null;
+            recurrence_unit?: components["schemas"]["RecurrenceUnit"] | null;
+            /** Recurrence Interval */
+            recurrence_interval?: number | null;
+            /** Recurrence End Date */
+            recurrence_end_date?: string | null;
+            /** Recurrence Source Action Id */
+            recurrence_source_action_id?: number | null;
         };
         /** Bed */
         Bed: {
@@ -3024,6 +3051,11 @@ export interface components {
              */
             rotation: number;
         };
+        /**
+         * RecurrenceUnit
+         * @enum {string}
+         */
+        RecurrenceUnit: "daily" | "weekly" | "monthly" | "yearly";
         /** RotationWarning */
         RotationWarning: {
             /** Has Warning */
