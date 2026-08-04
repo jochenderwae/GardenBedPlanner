@@ -1199,6 +1199,47 @@ export interface paths {
         patch: operations["update_decoration_api_decorations__decoration_id__patch"];
         trace?: never;
     };
+    "/api/soil-rotation-events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Soil Rotation Events */
+        get: operations["list_soil_rotation_events_api_soil_rotation_events_get"];
+        put?: never;
+        /**
+         * Create Soil Rotation Event
+         * @description Creates the event, all its transfers, and triggers the
+         *     SoilFamilyHistory copy-forward in one transaction - session.flush()
+         *     (not commit) between steps assigns primary keys without ending the
+         *     transaction early, one real commit_or_409 at the very end.
+         */
+        post: operations["create_soil_rotation_event_api_soil_rotation_events_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/soil-rotation-events/{event_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Soil Rotation Event */
+        get: operations["get_soil_rotation_event_api_soil_rotation_events__event_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2969,6 +3010,13 @@ export interface components {
             conflicting_planted_date?: string | null;
             /** Conflicting Removed Date */
             conflicting_removed_date?: string | null;
+            /**
+             * Conflicting Via Soil Transfer
+             * @default false
+             */
+            conflicting_via_soil_transfer: boolean;
+            /** Conflicting Source Bed Id */
+            conflicting_source_bed_id?: number | null;
         };
         /** SeedInfo */
         SeedInfo: {
@@ -3063,6 +3111,73 @@ export interface components {
             distance_cm: number;
             /** Direction */
             direction: string;
+        };
+        /** SoilRotationEventCreate */
+        SoilRotationEventCreate: {
+            /**
+             * Event Date
+             * Format: date
+             */
+            event_date: string;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Transfers */
+            transfers: components["schemas"]["SoilRotationTransferCreate"][];
+        };
+        /**
+         * SoilRotationEventDetail
+         * @description GET (list/detail) and POST response shape: the event plus its
+         *     transfers, mirroring garden_plans.py's GardenPlanDetail pattern (a flat
+         *     header response that also assembles its satellite rows).
+         */
+        SoilRotationEventDetail: {
+            /** Id */
+            id: number;
+            /**
+             * Event Date
+             * Format: date
+             */
+            event_date: string;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /**
+             * Transfers
+             * @default []
+             */
+            transfers: components["schemas"]["SoilRotationTransfer"][];
+        };
+        /**
+         * SoilRotationTransfer
+         * @description One edge in a rotation event's cycle - N rows under one
+         *     SoilRotationEvent is how an N-way cycle (A->B->C->A, not just pairwise
+         *     swaps) is represented, no special-casing beyond however many transfer
+         *     rows the event has. from_bed_id is nullable: "fresh/external soil, not
+         *     sourced from another tracked bed" (Dave's "empty the bed, fill it with
+         *     new soil" case) folds into this same model as a transfer with no
+         *     source, rather than needing a separate mechanism.
+         */
+        SoilRotationTransfer: {
+            /** Id */
+            id?: number | null;
+            /** Soil Rotation Event Id */
+            soil_rotation_event_id: number;
+            /** From Bed Id */
+            from_bed_id?: number | null;
+            /** To Bed Id */
+            to_bed_id: number;
+        };
+        /** SoilRotationTransferCreate */
+        SoilRotationTransferCreate: {
+            /** From Bed Id */
+            from_bed_id?: number | null;
+            /** To Bed Id */
+            to_bed_id: number;
         };
         /**
          * SunLevel
@@ -6924,6 +7039,90 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Decoration"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_soil_rotation_events_api_soil_rotation_events_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoilRotationEventDetail"][];
+                };
+            };
+        };
+    };
+    create_soil_rotation_event_api_soil_rotation_events_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SoilRotationEventCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoilRotationEventDetail"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_soil_rotation_event_api_soil_rotation_events__event_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                event_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SoilRotationEventDetail"];
                 };
             };
             /** @description Validation Error */

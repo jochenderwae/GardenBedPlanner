@@ -27,6 +27,7 @@ from app.api.routes import (
     push_subscriptions,
     rotation,
     seed_inventory_items,
+    soil_rotation_events,
 )
 from app.core.config import Settings, settings
 from app.core.scheduler import register_jobs, scheduler
@@ -87,6 +88,7 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     app.include_router(compost_bins.router, prefix="/api")
     app.include_router(equipment_types.router, prefix="/api")
     app.include_router(decorations.router, prefix="/api")
+    app.include_router(soil_rotation_events.router, prefix="/api")
 
     return app
 

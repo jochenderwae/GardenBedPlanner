@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, create_model
+from sqlalchemy import or_
 from sqlmodel import Session, select, update
 
 from app.api.deps import commit_or_409, get_active_garden
@@ -12,6 +13,7 @@ from app.models.compost_fertilization_log import CompostFertilizationLog
 from app.models.geometry import Geometry, parse_geometry
 from app.models.harvest_log import HarvestLog
 from app.models.planting import Planting
+from app.models.soil_rotation import SoilFamilyHistory, SoilRotationTransfer
 from app.services.task_generation import generate_bed_tasks
 
 router = APIRouter(prefix="/beds", tags=["beds"])
@@ -139,11 +141,12 @@ def update_bed(
 def cascade_delete_bed_dependents(session: Session, bed_ids: list[int]) -> None:
     """Gathers and deletes every dependent row one or more Beds can have
     (Actions, Plantings, HarvestLogs, BedEquipment, CompostFertilizationLog,
-    CompostBin) - shared by delete_bed's own cascade=true path (a single-
-    element list) and app/api/routes/garden.py's delete_active_garden
-    (#218), which needs the exact same cleanup for every Bed under a Garden
-    being deleted (potentially several at once). Does NOT delete the Bed
-    row(s) themselves or flush - callers own that.
+    CompostBin, SoilFamilyHistory, SoilRotationTransfer) - shared by
+    delete_bed's own cascade=true path (a single-element list) and
+    app/api/routes/garden.py's delete_active_garden (#218), which needs the
+    exact same cleanup for every Bed under a Garden being deleted
+    (potentially several at once). Does NOT delete the Bed row(s)
+    themselves or flush - callers own that.
 
     #215/#217: both were the same class of bug - SQLAlchemy's default
     autoflush=True means any SELECT issued *after* a session.delete() has
@@ -191,6 +194,26 @@ def cascade_delete_bed_dependents(session: Session, bed_ids: list[int]) -> None:
         session.exec(select(CompostFertilizationLog).where(CompostFertilizationLog.bed_id.in_(bed_ids))).all()
     )
     compost_bins = list(session.exec(select(CompostBin).where(CompostBin.bed_id.in_(bed_ids))).all())
+    # #228: SoilFamilyHistory.bed_id is the bed whose *current* soil a fact
+    # travels with - a real FK, same as every other satellite table here.
+    # SoilRotationTransfer.from_bed_id/to_bed_id reference a bed via either
+    # side of a rotation edge - deleting a bed that's ever been part of a
+    # logged rotation event (as either side) loses that specific edge's
+    # history, same already-accepted trade-off cascade=true makes for every
+    # other dependent table (a cascade delete is explicitly destructive).
+    # The parent SoilRotationEvent row itself is deliberately left alone
+    # even if this empties it of every transfer - harmless (nothing
+    # references it *from* Bed), not worth the extra bookkeeping.
+    soil_family_history_rows = list(
+        session.exec(select(SoilFamilyHistory).where(SoilFamilyHistory.bed_id.in_(bed_ids))).all()
+    )
+    soil_rotation_transfers = list(
+        session.exec(
+            select(SoilRotationTransfer).where(
+                or_(SoilRotationTransfer.from_bed_id.in_(bed_ids), SoilRotationTransfer.to_bed_id.in_(bed_ids))
+            )
+        ).all()
+    )
 
     if bed_action_ids:
         # Null out any depends_on_action_id (one of these beds' own, or
@@ -230,6 +253,10 @@ def cascade_delete_bed_dependents(session: Session, bed_ids: list[int]) -> None:
         session.delete(log)
     for compost_bin in compost_bins:
         session.delete(compost_bin)
+    for history_row in soil_family_history_rows:
+        session.delete(history_row)
+    for transfer_row in soil_rotation_transfers:
+        session.delete(transfer_row)
 
 
 @router.delete("/{bed_id}", status_code=204)
