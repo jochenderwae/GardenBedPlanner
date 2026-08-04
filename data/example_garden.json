@@ -14,7 +14,6 @@
       },
       "height_cm": 70,
       "has_greenhouse": true,
-      "is_raised": true,
       "notes": "Heat-loving nightshades - the greenhouse gives tomatoes/peppers a real head start and season extension in Belgium's climate.",
       "plantings": [
         {
@@ -84,7 +83,6 @@
       },
       "height_cm": 70,
       "has_greenhouse": false,
-      "is_raised": true,
       "notes": "Cucumber trellised at one end, bush beans and dill filling the rest - beans+cucumber is a confirmed 'good' companion pairing in our data.",
       "plantings": [
         {
@@ -141,7 +139,6 @@
       },
       "height_cm": 70,
       "has_greenhouse": false,
-      "is_raised": true,
       "notes": "Eggplant and zucchini with African marigold interplanted for pest deterrence.",
       "plantings": [
         {
@@ -198,7 +195,6 @@
       },
       "height_cm": 70,
       "has_greenhouse": false,
-      "is_raised": true,
       "notes": "Acorn squash (a real ground-sprawling vine, spread_cm=150 - most of this bed on its own) with borage, a companion pairing confirmed directly in acorn-squash's own data.",
       "plantings": [
         {
@@ -242,7 +238,6 @@
       },
       "height_cm": 70,
       "has_greenhouse": false,
-      "is_raised": true,
       "notes": "Quick roots: carrot with a fast-maturing radish nurse crop and chives (a confirmed 'good' companion for carrot).",
       "plantings": [
         {
@@ -299,7 +294,6 @@
       },
       "height_cm": 70,
       "has_greenhouse": false,
-      "is_raised": true,
       "notes": "Leafy greens - lettuce and spinach are a confirmed 'good' pairing; arugula fills the gaps.",
       "plantings": [
         {
@@ -356,7 +350,6 @@
       },
       "height_cm": 70,
       "has_greenhouse": false,
-      "is_raised": true,
       "notes": "Beet, golden beet, and lambs lettuce (mache) - a cool-season mix popular in Belgian kitchen gardens.",
       "plantings": [
         {
@@ -413,7 +406,6 @@
       },
       "height_cm": 100,
       "has_greenhouse": false,
-      "is_raised": false,
       "notes": "1m3 bin - garden waste + kitchen scraps."
     },
     {
@@ -429,7 +421,6 @@
       },
       "height_cm": 100,
       "has_greenhouse": false,
-      "is_raised": false,
       "notes": "1m3 bin - second bin for turning/maturing while the first fills."
     },
     {
@@ -445,7 +436,6 @@
       },
       "height_cm": 0,
       "has_greenhouse": false,
-      "is_raised": false,
       "notes": "Raspberry, blueberry, redcurrant, gooseberry, and a stand of sunflowers at the far end - no 'bad' companion pairings among any of these five in our data (checked pairwise).",
       "plantings": [
         {
@@ -528,7 +518,6 @@
       },
       "height_cm": 0,
       "has_greenhouse": false,
-      "is_raised": false,
       "notes": "Sour cherry - data/plants/sour-cherry.json (Prunus cerasus, added for GitHub issue #158) is a direct match, replacing the earlier placeholder use of the generic cherry.json (sweet cherry) record. (spacing defaulted to 40cm for: sour-cherry - no spread_cm/row_spacing_cm in their data yet)",
       "plantings": [
         {
@@ -558,7 +547,6 @@
       },
       "height_cm": 0,
       "has_greenhouse": false,
-      "is_raised": false,
       "notes": "Pear - data/plants/pear.json (Pyrus communis) is a direct match.",
       "plantings": [
         {
@@ -593,7 +581,6 @@
         },
         "height_cm": 70,
         "has_greenhouse": false,
-        "is_raised": true,
         "notes": "Just built this season - only lettuce sown so far.",
         "plantings": [
           {
@@ -624,7 +611,6 @@
         },
         "height_cm": 70,
         "has_greenhouse": false,
-        "is_raised": true,
         "notes": "Just built this season - nothing sown yet."
       },
       {
@@ -640,7 +626,6 @@
         },
         "height_cm": 70,
         "has_greenhouse": false,
-        "is_raised": true,
         "notes": "A quick radish crop just sown to test the soil before committing to anything bigger.",
         "plantings": [
           {

@@ -23,10 +23,17 @@ backend/app/models/bed.py). Each bed now emits:
 - `orientation`/`soil_type`/`sun_level` left unset (null) - no well-founded
   values for this invented layout, per the task's own instruction not to
   force values that aren't confident
-- `is_raised` set where there's a reasonably confident answer: True for the
-  large/small planters (built raised-bed kits per root CLAUDE.md), False for
-  the ground-level compost bins, berry row, and fruit-tree beds (a mulched
-  root-zone bed, not a raised kit)
+
+**Update (2026-08-04):** this generator used to also emit a per-bed
+`is_raised` boolean (true for the raised planter categories). Removed -
+`backend/app/models/bed.py`'s `Bed.is_raised` column itself was dropped a
+while back (`docs/schema.md`: "now derived as `height_cm > 0` rather than
+stored, since the two could otherwise silently disagree") and
+`backend/app/scripts/import_example_garden.py` never read the fixture's
+`is_raised` key even before that removal, so it had been silently dead
+output since the model change - see `data/suggestions.md`'s 2026-08-04 entry
+for the discovery. `data/etl/verify_garden.py`'s `_OPTIONAL_BED_FIELDS`
+updated to match (no longer allowlists it either).
 
 `plantings[].{plant_slug, x_cm, y_cm}` is unchanged - the read-only
 `/api/example-garden` preview endpoint (backend/app/api/routes/
@@ -192,11 +199,6 @@ _MARGIN_CM = 5.0
 # geometry directly rather than a flat x_cm/y_cm point for the importer to
 # convert (GitHub issue #234).
 _INDIVIDUAL_HALF_SIZE_CM = 10.0
-
-# Categories confidently known to be built as raised-bed kits (root
-# CLAUDE.md describes both planter sizes as such). Everything else in this
-# fixture (compost bins, berry row, fruit trees) is ground-level.
-_RAISED_CATEGORIES = {"large_planter", "small_planter"}
 
 # (name, category, width_cm, length_cm, height_cm, has_greenhouse, pos_x, pos_y, notes, plant_slugs)
 _BEDS = [
@@ -461,7 +463,6 @@ def _build_bed(name, category, width_cm, length_cm, height_cm, has_greenhouse, p
         },
         "height_cm": height_cm,
         "has_greenhouse": has_greenhouse,
-        "is_raised": category in _RAISED_CATEGORIES,
         "notes": bed_notes,
     }
     if plantings:

@@ -48,7 +48,7 @@ EXAMPLE_GARDEN_PATH = DATA_DIR / "example_garden.json"
 _REQUIRED_BED_FIELDS = {
     "name", "category", "border_geometry", "height_cm", "has_greenhouse", "notes",
 }
-_OPTIONAL_BED_FIELDS = {"orientation", "is_raised", "soil_type", "sun_level", "plantings"}
+_OPTIONAL_BED_FIELDS = {"orientation", "soil_type", "sun_level", "plantings"}
 
 
 def _bed_rect(b: dict) -> tuple[float, float, float, float] | None:
