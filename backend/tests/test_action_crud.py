@@ -141,6 +141,41 @@ def test_delete_missing_action_404(client: TestClient) -> None:
     assert client.delete("/api/actions/999999").status_code == 404
 
 
+def test_snooze_missing_action_404(client: TestClient) -> None:
+    assert client.post("/api/actions/999999/snooze").status_code == 404
+
+
+def test_snooze_action_defaults_to_the_upcoming_saturday(client: TestClient) -> None:
+    action_id = client.post("/api/actions", json={"action_type": "sow"}).json()["id"]
+
+    response = client.post(f"/api/actions/{action_id}/snooze")
+    assert response.status_code == 200, response.text
+    assert response.json()["snoozed_until"] is not None
+
+    get_response = client.get(f"/api/actions/{action_id}")
+    assert get_response.json()["snoozed_until"] == response.json()["snoozed_until"]
+
+
+def test_snooze_action_respects_an_explicit_until_date(client: TestClient) -> None:
+    action_id = client.post("/api/actions", json={"action_type": "sow"}).json()["id"]
+
+    response = client.post(f"/api/actions/{action_id}/snooze", params={"until": "2027-12-25"})
+    assert response.status_code == 200, response.text
+    assert response.json()["snoozed_until"] == "2027-12-25"
+
+
+def test_patch_action_can_set_snoozed_until_like_any_other_field(client: TestClient) -> None:
+    action_id = client.post("/api/actions", json={"action_type": "sow"}).json()["id"]
+
+    response = client.patch(f"/api/actions/{action_id}", json={"snoozed_until": "2027-11-01"})
+    assert response.status_code == 200, response.text
+    assert response.json()["snoozed_until"] == "2027-11-01"
+
+    cleared = client.patch(f"/api/actions/{action_id}", json={"snoozed_until": None})
+    assert cleared.status_code == 200
+    assert cleared.json()["snoozed_until"] is None
+
+
 def test_create_action_requires_action_type(client: TestClient) -> None:
     assert client.post("/api/actions", json={}).status_code == 422
 

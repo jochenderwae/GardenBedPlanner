@@ -8,6 +8,7 @@ from app.api.deps import commit_or_409
 from app.core.db import get_session
 from app.models.action import Action as ActionTable
 from app.models.action import ActionStatus, ActionType
+from app.services.reminders import next_saturday
 
 router = APIRouter(prefix="/actions", tags=["actions"])
 
@@ -121,3 +122,26 @@ def delete_action(action_id: int, session: Session = Depends(get_session)) -> No
     action = _get_or_404(session, action_id)
     session.delete(action)
     commit_or_409(session)
+
+
+@router.post("/{action_id}/snooze", response_model=ActionTable)
+def snooze_action(
+    action_id: int,
+    until: date | None = Query(
+        default=None, description="Defaults to the upcoming Saturday (Dave's own 'this weekend' framing) if omitted"
+    ),
+    session: Session = Depends(get_session),
+) -> ActionTable:
+    """#230: "remind me later" - suppresses further reminder pushes
+    (app/services/reminders.py's due_actions) without touching this
+    action's actual due_date_start/due_date_end window at all. A dedicated
+    endpoint rather than requiring the caller (the service worker's own
+    notificationclick handler, or #231's in-app snooze affordance) to shape
+    a full PATCH body - PATCH /api/actions/{id} still accepts snoozed_until
+    like any other field too, this is just the lighter-weight path."""
+    action = _get_or_404(session, action_id)
+    action.snoozed_until = until if until is not None else next_saturday(date.today())
+    session.add(action)
+    commit_or_409(session)
+    session.refresh(action)
+    return action

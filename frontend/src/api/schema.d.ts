@@ -771,6 +771,32 @@ export interface paths {
         patch: operations["update_action_api_actions__action_id__patch"];
         trace?: never;
     };
+    "/api/actions/{action_id}/snooze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Snooze Action
+         * @description #230: "remind me later" - suppresses further reminder pushes
+         *     (app/services/reminders.py's due_actions) without touching this
+         *     action's actual due_date_start/due_date_end window at all. A dedicated
+         *     endpoint rather than requiring the caller (the service worker's own
+         *     notificationclick handler, or #231's in-app snooze affordance) to shape
+         *     a full PATCH body - PATCH /api/actions/{id} still accepts snoozed_until
+         *     like any other field too, this is just the lighter-weight path.
+         */
+        post: operations["snooze_action_api_actions__action_id__snooze_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/harvest-logs": {
         parameters: {
             query?: never;
@@ -1286,6 +1312,8 @@ export interface components {
              * @default
              */
             notes: string;
+            /** Snoozed Until */
+            snoozed_until?: string | null;
         };
         /** ActionCreate */
         ActionCreate: {
@@ -1313,6 +1341,8 @@ export interface components {
              * @default
              */
             notes: string;
+            /** Snoozed Until */
+            snoozed_until?: string | null;
         };
         /**
          * ActionStatus
@@ -1346,6 +1376,8 @@ export interface components {
             depends_on_action_id?: number | null;
             /** Notes */
             notes?: string | null;
+            /** Snoozed Until */
+            snoozed_until?: string | null;
         };
         /** Bed */
         Bed: {
@@ -5460,6 +5492,40 @@ export interface operations {
                 "application/json": components["schemas"]["ActionUpdate"];
             };
         };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Action"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    snooze_action_api_actions__action_id__snooze_post: {
+        parameters: {
+            query?: {
+                /** @description Defaults to the upcoming Saturday (Dave's own 'this weekend' framing) if omitted */
+                until?: string | null;
+            };
+            header?: never;
+            path: {
+                action_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description Successful Response */
             200: {

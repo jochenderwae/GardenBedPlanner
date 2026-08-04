@@ -13,6 +13,7 @@ from app.services.reminders import (
     REMINDER_LOOKAHEAD_DAYS,
     _notification_payload,
     due_actions,
+    next_saturday,
     send_due_action_reminders,
 )
 
@@ -58,6 +59,38 @@ def test_due_actions_excludes_no_due_date(db_session) -> None:
 
     result = due_actions(db_session, as_of=TODAY)
     assert no_due_date.id not in {a.id for a in result}
+
+
+def test_due_actions_excludes_snoozed_into_the_future(db_session) -> None:
+    snoozed = _action(db_session, TODAY - timedelta(days=1))
+    snoozed.snoozed_until = TODAY + timedelta(days=3)
+    db_session.add(snoozed)
+    db_session.commit()
+
+    result = due_actions(db_session, as_of=TODAY)
+    assert snoozed.id not in {a.id for a in result}
+
+
+def test_due_actions_includes_a_snooze_that_has_passed(db_session) -> None:
+    """Once snoozed_until <= as_of, the action reappears automatically -
+    no separate "unsnooze" step exists."""
+    previously_snoozed = _action(db_session, TODAY - timedelta(days=1))
+    previously_snoozed.snoozed_until = TODAY - timedelta(days=1)
+    db_session.add(previously_snoozed)
+    db_session.commit()
+
+    result = due_actions(db_session, as_of=TODAY)
+    assert previously_snoozed.id in {a.id for a in result}
+
+
+def test_due_actions_includes_a_snooze_that_lands_exactly_today(db_session) -> None:
+    lands_today = _action(db_session, TODAY - timedelta(days=1))
+    lands_today.snoozed_until = TODAY
+    db_session.add(lands_today)
+    db_session.commit()
+
+    result = due_actions(db_session, as_of=TODAY)
+    assert lands_today.id in {a.id for a in result}
 
 
 def test_due_actions_excludes_completed(db_session) -> None:
@@ -176,10 +209,27 @@ def test_send_due_action_reminders_bails_the_whole_loop_on_first_not_configured(
     assert calls["n"] == 1, "should bail after the very first PushNotConfiguredError, not retry every pair"
 
 
+class TestNextSaturday:
+    def test_returns_the_upcoming_saturday_from_a_weekday(self) -> None:
+        tuesday = date(2027, 6, 15)
+        assert next_saturday(tuesday) == date(2027, 6, 19)
+        assert next_saturday(tuesday).weekday() == 5
+
+    def test_from_saturday_itself_returns_next_week_not_today(self) -> None:
+        """Snoozing to the current day would be a no-op - the action would
+        immediately count as due again on the very next check."""
+        saturday = date(2027, 6, 19)
+        assert next_saturday(saturday) == date(2027, 6, 26)
+
+    def test_from_sunday_returns_the_following_saturday(self) -> None:
+        sunday = date(2027, 6, 20)
+        assert next_saturday(sunday) == date(2027, 6, 26)
+
+
 class TestNotificationPayload:
     def test_formats_action_type_label_and_due_date(self, db_session) -> None:
         action = _action(db_session, TODAY)
-        payload = _notification_payload(action)
+        payload = _notification_payload(action, TODAY)
         assert '"title": "GardenBedPlanner reminder"' in payload
         assert "Sow due by 2027-06-15" in payload
 
@@ -188,7 +238,7 @@ class TestNotificationPayload:
         db_session.add(action)
         db_session.commit()
         db_session.refresh(action)
-        payload = _notification_payload(action)
+        payload = _notification_payload(action, TODAY)
         assert "Prepare bed due by 2027-06-15" in payload
 
     def test_falls_back_to_a_bare_label_when_due_date_end_is_absent(self, db_session) -> None:
@@ -198,6 +248,15 @@ class TestNotificationPayload:
         directly rather than leaving it untested dead code that could
         silently break."""
         action = _action(db_session, due_date_end=None)
-        payload = _notification_payload(action)
+        payload = _notification_payload(action, TODAY)
         assert '"body": "Sow"' in payload
         assert "due by" not in payload
+
+    def test_includes_a_snooze_action_button_targeting_the_upcoming_saturday(self, db_session) -> None:
+        """#230: TODAY (2027-06-15) is a Tuesday - the next Saturday is
+        2027-06-19."""
+        action = _action(db_session, TODAY)
+        payload = _notification_payload(action, TODAY)
+        assert '"action": "snooze"' in payload
+        assert "2027-06-19" in payload
+        assert f'"actionId": {action.id}' in payload

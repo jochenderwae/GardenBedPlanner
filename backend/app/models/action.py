@@ -67,3 +67,12 @@ class Action(SQLModel, table=True):
     # building full project-management scheduling.
     depends_on_action_id: int | None = Field(default=None, foreign_key="action.id")
     notes: str = ""
+    # #230: "remind me later" - suppresses further reminder pushes
+    # (app/services/reminders.py's due_actions) until this date, without
+    # touching due_date_start/due_date_end (the task's actual due window)
+    # at all. Set and in the future relative to the day the reminder job
+    # runs -> excluded from that day's digest; once it's passed, the
+    # action reappears automatically, no separate "unsnooze" step. Doesn't
+    # interact with actionable_now (#192) either - snoozing only affects
+    # the reminder push, never the task's own due window/urgency ordering.
+    snoozed_until: date | None = None
