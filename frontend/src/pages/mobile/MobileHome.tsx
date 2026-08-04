@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Clock } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useSnackbar } from "@/components/Snackbar";
 import { cn } from "@/lib/utils";
 import { listActions, listBedEquipment, listBeds, listPlants, updateAction, type Action } from "@/api/client";
+import { SnoozeDialog } from "@/pages/agenda/SnoozeDialog";
 import { sortByUrgency, taskLabel } from "@/pages/agenda/taskAgenda";
 import { todayIsoDate } from "@/pages/layout/plantingLifecycle";
 
@@ -64,18 +65,35 @@ function HeroTask({
         <span className="text-base font-medium">{label}</span>
         <DueWindow action={action} today={today} />
       </Link>
-      {isHarvest ? (
-        // #221: a harvest task can't be one-tap "done" - completing it
-        // requires the partial/final decision and a HarvestLog entry, which
-        // only TaskDetail's HarvestLogDialog flow can do.
-        <Link to={`/tasks/${action.id}`} className={buttonVariants({ variant: "outline", size: "sm", className: "self-start" })}>
-          Log harvest
-        </Link>
-      ) : (
-        <Button variant="outline" size="sm" className="self-start" disabled={isMutating} onClick={() => onMarkDone(action)}>
-          Mark done
-        </Button>
-      )}
+      {/* #231: Snooze is orthogonal to the harvest-vs-other-type branch
+          below - both variants still get it, as a second quick-action
+          button in the same row. Deliberately hero-only, not offered on
+          the secondary rows below (#224's own spec kept those tap-through
+          only to preserve the hero's visual weight - adding a quick action
+          there would undermine that same reasoning). */}
+      <div className="flex gap-2">
+        {isHarvest ? (
+          // #221: a harvest task can't be one-tap "done" - completing it
+          // requires the partial/final decision and a HarvestLog entry, which
+          // only TaskDetail's HarvestLogDialog flow can do.
+          <Link to={`/tasks/${action.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}>
+            Log harvest
+          </Link>
+        ) : (
+          <Button variant="outline" size="sm" disabled={isMutating} onClick={() => onMarkDone(action)}>
+            Mark done
+          </Button>
+        )}
+        <SnoozeDialog
+          action={action}
+          taskLabel={label}
+          trigger={
+            <Button variant="outline" size="sm">
+              <Clock /> Snooze
+            </Button>
+          }
+        />
+      </div>
     </Card>
   );
 }

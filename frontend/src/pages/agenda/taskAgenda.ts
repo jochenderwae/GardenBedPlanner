@@ -96,6 +96,20 @@ export function formatDueDateHeading(iso: string): string {
   return date.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 }
 
+/** Whether `action`'s reminder is currently suppressed by a snooze (#230/
+ * #231) - `snoozed_until` set to today or later. Once that date has passed,
+ * this returns `false` again with no manual "unsnooze" step needed
+ * anywhere that reads it (mirrors #230's own backend auto-clear
+ * reasoning) - every one of this ticket's three call sites (`TaskDetail.tsx`,
+ * `TaskAgendaView.tsx`, `MobileHome.tsx`) needs the identical check, defined
+ * once here rather than re-derived three times. Snoozing suppresses
+ * reminders/Home-tab hero eligibility only, not visibility - a snoozed
+ * task still appears normally in the agenda/timeline regardless of what
+ * this returns. */
+export function isSnoozed(action: Action, todayIso: string): boolean {
+  return action.snoozed_until != null && action.snoozed_until >= todayIso;
+}
+
 /** "Sow — Tomato (North planter)" - the action type plus whichever of
  * plant/bed/equipment it references, in that order, joined only by the
  * pieces actually present (an action isn't required to reference any of

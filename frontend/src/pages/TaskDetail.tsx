@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { RulerDimensionLine } from "lucide-react";
+import { Clock, RulerDimensionLine } from "lucide-react";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useSnackbar } from "@/components/Snackbar";
 import {
   getAction,
   getBed,
@@ -18,9 +19,15 @@ import {
   type HarvestQuality,
   type RecurrenceUnit,
 } from "@/api/client";
-import { ACTION_TYPE_LABELS } from "@/pages/agenda/taskAgenda";
+import { ACTION_TYPE_LABELS, isSnoozed } from "@/pages/agenda/taskAgenda";
+import { SnoozeDialog } from "@/pages/agenda/SnoozeDialog";
 import { HarvestLogDialog } from "@/pages/harvest/HarvestLogDialog";
 import { harvestDisabledReason, resolveHarvestPlanting } from "@/pages/harvest/harvestPlanting";
+import { todayIsoDate } from "@/pages/layout/plantingLifecycle";
+
+function formatSnoozedUntil(iso: string): string {
+  return new Date(`${iso}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
 
 /** "March 1 - May 31, 2026" for a real window, or just the one date when a
  * task collapses to a single day (a `clear` task, whose window is always
@@ -93,6 +100,7 @@ export function TaskDetail() {
   const { id } = useParams();
   const actionId = Number(id);
   const queryClient = useQueryClient();
+  const { show: showSnackbar } = useSnackbar();
 
   const actionQuery = useQuery({
     queryKey: ["action", actionId],
@@ -161,6 +169,25 @@ export function TaskDetail() {
     },
   });
 
+  // #231: "Clear snooze" is a direct action, no confirm dialog - the only
+  // way to reverse an accidental or now-unwanted snooze early, so it needs
+  // to be at least as frictionless as setting one. Undo-snackbar (not a
+  // second confirm step) covers the "I clicked the wrong thing" case.
+  const clearSnoozeMutation = useMutation({
+    mutationFn: () => updateAction(actionId, { snoozed_until: null }),
+    onSuccess: (updated) => {
+      const previous = action?.snoozed_until ?? null;
+      queryClient.setQueryData(["action", actionId], updated);
+      queryClient.invalidateQueries({ queryKey: ["actions"] });
+      showSnackbar("Snooze cleared", () => {
+        updateAction(actionId, { snoozed_until: previous }).then((reverted) => {
+          queryClient.setQueryData(["action", actionId], reverted);
+          queryClient.invalidateQueries({ queryKey: ["actions"] });
+        });
+      });
+    },
+  });
+
   const equipment =
     action?.equipment_id != null ? equipmentQuery.data?.find((e) => e.id === action.equipment_id) : undefined;
 
@@ -193,6 +220,53 @@ export function TaskDetail() {
                 </Button>
               </dd>
             </div>
+
+            {/* #231: only meaningful for a still-pending task - a
+                completed/skipped task's reminders already stopped, so
+                snoozing one is meaningless (the control is simply absent
+                here, not disabled-with-explanation). */}
+            {action.status === "pending" && (
+              <div>
+                <dt className="text-xs font-medium text-muted-foreground">Reminder</dt>
+                <dd className="flex items-center gap-2">
+                  {isSnoozed(action, todayIsoDate()) ? (
+                    <>
+                      <span>Snoozed until {formatSnoozedUntil(action.snoozed_until as string)}</span>
+                      <SnoozeDialog
+                        action={action}
+                        taskLabel={ACTION_TYPE_LABELS[action.action_type] ?? action.action_type}
+                        trigger={
+                          <Button size="xs" variant="outline">
+                            <Clock /> Change
+                          </Button>
+                        }
+                      />
+                      <Button
+                        size="xs"
+                        variant="ghost"
+                        disabled={clearSnoozeMutation.isPending}
+                        onClick={() => clearSnoozeMutation.mutate()}
+                      >
+                        Clear snooze
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <span>Not snoozed</span>
+                      <SnoozeDialog
+                        action={action}
+                        taskLabel={ACTION_TYPE_LABELS[action.action_type] ?? action.action_type}
+                        trigger={
+                          <Button size="xs" variant="outline">
+                            <Clock /> Snooze
+                          </Button>
+                        }
+                      />
+                    </>
+                  )}
+                </dd>
+              </div>
+            )}
 
             {formatDueWindow(action) && (
               <div>
