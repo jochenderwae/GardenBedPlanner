@@ -1824,12 +1824,7 @@ export interface components {
          * ExampleBed
          * @description Mirrors the real Bed API shape (app/api/routes/beds.py) - kept as its
          *     own schema rather than reused directly since this fixture also carries
-         *     `plantings`, which isn't a Bed field. NOTE: data/example_garden.json
-         *     itself still needs regenerating (data-engineer's job, see
-         *     data/etl/generate_example_garden.py) to match this shape - until then
-         *     this endpoint will fail validation against the old bed_type/flat-field
-         *     fixture on disk, a known, temporary gap while that regeneration is
-         *     pending.
+         *     `plantings`, which isn't a Bed field.
          */
         ExampleBed: {
             /** Name */
@@ -1867,14 +1862,26 @@ export interface components {
             /** Beds */
             beds: components["schemas"]["ExampleBed"][];
         };
-        /** ExamplePlanting */
+        /**
+         * ExamplePlanting
+         * @description Mirrors the real Planting API shape (app/models/planting.py) - a
+         *     field/row placement covering a whole stand, or an individual placement
+         *     marker. #243: data/etl/generate_example_garden.py (#234) now always
+         *     emits this shape (plant_slug/placement_type/geometry/spacing_cm), never
+         *     the older flat x_cm/y_cm point, so this model requires it too rather
+         *     than keeping the old shape as a fallback - unlike
+         *     app/scripts/import_example_garden.py's importer, which still needs to
+         *     accept both shapes for its own hand-written test fixtures.
+         */
         ExamplePlanting: {
             /** Plant Slug */
             plant_slug: string;
-            /** X Cm */
-            x_cm: number;
-            /** Y Cm */
-            y_cm: number;
+            /** @default individual */
+            placement_type: components["schemas"]["PlacementType"];
+            /** Geometry */
+            geometry: components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"];
+            /** Spacing Cm */
+            spacing_cm?: number | null;
         };
         /** FamilyRead */
         FamilyRead: {

@@ -8,6 +8,7 @@ from sqlmodel import Session
 from app.core.db import get_session
 from app.models.geometry import Geometry
 from app.models.plant import SunLevel
+from app.models.planting import PlacementType
 from app.scripts.import_example_garden import seed_example_garden
 
 router = APIRouter(prefix="/example-garden", tags=["example-garden"])
@@ -18,20 +19,25 @@ _EXAMPLE_GARDEN_PATH = Path(__file__).resolve().parents[4] / "data" / "example_g
 
 
 class ExamplePlanting(BaseModel):
+    """Mirrors the real Planting API shape (app/models/planting.py) - a
+    field/row placement covering a whole stand, or an individual placement
+    marker. #243: data/etl/generate_example_garden.py (#234) now always
+    emits this shape (plant_slug/placement_type/geometry/spacing_cm), never
+    the older flat x_cm/y_cm point, so this model requires it too rather
+    than keeping the old shape as a fallback - unlike
+    app/scripts/import_example_garden.py's importer, which still needs to
+    accept both shapes for its own hand-written test fixtures."""
+
     plant_slug: str
-    x_cm: float
-    y_cm: float
+    placement_type: PlacementType = PlacementType.individual
+    geometry: Geometry
+    spacing_cm: float | None = None
 
 
 class ExampleBed(BaseModel):
     """Mirrors the real Bed API shape (app/api/routes/beds.py) - kept as its
     own schema rather than reused directly since this fixture also carries
-    `plantings`, which isn't a Bed field. NOTE: data/example_garden.json
-    itself still needs regenerating (data-engineer's job, see
-    data/etl/generate_example_garden.py) to match this shape - until then
-    this endpoint will fail validation against the old bed_type/flat-field
-    fixture on disk, a known, temporary gap while that regeneration is
-    pending."""
+    `plantings`, which isn't a Bed field."""
 
     name: str
     category: str | None = None
