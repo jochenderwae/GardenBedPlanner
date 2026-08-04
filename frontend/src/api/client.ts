@@ -83,6 +83,7 @@ export type ActionCreate = components["schemas"]["ActionCreate"];
 export type ActionUpdate = components["schemas"]["ActionUpdate"];
 export type ActionType = components["schemas"]["ActionType"];
 export type ActionStatus = components["schemas"]["ActionStatus"];
+export type RecurrenceUnit = components["schemas"]["RecurrenceUnit"];
 
 export type Plant = components["schemas"]["Plant"];
 export type PlantDetail = components["schemas"]["PlantDetail"];

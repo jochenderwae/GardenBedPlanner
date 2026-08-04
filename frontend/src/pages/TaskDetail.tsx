@@ -7,6 +7,7 @@ import {
   getAction,
   getBed,
   getPlant,
+  listActions,
   listBedEquipment,
   listHarvestLogs,
   listPlantings,
@@ -15,6 +16,7 @@ import {
   type ActionStatus,
   type HarvestLog,
   type HarvestQuality,
+  type RecurrenceUnit,
 } from "@/api/client";
 import { ACTION_TYPE_LABELS } from "@/pages/agenda/taskAgenda";
 import { HarvestLogDialog } from "@/pages/harvest/HarvestLogDialog";
@@ -31,6 +33,25 @@ function formatDueWindow(action: Action): string | null {
   if (!action.due_date_start) return `Due by ${action.due_date_end}`;
   if (!action.due_date_end) return `Not before ${action.due_date_start}`;
   return `${action.due_date_start} – ${action.due_date_end}`;
+}
+
+const RECURRENCE_UNIT_SINGULAR: Record<RecurrenceUnit, string> = {
+  daily: "day",
+  weekly: "week",
+  monthly: "month",
+  yearly: "year",
+};
+
+/** "Repeats every 3 weeks" / "Repeats every day" / "Repeats every 2 weeks
+ * until 2026-12-31" (#227) - plain-language cadence for a manually-created
+ * recurring task, mirroring `app/services/recurrence.py`'s own
+ * `shift_date`/`generate_next_occurrence` semantics (interval + unit,
+ * optional end date) without exposing those raw field names. */
+function formatRecurrenceCadence(action: Action): string | null {
+  if (!action.recurrence_unit) return null;
+  const unitLabel = RECURRENCE_UNIT_SINGULAR[action.recurrence_unit];
+  const cadence = action.recurrence_interval === 1 ? `every ${unitLabel}` : `every ${action.recurrence_interval} ${unitLabel}s`;
+  return action.recurrence_end_date ? `Repeats ${cadence} until ${action.recurrence_end_date}` : `Repeats ${cadence}`;
 }
 
 const STATUS_LABELS: Record<ActionStatus, string> = {
@@ -96,6 +117,14 @@ export function TaskDetail() {
     enabled: action?.equipment_id != null,
   });
 
+  // #227: once this recurring task has been completed/skipped, #226's
+  // backend generates its next occurrence (recurrence_source_action_id
+  // pointing back at this one) - only worth fetching every action to find
+  // it when this task is actually recurring at all (most tasks aren't).
+  const isRecurring = action?.recurrence_unit != null;
+  const actionsQuery = useQuery({ queryKey: ["actions"], queryFn: () => listActions(), enabled: isRecurring });
+  const nextOccurrence = isRecurring ? (actionsQuery.data ?? []).find((a) => a.recurrence_source_action_id === action?.id) : undefined;
+
   // #221: harvest tasks specifically need their own Planting resolved (see
   // harvestPlanting.ts's own doc on why Action alone can't say which one) -
   // both for gating "Log a harvest" and for this planting's own harvest
@@ -120,7 +149,16 @@ export function TaskDetail() {
         status,
         completed_date: status === "completed" ? new Date().toISOString().slice(0, 10) : null,
       }),
-    onSuccess: (updated) => queryClient.setQueryData(["action", actionId], updated),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(["action", actionId], updated);
+      // #227: completing (or skipping) a recurring task may have just
+      // generated its next occurrence server-side (#226) - the flat
+      // ["actions"] list this page's own `actionsQuery` reads from (see
+      // above) needs to refetch to pick that new row up, same "invalidate
+      // after a status transition with wide-reaching effects" reasoning
+      // HarvestLogDialog.tsx's own onSuccess already applies.
+      queryClient.invalidateQueries({ queryKey: ["actions"] });
+    },
   });
 
   const equipment =
@@ -167,6 +205,23 @@ export function TaskDetail() {
               <div>
                 <dt className="text-xs font-medium text-muted-foreground">Completed</dt>
                 <dd>{action.completed_date}</dd>
+              </div>
+            )}
+
+            {isRecurring && (
+              <div>
+                <dt className="text-xs font-medium text-muted-foreground">Recurrence</dt>
+                <dd>
+                  {formatRecurrenceCadence(action)}
+                  {nextOccurrence?.id != null && (
+                    <>
+                      {" — "}
+                      <Link to={`/tasks/${nextOccurrence.id}`} className="underline underline-offset-2">
+                        view next occurrence
+                      </Link>
+                    </>
+                  )}
+                </dd>
               </div>
             )}
 

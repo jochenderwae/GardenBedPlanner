@@ -19,6 +19,7 @@ import { formatDueDateHeading, groupActionsByDueDate, taskDueDateKey, taskLabel 
 import { ACTION_STATUS_DOT_CLASS, ACTION_STATUS_GLYPH, ACTION_STATUS_PILL_CLASS } from "./actionStatusStyles";
 import { addDays, addMonths, addWeeks, isoYearMonth, isToday, monthGridDays, weekDays } from "./calendarGrid";
 import { MiniCalendar } from "./MiniCalendar";
+import { NewTaskDialog } from "./NewTaskDialog";
 import { TaskAgendaView } from "./TaskAgendaView";
 
 type CalendarMode = "month" | "week" | "day" | "list";
@@ -238,6 +239,12 @@ export function CalendarView() {
         <Button type="button" size="sm" variant="outline" onClick={() => setFocusDate(today)}>
           Today
         </Button>
+
+        {/* #227: reachable regardless of which mode (Month/Week/Day/List) is
+            active, and - since this is the one CalendarView both Agenda.tsx
+            (desktop) and MobileAgenda.tsx (mobile) render unmodified - on
+            both platforms from this single insertion point. */}
+        <NewTaskDialog />
 
         {mode !== "list" && (
           <>
