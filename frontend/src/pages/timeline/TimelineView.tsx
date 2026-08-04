@@ -230,9 +230,9 @@ export function TimelineView() {
   const [selection, setSelection] = useState<TimelineSelection | null>(null);
 
   const distinctSlugs = useMemo(() => [...new Set(plantings.map((p) => p.plant_slug))], [plantings]);
-  // Same per-distinct-plant PlantDetail fetch AgendaView.tsx already uses -
-  // periods only come back on the single-plant GET, never the list one (see
-  // api/client.ts's PlantDetail doc).
+  // Same per-distinct-plant PlantDetail fetch pattern the old AgendaView.tsx
+  // (removed by #29) used - periods only come back on the single-plant GET,
+  // never the list one (see api/client.ts's PlantDetail doc).
   const plantQueries = useQueries({
     queries: distinctSlugs.map((slug) => ({ queryKey: ["plant", slug], queryFn: () => getPlant(slug) })),
   });

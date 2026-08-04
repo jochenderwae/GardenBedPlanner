@@ -1,5 +1,13 @@
-import type { Bed, Plant, Planting, PlantPeriod } from "@/api/client";
-import { isPlantingActiveAsOf, todayIsoDate } from "@/pages/layout/plantingLifecycle";
+/** Small month-number utilities, originally written for the now-removed
+ * `AgendaView.tsx` (superseded by `CalendarView.tsx`, #29) but kept here -
+ * `MONTH_NAMES` and `monthsInPeriod` turned out to be genuine shared
+ * dependencies (`plant-detail/SatelliteSections.tsx`'s period display,
+ * `seed-guide/seedGuide.ts`'s `buildSeedGuideEntries`), not private helpers
+ * of the view that used to live in this file - deleting the whole module
+ * alongside `AgendaView.tsx` would have broken both of those unrelated
+ * features, so only the `AgendaView`-only exports (`AgendaEntry`,
+ * `buildAgendaEntries`, `applyPeriodTypeLabels`, `groupByMonth`) were
+ * removed. */
 
 /** Month numbers this app uses throughout are 1-12 (matching `PlantPeriod`'s
  * own `start_month`/`end_month`), not JS `Date`'s 0-11. */
@@ -31,88 +39,4 @@ export function monthsInPeriod(startMonth: number, endMonth: number): number[] {
     for (let m = 1; m <= endMonth; m++) months.push(m);
   }
   return months;
-}
-
-export interface AgendaEntry {
-  month: number;
-  plantSlug: string;
-  plantCommonName: string;
-  periodTypeCode: string;
-  periodTypeLabel: string;
-  bedId: number;
-  bedName: string;
-}
-
-/** Builds one `AgendaEntry` per (active planting x its plant's period x
- * month that period covers) - the actual "what's due when across the whole
- * garden" view this backlog item asks for. "Active" means actually in the
- * ground as of `asOfDate` (defaults to today) - `removed_date` is a real
- * date, not a boolean flag (#180): a planting scheduled to leave *next*
- * month is still active today and still belongs in the agenda, while one
- * already removed isn't actionable anymore regardless of whether it was
- * ever formally "cleared" in the data. Callers group the result by `month`
- * for a month-by-month display (see `groupByMonth`). */
-export function buildAgendaEntries(
-  plantings: Planting[],
-  plantsBySlug: Map<string, Plant>,
-  periods: PlantPeriod[],
-  bedsById: Map<number, Bed>,
-  asOfDate: string = todayIsoDate(),
-): AgendaEntry[] {
-  const entries: AgendaEntry[] = [];
-  const activePlantings = plantings.filter((p) => isPlantingActiveAsOf(p, asOfDate));
-
-  // One pass per distinct plant referenced by an active planting (rather
-  // than per-planting x per-period-row) so a plant placed several times in
-  // the garden (e.g. two tomato plantings in different beds) still gets its
-  // own entry per bed instead of being silently deduplicated.
-  for (const planting of activePlantings) {
-    const plant = plantsBySlug.get(planting.plant_slug);
-    const bed = bedsById.get(planting.bed_id);
-    if (!plant || !bed) continue;
-
-    const plantPeriods = periods.filter((period) => period.plant_slug === planting.plant_slug);
-    for (const period of plantPeriods) {
-      for (const month of monthsInPeriod(period.start_month, period.end_month)) {
-        entries.push({
-          month,
-          plantSlug: plant.slug,
-          plantCommonName: plant.common_name,
-          periodTypeCode: period.period_type,
-          periodTypeLabel: period.period_type,
-          bedId: bed.id ?? planting.bed_id,
-          bedName: bed.name,
-        });
-      }
-    }
-  }
-  return entries;
-}
-
-/** Applies human-readable `PeriodType.description` labels (falling back to
- * the raw code when a type has none) - kept as a separate pass over
- * `buildAgendaEntries`'s output rather than baked into it, so that function
- * stays testable without needing a `PeriodType` fixture too. */
-export function applyPeriodTypeLabels(
-  entries: AgendaEntry[],
-  periodTypeLabelsByCode: Map<string, string>,
-): AgendaEntry[] {
-  return entries.map((entry) => ({
-    ...entry,
-    periodTypeLabel: periodTypeLabelsByCode.get(entry.periodTypeCode) || entry.periodTypeCode,
-  }));
-}
-
-/** Groups agenda entries by month (1-12) for a month-by-month rendering,
- * sorted within each month by plant name for a stable, scannable order. */
-export function groupByMonth(entries: AgendaEntry[]): Map<number, AgendaEntry[]> {
-  const byMonth = new Map<number, AgendaEntry[]>();
-  for (let month = 1; month <= 12; month++) byMonth.set(month, []);
-  for (const entry of entries) {
-    byMonth.get(entry.month)?.push(entry);
-  }
-  for (const monthEntries of byMonth.values()) {
-    monthEntries.sort((a, b) => a.plantCommonName.localeCompare(b.plantCommonName));
-  }
-  return byMonth;
 }

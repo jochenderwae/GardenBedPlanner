@@ -1,57 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { listActions, listBedEquipment, listBeds, listPlants, type Action, type Bed, type BedEquipment, type Plant } from "@/api/client";
-import { ACTION_TYPE_LABELS, groupActionsByDueDate, sortedDueDates } from "./taskAgenda";
-
-/** "Tuesday, July 28, 2026" - day-level, so a locale-aware `Date` format
- * reads better than hand-rolling one the way `agendaMonths.ts`'s
- * month-only `MONTH_NAMES` does (a plain month name has no such
- * locale-formatting ambiguity to begin with). Parsed as local midnight
- * (`T00:00:00`, no timezone suffix) so the displayed date matches the
- * plain `YYYY-MM-DD` string everywhere else in this app, regardless of the
- * browser's own timezone. */
-function formatDueDateHeading(iso: string): string {
-  const date = new Date(`${iso}T00:00:00`);
-  return date.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-}
-
-/** "Sow — Tomato (North planter)" - the action type plus whichever of
- * plant/bed/equipment it references, in that order, joined only by the
- * pieces actually present (an action isn't required to reference any of
- * them - see `Action`'s own doc on its four nullable FKs). */
-function taskLabel(
-  action: Action,
-  plantsBySlug: Map<string, Plant>,
-  bedsById: Map<number, Bed>,
-  equipmentById: Map<number, BedEquipment>,
-): string {
-  const typeLabel = ACTION_TYPE_LABELS[action.action_type] ?? action.action_type;
-  const plantLabel = action.plant_slug ? (plantsBySlug.get(action.plant_slug)?.common_name ?? action.plant_slug) : null;
-  const bedLabel = action.bed_id != null ? (bedsById.get(action.bed_id)?.name ?? `Bed #${action.bed_id}`) : null;
-  const equipmentLabel =
-    action.equipment_id != null
-      ? (equipmentById.get(action.equipment_id)?.equipment_type ?? `Equipment #${action.equipment_id}`)
-      : null;
-  const refs = [plantLabel, bedLabel, equipmentLabel].filter((r): r is string => !!r);
-  return refs.length > 0 ? `${typeLabel} — ${refs.join(", ")}` : typeLabel;
-}
+import { listActions, listBedEquipment, listBeds, listPlants } from "@/api/client";
+import { formatDueDateHeading, groupActionsByDueDate, sortedDueDates, taskLabel } from "./taskAgenda";
 
 /** Day-cell agenda of garden tasks (#181) - every `pending` `Action` row,
  * grouped by its own due window's end date (`due_date_end`, the "must
  * finish before" deadline - see `taskAgenda.ts`'s `taskDueDateKey`), each
  * one linking through to its own detail page (`TaskDetail.tsx`, at
- * `/tasks/:id`). Deliberately a *second*, separate section alongside the
- * existing `AgendaView.tsx` (sowing/harvest *windows* derived from active
- * plantings' `PlantPeriod` data) rather than replacing or merging into it -
- * that view answers "what's coming up over the season," this one answers
- * "what's actually due, right now" from real generated tasks (#183/#192);
- * reconciling the two into one unified calendar is a materially bigger
- * design question this ticket's own scope doesn't ask for (see #197's/
- * this ticket's own note flagging it as an open implementation call).
- * Shared between the desktop `/agenda` route and the mobile route set's
- * own Agenda tab, matching `AgendaView`'s existing sharing pattern - plain
- * Tailwind/shadcn list UI, nothing canvas-editor-specific here either. */
+ * `/tasks/:id`). Originally a standalone section rendered directly on
+ * `Agenda.tsx`/`MobileAgenda.tsx`; now List mode inside `CalendarView.tsx`
+ * (#29), rendered completely unmodified - Month/Week/Day modes cover the
+ * "browse a real calendar grid, everything regardless of status" case,
+ * this one stays the "what's actually due, pending-only, right now" flat
+ * list it always was. */
 export function TaskAgendaView() {
   const actionsQuery = useQuery({ queryKey: ["actions"], queryFn: () => listActions() });
   const bedsQuery = useQuery({ queryKey: ["beds"], queryFn: listBeds });

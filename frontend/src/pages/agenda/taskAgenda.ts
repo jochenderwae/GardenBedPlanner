@@ -1,4 +1,4 @@
-import type { Action, ActionType } from "@/api/client";
+import type { Action, ActionType, Bed, BedEquipment, Plant } from "@/api/client";
 
 /** Human-readable labels for `ActionType` - no such mapping existed
  * anywhere in the frontend before this (#181 is the first real Action
@@ -60,4 +60,43 @@ export function groupActionsByDueDate(actions: Action[]): Map<string, Action[]> 
  * because every key is already a zero-padded `YYYY-MM-DD` ISO date. */
 export function sortedDueDates(byDate: Map<string, Action[]>): string[] {
   return [...byDate.keys()].sort();
+}
+
+/** "Tuesday, July 28, 2026" - day-level, so a locale-aware `Date` format
+ * reads better than hand-rolling one the way `agendaMonths.ts`'s
+ * month-only `MONTH_NAMES` does (a plain month name has no such
+ * locale-formatting ambiguity to begin with). Parsed as local midnight
+ * (`T00:00:00`, no timezone suffix) so the displayed date matches the
+ * plain `YYYY-MM-DD` string everywhere else in this app, regardless of the
+ * browser's own timezone. Originally private to `TaskAgendaView.tsx`;
+ * exported here (#29) so `CalendarView.tsx`'s Week/Day cells can reuse the
+ * same day-heading format List mode already has, rather than a second
+ * copy. */
+export function formatDueDateHeading(iso: string): string {
+  const date = new Date(`${iso}T00:00:00`);
+  return date.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" });
+}
+
+/** "Sow — Tomato (North planter)" - the action type plus whichever of
+ * plant/bed/equipment it references, in that order, joined only by the
+ * pieces actually present (an action isn't required to reference any of
+ * them - see `Action`'s own doc on its four nullable FKs). Originally
+ * private to `TaskAgendaView.tsx`; exported here (#29) so `CalendarView`'s
+ * Month/Week/Day cells can reuse the same task-label formatting List mode
+ * already has, rather than a second copy. */
+export function taskLabel(
+  action: Action,
+  plantsBySlug: Map<string, Plant>,
+  bedsById: Map<number, Bed>,
+  equipmentById: Map<number, BedEquipment>,
+): string {
+  const typeLabel = ACTION_TYPE_LABELS[action.action_type] ?? action.action_type;
+  const plantLabel = action.plant_slug ? (plantsBySlug.get(action.plant_slug)?.common_name ?? action.plant_slug) : null;
+  const bedLabel = action.bed_id != null ? (bedsById.get(action.bed_id)?.name ?? `Bed #${action.bed_id}`) : null;
+  const equipmentLabel =
+    action.equipment_id != null
+      ? (equipmentById.get(action.equipment_id)?.equipment_type ?? `Equipment #${action.equipment_id}`)
+      : null;
+  const refs = [plantLabel, bedLabel, equipmentLabel].filter((r): r is string => !!r);
+  return refs.length > 0 ? `${typeLabel} — ${refs.join(", ")}` : typeLabel;
 }
