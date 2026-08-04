@@ -178,20 +178,14 @@ def test_cascade_delete_bed_with_compost_fertilization_log_should_succeed(client
     assert client.get(f"/api/compost-fertilization-logs/{log_id}").status_code == 404
 
 
-@pytest.mark.xfail(
-    reason="Bug found while testing #38 (same area, a different dependent table): delete_bed's "
-    "cascade=true path deletes a bed's Plantings but never cleans up HarvestLog rows that "
-    "reference one of those plantings via planting_id - unlike the CompostFertilizationLog gap "
-    "just above (a clean 409), this one crashes with a raw 500. The FK violation fires during "
-    "an autoflush triggered by a later SELECT inside the cascade block (delete_bed's own "
-    "session.exec(select(BedEquipment)...) call), not at the final explicit session.commit() "
-    "commit_or_409 wraps - so commit_or_409's try/except never even gets a chance to catch it. "
-    "Same class of bug as #215 (a cascade-delete FK violation bypassing commit_or_409 due to "
-    "autoflush timing), different trigger. Reported as a new issue rather than folded into #38 "
-    "or fixed here. Remove this xfail once fixed.",
-    strict=True,
-)
-def test_cascade_delete_bed_with_a_plantings_harvest_log_should_not_500(client: TestClient, db_session) -> None:
+def test_cascade_delete_bed_with_a_plantings_harvest_log_should_succeed(client: TestClient, db_session) -> None:
+    """#217: delete_bed's cascade=true path used to delete a bed's Plantings
+    but never clean up HarvestLog rows that reference one of those
+    plantings via planting_id - a raw 500 (FK violation via autoflush
+    timing bypassing commit_or_409), not a clean 204/409. Fixed by
+    gathering every dependent row (HarvestLog included) via SELECT before
+    any session.delete() call, so nothing triggers an autoflush mid-
+    cascade - see delete_bed's own comments."""
     from app.models.plant import Plant
 
     bed_id = client.post(
@@ -215,13 +209,13 @@ def test_cascade_delete_bed_with_a_plantings_harvest_log_should_not_500(client: 
         "/api/harvest-logs", json={"planting_id": planting_id, "harvest_date": "2027-08-01"}
     )
     assert harvest_log_response.status_code == 201, harvest_log_response.text
+    harvest_log_id = harvest_log_response.json()["id"]
 
     cascade_response = client.delete(f"/api/beds/{bed_id}", params={"cascade": "true"})
-    # The bar here is deliberately just "not a raw 500" - either a clean
-    # cascade (204, HarvestLog cleaned up too) or a clean 409 (blocked,
-    # like CompostFertilizationLog above) would both be acceptable fixes;
-    # a 500 is the one outcome that's definitely wrong.
-    assert cascade_response.status_code in (204, 409), cascade_response.text
+    assert cascade_response.status_code == 204, cascade_response.text
+    assert client.get(f"/api/beds/{bed_id}").status_code == 404
+    assert client.get(f"/api/plantings/{planting_id}").status_code == 404
+    assert client.get(f"/api/harvest-logs/{harvest_log_id}").status_code == 404
 
 
 def test_cascade_delete_bed_with_compost_bin_should_succeed(client: TestClient) -> None:
