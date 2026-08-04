@@ -18,7 +18,13 @@ export type RectangleGeometry = components["schemas"]["RectangleGeometry"];
 export type PolygonGeometry = components["schemas"]["PolygonGeometry"];
 export type Geometry = RectangleGeometry | PolygonGeometry;
 export type Garden = components["schemas"]["Garden"];
-export type GardenPut = components["schemas"]["GardenPut"];
+// The backend's schema regenerated this PUT-body schema's name from
+// GardenPut to GardenUpdate as part of #238's multi-garden support (the
+// legacy singular PUT /api/garden route now shares its request schema with
+// the new PATCH /api/gardens/{id} route) - kept the exported alias name
+// GardenPut unchanged here so every existing call site (Layout.tsx,
+// GardenPanel.tsx) keeps working without a second, unrelated rename.
+export type GardenPut = components["schemas"]["GardenUpdate"];
 export type ExampleGarden = components["schemas"]["ExampleGarden"];
 export type ExampleBed = components["schemas"]["ExampleBed"];
 export type ExamplePlanting = components["schemas"]["ExamplePlanting"];
