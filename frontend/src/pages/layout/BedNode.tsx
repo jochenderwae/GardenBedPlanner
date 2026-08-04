@@ -43,10 +43,13 @@ const BED_LABEL_FONT_SIZE = 12;
 // discoverable enough" report predating either fix was something else
 // entirely (never conclusively diagnosed) - not a missing scale
 // compensation Konva doesn't already provide.
-const TRANSFORMER_ANCHOR_SIZE_PX = 10;
-const TRANSFORMER_ANCHOR_STROKE_WIDTH_PX = 1;
-const TRANSFORMER_BORDER_STROKE_WIDTH_PX = 1;
-const TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX = 50;
+// Exported so `PlantPlacementLayer.tsx`'s own row/field-planting Transformer
+// (#261) matches this Rect-based Transformer's exact on-screen handle sizing
+// instead of maintaining a second copy of the same four numbers.
+export const TRANSFORMER_ANCHOR_SIZE_PX = 10;
+export const TRANSFORMER_ANCHOR_STROKE_WIDTH_PX = 1;
+export const TRANSFORMER_BORDER_STROKE_WIDTH_PX = 1;
+export const TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX = 50;
 
 interface BedNodeProps {
   bed: Bed;

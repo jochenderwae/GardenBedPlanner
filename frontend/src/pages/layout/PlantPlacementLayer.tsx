@@ -1,10 +1,18 @@
 import type Konva from "konva";
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Circle, Group, Layer, Line, Rect, RegularPolygon, Text } from "react-konva";
+import { Circle, Group, Layer, Line, Rect, RegularPolygon, Text, Transformer } from "react-konva";
 import type { Bed, Geometry, PlacementType, Plant, Planting } from "@/api/client";
+import {
+  TRANSFORMER_ANCHOR_SIZE_PX,
+  TRANSFORMER_ANCHOR_STROKE_WIDTH_PX,
+  TRANSFORMER_BORDER_STROKE_WIDTH_PX,
+  TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX,
+} from "./BedNode";
 import type { PlantingTooltipState } from "./PlantingTooltip";
 import {
   boundingRect,
+  type Bounds,
+  clampRectPositionToBounds,
   colorForSlug,
   effectivePlantSpacing,
   fieldGeometryFromDrag,
@@ -18,6 +26,14 @@ import {
 } from "./geometry";
 import { PlantFootprint, SpreadOutline } from "./PlantFootprint";
 import type { PlantingStartVisualState, RemovalVisualState } from "./plantingLifecycle";
+
+/** Minimum row/field width or height (cm) a resize gesture can shrink to -
+ * deliberately smaller than `BedNode.tsx`'s `MIN_SIZE_CM` (20): a row's
+ * thickness or a field's own edge is legitimately allowed to be narrower
+ * than the smallest sensible bed, since it's just a planting boundary, not
+ * a physical structure. Purely a "don't collapse to nothing" floor, not a
+ * domain-meaningful minimum planting size. */
+const MIN_PLANTING_DIMENSION_CM = 5;
 
 /** "individual" draws with a single click; "row"/"field" draw with a
  * click-drag-release gesture (see PlantPlacementLayer's mouse handlers
@@ -48,6 +64,16 @@ interface PlantPlacementLayerProps {
    * while the selection has 2+ members moves the whole group together (see
    * Layout.tsx's handlePlantingMove). */
   selectedIds: Set<number>;
+  /** The id of the single planting whose edit panel (PlantingPanel) is
+   * currently open, i.e. `Layout.tsx`'s own `selectedPlantingId` - distinct
+   * from `selectedIds` above (the multi-selection set, used only for the
+   * blue highlight stroke). A row/field planting matching this id renders
+   * with Konva `Transformer` resize/rotate handles on its boundary (#261),
+   * matching `BedNode.tsx`'s own single-selection editing; a multi-selected
+   * planting doesn't get handles - there's no defined per-item resize UX for
+   * a bulk selection yet, only the bulk move/delete `BulkPlantingPanel`
+   * already supports. `null` when no single planting is open. */
+  editingId: number | null;
   /** Fired when a marquee (click-drag over empty bed space while no plant is
    * armed - see `canSelect` below) completes: every planting in that bed
    * whose bounding box intersects the drawn rectangle, plus whether it
@@ -154,6 +180,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
     onMove,
     onSelect,
     selectedIds,
+    editingId,
     onMarqueeSelect,
     plantingWarnings,
     plantingGoodCompanions,
@@ -432,6 +459,12 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
         if (bed.id == null) return null;
         const rect = boundingRect(bed.border_geometry);
         const bedPlantings = plantingsByBed.get(bed.id) ?? [];
+        // Bed-local (not world/garden-space) - plantings render inside this
+        // bed's own `<Group x={rect.x} y={rect.y}>` below, in the same
+        // bed-local frame their own `geometry` is already stored in, so a
+        // row/field resize/rotate clamps against `(0, 0)-(rect.width,
+        // rect.height)`, not the bed's world position.
+        const bedBounds: Bounds = { x: 0, y: 0, width: rect.width, height: rect.height };
         const preview =
           draw && draw.bedId === bed.id
             ? placementMode === "row"
@@ -480,6 +513,8 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
                 plant={plantsBySlug.get(planting.plant_slug)}
                 active={active}
                 selected={planting.id != null && selectedIds.has(planting.id)}
+                isEditing={planting.id != null && planting.id === editingId}
+                bedBounds={bedBounds}
                 onMove={(geometry) => onMove(planting, geometry)}
                 onSelect={(additive) => onSelect(planting, additive)}
                 registerNode={(node) => registerNode(planting.id, node)}
@@ -681,6 +716,8 @@ function PlantingMarker({
   plant,
   active,
   selected,
+  isEditing,
+  bedBounds,
   onMove,
   onSelect,
   registerNode,
@@ -699,6 +736,18 @@ function PlantingMarker({
   /** Whether this marker is part of the current multi-selection (marquee-
    * drag or shift-click) - see PlantPlacementLayerProps.selectedIds. */
   selected: boolean;
+  /** See PlantPlacementLayerProps.editingId - true only for the single
+   * planting whose edit panel is open. Row/field placements render
+   * Transformer resize/rotate handles on their boundary only while this is
+   * true (#261); individual (point) placements ignore it entirely, same as
+   * they already ignore `selected`. */
+  isEditing: boolean;
+  /** This planting's own bed footprint, bed-local (`(0, 0)` to
+   * `(width, height)`) - a row/field resize/rotate is clamped to stay
+   * within it, mirroring `BedNode.tsx`'s own `bounds` clamp against the
+   * garden boundary (#261's "scope question", resolved as: clamp, don't
+   * reject). Unused by the individual-placement render path below. */
+  bedBounds: Bounds;
   onMove: (geometry: Geometry) => void;
   /** `additive` is true for a shift-click (toggle membership in the
    * multi-selection) and false for a plain click (open the single-planting
@@ -732,6 +781,30 @@ function PlantingMarker({
   const label = plant?.common_name ?? planting.plant_slug;
   const color = colorForSlug(planting.plant_slug);
 
+  // Row/field boundary-editing wiring (#261) - hooks must run unconditionally
+  // every render (rules of hooks), so these live here rather than inside the
+  // `if` branch below even though only that branch (and none of the
+  // individual-placement path further down) ever binds/reads them.
+  const shapeRef = useRef<Konva.Rect>(null);
+  const trRef = useRef<Konva.Transformer>(null);
+  // The in-progress resize/rotate geometry, tracked in React state (rather
+  // than an imperative ref like BedNode.tsx's own live-dimension-label
+  // pattern) specifically so it drives a full re-render of `markerPositions`
+  // below - a resize can change how many markers a row/field fits at its own
+  // `effectiveSpacing`, not just where they sit, which an imperative
+  // fixed-length node-reposition (the group-drag-follow pattern used
+  // elsewhere in this file) can't express. `null` outside of an active
+  // transform gesture, in which case rendering falls back to the committed
+  // `planting.geometry`.
+  const [liveRect, setLiveRect] = useState<{ x: number; y: number; width: number; height: number; rotation: number } | null>(null);
+
+  useEffect(() => {
+    if (active && isEditing && trRef.current && shapeRef.current) {
+      trRef.current.nodes([shapeRef.current]);
+      trRef.current.getLayer()?.batchDraw();
+    }
+  }, [active, isEditing]);
+
   if (planting.placement_type === "row" || planting.placement_type === "field") {
     const props = rectRenderProps(planting.geometry);
     // The plant's own default spacing, overridable per-placement (#154's
@@ -739,12 +812,18 @@ function PlantingMarker({
     // fallback `PlantPlacementLayer`'s own draw-time `thicknessCm` uses.
     const effectiveSpacing = effectivePlantSpacing(planting.spacing_cm, plant);
     const markerRadius = Math.max(3, effectiveSpacing / 2);
+    // Live geometry while a resize/rotate gesture is in progress, falling
+    // back to the committed geometry the rest of the time - see `liveRect`'s
+    // own doc above.
+    const renderRect = liveRect ?? props;
     // The drawn rectangle is only ever the placement's own drag/select/
     // delete hit-target (see this branch's `Rect` below) - what actually
     // reads as "the plants" is this grid/line of individual markers filling
     // it at `effectiveSpacing` (#155), not the rectangle itself.
     const markerPositions =
-      planting.placement_type === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);
+      planting.placement_type === "row"
+        ? rowMarkerPositions(renderRect, effectiveSpacing)
+        : fieldMarkerPositions(renderRect, effectiveSpacing);
     const markerVisual = combinedVisualProps(startState, removalState, 0.85);
 
     function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
@@ -763,10 +842,54 @@ function PlantingMarker({
       });
     }
 
+    /** Fires on every tick of a resize/rotate gesture (Konva's `Transformer`
+     * scales the underlying node's `scaleX`/`scaleY` live rather than
+     * changing `width`/`height` directly) - mirrors `BedNode.tsx`'s own
+     * onTransform reading, just driving `liveRect` React state instead of an
+     * imperative dimension-label update, per `liveRect`'s own doc above. */
+    function handleTransform() {
+      const node = shapeRef.current;
+      if (!node) return;
+      setLiveRect({
+        x: node.x(),
+        y: node.y(),
+        width: node.width() * node.scaleX(),
+        height: node.height() * node.scaleY(),
+        rotation: node.rotation(),
+      });
+    }
+
+    /** Commits a finished resize/rotate gesture - grid-snaps the result
+     * (matching `handleDragEnd`'s own snapping) and clamps it to stay within
+     * this planting's own bed (`bedBounds`), the same *clamp, don't reject*
+     * treatment `BedNode.tsx` gives a bed against the garden boundary
+     * (#261's "scope question"). */
+    function handleTransformEnd() {
+      const node = shapeRef.current;
+      if (!node) return;
+      const scaleX = node.scaleX();
+      const scaleY = node.scaleY();
+      // Konva's Transformer expresses a resize as node scale, not a changed
+      // width/height - reset back to 1 once the real width/height below is
+      // derived from it, same as BedNode.tsx's identical onTransformEnd.
+      node.scaleX(1);
+      node.scaleY(1);
+      let width = Math.max(MIN_PLANTING_DIMENSION_CM, snapToGrid(Math.round(node.width() * scaleX)));
+      let height = Math.max(MIN_PLANTING_DIMENSION_CM, snapToGrid(Math.round(node.height() * scaleY)));
+      width = Math.min(width, Math.max(MIN_PLANTING_DIMENSION_CM, bedBounds.width));
+      height = Math.min(height, Math.max(MIN_PLANTING_DIMENSION_CM, bedBounds.height));
+      const { x, y } = clampRectPositionToBounds(snapToGrid(node.x()), snapToGrid(node.y()), width, height, bedBounds);
+      setLiveRect(null);
+      onMove({ type: "rectangle", x, y, width, height, rotation: node.rotation() });
+    }
+
     return (
       <>
         <Rect
-          ref={registerNode}
+          ref={(node) => {
+            registerNode(node);
+            shapeRef.current = node;
+          }}
           x={props.x}
           y={props.y}
           width={props.width}
@@ -778,8 +901,8 @@ function PlantingMarker({
           // below are).
           fill={color}
           opacity={0.15}
-          stroke={selected ? SELECTION_HIGHLIGHT_COLOR : color}
-          strokeWidth={selected ? 3 : 1.5}
+          stroke={selected || isEditing ? SELECTION_HIGHLIGHT_COLOR : color}
+          strokeWidth={selected || isEditing ? 3 : 1.5}
           dash={markerVisual.dash}
           draggable={active}
           listening={active}
@@ -788,6 +911,8 @@ function PlantingMarker({
           onDragEnd={handleDragEnd}
           onClick={(e) => onSelect(e.evt.shiftKey)}
           onTap={() => onSelect(false)}
+          onTransform={handleTransform}
+          onTransformEnd={handleTransformEnd}
         />
         {markerPositions.map((pos, i) => (
           <PlantFootprint
@@ -814,6 +939,21 @@ function PlantingMarker({
           goodCompanions.length > 0 && (
             <CompanionCheckmark x={props.x + props.width} y={props.y} neighbors={goodCompanions} onHover={onHoverIndicator} />
           )
+        )}
+        {isEditing && active && (
+          <Transformer
+            ref={trRef}
+            rotateEnabled
+            keepRatio={false}
+            anchorSize={TRANSFORMER_ANCHOR_SIZE_PX}
+            anchorStrokeWidth={TRANSFORMER_ANCHOR_STROKE_WIDTH_PX}
+            borderStrokeWidth={TRANSFORMER_BORDER_STROKE_WIDTH_PX}
+            rotateAnchorOffset={TRANSFORMER_ROTATE_ANCHOR_OFFSET_PX}
+            boundBoxFunc={(oldBox, newBox) => {
+              if (newBox.width < MIN_PLANTING_DIMENSION_CM || newBox.height < MIN_PLANTING_DIMENSION_CM) return oldBox;
+              return newBox;
+            }}
+          />
         )}
       </>
     );

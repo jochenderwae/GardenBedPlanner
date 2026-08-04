@@ -1579,6 +1579,7 @@ export function Layout() {
                   onMove={handlePlantingMove}
                   onSelect={handlePlantingSelect}
                   selectedIds={selectedPlantingIds}
+                  editingId={selectedPlantingId}
                   onMarqueeSelect={handleMarqueeSelect}
                   plantingWarnings={plantingWarnings}
                   plantingGoodCompanions={plantingGoodCompanions}
