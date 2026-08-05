@@ -22,6 +22,7 @@ import {
   rectRenderProps,
   rowGeometryFromDrag,
   rowMarkerPositions,
+  snapPointToAngle,
   snapToGrid,
 } from "./geometry";
 import { PlantFootprint, SpreadOutline } from "./PlantFootprint";
@@ -151,8 +152,13 @@ export interface PlantPlacementLayerHandle {
   /** `worldPos` is Stage-local (garden-space cm) - whatever
    * `stage.getRelativePointerPosition()` returns, same coordinate space
    * Layout.tsx's own `bedMarquee` already uses. No-op unless a draw/marquee
-   * gesture is actually in progress. */
-  handleStageMouseMove: (worldPos: { x: number; y: number }) => void;
+   * gesture is actually in progress. `ctrlKey` (Layout.tsx's own Stage
+   * mousemove event's `e.evt.ctrlKey`) angle-constrains an in-progress `row`
+   * draw to the nearest 45deg increment (horizontal/vertical/diagonal,
+   * #262) while held - ignored for `field`/marquee gestures, and re-read on
+   * every tick so releasing Ctrl mid-drag reverts to free-angle tracking
+   * immediately. */
+  handleStageMouseMove: (worldPos: { x: number; y: number }, ctrlKey: boolean) => void;
   /** Same rationale, for the Stage's own mouseup - completes whichever
    * gesture (draw or marquee) is in progress, if any. */
   handleStageMouseUp: (worldPos: { x: number; y: number }) => void;
@@ -199,9 +205,13 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
   // Stage-forwarded updates know which bed's offset to convert through.
   // Placement (drawing where a plant goes) always happens inside exactly one
   // bed, so `draw` keeps this bed-local shape.
-  const [draw, setDraw] = useState<{ bedId: number; start: { x: number; y: number }; current: { x: number; y: number } } | null>(
-    null,
-  );
+  // `ctrlKey` mirrors the most recent mousemove/mousedown's own Ctrl state -
+  // see PlantPlacementLayerHandle.handleStageMouseMove's doc (#262). Only
+  // meaningful for a `row` draw; `angleSnappedEnd` below is what actually
+  // consults it.
+  const [draw, setDraw] = useState<
+    { bedId: number; start: { x: number; y: number }; current: { x: number; y: number }; ctrlKey: boolean } | null
+  >(null);
   // Selection, unlike placement, treats every bed as static background
   // (#19's third round) - a marquee can start on empty garden canvas, cross
   // multiple beds, and select plantings from all of them. `start`/`current`
@@ -241,16 +251,28 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
   const canSelect = active && armedPlant == null;
   const thicknessCm = effectivePlantSpacing(null, armedPlant ?? undefined);
 
+  /** The effective drag-end point a `row` draw should actually use - the
+   * raw `end` as-is normally, or `end` projected onto the nearest 45deg ray
+   * from `start` while Ctrl is held (`ctrlKey`, #262). Scoped to `row` only
+   * (see the ticket's own scope note - `field` placements are always
+   * axis-aligned already), so a `field` draw's `end` always passes through
+   * unchanged regardless of `ctrlKey`. */
+  const angleSnappedEnd = useCallback(
+    (start: { x: number; y: number }, end: { x: number; y: number }, ctrlKey: boolean): { x: number; y: number } =>
+      placementMode === "row" && ctrlKey ? snapPointToAngle(start, end) : end,
+    [placementMode],
+  );
+
   // See PlantPlacementLayerProps.onDrawGeometryChange's own doc - fires on
   // every tick of an in-progress row/field drag with the live preview
   // rectangle so Layout.tsx can refine its arm-time bed-centroid placement
   // check against the actual position being drawn.
   useEffect(() => {
     if (!draw || !onDrawGeometryChange || placementMode === "individual") return;
-    const geometry =
-      placementMode === "row" ? rowGeometryFromDrag(draw.start, draw.current, thicknessCm) : fieldGeometryFromDrag(draw.start, draw.current);
+    const end = angleSnappedEnd(draw.start, draw.current, draw.ctrlKey);
+    const geometry = placementMode === "row" ? rowGeometryFromDrag(draw.start, end, thicknessCm) : fieldGeometryFromDrag(draw.start, end);
     if (geometry) onDrawGeometryChange(draw.bedId, geometry);
-  }, [draw, placementMode, thicknessCm, onDrawGeometryChange]);
+  }, [draw, placementMode, thicknessCm, onDrawGeometryChange, angleSnappedEnd]);
 
   function localPoint(e: Konva.KonvaEventObject<MouseEvent>): { x: number; y: number } | null {
     return e.target.getRelativePointerPosition();
@@ -279,7 +301,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
       if (placementMode === "individual") return;
       const pos = localPoint(e);
       if (!pos) return;
-      setDraw({ bedId, start: pos, current: pos });
+      setDraw({ bedId, start: pos, current: pos, ctrlKey: e.evt.ctrlKey });
       return;
     }
     if (canSelect) {
@@ -312,15 +334,14 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
     (pos: { x: number; y: number }) => {
       if (!draw) return;
       if (armedPlant) {
+        const end = angleSnappedEnd(draw.start, pos, draw.ctrlKey);
         const geometry =
-          placementMode === "row"
-            ? rowGeometryFromDrag(draw.start, pos, thicknessCm)
-            : fieldGeometryFromDrag(draw.start, pos);
+          placementMode === "row" ? rowGeometryFromDrag(draw.start, end, thicknessCm) : fieldGeometryFromDrag(draw.start, end);
         if (geometry) onPlace(draw.bedId, geometry, placementMode);
       }
       setDraw(null);
     },
-    [draw, armedPlant, placementMode, thicknessCm, onPlace],
+    [draw, armedPlant, placementMode, thicknessCm, onPlace, angleSnappedEnd],
   );
 
   const completeMarquee = useCallback(
@@ -364,10 +385,10 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
         if (!canSelect) return;
         setMarquee({ start: worldPos, current: worldPos, additive });
       },
-      handleStageMouseMove(worldPos) {
+      handleStageMouseMove(worldPos, ctrlKey) {
         if (draw) {
           const pos = bedLocalPoint(draw.bedId, worldPos);
-          if (pos) setDraw((prev) => (prev ? { ...prev, current: pos } : prev));
+          if (pos) setDraw((prev) => (prev ? { ...prev, current: pos, ctrlKey } : prev));
           return;
         }
         if (marquee) {
@@ -467,9 +488,12 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
         const bedBounds: Bounds = { x: 0, y: 0, width: rect.width, height: rect.height };
         const preview =
           draw && draw.bedId === bed.id
-            ? placementMode === "row"
-              ? rowGeometryFromDrag(draw.start, draw.current, thicknessCm)
-              : fieldGeometryFromDrag(draw.start, draw.current)
+            ? (() => {
+                const end = angleSnappedEnd(draw.start, draw.current, draw.ctrlKey);
+                return placementMode === "row"
+                  ? rowGeometryFromDrag(draw.start, end, thicknessCm)
+                  : fieldGeometryFromDrag(draw.start, end);
+              })()
             : null;
         return (
           <Group key={bed.id} x={rect.x} y={rect.y}>

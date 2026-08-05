@@ -124,6 +124,39 @@ export function rowGeometryFromDrag(
   return { type: "rectangle", x: start.x, y: start.y - thicknessCm / 2, width: length, height: thicknessCm, rotation };
 }
 
+/** How many degrees apart each angle-snap increment is when a row drag is
+ * angle-constrained (see `snapPointToAngle`) - 8-way (0/45/90/.../315deg),
+ * the standard CAD-style horizontal/vertical/diagonal constraint used while
+ * Ctrl is held during a row-placement drag (#262). */
+export const ANGLE_SNAP_STEP_DEG = 45;
+
+/** Projects `end` onto the nearest `stepDeg`-multiple ray from `start` (an
+ * 8-way 0/45/90/.../315deg constraint at the default `ANGLE_SNAP_STEP_DEG`) -
+ * used while a row placement drag is angle-constrained (Ctrl held, #262).
+ * Snaps the drag's *direction* to the nearest allowed angle, then keeps the
+ * endpoint at the raw drag's own projected length along that direction
+ * (`dx`/`dy` dotted with the snapped unit vector) rather than its full
+ * straight-line length - so the constrained endpoint tracks as closely as
+ * the angle constraint allows to where the cursor actually is, instead of
+ * snapping the angle but leaving the endpoint somewhere the cursor never
+ * was. */
+export function snapPointToAngle(
+  start: { x: number; y: number },
+  end: { x: number; y: number },
+  stepDeg: number = ANGLE_SNAP_STEP_DEG,
+): { x: number; y: number } {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  if (dx === 0 && dy === 0) return { ...end };
+  const rawAngleRad = Math.atan2(dy, dx);
+  const stepRad = (stepDeg * Math.PI) / 180;
+  const snappedAngleRad = Math.round(rawAngleRad / stepRad) * stepRad;
+  const dirX = Math.cos(snappedAngleRad);
+  const dirY = Math.sin(snappedAngleRad);
+  const projectedLength = dx * dirX + dy * dirY;
+  return { x: start.x + projectedLength * dirX, y: start.y + projectedLength * dirY };
+}
+
 /** A `field` planting's geometry: the axis-aligned rectangle spanning
  * `start` and `end` (whichever corner order the drag happened in) - unlike
  * a row, the drawn extent itself *is* the planted area, not derived from

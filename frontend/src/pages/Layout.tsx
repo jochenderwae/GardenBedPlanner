@@ -815,13 +815,16 @@ export function Layout() {
    * plain per-bed-shape listener wasn't reliable enough, #19). Attached
    * directly to the Stage rather than any one shape so it keeps firing
    * (and the drag rectangle stays visible/tracking) even once the pointer
-   * crosses outside whatever shape the drag started on. */
+   * crosses outside whatever shape the drag started on. Also forwards the
+   * raw `ctrlKey` state on every tick - `PlantPlacementLayer` uses it to
+   * angle-constrain an in-progress `row` draw to the nearest 45deg increment
+   * while held (#262). */
   function handleStageMouseMove(e: Konva.KonvaEventObject<MouseEvent>) {
     const stage = e.target.getStage();
     const pos = stage?.getRelativePointerPosition();
     if (!pos) return;
     if (bedMarquee) setBedMarquee((prev) => (prev ? { ...prev, current: pos } : prev));
-    plantPlacementRef.current?.handleStageMouseMove(pos);
+    plantPlacementRef.current?.handleStageMouseMove(pos, e.evt.ctrlKey);
   }
 
   /** Same rationale as `handleStageMouseMove` for the Stage's own mouseup -
