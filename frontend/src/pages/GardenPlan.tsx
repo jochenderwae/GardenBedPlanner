@@ -124,6 +124,12 @@ function EntryRow({
 }) {
   const [notesDraft, setNotesDraft] = useState(entry.notes);
   useEffect(() => setNotesDraft(entry.notes), [entry.notes]);
+  // #277: mirrors the "" = not-yet-assigned pattern the bed <Select> below
+  // already uses - a plain string draft so the field can sit blank while
+  // typing rather than snapping back to entry.desired_quantity on every
+  // keystroke, committed (as null, not 0/1) on blur.
+  const [quantityDraft, setQuantityDraft] = useState(entry.desired_quantity != null ? String(entry.desired_quantity) : "");
+  useEffect(() => setQuantityDraft(entry.desired_quantity != null ? String(entry.desired_quantity) : ""), [entry.desired_quantity]);
 
   const updateMutation = useMutation({
     mutationFn: (patch: GardenPlanEntryUpdate) =>
@@ -159,8 +165,14 @@ function EntryRow({
           <Input
             type="number"
             min={1}
-            value={entry.desired_quantity}
-            onChange={(e) => commit({ desired_quantity: Number(e.target.value) })}
+            placeholder="Not yet assigned"
+            value={quantityDraft}
+            onChange={(e) => setQuantityDraft(e.target.value)}
+            onBlur={() => {
+              const trimmed = quantityDraft.trim();
+              const next = trimmed === "" ? null : Number(trimmed);
+              if (next !== entry.desired_quantity) commit({ desired_quantity: next });
+            }}
           />
         </label>
         <label className="flex flex-col gap-1">
@@ -199,7 +211,7 @@ function AddEntryForm({ planId, beds, plants, onAdded }: { planId: number; beds:
       createGardenPlanEntry(planId, {
         plant_slug: slug as string,
         bed_id: bedId ? Number(bedId) : null,
-        desired_quantity: Number(quantity) || 1,
+        desired_quantity: quantity.trim() === "" ? null : Number(quantity),
         notes: "",
       }),
     onSuccess: (created) => {
@@ -221,6 +233,7 @@ function AddEntryForm({ planId, beds, plants, onAdded }: { planId: number; beds:
           type="number"
           min={1}
           className="w-20"
+          placeholder="Qty"
           value={quantity}
           onChange={(e) => setQuantity(e.target.value)}
           aria-label="Desired quantity"
