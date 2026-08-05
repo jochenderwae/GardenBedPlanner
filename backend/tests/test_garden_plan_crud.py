@@ -195,6 +195,33 @@ def test_garden_plan_entry_desired_quantity_has_no_positivity_constraint(
     assert negative_response.json()["desired_quantity"] == -3
 
 
+def test_garden_plan_entry_desired_quantity_is_optional(client: TestClient, db_session) -> None:
+    """#276: desired_quantity is nullable, same "not yet assigned" shape as
+    bed_id - an entry can exist before a quantity is decided."""
+    plant_slug = _create_plant(db_session)
+    plan_id = client.post("/api/garden-plans", json={"season_name": "A", "year": 2027}).json()["id"]
+
+    create_response = client.post(
+        f"/api/garden-plans/{plan_id}/entries", json={"plant_slug": plant_slug}
+    )
+    assert create_response.status_code == 201, create_response.text
+    entry = create_response.json()
+    assert entry["desired_quantity"] is None
+    entry_id = entry["id"]
+
+    quantity_response = client.patch(
+        f"/api/garden-plans/{plan_id}/entries/{entry_id}", json={"desired_quantity": 6}
+    )
+    assert quantity_response.status_code == 200
+    assert quantity_response.json()["desired_quantity"] == 6
+
+    cleared_response = client.patch(
+        f"/api/garden-plans/{plan_id}/entries/{entry_id}", json={"desired_quantity": None}
+    )
+    assert cleared_response.status_code == 200
+    assert cleared_response.json()["desired_quantity"] is None
+
+
 def test_update_garden_plan_entry_bad_plant_slug_returns_409(client: TestClient, db_session) -> None:
     plant_slug = _create_plant(db_session)
     plan_id = client.post("/api/garden-plans", json={"season_name": "A", "year": 2027}).json()["id"]

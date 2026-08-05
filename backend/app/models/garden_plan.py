@@ -34,5 +34,8 @@ class GardenPlanEntry(SQLModel, table=True):
     garden_plan_id: int = Field(foreign_key="garden_plan.id")
     plant_slug: str = Field(foreign_key="plant.slug")
     bed_id: int | None = Field(default=None, foreign_key="bed.id")
-    desired_quantity: int
+    # Nullable - a plan entry can exist before a quantity is decided (#276,
+    # split from #267), same "optional - not yet assigned" reasoning as
+    # bed_id above.
+    desired_quantity: int | None = Field(default=None)
     notes: str = ""

@@ -2161,7 +2161,7 @@ export interface components {
             /** Bed Id */
             bed_id?: number | null;
             /** Desired Quantity */
-            desired_quantity: number;
+            desired_quantity?: number | null;
             /**
              * Notes
              * @default
@@ -2175,7 +2175,7 @@ export interface components {
             /** Bed Id */
             bed_id?: number | null;
             /** Desired Quantity */
-            desired_quantity: number;
+            desired_quantity?: number | null;
             /**
              * Notes
              * @default
