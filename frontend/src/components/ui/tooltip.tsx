@@ -29,6 +29,28 @@ import { Info } from "lucide-react";
  * correctly regardless of what came before - this is standard browser
  * `:focus-visible` behavior working as intended, not a bug in this
  * component. */
+// #216: confirmed against Base UI's own docs (`docs/react/components/
+// tooltip.md`, bundled in `node_modules/@base-ui/react`) and the real
+// rendered DOM (see `e2e/field-hint-tooltip-coverage.spec.ts`'s own note,
+// written independently and reaching the same conclusion) - `Tooltip.Popup`
+// deliberately carries neither `role="tooltip"` nor an `aria-describedby`
+// link back to its trigger, on this version of the library. This isn't a
+// missed wiring step in this file's own composition of the primitive - Base
+// UI's docs are explicit that `Tooltip` is a visual-only affordance for
+// sighted mouse/keyboard users ("Tooltips alone are not accessible to touch
+// or screen reader users") and that the documented mitigation is giving the
+// *trigger* its own real accessible name via `aria-label` that echoes the
+// tooltip content, not wiring up a screen-reader-announced popup
+// relationship the primitive doesn't support. That's deliberately NOT done
+// generically here for every `Tooltip` caller, though - most of this file's
+// callers (Toolbar's icon buttons, `equipmentCondition.tsx`'s "Unplace"
+// button, `TaskDiamond`, ...) already carry their own correct, more
+// specific accessible name (visible button text or an explicit `aria-label`
+// of their own) that's a better screen-reader label for that control than
+// this tooltip's supplementary hint text would be - forcing `aria-label=
+// content` on every trigger would silently clobber those. `FieldHint` is
+// the one caller genuinely missing any accessible name at all (see its own
+// doc below), so that's where this ticket's actual fix lives.
 export function Tooltip({ content, children }: { content: string; children: ReactElement }) {
   return (
     <TooltipPrimitive.Root>
@@ -71,20 +93,31 @@ export function Tooltip({ content, children }: { content: string; children: Reac
  * make a test using a *programmatic* `.focus()` call (rather than a real
  * Tab keypress) misreport this as still broken depending on what happened
  * on the page immediately before. The icon itself stays `aria-hidden`
- * (still purely decorative - the `<button>` is what's focusable and carries
- * the tooltip's `aria-describedby` via `Tooltip.Trigger`'s merged props). A
- * plain, unstyled-looking button (no visible button chrome) rather than a
+ * (still purely decorative - the `<button>` is what's focusable). A plain,
+ * unstyled-looking button (no visible button chrome) rather than a
  * `<span tabIndex={0}>` - nesting an interactive `<button>` inside this
  * app's existing `<label>`/`<th>` call sites is valid HTML (neither is
  * itself a single-purpose interactive control), and a real button gets
  * standard keyboard activation (Enter/Space) semantics for free that a
- * plain focusable `<span>` doesn't. */
+ * plain focusable `<span>` doesn't.
+ *
+ * #216: the button previously had no accessible name at all - no visible
+ * text, an `aria-hidden` icon as its only child, and (per `Tooltip`'s own
+ * doc above) no `aria-describedby` link to the tooltip popup either, so a
+ * screen reader announced it as a bare, unlabeled "button" and the
+ * `description` text it exists to surface was completely unreachable
+ * without sight. `aria-label={description}` below is the fix Base UI's own
+ * docs prescribe for exactly this shape of trigger (an icon-only control
+ * whose sole purpose is showing this tooltip) - safe to apply unlike a
+ * generic `Tooltip`-level fix would be, since this button never has any
+ * other accessible name of its own to clobber. */
 export function FieldHint({ description }: { description?: string | null }) {
   if (!description) return null;
   return (
     <Tooltip content={description}>
       <button
         type="button"
+        aria-label={description}
         className="inline-flex shrink-0 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
       >
         <Info className="size-3.5 text-muted-foreground" aria-hidden="true" />
