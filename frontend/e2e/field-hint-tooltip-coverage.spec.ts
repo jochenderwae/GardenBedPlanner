@@ -91,7 +91,10 @@ test.describe("FieldHint tooltip coverage across the bed/garden/equipment panels
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      // The bed create/edit panel now lives under the "Objects" tab (#242
+      // merged bed/compost-bin/decoration creation into it) - it was called
+      // "Beds" when this spec was first written.
+      await page.getByRole("tab", { name: "Objects" }).click();
       const box = await page.locator("canvas").first().boundingBox();
       if (!box) throw new Error("canvas not visible");
       await page.mouse.click(box.x + 90, box.y + 90);
@@ -116,7 +119,9 @@ test.describe("FieldHint tooltip coverage across the bed/garden/equipment panels
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      // See the BedPanel test above: "Add bed" now lives under "Objects",
+      // renamed from "Beds" by #242.
+      await page.getByRole("tab", { name: "Objects" }).click();
       await page.getByRole("button", { name: "Add bed" }).click();
       const dialog = page.getByRole("dialog");
       await expect(dialog.getByRole("heading", { name: "Add bed" })).toBeVisible();
@@ -145,8 +150,16 @@ test.describe("FieldHint tooltip coverage across the bed/garden/equipment panels
     await page.locator("canvas").first().waitFor();
     await dismissOnboardingIfPresent(page);
     await page.getByRole("tab", { name: "Equipment" }).click();
-    await expect(page.getByRole("heading", { name: "Equipment" })).toBeVisible();
-    const panel = page.locator("[data-slot='card']").filter({ has: page.getByRole("heading", { name: "Equipment" }) }).first();
+    // `exact: true` is load-bearing: the panel's own "Irrigation zones" <h3>
+    // carries its FieldHint's description text ("...drip-irrigation
+    // equipment whose combined water delivery...") as part of its accessible
+    // name, which contains "Equipment" as a plain substring - a
+    // non-exact match resolves to both headings (strict-mode violation).
+    await expect(page.getByRole("heading", { name: "Equipment", exact: true })).toBeVisible();
+    const panel = page
+      .locator("[data-slot='card']")
+      .filter({ has: page.getByRole("heading", { name: "Equipment", exact: true }) })
+      .first();
 
     // Type, Height, Water (the add-to-inventory form) + the irrigation
     // zones section's own explanatory hint.

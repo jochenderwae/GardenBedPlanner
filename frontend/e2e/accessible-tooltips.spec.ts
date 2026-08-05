@@ -115,7 +115,10 @@ test.describe("Accessible Tooltip component (#145)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      // The bed create/edit panel now lives under the "Objects" tab (#242
+      // merged bed/compost-bin/decoration creation into it) - it was called
+      // "Beds" when this spec was first written.
+      await page.getByRole("tab", { name: "Objects" }).click();
       const box = await page.locator("canvas").first().boundingBox();
       if (!box) throw new Error("canvas not visible");
       await page.mouse.click(box.x + 90, box.y + 90);
