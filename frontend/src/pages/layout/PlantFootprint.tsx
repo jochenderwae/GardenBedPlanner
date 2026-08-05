@@ -237,12 +237,17 @@ export function SpreadOutline({
   placementType,
   geometry,
   spacingCm,
+  rowSpacingCm,
   plant,
   slug,
 }: {
   placementType: PlacementType;
   geometry: Geometry;
   spacingCm: number | null | undefined;
+  /** #264: the field-only between-row override - only meaningful when
+   * `placementType === "field"`, ignored (via `plantingMarkerPositions`'s
+   * own row/field branch) otherwise. */
+  rowSpacingCm?: number | null;
   plant: Plant | undefined;
   slug: string;
 }) {
@@ -255,7 +260,7 @@ export function SpreadOutline({
   if (spreadCm == null || spreadCm <= 0) return null;
   const radius = spreadCm / 2;
   const stroke = colorForSlug(slug);
-  const positions = plantingMarkerPositions(placementType, geometry, spacingCm, plant);
+  const positions = plantingMarkerPositions(placementType, geometry, spacingCm, plant, rowSpacingCm);
   return (
     <>
       {positions.map((pos, i) => (

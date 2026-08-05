@@ -45,6 +45,18 @@ describe("fieldSpacingDimensionLines", () => {
     // width 10 -> segmentCount 1 (no horizontal pair); height 40 -> segmentCount 2 (one vertical pair).
     expect(lines).toHaveLength(1);
   });
+
+  it("uses an independent row (vertical) spacing when given (#264), defaulting to spacingCm when omitted", () => {
+    const withoutOverride = fieldSpacingDimensionLines({ x: 0, y: 0, width: 40, height: 40 }, 20);
+    const withExplicitSameValue = fieldSpacingDimensionLines({ x: 0, y: 0, width: 40, height: 40 }, 20, 20);
+    expect(withoutOverride).toEqual(withExplicitSameValue);
+
+    const withDifferentRowSpacing = fieldSpacingDimensionLines({ x: 0, y: 0, width: 40, height: 40 }, 20, 10);
+    // width 40 / 20cm spacing -> 2 x-segments (unchanged); height 40 / 10cm row spacing -> 4 y-segments,
+    // so the vertical sample's own distance reflects the row spacing, not the in-row spacing.
+    const vertical = withDifferentRowSpacing.find((l) => l.from.x === l.to.x);
+    expect(vertical?.distanceCm).toBeCloseTo(10, 5);
+  });
 });
 
 describe("nearestNeighborDimensionLines", () => {

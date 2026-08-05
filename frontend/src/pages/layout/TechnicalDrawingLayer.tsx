@@ -7,6 +7,7 @@ import {
   colorForSlug,
   colorsForBedCategory,
   effectivePlantSpacing,
+  effectiveRowSpacing,
   fieldMarkerPositions,
   formatDistanceCm,
   rectRenderProps,
@@ -62,9 +63,12 @@ function plantingDrawing(
   if (planting.placement_type === "row" || planting.placement_type === "field") {
     const props = rectRenderProps(planting.geometry);
     const effectiveSpacing = effectivePlantSpacing(planting.spacing_cm, plant);
+    const effectiveRowSpacingCm = effectiveRowSpacing(planting.row_spacing_cm, plant);
     const markerRadius = Math.max(3, effectiveSpacing / 2);
     const positions =
-      planting.placement_type === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);
+      planting.placement_type === "row"
+        ? rowMarkerPositions(props, effectiveSpacing)
+        : fieldMarkerPositions(props, effectiveSpacing, effectiveRowSpacingCm);
 
     const markers = positions.map((pos, i) => (
       <PlantFootprint
@@ -89,7 +93,7 @@ function plantingDrawing(
     dimensionLines.push(
       ...(planting.placement_type === "row"
         ? adjacentMarkerDimensionLines(positions)
-        : fieldSpacingDimensionLines(props, effectiveSpacing)),
+        : fieldSpacingDimensionLines(props, effectiveSpacing, effectiveRowSpacingCm)),
     );
     return { markers, dimensionLines, individualCenter: null };
   }

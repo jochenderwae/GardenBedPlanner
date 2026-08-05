@@ -7,9 +7,11 @@ import {
   colorForSlug,
   colorsForBedCategory,
   DEFAULT_PLANTING_DIAMETER_CM,
+  defaultPlantRowSpacing,
   defaultPlantSpacing,
   distanceBetweenPoints,
   effectivePlantSpacing,
+  effectiveRowSpacing,
   fieldGeometryFromDrag,
   fieldMarkerPositions,
   findAlignmentSnap,
@@ -174,6 +176,20 @@ describe("fieldMarkerPositions", () => {
     const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 10, height: 10, rotation: 0 };
     expect(fieldMarkerPositions(geometry, 30)).toEqual([{ x: 5, y: 5 }]);
   });
+
+  it("defaults the row (y-axis) spacing to spacingCm when omitted - a uniform square grid, same as before #264", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 60, height: 60, rotation: 0 };
+    expect(fieldMarkerPositions(geometry, 30)).toEqual(fieldMarkerPositions(geometry, 30, 30));
+  });
+
+  it("uses an independent row (y-axis) spacing when given (#264)", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 60, height: 60, rotation: 0 };
+    // x-axis: 60/30 = 2 segments; y-axis: 60/20 = 3 segments -> 6 points, not a square 4-point grid.
+    const points = fieldMarkerPositions(geometry, 30, 20);
+    expect(points).toHaveLength(6);
+    expect(points.map((p) => p.x).sort((a, b) => a - b)).toEqual([15, 15, 15, 45, 45, 45]);
+    expect(points.map((p) => p.y).sort((a, b) => a - b)).toEqual([10, 10, 30, 30, 50, 50]);
+  });
 });
 
 describe("plantingMarkerPositions", () => {
@@ -196,11 +212,35 @@ describe("plantingMarkerPositions", () => {
     expect(points.map((p) => p.x)).toEqual([15, 45, 75]);
   });
 
-  it("delegates to fieldMarkerPositions for a 'field' placement, using the effective spacing", () => {
+  it("delegates to fieldMarkerPositions for a 'field' placement, using the effective spacing on each axis independently (#264)", () => {
     const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 60, height: 60, rotation: 0 };
+    // No plant/row-spacing override given - the row (y) axis falls back to
+    // DEFAULT_PLANTING_DIAMETER_CM independently of the in-row (x) axis'
+    // own explicit 30cm, not a uniform square grid.
     const points = plantingMarkerPositions("field", geometry, 30, undefined);
-    expect(points).toEqual(fieldMarkerPositions(geometry, 30));
-    expect(points).toHaveLength(4);
+    expect(points).toEqual(fieldMarkerPositions(geometry, 30, DEFAULT_PLANTING_DIAMETER_CM));
+    expect(points).toHaveLength(6);
+  });
+
+  it("passes an explicit rowSpacingCm through to the field placement's row (y) axis, independent of spacingCm (#264)", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 60, height: 60, rotation: 0 };
+    const points = plantingMarkerPositions("field", geometry, 30, undefined, 20);
+    expect(points).toEqual(fieldMarkerPositions(geometry, 30, 20));
+    expect(points).toHaveLength(6);
+  });
+
+  it("prefers the plant's own row_spacing_cm for the field row axis when no explicit override is given (#264)", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: 0, width: 60, height: 60, rotation: 0 };
+    const plant = makePlant({ plant_spacing_cm: 30, row_spacing_cm: 20 });
+    const points = plantingMarkerPositions("field", geometry, undefined, plant);
+    expect(points).toEqual(fieldMarkerPositions(geometry, 30, 20));
+    expect(points).toHaveLength(6);
+  });
+
+  it("ignores rowSpacingCm entirely for a 'row' placement - no 'between rows' axis exists", () => {
+    const geometry: RectangleGeometry = { type: "rectangle", x: 0, y: -10, width: 90, height: 20, rotation: 0 };
+    const points = plantingMarkerPositions("row", geometry, 30, undefined, 5);
+    expect(points).toEqual(rowMarkerPositions(geometry, 30));
   });
 
   it("falls back through the same effectivePlantSpacing chain as the solid marker when no explicit spacing is given", () => {
@@ -530,5 +570,48 @@ describe("effectivePlantSpacing", () => {
 
   it("falls back to DEFAULT_PLANTING_DIAMETER_CM when nothing at all is set", () => {
     expect(effectivePlantSpacing(null, undefined)).toBe(DEFAULT_PLANTING_DIAMETER_CM);
+  });
+});
+
+describe("defaultPlantRowSpacing", () => {
+  it("prefers row_spacing_cm over spread_cm when both are set", () => {
+    const plant = makePlant({ row_spacing_cm: 40, spread_cm: 90 });
+    expect(defaultPlantRowSpacing(plant)).toBe(40);
+  });
+
+  it("falls back to spread_cm when row_spacing_cm isn't set", () => {
+    const plant = makePlant({ row_spacing_cm: null, spread_cm: 90 });
+    expect(defaultPlantRowSpacing(plant)).toBe(90);
+  });
+
+  it("is null when neither is set", () => {
+    const plant = makePlant({ row_spacing_cm: null, spread_cm: null });
+    expect(defaultPlantRowSpacing(plant)).toBeNull();
+  });
+
+  it("is null for an undefined plant (no plant looked up yet)", () => {
+    expect(defaultPlantRowSpacing(undefined)).toBeNull();
+  });
+});
+
+describe("effectiveRowSpacing", () => {
+  it("an explicit per-placement override always wins over either plant default", () => {
+    const plant = makePlant({ row_spacing_cm: 40, spread_cm: 90 });
+    expect(effectiveRowSpacing(15, plant)).toBe(15);
+  });
+
+  it("falls back to defaultPlantRowSpacing when there's no explicit override", () => {
+    const plant = makePlant({ row_spacing_cm: 40, spread_cm: 90 });
+    expect(effectiveRowSpacing(null, plant)).toBe(40);
+  });
+
+  it("falls back to DEFAULT_PLANTING_DIAMETER_CM when nothing at all is set", () => {
+    expect(effectiveRowSpacing(null, undefined)).toBe(DEFAULT_PLANTING_DIAMETER_CM);
+  });
+
+  it("is independent of the in-row (plant) spacing default - the two axes can legitimately differ", () => {
+    const plant = makePlant({ plant_spacing_cm: 30, row_spacing_cm: 40 });
+    expect(effectivePlantSpacing(null, plant)).toBe(30);
+    expect(effectiveRowSpacing(null, plant)).toBe(40);
   });
 });

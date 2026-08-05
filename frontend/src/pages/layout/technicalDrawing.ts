@@ -54,8 +54,12 @@ export function adjacentMarkerDimensionLines(positions: { x: number; y: number }
 /** One representative "between plants" (along the first row) and one
  * "between rows" (along the first column) dimension line for a `field`
  * placement's grid of markers - not every pairwise gap, since a uniform
- * grid repeats the same `spacingCm` value across every gap on a given axis
- * and drawing all of them would only add clutter, not information. Field
+ * grid repeats the same spacing value across every gap on a given axis and
+ * drawing all of them would only add clutter, not information. `rowSpacingCm`
+ * (#264) is the y-axis/between-row spacing, independent of `spacingCm`'s
+ * x-axis/within-row spacing - defaults to `spacingCm` when omitted, matching
+ * `fieldMarkerPositions`' own default so the "between rows" line always
+ * reflects the same grid the markers themselves are actually drawn at. Field
  * geometry is always axis-aligned (see `geometry.ts`'s
  * `fieldGeometryFromDrag`), so this adds `geometry.x`/`geometry.y` directly
  * rather than routing through the rotation-aware point transform
@@ -63,9 +67,10 @@ export function adjacentMarkerDimensionLines(positions: { x: number; y: number }
 export function fieldSpacingDimensionLines(
   geometry: { x: number; y: number; width: number; height: number },
   spacingCm: number,
+  rowSpacingCm: number = spacingCm,
 ): DimensionLine[] {
   const xs = centeredSegments(geometry.width, segmentCount(geometry.width, spacingCm));
-  const ys = centeredSegments(geometry.height, segmentCount(geometry.height, spacingCm));
+  const ys = centeredSegments(geometry.height, segmentCount(geometry.height, rowSpacingCm));
   const lines: DimensionLine[] = [];
   if (xs.length > 1) {
     const y = geometry.y + ys[0];

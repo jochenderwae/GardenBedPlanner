@@ -7,6 +7,7 @@ import {
   colorForSlug,
   colorsForBedCategory,
   effectivePlantSpacing,
+  effectiveRowSpacing,
   fieldMarkerPositions,
   rectRenderProps,
   rowMarkerPositions,
@@ -143,6 +144,7 @@ function SnapshotBedGroup({
           placementType={planting.placement_type}
           geometry={planting.geometry}
           spacingCm={planting.spacing_cm}
+          rowSpacingCm={planting.row_spacing_cm}
           plant={plantsBySlug.get(planting.plant_slug)}
           slug={planting.plant_slug}
         />
@@ -194,7 +196,9 @@ function SnapshotPlantingMarker({
     const effectiveSpacing = effectivePlantSpacing(planting.spacing_cm, plant);
     const markerRadius = Math.max(3, effectiveSpacing / 2);
     const markerPositions =
-      planting.placement_type === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);
+      planting.placement_type === "row"
+        ? rowMarkerPositions(props, effectiveSpacing)
+        : fieldMarkerPositions(props, effectiveSpacing, effectiveRowSpacing(planting.row_spacing_cm, plant));
 
     return (
       <>

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input, Select } from "@/components/ui/input";
 import { deletePlanting, updatePlanting, type PlacementType, type Plant, type Planting, type PlantingUpdate } from "@/api/client";
-import { defaultPlantSpacing } from "./geometry";
+import { defaultPlantRowSpacing, defaultPlantSpacing } from "./geometry";
 import { describePlantingSchedule, describeRemovalSchedule, todayIsoDate } from "./plantingLifecycle";
 
 const PLACEMENT_TYPE_LABELS: Record<PlacementType, string> = {
@@ -176,6 +176,33 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
                   value={draft.spacing_cm ?? defaultSpacing ?? ""}
                   onChange={(e) => setDraft((prev) => ({ ...prev, spacing_cm: e.target.value === "" ? null : Number(e.target.value) }))}
                   onBlur={() => draft.spacing_cm !== planting.spacing_cm && commit({ spacing_cm: draft.spacing_cm })}
+                />
+              </label>
+            );
+          })()}
+
+        {draft.placement_type === "field" &&
+          (() => {
+            // #264: row (between-row) spacing is independently editable from
+            // plant (within-row) spacing above - only meaningful for an area
+            // placement's grid (a `row` placement has no "between rows" axis
+            // at all, see geometry.ts's fieldMarkerPositions/rowMarkerPositions
+            // split). Same real-default-value-not-just-placeholder treatment
+            // as #263 gave the plant-spacing field above.
+            const defaultRowSpacing = defaultPlantRowSpacing(plant);
+            return (
+              <label className="flex flex-col gap-1">
+                <span className="text-xs font-medium text-muted-foreground">
+                  Row spacing (cm){defaultRowSpacing != null && !draft.row_spacing_cm && ` - default ${defaultRowSpacing}`}
+                </span>
+                <Input
+                  type="number"
+                  min={1}
+                  step={1}
+                  placeholder={defaultRowSpacing != null ? String(defaultRowSpacing) : undefined}
+                  value={draft.row_spacing_cm ?? defaultRowSpacing ?? ""}
+                  onChange={(e) => setDraft((prev) => ({ ...prev, row_spacing_cm: e.target.value === "" ? null : Number(e.target.value) }))}
+                  onBlur={() => draft.row_spacing_cm !== planting.row_spacing_cm && commit({ row_spacing_cm: draft.row_spacing_cm })}
                 />
               </label>
             );

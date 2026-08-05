@@ -68,6 +68,27 @@ export function effectivePlantSpacing(explicitSpacingCm: number | null | undefin
   return explicitSpacingCm ?? defaultPlantSpacing(plant) ?? DEFAULT_PLANTING_DIAMETER_CM;
 }
 
+/** Row-axis counterpart of `defaultPlantSpacing` (#264) - a plant's own
+ * recommended default *between-row* spacing for an area (`field`)
+ * placement's grid, distinct from `defaultPlantSpacing`'s *within-row*
+ * spacing. Prefers `Plant.row_spacing_cm` (a genuine between-row
+ * recommendation) over `spread_cm` (the plant's mature footprint, same
+ * fallback-of-last-resort `defaultPlantSpacing` already uses for its own
+ * axis), `null` when neither is set. */
+export function defaultPlantRowSpacing(plant: Plant | undefined): number | null {
+  return plant?.row_spacing_cm ?? plant?.spread_cm ?? null;
+}
+
+/** Row-axis counterpart of `effectivePlantSpacing` - an explicit
+ * per-placement override (`Planting.row_spacing_cm`, #264/#265) always wins
+ * over `defaultPlantRowSpacing`, falling back to
+ * `DEFAULT_PLANTING_DIAMETER_CM` when neither is set. Only meaningful for a
+ * `field` placement's y-axis; a `row` placement has no "between rows" axis
+ * at all. */
+export function effectiveRowSpacing(explicitRowSpacingCm: number | null | undefined, plant: Plant | undefined): number {
+  return explicitRowSpacingCm ?? defaultPlantRowSpacing(plant) ?? DEFAULT_PLANTING_DIAMETER_CM;
+}
+
 /** Deterministic string -> hue, so the same key (a plant slug, a bed
  * category, ...) always gets the same color across renders without
  * maintaining a lookup table by hand. */
@@ -233,10 +254,13 @@ export function rowMarkerPositions(geometry: RectShape, spacingCm: number): { x:
  * filling both axes rather than a single line. `field` geometry is always
  * axis-aligned (`fieldGeometryFromDrag` never sets a rotation), but this
  * still routes through `localPointToGeometrySpace` for consistency (a
- * no-op at `rotation: 0`). */
-export function fieldMarkerPositions(geometry: RectShape, spacingCm: number): { x: number; y: number }[] {
+ * no-op at `rotation: 0`). `rowSpacingCm` (#264) is the y-axis/between-row
+ * spacing, independent of `spacingCm`'s x-axis/within-row spacing - defaults
+ * to `spacingCm` (a uniform square grid, the only behavior that existed
+ * before #264) when omitted, so existing 2-arg callers are unaffected. */
+export function fieldMarkerPositions(geometry: RectShape, spacingCm: number, rowSpacingCm: number = spacingCm): { x: number; y: number }[] {
   const xs = centeredSegments(geometry.width, segmentCount(geometry.width, spacingCm));
-  const ys = centeredSegments(geometry.height, segmentCount(geometry.height, spacingCm));
+  const ys = centeredSegments(geometry.height, segmentCount(geometry.height, rowSpacingCm));
   const points: { x: number; y: number }[] = [];
   for (const y of ys) {
     for (const x of xs) {
@@ -259,11 +283,13 @@ export function plantingMarkerPositions(
   geometry: Geometry,
   spacingCm: number | null | undefined,
   plant: Plant | undefined,
+  rowSpacingCm?: number | null,
 ): { x: number; y: number }[] {
   if (placementType === "row" || placementType === "field") {
     const props = rectRenderProps(geometry);
     const effectiveSpacing = effectivePlantSpacing(spacingCm, plant);
-    return placementType === "row" ? rowMarkerPositions(props, effectiveSpacing) : fieldMarkerPositions(props, effectiveSpacing);
+    if (placementType === "row") return rowMarkerPositions(props, effectiveSpacing);
+    return fieldMarkerPositions(props, effectiveSpacing, effectiveRowSpacing(rowSpacingCm, plant));
   }
   const rect = boundingRect(geometry);
   return [{ x: rect.x + rect.width / 2, y: rect.y + rect.height / 2 }];

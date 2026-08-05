@@ -15,6 +15,7 @@ import {
   clampRectPositionToBounds,
   colorForSlug,
   effectivePlantSpacing,
+  effectiveRowSpacing,
   fieldGeometryFromDrag,
   fieldMarkerPositions,
   normalizedRect,
@@ -526,6 +527,7 @@ export const PlantPlacementLayer = forwardRef<PlantPlacementLayerHandle, PlantPl
                 placementType={planting.placement_type}
                 geometry={planting.geometry}
                 spacingCm={planting.spacing_cm}
+                rowSpacingCm={planting.row_spacing_cm}
                 plant={plantsBySlug.get(planting.plant_slug)}
                 slug={planting.plant_slug}
               />
@@ -847,7 +849,7 @@ function PlantingMarker({
     const markerPositions =
       planting.placement_type === "row"
         ? rowMarkerPositions(renderRect, effectiveSpacing)
-        : fieldMarkerPositions(renderRect, effectiveSpacing);
+        : fieldMarkerPositions(renderRect, effectiveSpacing, effectiveRowSpacing(planting.row_spacing_cm, plant));
     const markerVisual = combinedVisualProps(startState, removalState, 0.85);
 
     function handleDragEnd(e: Konva.KonvaEventObject<DragEvent>) {
