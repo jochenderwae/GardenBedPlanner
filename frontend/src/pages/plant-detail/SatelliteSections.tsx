@@ -305,25 +305,31 @@ export function PeriodsSection({ slug, items }: { slug: string; items: PlantPeri
           ))}
         </Select>
         <FieldHint description="What kind of activity this period covers, e.g. sowing, harvesting." />
-        <Input
-          type="number"
-          min={1}
-          max={12}
-          className="w-16"
+        <Select
+          className="w-auto"
           value={draft.start_month}
           onChange={(e) => setDraft({ ...draft, start_month: Number(e.target.value) })}
-        />
-        <FieldHint description="Starting month (1-12) for this period." />
+        >
+          {MONTH_NAMES.map((name, i) => (
+            <option key={name} value={i + 1}>
+              {name}
+            </option>
+          ))}
+        </Select>
+        <FieldHint description="Starting month for this period." />
         <span>–</span>
-        <Input
-          type="number"
-          min={1}
-          max={12}
-          className="w-16"
+        <Select
+          className="w-auto"
           value={draft.end_month}
           onChange={(e) => setDraft({ ...draft, end_month: Number(e.target.value) })}
-        />
-        <FieldHint description="Ending month (1-12) for this period." />
+        >
+          {MONTH_NAMES.map((name, i) => (
+            <option key={name} value={i + 1}>
+              {name}
+            </option>
+          ))}
+        </Select>
+        <FieldHint description="Ending month for this period." />
         <Button
           size="sm"
           variant="outline"
