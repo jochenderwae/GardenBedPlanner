@@ -103,6 +103,122 @@ function anchorPosition(center: Position, index: number, count: number): Positio
   return { x: center.x + offset.x, y: center.y + offset.y };
 }
 
+/** The outward-facing unit normal at fractional perimeter position `t` on a
+ * `width`x`height` rect - i.e. which of the 4 sides `t` currently lands on
+ * (walking the same clockwise-from-top-middle path `pointOnRectPerimeter`
+ * itself walks, so the two always agree on which side owns a given `t`),
+ * independent of the rect's actual size. #256: a physical fitting's port
+ * has a fixed direction the pipe leaves it in - straight out from whichever
+ * face it's mounted on - so this is the "fixed exit direction" a curved
+ * connection needs at each end, not a from-scratch geometry concept. */
+function outwardNormalOnRectPerimeter(width: number, height: number, t: number): Position {
+  const perimeter = 2 * (width + height);
+  let d = (((t % 1) + 1) % 1) * perimeter;
+  const topRight = width / 2;
+  if (d <= topRight) return { x: 0, y: -1 };
+  d -= topRight;
+  if (d <= height) return { x: 1, y: 0 };
+  d -= height;
+  if (d <= width) return { x: 0, y: 1 };
+  d -= width;
+  if (d <= height) return { x: -1, y: 0 };
+  return { x: 0, y: -1 };
+}
+
+/** Anchor `index` (of `count`)'s own fixed exit direction - the same
+ * `index`/`count` pair `anchorPosition` itself takes, so a connection's
+ * curve leaves each anchor in exactly the direction that anchor's own dot
+ * is drawn facing. */
+function anchorNormal(index: number, count: number): Position {
+  return outwardNormalOnRectPerimeter(NODE_WIDTH, NODE_HEIGHT, index / count);
+}
+
+function cubicBezierPoint(p0: Position, p1: Position, p2: Position, p3: Position, t: number): Position {
+  const mt = 1 - t;
+  return {
+    x: mt * mt * mt * p0.x + 3 * mt * mt * t * p1.x + 3 * mt * t * t * p2.x + t * t * t * p3.x,
+    y: mt * mt * mt * p0.y + 3 * mt * mt * t * p1.y + 3 * mt * t * t * p2.y + t * t * t * p3.y,
+  };
+}
+
+// #256: "how much pipe a curved run actually consumes" needs the curve's
+// own arc length, not the straight-line distance between its two anchors -
+// a closed-form cubic-bezier arc length doesn't exist in general, so this
+// approximates it the same way any practical renderer does: sample the
+// curve at N evenly-spaced `t` steps and sum the straight-line distance
+// between consecutive samples. 24 segments is comfortably more than enough
+// precision for a value this ticket's own "How to test" section only needs
+// to be directionally correct (longer/more-curved runs report more), not
+// exact to the millimeter - especially given the diagram itself is
+// schematic/not-to-scale (see `DIAGRAM_GRID_SNAP_PX`'s own comment), so no
+// amount of numerical precision here would make the result a real physical
+// measurement anyway.
+const BEZIER_LENGTH_SAMPLES = 24;
+
+function cubicBezierLength(p0: Position, p1: Position, p2: Position, p3: Position): number {
+  let length = 0;
+  let prev = p0;
+  for (let i = 1; i <= BEZIER_LENGTH_SAMPLES; i++) {
+    const point = cubicBezierPoint(p0, p1, p2, p3, i / BEZIER_LENGTH_SAMPLES);
+    length += Math.hypot(point.x - prev.x, point.y - prev.y);
+    prev = point;
+  }
+  return length;
+}
+
+// How far a curve's control point pushes out from its anchor in that
+// anchor's own fixed exit direction, as a fraction of the straight-line
+// anchor-to-anchor distance - clamped so a very short run's curve doesn't
+// balloon disproportionately (`Min`) and a very long run's curve doesn't
+// flatten back out to looking straight (`Max`).
+const BEZIER_CONTROL_FRACTION = 0.4;
+const BEZIER_CONTROL_MIN_PX = 24;
+const BEZIER_CONTROL_MAX_PX = 140;
+// How far apart duplicate connections between the same instance pair (see
+// `pairKey`) push their curves from each other, perpendicular to the
+// straight line between anchors - same purpose #209's original bow offset
+// served, just applied to both of a cubic curve's control points instead of
+// a single quadratic midpoint, so duplicates still separate visually even
+// on the (now-more-common, per #253's own per-connection anchor slots) case
+// where they already start/end at different anchors.
+const DUPLICATE_OFFSET_STEP_PX = 10;
+
+interface ConnectionGeometry {
+  start: Position;
+  end: Position;
+  cp1: Position;
+  cp2: Position;
+  lengthPx: number;
+}
+
+/** The full curved path (and its consumed-length) for one connection - a
+ * cubic bezier whose two control points sit out from `start`/`end` along
+ * each anchor's own `anchorNormal`, so the curve genuinely leaves each
+ * fitting in its fixed physical direction rather than cutting a straight
+ * line through it (#256's core ask). `ConnectionEdge` draws this directly;
+ * the selected-connection detail bar reads `lengthPx` off the same value so
+ * the two can never disagree about which curve/length belongs to a given
+ * connection. */
+function connectionGeometry(start: Position, end: Position, startNormal: Position, endNormal: Position, duplicateIndex: number): ConnectionGeometry {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const distance = Math.hypot(dx, dy) || 1;
+  const controlDist = Math.min(BEZIER_CONTROL_MAX_PX, Math.max(BEZIER_CONTROL_MIN_PX, distance * BEZIER_CONTROL_FRACTION));
+  const perpX = -dy / distance;
+  const perpY = dx / distance;
+  const dupSign = duplicateIndex % 2 === 1 ? 1 : -1;
+  const dupOffset = duplicateIndex > 0 ? DUPLICATE_OFFSET_STEP_PX * Math.ceil(duplicateIndex / 2) : 0;
+  const cp1: Position = {
+    x: start.x + startNormal.x * controlDist + perpX * dupSign * dupOffset,
+    y: start.y + startNormal.y * controlDist + perpY * dupSign * dupOffset,
+  };
+  const cp2: Position = {
+    x: end.x + endNormal.x * controlDist + perpX * dupSign * dupOffset,
+    y: end.y + endNormal.y * controlDist + perpY * dupSign * dupOffset,
+  };
+  return { start, end, cp1, cp2, lengthPx: cubicBezierLength(start, cp1, cp2, end) };
+}
+
 /** The real physical port count from the matched `IrrigationPartType`
  * catalog row when one exists (#252) - e.g. a nozzle shows exactly 1 anchor
  * and a T-junction exactly 3, so once every port already backs a connection
@@ -386,54 +502,37 @@ function PartNode({
 }
 
 /** One connection's edge on the diagram canvas (#209, anchor-precise as of
- * #253) - drawn from one specific anchor's actual screen position to the
- * other's, not from wherever a node-center-to-center line happens to cross
- * either node's border (see `anchorPosition`) - bowed when it's one of
- * several duplicate connections between the same two instances, dashed +
- * labeled when both ends' owning parts have a recorded (and differing)
- * `connector_size_mm` - advisory only, per this product line legitimately
- * stepping down hose sizes via reducer/dripper fittings, never blocking. */
+ * #253, curved and direction-aware as of #256) - drawn as a cubic bezier
+ * leaving `geometry.start`/`geometry.end` along each anchor's own fixed
+ * exit direction (`connectionGeometry`), not a straight line cutting
+ * through the anchor's actual mounted direction, and not from wherever a
+ * node-center-to-center line happens to cross either node's border (see
+ * `anchorPosition`) - separated from any duplicate connection between the
+ * same two instances via the same `geometry` (see
+ * `DUPLICATE_OFFSET_STEP_PX`), dashed + labeled when both ends' owning
+ * parts have a recorded (and differing) `connector_size_mm` - advisory
+ * only, per this product line legitimately stepping down hose sizes via
+ * reducer/dripper fittings, never blocking. */
 function ConnectionEdge({
-  start,
-  end,
-  duplicateIndex,
+  geometry,
   mismatchLabel,
   isSelected,
   onSelect,
 }: {
-  start: Position;
-  end: Position;
-  duplicateIndex: number;
+  geometry: ConnectionGeometry;
   mismatchLabel: string | null;
   isSelected: boolean;
   onSelect: () => void;
 }) {
-  const dx = end.x - start.x;
-  const dy = end.y - start.y;
-  const midX = (start.x + end.x) / 2;
-  const midY = (start.y + end.y) / 2;
-
-  let points = [start.x, start.y, end.x, end.y];
-  let labelX = midX;
-  let labelY = midY;
-  if (duplicateIndex > 0) {
-    const length = Math.hypot(dx, dy) || 1;
-    const perpX = -dy / length;
-    const perpY = dx / length;
-    const sign = duplicateIndex % 2 === 1 ? 1 : -1;
-    const magnitude = 16 * Math.ceil(duplicateIndex / 2);
-    const bowX = midX + perpX * sign * magnitude;
-    const bowY = midY + perpY * sign * magnitude;
-    points = [start.x, start.y, bowX, bowY, end.x, end.y];
-    labelX = bowX;
-    labelY = bowY;
-  }
+  const { start, cp1, cp2, end } = geometry;
+  const points = [start.x, start.y, cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y];
+  const label = cubicBezierPoint(start, cp1, cp2, end, 0.5);
 
   return (
     <>
       <Line
         points={points}
-        tension={duplicateIndex > 0 ? 0.5 : 0}
+        bezier
         stroke={NODE_STROKE}
         strokeWidth={isSelected ? 2.5 : 1.5}
         opacity={isSelected ? 1 : 0.6}
@@ -445,7 +544,7 @@ function ConnectionEdge({
         }}
       />
       {mismatchLabel && (
-        <Text x={labelX - 30} y={labelY - 6} width={60} align="center" text={mismatchLabel} fontSize={9} fill={MISMATCH_LABEL_COLOR} listening={false} />
+        <Text x={label.x - 30} y={label.y - 6} width={60} align="center" text={mismatchLabel} fontSize={9} fill={MISMATCH_LABEL_COLOR} listening={false} />
       )}
     </>
   );
@@ -829,6 +928,33 @@ export function PipeNetworkDialog() {
   const selectedConnection = connections.find((c) => c.id === selectedConnectionId) ?? null;
   const selectedInstance = selectedInstanceId != null ? (instancesById.get(selectedInstanceId) ?? null) : null;
 
+  /** #256: the one place `connection.id`/anchor-slot/anchor-count/live-drag-
+   * position lookups happen for a connection's curve - not memoized (unlike
+   * `connectionDuplicateIndex` etc. above) because it depends on
+   * `dragOverride`, transient per-frame drag state that's deliberately not
+   * a `useMemo` dependency elsewhere in this file either (see
+   * `effectivePosition`'s own callers). Shared by the diagram's own
+   * `connections.map` render below and the selected-connection detail bar,
+   * so both always agree on exactly which curve/length belongs to a given
+   * connection. */
+  function connectionGeometryFor(connection: IrrigationConnection): ConnectionGeometry | null {
+    if (connection.id == null) return null;
+    const fromInstance = instancesById.get(connection.from_instance_id);
+    const toInstance = instancesById.get(connection.to_instance_id);
+    if (!fromInstance || !toInstance || fromInstance.diagram_x == null || toInstance.diagram_x == null) return null;
+    const fromAnchorCount = anchorCountForInstance(fromInstance);
+    const toAnchorCount = anchorCountForInstance(toInstance);
+    const fromAnchorSlot = anchorSlotFor(connection.from_instance_id, connection.id, fromAnchorCount);
+    const toAnchorSlot = anchorSlotFor(connection.to_instance_id, connection.id, toAnchorCount);
+    const start = anchorPosition(effectivePosition(fromInstance), fromAnchorSlot, fromAnchorCount);
+    const end = anchorPosition(effectivePosition(toInstance), toAnchorSlot, toAnchorCount);
+    const startNormal = anchorNormal(fromAnchorSlot, fromAnchorCount);
+    const endNormal = anchorNormal(toAnchorSlot, toAnchorCount);
+    return connectionGeometry(start, end, startNormal, endNormal, connectionDuplicateIndex.get(connection.id) ?? 0);
+  }
+
+  const selectedConnectionGeometry = selectedConnection ? connectionGeometryFor(selectedConnection) : null;
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
@@ -928,29 +1054,18 @@ export function PipeNetworkDialog() {
                   <Layer>
                     {connections.map((connection) => {
                       if (connection.id == null) return null;
+                      const geometry = connectionGeometryFor(connection);
+                      if (!geometry) return null;
                       const fromInstance = instancesById.get(connection.from_instance_id);
                       const toInstance = instancesById.get(connection.to_instance_id);
-                      if (!fromInstance || !toInstance) return null;
-                      if (fromInstance.diagram_x == null || toInstance.diagram_x == null) return null;
-                      const fromPart = fromInstance.part_id != null ? partsById.get(fromInstance.part_id) : undefined;
-                      const toPart = toInstance.part_id != null ? partsById.get(toInstance.part_id) : undefined;
+                      const fromPart = fromInstance?.part_id != null ? partsById.get(fromInstance.part_id) : undefined;
+                      const toPart = toInstance?.part_id != null ? partsById.get(toInstance.part_id) : undefined;
                       const bothSized = fromPart?.connector_size_mm != null && toPart?.connector_size_mm != null;
                       const mismatch = bothSized && fromPart?.connector_size_mm !== toPart?.connector_size_mm;
-                      // #253: draw to/from this connection's own specific
-                      // anchor slot on each end, not a node-center-derived
-                      // border crossing.
-                      const fromAnchorCount = anchorCountForInstance(fromInstance);
-                      const toAnchorCount = anchorCountForInstance(toInstance);
-                      const fromAnchorSlot = anchorSlotFor(connection.from_instance_id, connection.id, fromAnchorCount);
-                      const toAnchorSlot = anchorSlotFor(connection.to_instance_id, connection.id, toAnchorCount);
-                      const start = anchorPosition(effectivePosition(fromInstance), fromAnchorSlot, fromAnchorCount);
-                      const end = anchorPosition(effectivePosition(toInstance), toAnchorSlot, toAnchorCount);
                       return (
                         <ConnectionEdge
                           key={connection.id}
-                          start={start}
-                          end={end}
-                          duplicateIndex={connectionDuplicateIndex.get(connection.id) ?? 0}
+                          geometry={geometry}
                           mismatchLabel={mismatch ? `${fromPart?.connector_size_mm} -> ${toPart?.connector_size_mm}mm` : null}
                           isSelected={selectedConnectionId === connection.id}
                           onSelect={() => {
@@ -999,6 +1114,15 @@ export function PipeNetworkDialog() {
                   <span>
                     {partsById.get(instancesById.get(selectedConnection.from_instance_id)?.part_id ?? -1)?.name ?? "?"} ↔{" "}
                     {partsById.get(instancesById.get(selectedConnection.to_instance_id)?.part_id ?? -1)?.name ?? "?"}
+                    {selectedConnectionGeometry && (
+                      // #256: a relative, comparative figure - this diagram
+                      // is schematic/not-to-scale (see `DIAGRAM_GRID_SNAP_PX`'s
+                      // own comment), so this deliberately isn't presented as
+                      // a real physical cm/mm measurement, just "curvier/
+                      // longer run = bigger number" the way the ticket's own
+                      // test criteria only ask for.
+                      <span className="text-muted-foreground"> · ≈{Math.round(selectedConnectionGeometry.lengthPx)} pipe length units</span>
+                    )}
                   </span>
                   <Button
                     variant="ghost"
