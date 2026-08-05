@@ -8,6 +8,7 @@ import { PlantsDatabase } from "@/pages/PlantsDatabase";
 import { PlantDetail } from "@/pages/PlantDetail";
 import { Equipment } from "@/pages/Equipment";
 import { GardenPlan } from "@/pages/GardenPlan";
+import { ShoppingList } from "@/pages/ShoppingList";
 import { YieldHistory } from "@/pages/YieldHistory";
 import { Agenda } from "@/pages/Agenda";
 import { Timeline } from "@/pages/Timeline";
@@ -64,6 +65,7 @@ export function RootShell() {
         <Route path="/plants" element={<PlantsDatabase />} />
         <Route path="/plants/:slug" element={<PlantDetail />} />
         <Route path="/equipment" element={<Equipment />} />
+        <Route path="/shopping-list" element={<ShoppingList />} />
         <Route path="/garden-plan" element={<GardenPlan />} />
         <Route path="/yield-history" element={<YieldHistory />} />
         <Route path="/settings" element={<Settings />} />

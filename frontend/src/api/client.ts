@@ -558,6 +558,16 @@ export function deleteIrrigationConnection(id: number): Promise<void> {
   return apiFetch(`/api/irrigation-connections/${id}`, { method: "DELETE" });
 }
 
+// #255/#270: one aggregated shortfall - see ShoppingListItem's own schema.d.ts
+// docstring. Purely derived/read-only: resolving an item means editing the
+// underlying IrrigationPart.quantity_on_hand or BedEquipment.owned via their
+// existing forms elsewhere, not a mutation this endpoint offers.
+export type ShoppingListItem = components["schemas"]["ShoppingListItem"];
+
+export function listShoppingList(): Promise<ShoppingListItem[]> {
+  return apiFetch(`/api/shopping-list`);
+}
+
 /** Garden work items (#181/#192) - `dueFrom`/`dueTo` filter on the due
  * *window* (`due_date_start >= dueFrom`, `due_date_end <= dueTo`), matching
  * the backend's own `due_from`/`due_to` query params (see

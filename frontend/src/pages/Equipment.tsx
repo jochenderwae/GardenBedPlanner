@@ -1,7 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { PackageCheck, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { PackageCheck, ShoppingCart, Trash2 } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Select } from "@/components/ui/input";
 import { FieldHint } from "@/components/ui/tooltip";
@@ -210,7 +211,16 @@ export function Equipment() {
 
   return (
     <div className="mx-auto max-w-3xl p-6">
-      <h1 className="mb-1 text-xl font-medium">Equipment</h1>
+      <div className="mb-1 flex items-center justify-between gap-3">
+        <h1 className="text-xl font-medium">Equipment</h1>
+        {/* #270: an unowned (owned: false) item placed from the layout
+            editor's Equipment tab shows up as a shortfall on the shopping
+            list, not here - this is just a discoverable link over there,
+            not a duplicate of that view. */}
+        <Link to="/shopping-list" className={buttonVariants({ variant: "outline", size: "sm" })}>
+          <ShoppingCart /> Shopping list
+        </Link>
+      </div>
       <p className="mb-4 text-sm text-muted-foreground">
         Every trellis, drip line, stake, and other piece of equipment you own - placed or still in stock. Equipment is
         "retrieved from stock," not authored ad hoc while editing a bed: add it here, then place it on a bed or

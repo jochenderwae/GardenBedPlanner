@@ -2,8 +2,9 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type Konva from "konva";
 import { Circle, Group, Layer, Line, Rect, Stage, Text } from "react-konva";
-import { Plus, Trash2, Waypoints, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { Plus, ShoppingCart, Trash2, Waypoints, X } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
   AlertDialog,
@@ -968,9 +969,18 @@ export function PipeNetworkDialog() {
         <Card className="flex h-[600px] w-[960px] max-w-[95vw] flex-col p-0">
           <div className="flex items-center justify-between border-b px-4 py-2.5">
             <DialogTitle className="text-sm font-medium">Pipe network</DialogTitle>
-            <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={() => setOpen(false)}>
-              <X />
-            </Button>
+            <div className="flex items-center gap-1">
+              {/* #270: a part with more instances placed than
+                  quantity_on_hand covers shows up on the shopping list -
+                  discoverable from here since this dialog is where that
+                  shortfall actually gets created. */}
+              <Link to="/shopping-list" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+                <ShoppingCart /> Shopping list
+              </Link>
+              <Button variant="ghost" size="icon-sm" aria-label="Close" onClick={() => setOpen(false)}>
+                <X />
+              </Button>
+            </div>
           </div>
           <div className="flex flex-1 overflow-hidden">
             <div className="flex w-72 shrink-0 flex-col gap-3 overflow-y-auto border-r p-3">
