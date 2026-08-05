@@ -1,9 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { Clock } from "lucide-react";
-import { buttonVariants, Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useSnackbar } from "@/components/Snackbar";
+import { useNavigateBack } from "@/hooks/useNavigateBack";
 import {
   getAction,
   getBed,
@@ -102,6 +103,7 @@ export function TaskDetail() {
   const actionId = Number(id);
   const queryClient = useQueryClient();
   const { show: showSnackbar } = useSnackbar();
+  const goBack = useNavigateBack("/agenda");
 
   const actionQuery = useQuery({
     queryKey: ["action", actionId],
@@ -195,9 +197,9 @@ export function TaskDetail() {
   return (
     <div className="mx-auto max-w-2xl p-6">
       <div className="mb-4 flex items-center gap-3">
-        <Link to="/agenda" className={buttonVariants({ variant: "outline", size: "sm" })}>
+        <Button variant="outline" size="sm" onClick={goBack}>
           Back
-        </Link>
+        </Button>
         {action && <h1 className="text-xl font-medium">{ACTION_TYPE_LABELS[action.action_type] ?? action.action_type}</h1>}
       </div>
 

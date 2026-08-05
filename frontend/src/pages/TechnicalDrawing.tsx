@@ -1,7 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
-import { buttonVariants } from "@/components/ui/button";
+import { useParams } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { getBed } from "@/api/client";
+import { useNavigateBack } from "@/hooks/useNavigateBack";
 import { TechnicalDrawingCanvas } from "@/pages/layout/TechnicalDrawingCanvas";
 
 /** #193's "technical drawing" - a read-only, bed-relative annotated view of
@@ -19,6 +20,7 @@ import { TechnicalDrawingCanvas } from "@/pages/layout/TechnicalDrawingCanvas";
 export function TechnicalDrawing() {
   const { bedId } = useParams();
   const bedIdNum = Number(bedId);
+  const goBack = useNavigateBack("/layout");
 
   const bedQuery = useQuery({
     queryKey: ["bed", bedIdNum],
@@ -29,9 +31,9 @@ export function TechnicalDrawing() {
   return (
     <div className="flex h-full min-h-0 flex-col gap-3 p-3">
       <div className="flex items-center gap-3">
-        <Link to="/layout" className={buttonVariants({ variant: "outline", size: "sm" })}>
+        <Button variant="outline" size="sm" onClick={goBack}>
           Back
-        </Link>
+        </Button>
         <div>
           <h1 className="text-xl font-medium">Technical drawing</h1>
           {bedQuery.data && <p className="text-xs text-muted-foreground">{bedQuery.data.name} — distances shown are relative to this bed's own edges, not the garden.</p>}

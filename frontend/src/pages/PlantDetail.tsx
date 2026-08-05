@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
 import { ChevronDown, ChevronUp, Copy } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { useSnackbar } from "@/components/Snackbar";
+import { useNavigateBack } from "@/hooks/useNavigateBack";
 import { getPlant, listPlants, updatePlant, type PlantDetail as PlantDetailData, type PlantUpdate } from "@/api/client";
 import { buildFieldLayout, fieldValue, SCALAR_FIELDS, type FieldLayoutItem, type FieldValue } from "@/pages/plant-detail/fields";
 import { FieldInput } from "@/pages/plant-detail/FieldInput";
@@ -91,6 +92,7 @@ function GroupCaption({ label }: { label: string }) {
 
 export function PlantDetail() {
   const { slug = "" } = useParams();
+  const goBack = useNavigateBack("/plants");
   const { data, isPending, isError } = useQuery({
     queryKey: ["plant", slug],
     queryFn: () => getPlant(slug),
@@ -145,9 +147,9 @@ export function PlantDetail() {
   return (
     <div className="mx-auto max-w-3xl p-6">
       <div className="mb-4 flex items-start gap-3">
-        <Link to="/plants" className={buttonVariants({ variant: "outline", size: "sm" })}>
+        <Button variant="outline" size="sm" onClick={goBack}>
           Back
-        </Link>
+        </Button>
         {data && (
           <div>
             {/* Identity line as a breadcrumb path (#237 round 2, item 1):
