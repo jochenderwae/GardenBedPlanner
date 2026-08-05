@@ -119,6 +119,12 @@ export function Equipment() {
       // picker UI in this quick "add to inventory" form (that's a separate
       // backlog item's job).
       condition: "good",
+      // #255: this form is genuinely "I have this item in hand, add it to
+      // inventory" - owned defaults true server-side too, but the field is
+      // required on the wire type now, so it's spelled out explicitly here.
+      // No owned/unowned toggle in this quick-add form (that's the shopping-
+      // list feature's own UI surface, not this one).
+      owned: true,
     });
   }
 

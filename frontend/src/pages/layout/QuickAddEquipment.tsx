@@ -45,6 +45,11 @@ export function QuickAddEquipment({ equipmentTypes, disabled, onCreated }: Quick
         height_cm: null,
         water_delivery_lph: null,
         condition: "good",
+        // #255: quick-add is "I have this item in hand, place it now" - same
+        // owned-true default as EquipmentPanel/Equipment.tsx's own inventory
+        // forms, spelled out explicitly since the field is required on the
+        // wire type now.
+        owned: true,
       }),
     onSuccess: (created) => {
       setOpen(false);
