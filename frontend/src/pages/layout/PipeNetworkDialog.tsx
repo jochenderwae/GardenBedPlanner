@@ -26,14 +26,18 @@ import {
   listIrrigationConnections,
   listIrrigationPartInstances,
   listIrrigationParts,
+  listIrrigationPartTypes,
   updateIrrigationPart,
   updateIrrigationPartInstance,
   type IrrigationConnection,
   type IrrigationPart,
   type IrrigationPartInstance,
+  type IrrigationPartType,
 } from "@/api/client";
 import { snapToGrid } from "./geometry";
 import { useContainerSize } from "./useContainerSize";
+import { PartTypeIcon } from "./irrigationPartIcons";
+import { findIrrigationPartType } from "./irrigationPartTypes";
 
 // See #209's design spec (that issue's own comment thread) for the full
 // interaction/visual rationale behind every constant/decision below. #254/
@@ -90,12 +94,51 @@ function pointOnRectPerimeter(width: number, height: number, t: number): Positio
   return { x: -halfW + d, y: -halfH };
 }
 
-/** Always at least 2, one more than however many connections already use
- * this node, capped at 6 - "always exactly one more anchor showing than is
- * currently in use," per #209's design spec, without ever forcing a fixed
- * port count on a free-text part type. */
-function anchorCountFor(connectionCount: number): number {
+/** The real physical port count from the matched `IrrigationPartType`
+ * catalog row when one exists (#252) - e.g. a nozzle shows exactly 1 anchor
+ * and a T-junction exactly 3, so once every port already backs a connection
+ * there's no spare hollow anchor left to drag a new connection from. Falls
+ * back to #209's original heuristic (always one more than currently
+ * connected, capped at 6) for a part_type with no matching catalog row, same
+ * "no rendered default but still works" precedent as `EquipmentType` - see
+ * `irrigationPartTypes.ts`'s own docstring. `Math.max(portCount,
+ * connectionCount)` guards the (should-not-normally-happen) case where more
+ * connections exist than the type's own port count, so every real
+ * connection still gets a rendered anchor rather than being silently
+ * dropped. */
+function anchorCountFor(connectionCount: number, portCount: number | undefined): number {
+  if (portCount != null) return Math.max(portCount, connectionCount);
   return Math.min(6, Math.max(2, connectionCount + 1));
+}
+
+// #252: anchors are colored by the owning part's `connector_size_mm` (a
+// per-part, not per-anchor, field - see `IrrigationPart`'s own schema) so two
+// compatible-size anchors read as visually related at a glance, before
+// connecting them - a small fixed palette over the common metric drip-line
+// sizes this app's own domain notes describe, not an attempt at an
+// open-ended continuous scale. `ConnectionEdge`'s existing dashed-line
+// mismatch label stays as the after-the-fact confirmation; this is the
+// before-connecting signal #252's own test criterion 4 asks for.
+const CONNECTOR_SIZE_COLORS: Record<number, string> = {
+  4: "#f97316",
+  6: "#eab308",
+  9: "#22c55e",
+  13: "#0ea5e9",
+  16: "#6366f1",
+  20: "#a855f7",
+  25: "#ec4899",
+};
+// A recorded size outside the common palette above (still a real, just
+// unusual, value).
+const CONNECTOR_SIZE_FALLBACK_COLOR = "#64748b";
+// No `connector_size_mm` recorded at all - visually distinct (pale) from
+// every real size so "unset" never reads as "compatible with another unset
+// anchor."
+const CONNECTOR_SIZE_UNSET_COLOR = "#cbd5e1";
+
+function connectorSizeColor(mm: number | null | undefined): string {
+  if (mm == null) return CONNECTOR_SIZE_UNSET_COLOR;
+  return CONNECTOR_SIZE_COLORS[mm] ?? CONNECTOR_SIZE_FALLBACK_COLOR;
 }
 
 function nextCascadePosition(index: number): Position {
@@ -200,15 +243,20 @@ function PartRow({
 
 /** One placed instance's node on the diagram canvas (#209/#254) - a rounded
  * rect showing the owning part's name/type/quantity (looked up via
- * `instance.part_id`), plus evenly-spaced anchor circles around its border
- * (see `anchorCountFor`): filled for an anchor already backing a
- * connection, hollow for the one spare "next connection" point, which is
- * also the only valid connection-drag start (`onAnchorDragStart`).
+ * `instance.part_id`), a small recognizable vector icon per part type
+ * (#252, `PartTypeIcon`), plus evenly-spaced anchor circles around its
+ * border (see `anchorCountFor`): filled for an anchor already backing a
+ * connection, hollow for a still-free port, which is also the only valid
+ * connection-drag start (`onAnchorDragStart`) - once a part's real port
+ * count (from `partType`) is fully connected there are no hollow anchors
+ * left at all. Anchors are colored by the part's own `connector_size_mm`
+ * (`connectorSizeColor`) so compatible sizes read as visually related.
  * `needsPurchase` reflects the owning part's placed-instance-count vs
  * quantity_on_hand, not anything about this node individually - every
  * instance of an over-placed part shows the same flag. */
 function PartNode({
   part,
+  partType,
   position,
   connectionCount,
   needsPurchase,
@@ -219,6 +267,7 @@ function PartNode({
   onAnchorMouseDown,
 }: {
   part: IrrigationPart;
+  partType: IrrigationPartType | undefined;
   position: Position;
   connectionCount: number;
   needsPurchase: boolean;
@@ -229,8 +278,9 @@ function PartNode({
   onAnchorMouseDown: (anchorAbsolutePos: Position) => void;
 }) {
   const stroke = needsPurchase ? NODE_NEEDS_PURCHASE_STROKE : NODE_STROKE;
-  const anchorCount = anchorCountFor(connectionCount);
+  const anchorCount = anchorCountFor(connectionCount, partType?.connection_count);
   const filledCount = Math.min(connectionCount, anchorCount);
+  const anchorColor = connectorSizeColor(part.connector_size_mm);
   const anchors = Array.from({ length: anchorCount }, (_, i) => ({
     ...pointOnRectPerimeter(NODE_WIDTH, NODE_HEIGHT, i / anchorCount),
     hollow: i >= filledCount,
@@ -268,10 +318,13 @@ function PartNode({
         wrap="word"
         listening={false}
       />
+      <Group x={-NODE_WIDTH / 2 + 12} y={NODE_HEIGHT / 2 - 9} listening={false}>
+        <PartTypeIcon partType={part.part_type} />
+      </Group>
       <Text
-        x={-NODE_WIDTH / 2 + 6}
+        x={-NODE_WIDTH / 2 + 22}
         y={NODE_HEIGHT / 2 - 16}
-        width={NODE_WIDTH - 30}
+        width={NODE_WIDTH - 46}
         text={part.part_type}
         fontSize={9}
         fill="#64748b"
@@ -309,9 +362,9 @@ function PartNode({
           x={anchor.x}
           y={anchor.y}
           radius={4}
-          stroke={NODE_STROKE}
+          stroke={anchorColor}
           strokeWidth={1.5}
-          fill={anchor.hollow ? "#ffffff" : NODE_STROKE}
+          fill={anchor.hollow ? "#ffffff" : anchorColor}
           onMouseDown={(e) => {
             if (!anchor.hollow || e.evt.button !== 0) return;
             e.cancelBubble = true;
@@ -429,11 +482,24 @@ export function PipeNetworkDialog() {
   const partsQuery = useQuery({ queryKey: ["irrigation-parts"], queryFn: listIrrigationParts, enabled: open });
   const instancesQuery = useQuery({ queryKey: ["irrigation-part-instances"], queryFn: () => listIrrigationPartInstances(), enabled: open });
   const connectionsQuery = useQuery({ queryKey: ["irrigation-connections"], queryFn: () => listIrrigationConnections(), enabled: open });
+  // #252: catalog lookup for real per-type port counts - active packs only,
+  // same default the add-part suggestion UI wants (#251).
+  const partTypesQuery = useQuery({ queryKey: ["irrigation-part-types"], queryFn: () => listIrrigationPartTypes(), enabled: open });
   const parts = useMemo(() => partsQuery.data ?? [], [partsQuery.data]);
   const instances = useMemo(() => instancesQuery.data ?? [], [instancesQuery.data]);
   const connections = useMemo(() => connectionsQuery.data ?? [], [connectionsQuery.data]);
+  const partTypes = useMemo(() => partTypesQuery.data ?? [], [partTypesQuery.data]);
   const partsById = useMemo(() => new Map(parts.filter((p) => p.id != null).map((p) => [p.id as number, p])), [parts]);
   const instancesById = useMemo(() => new Map(instances.filter((i) => i.id != null).map((i) => [i.id as number, i])), [instances]);
+  // Matched once per part (not per node/instance) - several instances of the
+  // same part share the same catalog match.
+  const partTypeByPartId = useMemo(() => {
+    const map = new Map<number, IrrigationPartType | undefined>();
+    for (const part of parts) {
+      if (part.id != null) map.set(part.id, findIrrigationPartType(part.part_type, partTypes));
+    }
+    return map;
+  }, [parts, partTypes]);
 
   useEffect(() => {
     if (!open) {
@@ -630,6 +696,17 @@ export function PipeNetworkDialog() {
     if (instance?.part_id != null) rowRefs.current.get(instance.part_id)?.scrollIntoView({ block: "nearest" });
   }
 
+  /** #252: a target with a known port count (from its matched
+   * `IrrigationPartType`) that's already fully connected can't accept
+   * another drop - a part_type with no matching catalog row stays
+   * unrestricted, same fallback as `anchorCountFor`. */
+  function instanceHasFreePort(instance: IrrigationPartInstance): boolean {
+    if (instance.id == null || instance.part_id == null) return true;
+    const portCount = partTypeByPartId.get(instance.part_id)?.connection_count;
+    if (portCount == null) return true;
+    return (connectionCountByInstance.get(instance.id) ?? 0) < portCount;
+  }
+
   function handleStageMouseMove() {
     if (!connecting) return;
     const stage = stageRef.current;
@@ -645,6 +722,7 @@ export function PipeNetworkDialog() {
     const drop = stageRef.current?.getPointerPosition() ?? pointerPos ?? connecting;
     const target = positionedInstances.find((i) => {
       if (i.id == null || i.id === connecting.fromInstanceId) return false;
+      if (!instanceHasFreePort(i)) return false;
       const pos = effectivePosition(i);
       return Math.abs(drop.x - pos.x) <= NODE_WIDTH / 2 && Math.abs(drop.y - pos.y) <= NODE_HEIGHT / 2;
     });
@@ -808,6 +886,7 @@ export function PipeNetworkDialog() {
                         <PartNode
                           key={instance.id}
                           part={part}
+                          partType={partTypeByPartId.get(part.id as number)}
                           position={effectivePosition(instance)}
                           connectionCount={connectionCount}
                           needsPurchase={needsPurchase}

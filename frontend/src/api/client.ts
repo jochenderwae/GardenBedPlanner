@@ -84,6 +84,12 @@ export type IrrigationPartInstanceCreate = components["schemas"]["IrrigationPart
 export type IrrigationPartInstanceUpdate = components["schemas"]["IrrigationPartInstanceUpdate"];
 export type IrrigationConnection = components["schemas"]["IrrigationConnection"];
 export type IrrigationConnectionCreate = components["schemas"]["IrrigationConnectionCreate"];
+// #251/#252: reference lookup for a part_type's real-world port count/icon -
+// see that schema's own docstring. IrrigationPart.part_type stays free text
+// (matched against this list's slug/name by normalized string, same
+// precedent as EquipmentType/BedEquipment.equipment_type) rather than a hard
+// FK, so a part_type with no matching row here still works.
+export type IrrigationPartType = components["schemas"]["IrrigationPartType"];
 
 export type Action = components["schemas"]["Action"];
 export type ActionCreate = components["schemas"]["ActionCreate"];
@@ -531,6 +537,14 @@ export function deleteIrrigationPartInstance(id: number): Promise<void> {
 export function listIrrigationConnections(instanceId?: number): Promise<IrrigationConnection[]> {
   const query = instanceId != null ? `?instance_id=${instanceId}` : "";
   return apiFetch(`/api/irrigation-connections${query}`);
+}
+
+/** Defaults to only part types belonging to an active resource pack - the
+ * same "active packs only" default the add-part suggestion UI wants (#251)
+ * and #252's own anchor-count/icon lookup wants too. */
+export function listIrrigationPartTypes(includeInactive?: boolean): Promise<IrrigationPartType[]> {
+  const query = includeInactive ? "?include_inactive=true" : "";
+  return apiFetch(`/api/irrigation-part-types${query}`);
 }
 
 export function createIrrigationConnection(connection: IrrigationConnectionCreate): Promise<IrrigationConnection> {
