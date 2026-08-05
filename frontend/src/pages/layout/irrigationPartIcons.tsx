@@ -6,8 +6,10 @@ import { normalizePartTypeKey } from "./irrigationPartTypes";
 // see that schema's own docstring, "the actual icon set doesn't exist yet").
 // Rather than block the whole ticket on that asset pipeline, this draws a
 // small fixed set of recognizable Konva shapes keyed off the same normalized
-// `part_type` free text `PipeNetworkDialog.tsx`'s own `PART_TYPE_SUGGESTIONS`
-// datalist already offers - independent of whether a matching
+// `part_type` free text this project's common irrigation-part slugs use
+// (nozzle, t_junction, ...; see #269's `IrrigationPartType` catalog query in
+// `PipeNetworkDialog.tsx` for where those slugs actually come from once a
+// resource pack is seeded) - independent of whether a matching
 // `IrrigationPartType` catalog row exists at all, so it renders correctly
 // even before any resource pack is seeded. Unrecognized types fall back to
 // no icon (the node's plain rounded-rect body, same "no rendered default but

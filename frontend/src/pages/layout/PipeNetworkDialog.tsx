@@ -286,8 +286,6 @@ interface AddPartFormState {
   quantityOnHand: string;
 }
 
-const PART_TYPE_SUGGESTIONS = ["nozzle", "t_junction", "connector", "valve", "hose_segment", "micro_tube", "end_cap", "dripper", "stake"];
-
 /** One row in the left-panel parts catalog (#209/#254) - name/type, inline-
  * editable connector size + quantity (blur-to-save, same UX
  * `EquipmentPanel.tsx`'s `ZoneRow` name field already uses), a "needs
@@ -997,8 +995,17 @@ export function PipeNetworkDialog() {
                     onChange={(e) => setAddForm((f) => ({ ...f, partType: e.target.value }))}
                   />
                   <datalist id="pipe-network-part-types">
-                    {PART_TYPE_SUGGESTIONS.map((t) => (
-                      <option key={t} value={t} />
+                    {/* #269: suggestions come from the live IrrigationPartType
+                        catalog (active resource packs only, same query
+                        `partTypeByPartId`'s #252 lookup already fetches) -
+                        not a hardcoded list. Typing a part type that isn't
+                        in the catalog still saves fine (see this file's own
+                        header comment / IrrigationPart.part_type's free-text
+                        backend field), so an empty/near-empty datalist
+                        (expected until a resource pack is actually seeded)
+                        doesn't block adding a part. */}
+                    {partTypes.map((t) => (
+                      <option key={t.id ?? t.slug} value={t.slug} label={t.name} />
                     ))}
                   </datalist>
                 </label>
