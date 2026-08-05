@@ -39,6 +39,7 @@ import {
   type CompanionMatch,
   type Decoration,
   type DecorationUpdate,
+  type EquipmentCondition,
   type Garden,
   type GardenPut,
   type Geometry,
@@ -1235,15 +1236,21 @@ export function Layout() {
     handleEquipmentPlaceInGarden(item);
   }
 
-  function handleEquipmentReturnToInventory(item: BedEquipment) {
+  /** #244: `condition` (defaulting to "good" from `UnplaceControl`'s own
+   * picker if the gardener doesn't touch it) records what state the item
+   * was in *as it left the bed* - captured in `previousPatch` too, so
+   * undoing this action restores whatever condition it actually had before
+   * unplacing, not just its geometry. */
+  function handleEquipmentReturnToInventory(item: BedEquipment, condition: EquipmentCondition) {
     if (item.id == null) return;
     const itemId = item.id;
     const previousPatch: BedEquipmentUpdate = {
       bed_id: item.bed_id,
       garden_id: item.garden_id,
       geometry: item.geometry,
+      condition: item.condition,
     };
-    const nextPatch: BedEquipmentUpdate = { bed_id: null, garden_id: null, geometry: null };
+    const nextPatch: BedEquipmentUpdate = { bed_id: null, garden_id: null, geometry: null, condition };
     applyEquipmentPatch(itemId, nextPatch);
     history.push({
       undo: () => applyEquipmentPatch(itemId, previousPatch),

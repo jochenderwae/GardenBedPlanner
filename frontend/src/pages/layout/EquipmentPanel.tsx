@@ -4,7 +4,7 @@ import { PackageCheck, Plus, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input, Select } from "@/components/ui/input";
-import { FieldHint, Tooltip } from "@/components/ui/tooltip";
+import { FieldHint } from "@/components/ui/tooltip";
 import {
   createBedEquipment,
   createIrrigationZone,
@@ -17,9 +17,11 @@ import {
   type Bed,
   type BedEquipment,
   type BedEquipmentCreate,
+  type EquipmentCondition,
   type Garden,
   type IrrigationZone,
 } from "@/api/client";
+import { CONDITION_LABELS, ConditionBadge, UnplaceControl } from "./equipmentCondition";
 
 /** Sentinel `<option>` value for "place in garden" in the same `<Select>`
  * that otherwise lists bed ids - kept distinct from any real bed id string
@@ -44,8 +46,11 @@ interface EquipmentPanelProps {
    * (#207/#208) - a rain barrel, pathway, or other item that doesn't belong
    * to any one bed. Same lifted-up-to-Layout.tsx reasoning as onPlace. */
   onPlaceInGarden: (item: BedEquipment) => void;
-  /** Unplace a placed item back to inventory - same reasoning as onPlace. */
-  onReturnToInventory: (item: BedEquipment) => void;
+  /** Unplace a placed item back to inventory, recording its condition as of
+   * that moment (#244, defaults "good" if the gardener doesn't change it in
+   * `UnplaceControl`'s own picker) - same lifted-up-to-Layout.tsx reasoning
+   * as onPlace. */
+  onReturnToInventory: (item: BedEquipment, condition: EquipmentCondition) => void;
 }
 
 /** One irrigation zone's own row in the zone-management list (#200/#36):
@@ -342,7 +347,10 @@ export function EquipmentPanel({ beds, garden, equipment, onClose, onPlace, onPl
             {inventory.map((item) => (
               <div key={item.id} className="flex flex-col gap-1 rounded px-1 py-1 text-sm hover:bg-accent">
                 <div className="flex items-center justify-between">
-                  <span className="font-medium">{item.equipment_type}</span>
+                  <span className="inline-flex items-center gap-1.5 font-medium">
+                    {item.equipment_type}
+                    <ConditionBadge condition={item.condition} />
+                  </span>
                   <Button
                     variant="ghost"
                     size="icon-sm"
@@ -352,30 +360,40 @@ export function EquipmentPanel({ beds, garden, equipment, onClose, onPlace, onPl
                     <Trash2 />
                   </Button>
                 </div>
-                <label className="flex items-center gap-1.5">
-                  <PackageCheck className="size-3.5 shrink-0 text-muted-foreground" />
-                  <Select
-                    value=""
-                    disabled={beds.length === 0 && !garden}
-                    onChange={(e) => handlePlace(item, e.target.value)}
-                  >
-                    <option value="">Place in bed…</option>
-                    {beds.map((bed) => (
-                      <option key={bed.id} value={String(bed.id)}>
-                        {bed.name}
-                      </option>
-                    ))}
-                    {/* Garden-bound placement (#207/#208) - a rain barrel,
-                        pathway, or other item that belongs to the garden as
-                        a whole rather than to one bed. Always offered
-                        alongside the bed list rather than gated by the
-                        item's own equipment_type category - simpler, and
-                        the category itself is only advisory (an item with
-                        no matching EquipmentType has no category to check
-                        against anyway). */}
-                    {garden && <option value={PLACE_IN_GARDEN_VALUE}>Place in garden…</option>}
-                  </Select>
-                </label>
+                {/* #244: a damaged/retired item isn't real "available
+                    stock" - its condition badge above already says so, and
+                    the placement picker itself is withheld rather than
+                    silently letting the gardener place a broken item, per
+                    this ticket's own functional requirement. Still listed
+                    (and still deletable) so it stays visible/manageable. */}
+                {item.condition === "good" ? (
+                  <label className="flex items-center gap-1.5">
+                    <PackageCheck className="size-3.5 shrink-0 text-muted-foreground" />
+                    <Select
+                      value=""
+                      disabled={beds.length === 0 && !garden}
+                      onChange={(e) => handlePlace(item, e.target.value)}
+                    >
+                      <option value="">Place in bed…</option>
+                      {beds.map((bed) => (
+                        <option key={bed.id} value={String(bed.id)}>
+                          {bed.name}
+                        </option>
+                      ))}
+                      {/* Garden-bound placement (#207/#208) - a rain barrel,
+                          pathway, or other item that belongs to the garden as
+                          a whole rather than to one bed. Always offered
+                          alongside the bed list rather than gated by the
+                          item's own equipment_type category - simpler, and
+                          the category itself is only advisory (an item with
+                          no matching EquipmentType has no category to check
+                          against anyway). */}
+                      {garden && <option value={PLACE_IN_GARDEN_VALUE}>Place in garden…</option>}
+                    </Select>
+                  </label>
+                ) : (
+                  <p className="text-xs text-muted-foreground">Not available to place - {CONDITION_LABELS[item.condition].toLowerCase()}.</p>
+                )}
               </div>
             ))}
           </div>
@@ -389,15 +407,14 @@ export function EquipmentPanel({ beds, garden, equipment, onClose, onPlace, onPl
               <div key={item.id} className="flex flex-col gap-1 rounded px-1 py-1 text-sm hover:bg-accent">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="font-medium">{item.equipment_type}</div>
+                    <div className="inline-flex items-center gap-1.5 font-medium">
+                      {item.equipment_type}
+                      <ConditionBadge condition={item.condition} />
+                    </div>
                     <div className="text-xs text-muted-foreground">{placementLabel(item)}</div>
                   </div>
                   <div className="flex items-center gap-0.5">
-                    <Tooltip content="Return to inventory">
-                      <Button variant="ghost" size="sm" onClick={() => onReturnToInventory(item)}>
-                        Unplace
-                      </Button>
-                    </Tooltip>
+                    <UnplaceControl item={item} onReturnToInventory={onReturnToInventory} />
                     <Button
                       variant="ghost"
                       size="icon-sm"

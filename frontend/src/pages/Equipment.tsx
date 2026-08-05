@@ -4,7 +4,7 @@ import { PackageCheck, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Select } from "@/components/ui/input";
-import { FieldHint, Tooltip } from "@/components/ui/tooltip";
+import { FieldHint } from "@/components/ui/tooltip";
 import {
   createBedEquipment,
   deleteBedEquipment,
@@ -17,9 +17,11 @@ import {
   type BedEquipment,
   type BedEquipmentCreate,
   type BedEquipmentUpdate,
+  type EquipmentCondition,
 } from "@/api/client";
 import { boundingRect } from "@/pages/layout/geometry";
 import { DEFAULT_EQUIPMENT_SIZE_CM } from "@/pages/layout/EquipmentPanel";
+import { CONDITION_LABELS, ConditionBadge, UnplaceControl } from "@/pages/layout/equipmentCondition";
 import { findEquipmentType } from "@/pages/layout/equipmentTypes";
 
 /** Sentinel `<option>` value for "place in garden" - mirrors
@@ -174,9 +176,12 @@ export function Equipment() {
     });
   }
 
-  function returnToInventory(item: BedEquipment) {
+  /** #244: records the item's condition as of unplacing (defaults "good"
+   * from `UnplaceControl`'s own picker if the gardener doesn't touch it) -
+   * same behavior as `EquipmentPanel.tsx`'s own unplace flow. */
+  function returnToInventory(item: BedEquipment, condition: EquipmentCondition) {
     if (item.id == null) return;
-    patchMutation.mutate({ id: item.id, patch: { bed_id: null, garden_id: null, geometry: null } });
+    patchMutation.mutate({ id: item.id, patch: { bed_id: null, garden_id: null, geometry: null, condition } });
   }
 
   function handlePlaceSelect(item: BedEquipment, target: string) {
@@ -271,28 +276,41 @@ export function Equipment() {
               <div className="flex flex-col divide-y">
                 {inventory.map((item) => (
                   <div key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
-                    <span className="text-sm font-medium">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-medium">
                       {item.equipment_type}
-                      {item.height_cm != null && <span className="ml-2 text-xs text-muted-foreground">{item.height_cm} cm</span>}
+                      {item.height_cm != null && <span className="text-xs text-muted-foreground">{item.height_cm} cm</span>}
+                      <ConditionBadge condition={item.condition} />
                     </span>
                     <div className="flex items-center gap-2">
-                      <label className="flex items-center gap-1.5">
-                        <PackageCheck className="size-3.5 shrink-0 text-muted-foreground" />
-                        <Select
-                          className="h-7 text-xs"
-                          value=""
-                          disabled={beds.length === 0 && !garden}
-                          onChange={(e) => handlePlaceSelect(item, e.target.value)}
-                        >
-                          <option value="">Place in bed…</option>
-                          {beds.map((bed) => (
-                            <option key={bed.id} value={String(bed.id)}>
-                              {bed.name}
-                            </option>
-                          ))}
-                          {garden && <option value={PLACE_IN_GARDEN_VALUE}>Place in garden…</option>}
-                        </Select>
-                      </label>
+                      {/* #244: a damaged/retired item isn't real "available
+                          stock" - its condition badge above already says
+                          so, and the placement picker itself is withheld
+                          rather than silently letting the gardener place a
+                          broken item. Still listed (and deletable) so it
+                          stays visible/manageable. */}
+                      {item.condition === "good" ? (
+                        <label className="flex items-center gap-1.5">
+                          <PackageCheck className="size-3.5 shrink-0 text-muted-foreground" />
+                          <Select
+                            className="h-7 text-xs"
+                            value=""
+                            disabled={beds.length === 0 && !garden}
+                            onChange={(e) => handlePlaceSelect(item, e.target.value)}
+                          >
+                            <option value="">Place in bed…</option>
+                            {beds.map((bed) => (
+                              <option key={bed.id} value={String(bed.id)}>
+                                {bed.name}
+                              </option>
+                            ))}
+                            {garden && <option value={PLACE_IN_GARDEN_VALUE}>Place in garden…</option>}
+                          </Select>
+                        </label>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          Not available to place - {CONDITION_LABELS[item.condition].toLowerCase()}.
+                        </span>
+                      )}
                       <Button
                         variant="ghost"
                         size="icon-sm"
@@ -318,15 +336,14 @@ export function Equipment() {
                 {placed.map((item) => (
                   <div key={item.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
                     <div>
-                      <div className="text-sm font-medium">{item.equipment_type}</div>
+                      <div className="inline-flex items-center gap-1.5 text-sm font-medium">
+                        {item.equipment_type}
+                        <ConditionBadge condition={item.condition} />
+                      </div>
                       <div className="text-xs text-muted-foreground">{placementLabel(item)}</div>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Tooltip content="Return to inventory">
-                        <Button variant="ghost" size="sm" onClick={() => returnToInventory(item)}>
-                          Unplace
-                        </Button>
-                      </Tooltip>
+                      <UnplaceControl item={item} onReturnToInventory={returnToInventory} />
                       <Button
                         variant="ghost"
                         size="icon-sm"

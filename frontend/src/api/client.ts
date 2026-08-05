@@ -39,6 +39,7 @@ export type BedEquipmentCreate = components["schemas"]["BedEquipmentCreate"];
 export type BedEquipmentUpdate = components["schemas"]["BedEquipmentUpdate"];
 export type EquipmentType = components["schemas"]["EquipmentType"];
 export type EquipmentCategory = components["schemas"]["EquipmentCategory"];
+export type EquipmentCondition = components["schemas"]["EquipmentCondition"];
 
 export type HarvestLog = components["schemas"]["HarvestLog"];
 export type HarvestLogCreate = components["schemas"]["HarvestLogCreate"];
