@@ -168,6 +168,7 @@ erDiagram
         date planted_date
         date removed_date
         float spacing_cm "per-placement override for row/field placements; null means use the plant's own spread_cm"
+        float row_spacing_cm "per-placement row-axis override for field placements only; null means use the plant's own row_spacing_cm"
     }
 
     BED_EQUIPMENT {
@@ -180,6 +181,7 @@ erDiagram
         float water_delivery_lph "irrigation only"
         int zone_id FK "nullable - which IRRIGATION_ZONE this equipment belongs to, if any"
         string condition "good | damaged | retired, default good - what happened to this item when last unplaced from a bed"
+        boolean owned "default true - false means a placed row is only a plan to buy/place, not a physical item in hand yet"
     }
 
     EQUIPMENT_TYPE {
@@ -200,18 +202,39 @@ erDiagram
     IRRIGATION_PART {
         int id PK
         string name
-        string part_type "nozzle | t_junction | connector | valve | hose_segment | ... - open-ended"
+        string part_type "nozzle | t_junction | connector | valve | hose_segment | ... - open-ended, matched against IRRIGATION_PART_TYPE.slug by string"
         int quantity_on_hand
         string notes
         float connector_size_mm "advisory only, e.g. 13mm standard hose - never blocks a connection"
+    }
+
+    IRRIGATION_PART_INSTANCE {
+        int id PK
+        int part_id FK "which catalog/stock IRRIGATION_PART this is one physical unit of"
         float diagram_x "pipe-network diagram canvas position, independent of bed/garden geometry"
         float diagram_y
     }
 
+    IRRIGATION_PART_TYPE {
+        int id PK
+        int resource_pack_id FK "hard FK - a part type only exists in the context of belonging to one pack"
+        string slug UK "matched against IRRIGATION_PART.part_type by string, not a hard FK"
+        string name
+        int connection_count "how many physical ports the part has, e.g. a T-junction has 3"
+        string part_number "vendor SKU/name, for shopping-list generation"
+        string icon_key "opaque, keyed by a future frontend icon set"
+    }
+
+    RESOURCE_PACK {
+        int id PK
+        string name UK "e.g. Gardena"
+        boolean is_active "user-togglable whole-pack visibility, no DB constraint on how many are active"
+    }
+
     IRRIGATION_CONNECTION {
         int id PK
-        int from_part_id FK "undirected in practice - names just give each end a distinct column"
-        int to_part_id FK
+        int from_instance_id FK "undirected in practice - names just give each end a distinct column"
+        int to_instance_id FK
         string notes
     }
 
@@ -333,8 +356,10 @@ erDiagram
     GARDEN o|--o{ GARDEN_PLAN : "scopes (multi-garden support, nullable garden_id)"
     GARDEN o|--o{ BED_EQUIPMENT : "hosts (garden-bound)"
     IRRIGATION_ZONE o|--o{ BED_EQUIPMENT : "groups"
-    IRRIGATION_PART o|--o{ IRRIGATION_CONNECTION : "from"
-    IRRIGATION_PART o|--o{ IRRIGATION_CONNECTION : "to"
+    IRRIGATION_PART ||--o{ IRRIGATION_PART_INSTANCE : "physical units of"
+    IRRIGATION_PART_INSTANCE o|--o{ IRRIGATION_CONNECTION : "from"
+    IRRIGATION_PART_INSTANCE o|--o{ IRRIGATION_CONNECTION : "to"
+    RESOURCE_PACK ||--o{ IRRIGATION_PART_TYPE : "groups"
 
     GARDEN_PLAN ||--o{ GARDEN_PLAN_ENTRY : "contains"
     GARDEN_PLAN_ENTRY o|--o{ ACTION : "generates"
@@ -440,3 +465,12 @@ type Geometry =
 - **`ACTION` gained `snoozed_until`** (#230, "remind me later") - suppresses further reminder pushes (`app/services/reminders.py`'s `due_actions`) until this date, without touching `due_date_start`/`due_date_end` (the task's actual due window) at all. Once passed, the action reappears automatically - no separate "unsnooze" step. Doesn't interact with `actionable_now` (#192) - snoozing only affects the reminder push, never the task's own due window/urgency ordering.
 - **`ACTION` gained `recurrence_unit`/`recurrence_interval`/`recurrence_end_date`/`recurrence_source_action_id`** (#226, manually-created recurring/repeating tasks, e.g. "turn the compost bin every 3 weeks") - `recurrence_unit` (`daily`/`weekly`/`monthly`/`yearly`) is `null` by default (and for every existing/#192-auto-generated row), meaning not recurring; `recurrence_interval`/`recurrence_end_date` are inert unless it's set. `recurrence_source_action_id` is a distinct self-referencing FK from `depends_on_action_id` - recurrence chaining (linking a generated occurrence back to the action it was generated from) is never conflated with dependency ordering, even though both are single-predecessor self-FKs on the same table.
 - **`PUSH_SUBSCRIPTION` (`app/models/push_subscription.py`) is deliberately not drawn in the diagram above** - a browser's Web Push registration (endpoint + encryption keys), infrastructure/notification plumbing rather than garden domain data, same category of omission as this doc never having modeled auth/session tables. Noted here explicitly (rather than left unexplained) since every other real table in `app/models/` is accounted for in this diagram.
+
+**The following bullets were added 2026-08-05 during a routine data-engineer doc-accuracy audit (see root `CLAUDE.md`'s "Keeping the domain model and schema accurate") - the diagram above was already updated to match; these explain why:**
+
+- **`RESOURCE_PACK`/`IRRIGATION_PART_TYPE` added** (`create_resource_pack_and_irrigation_part_type` migration, #251) - the drip-irrigation equivalent of `EQUIPMENT_TYPE` for `BED_EQUIPMENT.equipment_type`: a seeded reference catalog for `IRRIGATION_PART.part_type`'s real-world shape (connection count, vendor part number, icon key), matched by normalized string rather than a hard FK, same non-FK precedent `EQUIPMENT_TYPE` already set. Unlike `EQUIPMENT_TYPE`, each `IRRIGATION_PART_TYPE` row *does* carry a hard FK to the `RESOURCE_PACK` it belongs to - a part type only exists in the context of one vendor's pack, and `RESOURCE_PACK.is_active` (no DB constraint on how many packs are active at once, unlike `GARDEN.is_active`'s "exactly one" invariant) lets a whole vendor's suggestions be hidden without deleting the catalog rows. No pack seeded yet ("Gardena" is flagged as a data-engineer follow-up in #251's own note, not yet done).
+- **`IRRIGATION_PART_INSTANCE` split out of `IRRIGATION_PART`** (`create_irrigation_part_instance_table` migration, #254) - `IRRIGATION_PART` stays catalog/stock-level ("I own 6 of these"), while each `IRRIGATION_PART_INSTANCE` is one physically-placed unit with its own diagram position and its own independent set of `IRRIGATION_CONNECTION` edges - fixes a real gap where owning several units of the same part connected to different neighbors couldn't previously be represented (one diagram node per part *type*, not per physical item). `diagram_x`/`diagram_y` moved off `IRRIGATION_PART` onto this new table; `IRRIGATION_CONNECTION.from_part_id`/`to_part_id` were renamed `from_instance_id`/`to_instance_id` and re-pointed at `IRRIGATION_PART_INSTANCE`. The migration backfilled one instance per part that was already placed and/or connected pre-#254, remapping existing connections so nothing was silently orphaned - deployed and verified against real row counts on `garden-planner-dev`'s `garden` database per the migration's own deploy notes.
+- **`BED_EQUIPMENT` gained `owned`** (#255) - defaults `true` (every pre-existing row represents equipment actually in hand); `false` means "this placed row is a plan to buy/place, not a physical item yet" - the `BedEquipment` analogue of the "needs purchase" allowance `IrrigationPart`/`IrrigationPartInstance` already had via `quantity_on_hand` vs. `instance_count` (#254), adapted to `BedEquipment`'s one-row-per-physical-item shape instead of a stock-count column.
+- **A `SHOPPING_LIST` read endpoint added, not a persisted table** (`GET /api/shopping-list`, #255) - aggregates every current "needs purchase" shortfall across two different sources with different identity/grouping keys (`IrrigationPart` rows where `instance_count > quantity_on_hand`, and `BedEquipment` rows with `owned=false` grouped by `equipment_type`) into one flat list, `category` distinguishing which source each line came from. Deliberately not drawn as an ER entity - it's a derived, computed-at-read-time view over `IRRIGATION_PART`/`IRRIGATION_PART_INSTANCE`/`BED_EQUIPMENT` (plus their respective catalogs for display name/part number), not its own stored data, same "derive, don't store a flag" precedent `IRRIGATION_PART`'s own docstring already used for "needs purchase" before this endpoint generalized it.
+- **`PLANTING` gained `row_spacing_cm`** (#265) - a per-placement override (cm) for `field` placements only, alongside the existing `spacing_cm` (in-row axis). Same "`null` means fall back to the plant's own default" semantics as `spacing_cm`, but keyed off `PLANT.row_spacing_cm` instead of `PLANT.spread_cm` - the two axes needed independent per-placement overrides since a field placement's row spacing and in-row spacing aren't always the plant's own defaults for both at once.
+- Confirmed still accurate, no changes needed: the `PLANT` cluster, `GARDEN`/multi-garden support, `DECORATION`'s flagged missing `garden_id` (still unresolved as of this pass - see `data/suggestions.md`'s 2026-08-04 entry, not re-flagged again here since nothing has changed), and every other entity/note from the 2026-07-29/2026-08-04 audit passes above.

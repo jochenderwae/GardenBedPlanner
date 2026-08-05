@@ -17,6 +17,8 @@ Definition of a planting bed: a section in the garden that has a clear border, o
 
 Planting beds can also have plants placed on them. Some plants can be modeled individually, others are modeled as rows or fields. The choice is up to the user, based on personal preferences and the size of the field / planting bed.
 
+**Added later (2026-08, #150/#265):** a `row`/`field` placement can override the plant's own default spacing per-placement rather than always using its species-level default - `spacing_cm` for the in-row axis, `row_spacing_cm` for the row axis on `field` placements specifically. Both default to null (use the plant's own `spread_cm`/`row_spacing_cm`). See `docs/schema.md`'s `PLANTING` entity.
+
 ## Planting Bed Equipment
 Each planting bed can also contain "equipment" to aid plants, like (drip) irrigation, trellises, plant support, ...
 
@@ -24,9 +26,13 @@ Planting bed equipment has polygon geometry. The geometry can have a surface but
 
 **Resolved (2026-07-29, #36/#37/#140):** yes, the complete drip irrigation pipe network is mapped out. `IrrigationPart` tracks owned parts at the catalog level (nozzles, T-junctions, connectors, valves, hose segments - one row per distinct part type, not per physical item), `IrrigationConnection` is a flat edge list recording which parts physically connect to which, and `IrrigationZone` groups placed `BedEquipment` rows that share a water source/valve so the watering setup can be planned/queried per zone. See `docs/schema.md`'s `IRRIGATION_PART`/`IRRIGATION_CONNECTION`/`IRRIGATION_ZONE` entities. No control-system/valve-automation input exists yet - that idea is still just a "perhaps interesting" note, not built or currently planned.
 
+**Refined later (2026-08, #251/#254):** owning more than one physical unit of the same part (e.g. two identical T-junctions wired into different parts of the network) needed its own diagram position and connections, so per-instance placement/connection data was split out of `IrrigationPart` into a new `IrrigationPartInstance` (`IrrigationConnection` now links two instances, not two parts) - `IrrigationPart` itself stays purely catalog/stock ("I own 6 of these"). A seeded, vendor-groupable reference catalog for real-world part shapes (`ResourcePack`/`IrrigationPartType`, the irrigation equivalent of `EquipmentType` below) was also added, letting a vendor's whole parts catalog be toggled visible/hidden as a pack. See `docs/schema.md`'s `IRRIGATION_PART_INSTANCE`/`RESOURCE_PACK`/`IRRIGATION_PART_TYPE` entities.
+
 When not placed on a planting bed, equipment is in inventory.
 
 **Added later (2026-08, #225):** each equipment item also tracks a `condition` (good/damaged/retired) - what happened to it the last time it was unplaced from a bed, so a broken item isn't silently offered back as available stock. Not part of the original description above - documented here for completeness. See `docs/schema.md`'s `BED_EQUIPMENT` entity.
+
+**Added later (2026-08, #255):** equipment can also be placed before it's actually been bought (`owned=false` - a plan to place one, not a physical item yet), the `BedEquipment` counterpart to the "needs purchase" allowance irrigation parts already had. A single `GET /api/shopping-list` endpoint aggregates every current shortfall - unowned equipment plus irrigation parts with more placed instances than stock on hand - into one list; it's a computed read view, not its own stored table. See `docs/schema.md`'s "Modeling decisions worth revisiting" for both.
 
 ## Decorations
 Not part of the original data model sketch above - added later (2026-08, #241). A purely cosmetic garden object (a path, bench, garden gnome, etc.) with a name, a user-chosen render color, and a drawn rectangle/polygon footprint - no functional data or app behavior otherwise, distinct from `Bed`/`BedEquipment`. See `docs/schema.md`'s `DECORATION` entity (and its own note there flagging a real gap: decorations aren't yet scoped per-garden the way beds are, unlike what multi-garden support below would suggest).
