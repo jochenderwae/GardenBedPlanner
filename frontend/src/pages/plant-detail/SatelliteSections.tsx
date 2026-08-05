@@ -36,14 +36,16 @@ import {
   type SeedInfo,
 } from "@/api/client";
 
-// Was "flex flex-col gap-2 border-t pt-4" - the border-t/pt-4 separator was
-// how these 7 sections visually distinguished themselves from each other
-// and from the scalar-fields grid above, back when they all rendered in one
-// flat flex-col. #237's Option A layout wraps each section in its own
-// bordered Card instead (see PlantDetail.tsx) - that Card already supplies
-// the visual separation, so an inner border-t/pt-4 here would just double
-// it up.
-const sectionClass = "flex flex-col gap-2";
+// #237 round 2: back to a plain title + border-t rule separator (this app's
+// own existing convention - TaskDetail.tsx, BedPanel.tsx, HarvestLogDialog
+// all use exactly this class combination for internal subsections of one
+// outer panel) rather than round 1's per-section bordered Card, which
+// ui-ux-designer's round-2 review flagged as the actual outlier. `first:`
+// only matters when a satellite section happens to be the very first child
+// of its parent container - PlantDetail.tsx always renders the secondary
+// scalar-field grid before these, so every satellite section gets its own
+// border-t divider in practice.
+const sectionClass = "flex flex-col gap-2 border-t pt-3 first:border-t-0 first:pt-0";
 const rowClass = "flex flex-wrap items-center gap-2 text-sm";
 
 /** Shared plumbing for the five satellite tables shaped like (int id PK,
@@ -685,7 +687,13 @@ export function CompanionsSection({
  * `consolidated` entry (the AI-generated summary of every `raw` source for
  * this plant) is the primary/only thing shown by default; the `raw`
  * sources themselves live behind a "sources" link that opens a popup,
- * rather than being stacked in the main view. */
+ * rather than being stacked in the main view.
+ *
+ * #237 round 2: promoted out of the satellite/"Show more details" list up
+ * to directly below Description (its only remaining call site,
+ * `PlantDetail.tsx`) - restyled as a plain quiet block (no `<h2>`/no
+ * `border-t` separator) since it now reads as an extension of the
+ * description rather than one of the title+rule sections further down. */
 export function GrowingInfoSection({ slug: _slug, items }: { slug: string; items: PlantGrowingInformation[] }) {
   const [sourcesOpen, setSourcesOpen] = useState(false);
 
@@ -695,12 +703,7 @@ export function GrowingInfoSection({ slug: _slug, items }: { slug: string; items
   const sources = items.filter((i) => i.record_type !== "consolidated");
 
   return (
-    <section className={sectionClass}>
-      <h2 className="inline-flex items-center gap-1 text-sm font-semibold">
-        Growing information
-        <FieldHint description="A longer-form growing guide for this plant, consolidated from external sources." />
-      </h2>
-
+    <section className="flex flex-col gap-2">
       {consolidated ? (
         <div className="flex flex-col gap-1 rounded-md border p-2 text-sm">
           <p className="whitespace-pre-wrap">{consolidated.text}</p>

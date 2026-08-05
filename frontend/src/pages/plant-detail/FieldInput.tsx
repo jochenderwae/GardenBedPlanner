@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
-import { Input, inputVariants, Select, Textarea } from "@/components/ui/input";
+import { inputVariants } from "@/components/ui/input";
 import { Popover, PopoverPopup, PopoverTrigger } from "@/components/ui/popover";
 import { FieldHint } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { InlineEditableField } from "./InlineEditableField";
 import type { FieldConfig, FieldValue } from "./fields";
 
 interface FieldInputProps {
@@ -25,152 +25,104 @@ function FieldLabel({ field }: { field: FieldConfig }) {
   );
 }
 
-export function FieldInput({ field, value, onCommit }: FieldInputProps) {
-  const [draft, setDraft] = useState(value);
-  // #213: field.key is unique within one page's SCALAR_FIELDS render (one
-  // plant at a time) - an explicit id/htmlFor pair overrides the browser's
-  // implicit label-association algorithm entirely (it only falls back to
-  // "first labelable descendant" when `for` is absent), so FieldHint's own
-  // <button> sitting before the real control inside the same <label> no
-  // longer steals the label's accessible-name association from it.
-  const fieldId = `plant-field-${field.key}`;
+/** #237 round 2's compact "Label: value" row - text/number/select/tristate
+ * only (the "short" types, per the design spec's item 6 resolution).
+ * `InlineEditableField`'s own collapsed `<button>`/type-appropriate editing
+ * control carries its own `aria-label`, so this deliberately isn't a
+ * `<label htmlFor>` wrapper (there's no single stable form-control id to
+ * point at across the collapsed/editing swap) - see `InlineEditableField`'s
+ * own `ariaLabel` doc for why that's not a #213 regression. */
+function FieldRow({ field, value, onCommit }: FieldInputProps) {
+  return (
+    <div className="flex items-baseline gap-1.5 text-sm">
+      <span className="inline-flex shrink-0 items-center gap-1 font-medium text-muted-foreground">
+        {field.label}
+        <FieldHint description={field.description} />:
+      </span>
+      <InlineEditableField
+        type={field.type as "text" | "number" | "select" | "tristate"}
+        options={field.options}
+        value={value}
+        ariaLabel={field.label}
+        placeholder="—"
+        onCommit={onCommit}
+      />
+    </div>
+  );
+}
 
-  // Reflect external changes (initial load, or an Undo reverting this same
-  // field) without clobbering what the user is actively typing otherwise.
-  useEffect(() => setDraft(value), [value]);
+/** Textarea fields keep today's label-above/block-below layout (per the
+ * design spec's item 6 resolution - a multi-line value doesn't fit a
+ * same-line "Label: value" row) but gain click-to-edit like every other
+ * "simple" type (item 5) - collapsed display clamps to ~2 lines via
+ * `InlineEditableField`'s own `type="textarea"` styling. */
+function TextareaFieldRow({ field, value, onCommit }: FieldInputProps) {
+  return (
+    <div className="flex flex-col gap-1 sm:col-span-2">
+      <FieldLabel field={field} />
+      <InlineEditableField type="textarea" value={value} ariaLabel={field.label} placeholder="Add notes…" onCommit={onCommit} className="w-full" />
+    </div>
+  );
+}
 
-  function commitText() {
-    const normalized = typeof draft === "string" && draft.trim() === "" ? null : draft;
-    if (normalized !== value) onCommit(normalized, value);
-  }
-
-  if (field.type === "select" || field.type === "tristate") {
-    const options =
-      field.type === "tristate"
-        ? [
-            { value: "", label: "Unknown" },
-            { value: "true", label: "Yes" },
-            { value: "false", label: "No" },
-          ]
-        : [{ value: "", label: "—" }, ...(field.options ?? [])];
-    const selectValue = value === null || value === undefined ? "" : String(value);
-
-    return (
-      <label className="flex flex-col gap-1" htmlFor={fieldId}>
-        <FieldLabel field={field} />
-        <Select
-          id={fieldId}
-          value={selectValue}
-          onChange={(e) => {
-            const raw = e.target.value;
-            const newValue: FieldValue =
-              field.type === "tristate" ? (raw === "" ? null : raw === "true") : raw === "" ? null : raw;
-            onCommit(newValue, value);
-          }}
-        >
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </Select>
-      </label>
-    );
-  }
-
-  if (field.type === "number") {
-    return (
-      <label className="flex flex-col gap-1" htmlFor={fieldId}>
-        <FieldLabel field={field} />
-        <Input
-          id={fieldId}
-          type="number"
-          value={draft === null || draft === undefined ? "" : String(draft)}
-          onChange={(e) => setDraft(e.target.value === "" ? null : Number(e.target.value))}
-          onBlur={() => {
-            if (draft !== value) onCommit(draft, value);
-          }}
-        />
-      </label>
-    );
-  }
-
-  if (field.type === "multiselect") {
-    const selected = Array.isArray(value) ? value : [];
-    const options = field.options ?? [];
-    // Comma-joined summary of the current selection, in the options' own
-    // declared order (not raw value/insertion order) - "None selected"
-    // when empty, matching a typical closed multi-select combobox rather
-    // than the previous always-expanded checkbox group.
-    const summary = options
-      .filter((opt) => selected.includes(opt.value))
-      .map((opt) => opt.label)
-      .join(", ");
-
-    return (
-      <div className="flex flex-col gap-1">
-        <FieldLabel field={field} />
-        <Popover>
-          <PopoverTrigger
-            aria-label={field.label}
-            className={cn(inputVariants({ className: "flex items-center justify-between gap-2 text-left" }))}
-          >
-            <span className={cn("truncate", !summary && "text-muted-foreground")}>{summary || "None selected"}</span>
-            <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
-          </PopoverTrigger>
-          <PopoverPopup>
-            <fieldset className="flex flex-col gap-1.5">
-              <legend className="sr-only">{field.label}</legend>
-              {options.map((opt) => {
-                const checked = selected.includes(opt.value);
-                return (
-                  <label key={opt.value} className="flex items-center gap-1.5 text-sm">
-                    <input
-                      type="checkbox"
-                      checked={checked}
-                      onChange={(e) => {
-                        const next = e.target.checked
-                          ? [...selected, opt.value]
-                          : selected.filter((v) => v !== opt.value);
-                        onCommit(next, value);
-                      }}
-                    />
-                    {opt.label}
-                  </label>
-                );
-              })}
-            </fieldset>
-          </PopoverPopup>
-        </Popover>
-      </div>
-    );
-  }
-
-  if (field.type === "textarea") {
-    return (
-      <label className="flex flex-col gap-1 sm:col-span-2" htmlFor={fieldId}>
-        <FieldLabel field={field} />
-        <Textarea
-          id={fieldId}
-          rows={3}
-          value={typeof draft === "string" ? draft : ""}
-          onChange={(e) => setDraft(e.target.value)}
-          onBlur={commitText}
-        />
-      </label>
-    );
-  }
+/** Out of #237's inline-edit generalization (design spec's own call) -
+ * `edible_parts`, the one array-valued field, keeps this existing
+ * popover-checkbox-group rendering unchanged. */
+function MultiselectFieldRow({ field, value, onCommit }: FieldInputProps) {
+  const selected = Array.isArray(value) ? value : [];
+  const options = field.options ?? [];
+  // Comma-joined summary of the current selection, in the options' own
+  // declared order (not raw value/insertion order) - "None selected"
+  // when empty, matching a typical closed multi-select combobox rather
+  // than an always-expanded checkbox group.
+  const summary = options
+    .filter((opt) => selected.includes(opt.value))
+    .map((opt) => opt.label)
+    .join(", ");
 
   return (
-    <label className="flex flex-col gap-1" htmlFor={fieldId}>
+    <div className="flex flex-col gap-1 sm:col-span-2">
       <FieldLabel field={field} />
-      <Input
-        id={fieldId}
-        type="text"
-        value={typeof draft === "string" ? draft : ""}
-        onChange={(e) => setDraft(e.target.value)}
-        onBlur={commitText}
-      />
-    </label>
+      <Popover>
+        <PopoverTrigger aria-label={field.label} className={cn(inputVariants({ className: "flex items-center justify-between gap-2 text-left" }))}>
+          <span className={cn("truncate", !summary && "text-muted-foreground")}>{summary || "None selected"}</span>
+          <ChevronDown className="size-3.5 shrink-0 text-muted-foreground" />
+        </PopoverTrigger>
+        <PopoverPopup>
+          <fieldset className="flex flex-col gap-1.5">
+            <legend className="sr-only">{field.label}</legend>
+            {options.map((opt) => {
+              const checked = selected.includes(opt.value);
+              return (
+                <label key={opt.value} className="flex items-center gap-1.5 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={(e) => {
+                      const next = e.target.checked ? [...selected, opt.value] : selected.filter((v) => v !== opt.value);
+                      onCommit(next, value);
+                    }}
+                  />
+                  {opt.label}
+                </label>
+              );
+            })}
+          </fieldset>
+        </PopoverPopup>
+      </Popover>
+    </div>
   );
+}
+
+/** #237 round 2: generic per-`FieldConfig.type` renderer, now branching into
+ * a compact click-to-edit `FieldRow` for the four "short" scalar types
+ * (text/number/select/tristate), a block-layout click-to-edit `Textarea`
+ * for the one multi-line type, and the unchanged popover-checkbox-group for
+ * the one array-valued type (`multiselect`) - see each sub-component's own
+ * doc for why. Keeps `FieldInput`'s own name/signature so call sites
+ * (`PlantDetail.tsx`) don't need to change. */
+export function FieldInput(props: FieldInputProps) {
+  if (props.field.type === "multiselect") return <MultiselectFieldRow {...props} />;
+  if (props.field.type === "textarea") return <TextareaFieldRow {...props} />;
+  return <FieldRow {...props} />;
 }

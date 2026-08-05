@@ -28,7 +28,30 @@ export interface FieldConfig {
    * `InlineEditableField` instead of through the generic tiered loop -
    * `PlantDetail.tsx` filters them out of `SCALAR_FIELDS` before tiering). */
   tier: "primary" | "secondary";
+  /** #237 round 2: an optional visual cluster this field belongs to *within*
+   * whichever tier it already lands in - orthogonal to `tier`, purely a
+   * grouping/captioning concern (see `FIELD_GROUP_LABELS` and
+   * `buildFieldLayout` below). Absent means "no group" - the field renders
+   * on its own, uncaptioned, same as every field did before this existed. */
+  group?: FieldGroup;
 }
+
+/** #237 round 2's field groupings - the user's 4 named groups (Soil,
+ * Environment, Edibility, Sowing) plus two more `ui-ux-designer` proposed
+ * for symmetry (Size & form, Succession) - see that issue's own "Design
+ * specification (round 2)" comment for the full grouping table this mirrors
+ * (including which tier(s) each group's members land in - that's driven by
+ * each field's own `tier` below, not repeated here). */
+export type FieldGroup = "size_form" | "environment" | "soil" | "edibility" | "sowing" | "succession";
+
+export const FIELD_GROUP_LABELS: Record<FieldGroup, string> = {
+  size_form: "Size & form",
+  environment: "Environment",
+  soil: "Soil",
+  edibility: "Edibility",
+  sowing: "Sowing",
+  succession: "Succession",
+};
 
 const SUN_LEVEL_OPTIONS: SelectOption[] = [
   { value: "full_sun", label: "Full sun" },
@@ -110,6 +133,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "textarea",
     description: "How this plant is typically sown, e.g. direct sow, or start indoors and transplant.",
     tier: "secondary",
+    group: "sowing",
   },
   {
     key: "sow_indoors",
@@ -117,6 +141,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "tristate",
     description: "Whether this plant is typically started indoors and transplanted out later.",
     tier: "secondary",
+    group: "sowing",
   },
   {
     key: "sow_direct",
@@ -124,6 +149,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "tristate",
     description: "Whether this plant is typically sown directly into its final growing spot.",
     tier: "secondary",
+    group: "sowing",
   },
   {
     key: "needs_thinning",
@@ -131,6 +157,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "tristate",
     description: "Whether seedlings of this plant typically need thinning out after germination.",
     tier: "secondary",
+    group: "sowing",
   },
   {
     key: "spread_cm",
@@ -138,6 +165,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "number",
     description: "How wide a mature plant spreads, in centimeters.",
     tier: "primary",
+    group: "size_form",
   },
   {
     key: "row_spacing_cm",
@@ -145,8 +173,16 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "number",
     description: "Recommended spacing between rows, in centimeters.",
     tier: "primary",
+    group: "size_form",
   },
-  { key: "height_cm", label: "Height (cm)", type: "number", description: "Typical mature height, in centimeters.", tier: "primary" },
+  {
+    key: "height_cm",
+    label: "Height (cm)",
+    type: "number",
+    description: "Typical mature height, in centimeters.",
+    tier: "primary",
+    group: "size_form",
+  },
   {
     key: "growth_habit",
     label: "Growth habit",
@@ -154,6 +190,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     options: GROWTH_HABIT_OPTIONS,
     description: "How this plant grows - determines the distinct footprint shape the layout editor renders for it.",
     tier: "primary",
+    group: "size_form",
   },
   {
     key: "sun_level",
@@ -162,6 +199,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     options: SUN_LEVEL_OPTIONS,
     description: "How much direct sun this plant needs.",
     tier: "primary",
+    group: "environment",
   },
   {
     key: "soil_type",
@@ -169,6 +207,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "text",
     description: "Preferred soil type, e.g. loam, sandy, well-drained.",
     tier: "primary",
+    group: "soil",
   },
   {
     key: "composting_needs",
@@ -176,6 +215,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "textarea",
     description: "Compost/organic matter this plant needs before or during growing.",
     tier: "secondary",
+    group: "soil",
   },
   {
     key: "fertilizer_needs",
@@ -183,6 +223,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "textarea",
     description: "Fertilizer requirements for this plant.",
     tier: "secondary",
+    group: "soil",
   },
   {
     key: "needs_wind_cover",
@@ -190,6 +231,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "tristate",
     description: "Whether this plant needs protection from wind.",
     tier: "secondary",
+    group: "environment",
   },
   {
     key: "needs_rain_cover",
@@ -197,6 +239,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "tristate",
     description: "Whether this plant needs protection from rain.",
     tier: "secondary",
+    group: "environment",
   },
   {
     key: "water_needs_mm_per_week",
@@ -204,6 +247,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "number",
     description: "How much water this plant typically needs per week, in millimeters.",
     tier: "primary",
+    group: "environment",
   },
   {
     key: "family",
@@ -219,6 +263,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "number",
     description: "Minimum temperature this plant tolerates, in degrees Celsius.",
     tier: "secondary",
+    group: "environment",
   },
   {
     key: "max_temperature_c",
@@ -226,6 +271,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "number",
     description: "Maximum temperature this plant tolerates, in degrees Celsius.",
     tier: "secondary",
+    group: "environment",
   },
   {
     key: "days_to_maturity",
@@ -233,18 +279,48 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "number",
     description: "Typical number of days from sowing/planting to harvest.",
     tier: "secondary",
+    group: "succession",
   },
-  { key: "soil_ph_min", label: "Soil pH min", type: "number", description: "Minimum preferred soil pH.", tier: "secondary" },
-  { key: "soil_ph_max", label: "Soil pH max", type: "number", description: "Maximum preferred soil pH.", tier: "secondary" },
-  { key: "is_toxic", label: "Is toxic", type: "tristate", description: "Whether any part of this plant is toxic.", tier: "secondary" },
+  {
+    key: "soil_ph_min",
+    label: "Soil pH min",
+    type: "number",
+    description: "Minimum preferred soil pH.",
+    tier: "secondary",
+    group: "soil",
+  },
+  {
+    key: "soil_ph_max",
+    label: "Soil pH max",
+    type: "number",
+    description: "Maximum preferred soil pH.",
+    tier: "secondary",
+    group: "soil",
+  },
+  {
+    key: "is_toxic",
+    label: "Is toxic",
+    type: "tristate",
+    description: "Whether any part of this plant is toxic.",
+    tier: "secondary",
+    group: "edibility",
+  },
   {
     key: "toxicity_notes",
     label: "Toxicity notes",
     type: "text",
     description: "Details about which parts are toxic and to whom.",
     tier: "secondary",
+    group: "edibility",
   },
-  { key: "is_edible", label: "Is edible", type: "tristate", description: "Whether this plant is edible.", tier: "secondary" },
+  {
+    key: "is_edible",
+    label: "Is edible",
+    type: "tristate",
+    description: "Whether this plant is edible.",
+    tier: "secondary",
+    group: "edibility",
+  },
   {
     key: "edible_parts",
     label: "Edible parts",
@@ -252,6 +328,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     options: EDIBLE_PARTS_OPTIONS,
     description: "Which parts of the plant are eaten, e.g. fruit, leaves, roots.",
     tier: "secondary",
+    group: "edibility",
   },
   {
     key: "succession_enabled",
@@ -259,6 +336,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "tristate",
     description: "Whether this plant supports succession (staggered repeat) sowing.",
     tier: "secondary",
+    group: "succession",
   },
   {
     key: "succession_interval_days",
@@ -266,6 +344,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "number",
     description: "Days to wait between successive sowings.",
     tier: "secondary",
+    group: "succession",
   },
   {
     key: "succession_max_sowings",
@@ -273,6 +352,7 @@ export const SCALAR_FIELDS: FieldConfig[] = [
     type: "number",
     description: "Maximum number of succession sowings per season.",
     tier: "secondary",
+    group: "succession",
   },
 ];
 
@@ -290,4 +370,44 @@ export function fieldValue(plant: PlantDetail, key: keyof PlantUpdate): FieldVal
     return rel?.name ?? null;
   }
   return (plant as unknown as Record<string, FieldValue>)[key] ?? null;
+}
+
+export type FieldLayoutItem =
+  | { kind: "caption"; group: FieldGroup; label: string }
+  | { kind: "field"; field: FieldConfig };
+
+/** #237 round 2: turns a flat, already-tiered `FieldConfig[]` (e.g.
+ * `SCALAR_FIELDS.filter(f => f.tier === "primary")`) into an ordered render
+ * list that clusters same-`group` fields together under a small caption -
+ * without physically reordering `SCALAR_FIELDS` itself (per the design
+ * spec's own implementation note). A cluster's position in the output is
+ * wherever its *first* member would have rendered in the input order; a
+ * group with only one member in this particular tier renders uncaptioned
+ * (a caption over a single grid cell reads as clutter, not structure - same
+ * "lone field" rule the design spec calls out). */
+export function buildFieldLayout(fields: FieldConfig[]): FieldLayoutItem[] {
+  const buckets = new Map<string, FieldConfig[]>();
+  const order: string[] = [];
+  for (const field of fields) {
+    // Fields with no `group` each get their own singleton bucket (keyed by
+    // field key, not a shared "ungrouped" bucket) so they keep their own
+    // original relative position instead of collapsing into one clump.
+    const bucketKey = field.group ?? `__solo_${field.key}`;
+    if (!buckets.has(bucketKey)) {
+      buckets.set(bucketKey, []);
+      order.push(bucketKey);
+    }
+    buckets.get(bucketKey)?.push(field);
+  }
+
+  const items: FieldLayoutItem[] = [];
+  for (const bucketKey of order) {
+    const bucket = buckets.get(bucketKey) ?? [];
+    const group = bucket[0]?.group;
+    if (group && bucket.length >= 2) {
+      items.push({ kind: "caption", group, label: FIELD_GROUP_LABELS[group] });
+    }
+    for (const field of bucket) items.push({ kind: "field", field });
+  }
+  return items;
 }
