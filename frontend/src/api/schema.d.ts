@@ -2491,27 +2491,7 @@ export interface components {
             /** Needs Purchase */
             needs_purchase: boolean;
         };
-        /**
-         * IrrigationPartInstance
-         * @description One physically-placed unit of an IrrigationPart catalog/stock row -
-         *     #254's fix for the "I own 6 of these, each connected to a different
-         *     neighbor in the real network" gap: IrrigationPart stays the catalog-
-         *     level "how many I own" stock row (its own docstring), while each
-         *     IrrigationPartInstance is a single physical item of that part type with
-         *     its own diagram position and its own independent set of
-         *     IrrigationConnection edges. Deleting one instance only removes that
-         *     instance's own connections, not every connection involving the part
-         *     type - see irrigation_part_instances.py's delete route.
-         *
-         *     part_id references the stock row this instance is one physical unit
-         *     of. How many instances exist for a part vs its quantity_on_hand is
-         *     surfaced, not enforced - same "needs purchase" derived-not-blocked
-         *     reasoning #37/#209 already use at the part level (see instance_count/
-         *     needs_purchase on IrrigationPartDetail in irrigation_parts.py) - a
-         *     legitimate workflow exists where you place instances ahead of buying
-         *     the stock to match, same as recording a connection ahead of buying the
-         *     part it needs today.
-         */
+        /** IrrigationPartInstance */
         IrrigationPartInstance: {
             /** Id */
             id?: number | null;
@@ -2521,6 +2501,12 @@ export interface components {
             diagram_x?: number | null;
             /** Diagram Y */
             diagram_y?: number | null;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Garden Id */
+            garden_id?: number | null;
+            /** Geometry */
+            geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
         /** IrrigationPartInstanceCreate */
         IrrigationPartInstanceCreate: {
@@ -2530,6 +2516,12 @@ export interface components {
             diagram_x?: number | null;
             /** Diagram Y */
             diagram_y?: number | null;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Garden Id */
+            garden_id?: number | null;
+            /** Geometry */
+            geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
         /** IrrigationPartInstanceUpdate */
         IrrigationPartInstanceUpdate: {
@@ -2539,6 +2531,12 @@ export interface components {
             diagram_x?: number | null;
             /** Diagram Y */
             diagram_y?: number | null;
+            /** Bed Id */
+            bed_id?: number | null;
+            /** Garden Id */
+            garden_id?: number | null;
+            /** Geometry */
+            geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
         /**
          * IrrigationPartType

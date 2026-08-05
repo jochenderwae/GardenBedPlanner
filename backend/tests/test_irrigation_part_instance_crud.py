@@ -8,6 +8,8 @@ own connections."""
 import pytest
 from fastapi.testclient import TestClient
 
+from tests.conftest import rectangle
+
 pytestmark = pytest.mark.integration
 
 
@@ -18,6 +20,22 @@ def _make_part(client: TestClient, name: str, part_type: str, quantity: int = 1)
     )
     assert response.status_code == 201, response.text
     return response.json()
+
+
+def _make_bed(client: TestClient) -> int:
+    response = client.post(
+        "/api/beds",
+        json={"name": "Bed", "border_geometry": rectangle()},
+        params={"is_initial_state": "true"},
+    )
+    assert response.status_code == 201, response.text
+    return response.json()["id"]
+
+
+def _make_garden(client: TestClient) -> int:
+    response = client.put("/api/garden", json={"name": "Garden", "border_geometry": rectangle()})
+    assert response.status_code == 200, response.text
+    return response.json()["id"]
 
 
 def test_irrigation_part_instance_crud_round_trip(client: TestClient) -> None:
@@ -164,3 +182,70 @@ def test_delete_irrigation_part_instance_twice_is_404_the_second_time(client: Te
     instance_id = client.post("/api/irrigation-part-instances", json={"part_id": part["id"]}).json()["id"]
     assert client.delete(f"/api/irrigation-part-instances/{instance_id}").status_code == 204
     assert client.delete(f"/api/irrigation-part-instances/{instance_id}").status_code == 404
+
+
+def test_irrigation_part_instance_bed_space_placement_round_trip(client: TestClient) -> None:
+    """#271: real bed-space placement (bed_id + geometry), independent of
+    diagram_x/diagram_y which stay usable for the standalone pipe-network
+    diagram."""
+    part = _make_part(client, "Drip nozzle", "nozzle")
+    bed_id = _make_bed(client)
+    geometry = rectangle(x=5, y=5, width=2, height=2)
+
+    create_response = client.post(
+        "/api/irrigation-part-instances",
+        json={"part_id": part["id"], "bed_id": bed_id, "geometry": geometry},
+    )
+    assert create_response.status_code == 201, create_response.text
+    instance = create_response.json()
+    assert instance["bed_id"] == bed_id
+    assert instance["garden_id"] is None
+    assert instance["geometry"] == geometry
+    # diagram_x/diagram_y are independent and stay null until set.
+    assert instance["diagram_x"] is None
+    assert instance["diagram_y"] is None
+
+    get_response = client.get(f"/api/irrigation-part-instances/{instance['id']}")
+    assert get_response.json()["geometry"] == geometry
+
+
+def test_irrigation_part_instance_can_be_garden_bound_instead_of_bed_bound(client: TestClient) -> None:
+    part = _make_part(client, "Valve", "valve")
+    garden_id = _make_garden(client)
+    geometry = rectangle(x=50, y=50, width=2, height=2)
+
+    create_response = client.post(
+        "/api/irrigation-part-instances",
+        json={"part_id": part["id"], "garden_id": garden_id, "geometry": geometry},
+    )
+    assert create_response.status_code == 201, create_response.text
+    instance = create_response.json()
+    assert instance["garden_id"] == garden_id
+    assert instance["bed_id"] is None
+    assert instance["geometry"] == geometry
+
+
+def test_create_irrigation_part_instance_with_both_bed_id_and_garden_id_is_400(client: TestClient) -> None:
+    part = _make_part(client, "Elbow", "elbow")
+    bed_id = _make_bed(client)
+    garden_id = _make_garden(client)
+
+    response = client.post(
+        "/api/irrigation-part-instances",
+        json={"part_id": part["id"], "bed_id": bed_id, "garden_id": garden_id},
+    )
+    assert response.status_code == 400
+
+
+def test_patch_irrigation_part_instance_to_set_both_bed_id_and_garden_id_is_400(client: TestClient) -> None:
+    part = _make_part(client, "Coupler", "coupler")
+    bed_id = _make_bed(client)
+    garden_id = _make_garden(client)
+    instance_id = client.post(
+        "/api/irrigation-part-instances", json={"part_id": part["id"], "garden_id": garden_id}
+    ).json()["id"]
+
+    response = client.patch(f"/api/irrigation-part-instances/{instance_id}", json={"bed_id": bed_id})
+    assert response.status_code == 400
+    # Unchanged - the rejected patch shouldn't have partially applied.
+    assert client.get(f"/api/irrigation-part-instances/{instance_id}").json()["garden_id"] == garden_id

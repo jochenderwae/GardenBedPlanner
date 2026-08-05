@@ -1,3 +1,5 @@
+from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
 
@@ -27,6 +29,31 @@ class IrrigationPartInstance(SQLModel, table=True):
     part_id: int = Field(foreign_key="irrigation_part.id")
     # Node position on the pipe-network diagram canvas (#209), moved here
     # from IrrigationPart by #254 - None means "not yet added to the
-    # diagram", same semantics as before the move.
+    # diagram", same semantics as before the move. Kept as-is by #271
+    # alongside the new bed/garden-space fields below: #253 (anchor
+    # snapping) and #256 (curved pipe routing/length calculation) both
+    # depend on this diagram-local coordinate space, so it stays a distinct
+    # concept from "where this part physically sits in the garden", not
+    # replaced by it.
     diagram_x: float | None = None
     diagram_y: float | None = None
+    # #271: real garden/bed-space placement, needed to merge the irrigation
+    # editor into the main garden canvas (#250) - the same bed_id/garden_id
+    # mutual-exclusivity split BedEquipment already uses (#207), see that
+    # model's own docstring. Both null means "not yet placed in garden
+    # space" (still fine on the standalone diagram via diagram_x/diagram_y),
+    # same "unplaced inventory" semantics BedEquipment already gives that
+    # state.
+    bed_id: int | None = Field(default=None, foreign_key="bed.id")
+    garden_id: int | None = Field(default=None, foreign_key="garden.id")
+    # jsonb Geometry (rectangle|polygon - app/models/geometry.py), bed-local
+    # if bed_id is set or garden-space if garden_id is set, same two-space
+    # split docs/schema.md's "Geometry format" section already documents
+    # for BED_EQUIPMENT/PLANTING. Irrigation parts are point-placed (a
+    # nozzle, a T-junction) rather than area-placed, so the frontend is
+    # expected to store a small rectangle centered on the placement point -
+    # the same "individual placements use a small rectangle centered on the
+    # point rather than a literal point type" convention PLANTING.geometry
+    # already establishes, rather than introducing a third geometry variant
+    # for this one column. Null while unplaced, same as BedEquipment.geometry.
+    geometry: dict | None = Field(default=None, sa_column=Column(JSONB, nullable=True))
