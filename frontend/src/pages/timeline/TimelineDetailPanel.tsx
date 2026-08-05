@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { X } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Action, Bed, PlantPeriod } from "@/api/client";
 import { ACTION_TYPE_LABELS } from "@/pages/agenda/taskAgenda";
 import type { TimelineRow } from "./timelineData";
@@ -38,11 +38,20 @@ export type TimelineSelection =
 export function TimelineDetailPanel({ selection, onClose }: { selection: TimelineSelection; onClose: () => void }) {
   return (
     <Card className="h-full">
-      <CardHeader className="flex-row items-start justify-between gap-2">
+      <CardHeader>
         <CardTitle>{titleFor(selection)}</CardTitle>
-        <Button variant="ghost" size="icon" aria-label="Close" onClick={onClose}>
-          <X className="size-4" />
-        </Button>
+        {/* #248: CardHeader is `grid` by default and only switches to a
+            2-column layout when a child carries `data-slot="card-action"` -
+            a plain sibling `<Button>` here (even with `flex-row`/
+            `justify-between` on the header) falls to row 2, under the
+            title, since `flex-row` doesn't override the header's own base
+            `grid` display. `CardAction` is `card.tsx`'s own intended
+            pattern for exactly this. */}
+        <CardAction>
+          <Button variant="ghost" size="icon" aria-label="Close" onClick={onClose}>
+            <X className="size-4" />
+          </Button>
+        </CardAction>
       </CardHeader>
       <CardContent>
         {selection.type === "planting" && <PlantingSummary row={selection.row} />}

@@ -2,7 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogPopup, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input, Select, Textarea } from "@/components/ui/input";
 import { PlantPicker } from "@/pages/layout/PlantPicker";
@@ -368,18 +368,24 @@ export function GardenPlan() {
           {planDetailQuery.data && (
             <>
               <Card>
-                <CardHeader className="flex-row items-center justify-between gap-2">
+                <CardHeader>
                   <CardTitle className="text-sm">
                     {planDetailQuery.data.season_name} ({planDetailQuery.data.year})
                   </CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="icon-sm"
-                    aria-label="Delete plan"
-                    onClick={() => deletePlanMutation.mutate()}
-                  >
-                    <Trash2 />
-                  </Button>
+                  {/* #248: CardAction (not a flex-row override) is what
+                      actually gets CardHeader's own grid to lay this out
+                      next to the title - see TimelineDetailPanel.tsx's own
+                      comment on the same fix. */}
+                  <CardAction>
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
+                      aria-label="Delete plan"
+                      onClick={() => deletePlanMutation.mutate()}
+                    >
+                      <Trash2 />
+                    </Button>
+                  </CardAction>
                 </CardHeader>
                 <CardContent>
                   <label className="flex flex-col gap-1">

@@ -1,5 +1,5 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getPlant, listSeedInventoryItems, type Plant, type PlantPeriod } from "@/api/client";
 import { buildSeedGuideEntries, type SeedGuideEntry } from "./seedGuide";
 
@@ -69,11 +69,16 @@ export function SeedGuideView() {
     <div className="flex flex-col gap-2">
       {actionable.map((entry) => (
         <Card key={entry.plantSlug}>
-          <CardHeader className="flex flex-row items-center justify-between gap-2 py-3">
+          {/* #248: CardAction (not a flex-row override) is what actually
+              gets CardHeader's own grid to lay this out next to the title -
+              see TimelineDetailPanel.tsx's own comment on the same fix. */}
+          <CardHeader className="py-3">
             <CardTitle className="text-sm font-medium">{entry.plantCommonName}</CardTitle>
-            <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${URGENCY_CLASSES[entry.urgency]}`}>
-              {URGENCY_LABEL[entry.urgency]}
-            </span>
+            <CardAction>
+              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${URGENCY_CLASSES[entry.urgency]}`}>
+                {URGENCY_LABEL[entry.urgency]}
+              </span>
+            </CardAction>
           </CardHeader>
           <CardContent className="pt-0">
             <p className="text-xs text-muted-foreground">
