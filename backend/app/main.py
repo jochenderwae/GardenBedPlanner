@@ -30,6 +30,7 @@ from app.api.routes import (
     resource_packs,
     rotation,
     seed_inventory_items,
+    shopping_list,
     soil_rotation_events,
 )
 from app.core.config import Settings, settings
@@ -95,6 +96,7 @@ def create_app(app_settings: Settings | None = None) -> FastAPI:
     app.include_router(equipment_types.router, prefix="/api")
     app.include_router(decorations.router, prefix="/api")
     app.include_router(soil_rotation_events.router, prefix="/api")
+    app.include_router(shopping_list.router, prefix="/api")
 
     return app
 

@@ -54,3 +54,15 @@ class BedEquipment(SQLModel, table=True):
     # actually damaged/retired, same "record what's observed" spirit as
     # CompostBin.estimated_maturity_date.
     condition: EquipmentCondition = EquipmentCondition.good
+    # #255: lets a piece of equipment be placed (bed_id/garden_id + geometry
+    # set) before it's actually been bought - same "place beyond what you
+    # own, let a shopping list surface the gap" allowance #254 already gives
+    # IrrigationPart/IrrigationPartInstance (quantity_on_hand vs.
+    # instance_count), adapted to BedEquipment's "one row per physical
+    # item" shape rather than a stock-count column: owned=False means "this
+    # row is a plan to place one, not a physical item I have yet". Defaults
+    # True so every pre-existing row (all of which represent equipment
+    # that's actually in hand) keeps meaning exactly what it always did.
+    # See app/api/routes/shopping_list.py for how this is aggregated into
+    # the shopping list.
+    owned: bool = True

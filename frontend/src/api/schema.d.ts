@@ -1385,6 +1385,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/shopping-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Shopping List
+         * @description Every current "needs purchase" shortfall across irrigation parts and
+         *     bed equipment, one list - #255's own point being that this is a single
+         *     view, not two separate ones per source.
+         */
+        get: operations["get_shopping_list_api_shopping_list_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1603,6 +1625,11 @@ export interface components {
             zone_id?: number | null;
             /** @default good */
             condition: components["schemas"]["EquipmentCondition"];
+            /**
+             * Owned
+             * @default true
+             */
+            owned: boolean;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -1622,6 +1649,11 @@ export interface components {
             zone_id?: number | null;
             /** @default good */
             condition: components["schemas"]["EquipmentCondition"];
+            /**
+             * Owned
+             * @default true
+             */
+            owned: boolean;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -1640,6 +1672,8 @@ export interface components {
             /** Zone Id */
             zone_id?: number | null;
             condition?: components["schemas"]["EquipmentCondition"] | null;
+            /** Owned */
+            owned?: boolean | null;
             /** Geometry */
             geometry?: (components["schemas"]["RectangleGeometry"] | components["schemas"]["PolygonGeometry"]) | null;
         };
@@ -3483,6 +3517,39 @@ export interface components {
             distance_cm: number;
             /** Direction */
             direction: string;
+        };
+        /**
+         * ShoppingListItem
+         * @description One aggregated shortfall - #255's generalization of the "needs
+         *     purchase" concept that already existed per-part
+         *     (app/api/routes/irrigation_parts.py's IrrigationPartDetail) into a
+         *     single cross-cutting view that also covers BedEquipment. category
+         *     distinguishes what's being aggregated (never mixed into one row) since
+         *     the two sources have different identity/grouping keys underneath -
+         *     irrigation parts are per-IrrigationPart-row (source_id is that row's
+         *     id), bed equipment is per-equipment_type string (source_id is None,
+         *     there's no single row to point at once several unowned rows of the same
+         *     type are grouped together). name/part_number/notes come from the
+         *     matching catalog row (IrrigationPartType/EquipmentType) when one
+         *     exists, same "seeded lookup, matched by string, falls back gracefully
+         *     when absent" precedent those two tables already establish - falls back
+         *     to the raw type string when it doesn't.
+         */
+        ShoppingListItem: {
+            /** Category */
+            category: string;
+            /** Source Id */
+            source_id: number | null;
+            /** Type Key */
+            type_key: string;
+            /** Name */
+            name: string;
+            /** Part Number */
+            part_number: string | null;
+            /** Quantity Needed */
+            quantity_needed: number;
+            /** Notes */
+            notes: string;
         };
         /** SoilRotationEventCreate */
         SoilRotationEventCreate: {
@@ -8017,6 +8084,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_shopping_list_api_shopping_list_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShoppingListItem"][];
                 };
             };
         };
