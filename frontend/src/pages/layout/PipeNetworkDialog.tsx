@@ -59,19 +59,17 @@ const NODE_STROKE = "#0891b2";
 const NODE_NEEDS_PURCHASE_STROKE = "#dc2626";
 const MISMATCH_LABEL_COLOR = "#d97706";
 const CASCADE_STEP_PX = 40;
+// #253: how close a connection-drag drop needs to land to a drawn anchor
+// circle (radius 4) to count as hitting it - generous enough to be usable
+// with a mouse, still precise enough that "which anchor" is unambiguous.
+const ANCHOR_DROP_RADIUS_PX = 12;
+// How long the reject-flash marker (a drop that didn't land on any free
+// anchor) stays visible - long enough to register as deliberate feedback,
+// short enough not to linger and get in the way of retrying the drag.
+const REJECT_FLASH_MS = 400;
+const REJECT_FLASH_COLOR = "#dc2626";
 
 type Position = { x: number; y: number };
-
-/** Where a ray from a rect's own center, in direction (dx, dy), exits that
- * rect's axis-aligned border - draws connection edges border-to-border
- * instead of center-to-center through the node bodies. */
-function rectBorderIntersection(cx: number, cy: number, halfW: number, halfH: number, dx: number, dy: number): Position {
-  if (dx === 0 && dy === 0) return { x: cx, y: cy };
-  const scaleX = dx !== 0 ? halfW / Math.abs(dx) : Infinity;
-  const scaleY = dy !== 0 ? halfH / Math.abs(dy) : Infinity;
-  const scale = Math.min(scaleX, scaleY);
-  return { x: cx + dx * scale, y: cy + dy * scale };
-}
 
 /** A point on a `width`x`height` rectangle's own perimeter, `t` the
  * fractional distance clockwise from top-middle (t=0) - spaces anchor
@@ -92,6 +90,17 @@ function pointOnRectPerimeter(width: number, height: number, t: number): Positio
   if (d <= height) return { x: -halfW, y: halfH - d };
   d -= height;
   return { x: -halfW + d, y: -halfH };
+}
+
+/** Absolute screen position of anchor `index` (of `count` total, evenly
+ * spaced per `pointOnRectPerimeter`) on a node centered at `center` (#253)
+ * - the single source of truth both `PartNode` (drawing the anchor circle)
+ * and `ConnectionEdge` (drawing the line's actual endpoint) use, so a
+ * connection line always terminates exactly on a drawn anchor circle
+ * instead of an unrelated node-to-node border-crossing point. */
+function anchorPosition(center: Position, index: number, count: number): Position {
+  const offset = pointOnRectPerimeter(NODE_WIDTH, NODE_HEIGHT, index / count);
+  return { x: center.x + offset.x, y: center.y + offset.y };
 }
 
 /** The real physical port count from the matched `IrrigationPartType`
@@ -376,31 +385,31 @@ function PartNode({
   );
 }
 
-/** One connection's edge on the diagram canvas (#209) - drawn border-to-
- * border (not center-to-center), bowed when it's one of several duplicate
- * connections between the same two instances, dashed + labeled when both
- * ends' owning parts have a recorded (and differing) `connector_size_mm` -
- * advisory only, per this product line legitimately stepping down hose
- * sizes via reducer/dripper fittings, never blocking. */
+/** One connection's edge on the diagram canvas (#209, anchor-precise as of
+ * #253) - drawn from one specific anchor's actual screen position to the
+ * other's, not from wherever a node-center-to-center line happens to cross
+ * either node's border (see `anchorPosition`) - bowed when it's one of
+ * several duplicate connections between the same two instances, dashed +
+ * labeled when both ends' owning parts have a recorded (and differing)
+ * `connector_size_mm` - advisory only, per this product line legitimately
+ * stepping down hose sizes via reducer/dripper fittings, never blocking. */
 function ConnectionEdge({
-  fromPos,
-  toPos,
+  start,
+  end,
   duplicateIndex,
   mismatchLabel,
   isSelected,
   onSelect,
 }: {
-  fromPos: Position;
-  toPos: Position;
+  start: Position;
+  end: Position;
   duplicateIndex: number;
   mismatchLabel: string | null;
   isSelected: boolean;
   onSelect: () => void;
 }) {
-  const dx = toPos.x - fromPos.x;
-  const dy = toPos.y - fromPos.y;
-  const start = rectBorderIntersection(fromPos.x, fromPos.y, NODE_WIDTH / 2, NODE_HEIGHT / 2, dx, dy);
-  const end = rectBorderIntersection(toPos.x, toPos.y, NODE_WIDTH / 2, NODE_HEIGHT / 2, -dx, -dy);
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
   const midX = (start.x + end.x) / 2;
   const midY = (start.y + end.y) / 2;
 
@@ -474,6 +483,10 @@ export function PipeNetworkDialog() {
   const [addForm, setAddForm] = useState<AddPartFormState>({ name: "", partType: "", quantityOnHand: "0" });
   const [addError, setAddError] = useState<string | null>(null);
   const [pointerPos, setPointerPos] = useState<Position | null>(null);
+  // #253: a connection-drag drop that didn't land on any free anchor - shown
+  // briefly at the drop point as explicit reject feedback, see
+  // `handleStageMouseUp`.
+  const [rejectFlash, setRejectFlash] = useState<Position | null>(null);
 
   const rowRefs = useRef<Map<number, HTMLDivElement>>(new Map());
   const stageRef = useRef<Konva.Stage>(null);
@@ -507,6 +520,7 @@ export function PipeNetworkDialog() {
       setSelectedConnectionId(null);
       setConnecting(null);
       setDragOverride(null);
+      setRejectFlash(null);
     }
   }, [open]);
 
@@ -568,6 +582,48 @@ export function PipeNetworkDialog() {
   function effectivePosition(instance: IrrigationPartInstance): Position {
     if (instance.id != null && dragOverride?.id === instance.id) return { x: dragOverride.x, y: dragOverride.y };
     return { x: instance.diagram_x ?? 0, y: instance.diagram_y ?? 0 };
+  }
+
+  /** This instance's current anchor count (#252/#253) - the real port count
+   * from its matched `IrrigationPartType` when one exists, else the old
+   * heuristic. Shared by anchor-slot assignment, `ConnectionEdge` endpoint
+   * lookup, and drop hit-testing, so all three always agree on the same
+   * anchor layout `PartNode` itself draws. */
+  function anchorCountForInstance(instance: IrrigationPartInstance): number {
+    if (instance.id == null) return 2;
+    const connectionCount = connectionCountByInstance.get(instance.id) ?? 0;
+    const portCount = instance.part_id != null ? partTypeByPartId.get(instance.part_id)?.connection_count : undefined;
+    return anchorCountFor(connectionCount, portCount);
+  }
+
+  // #253: no backend field records which specific anchor a connection
+  // occupies - derived instead, per instance, by sorting that instance's own
+  // touching connections by id and using position in that sorted list as the
+  // anchor slot (clamped to the instance's own current anchor count). Stable
+  // across renders (connection ids never change), and a newly-created
+  // connection - always the highest id - lands on the last remaining hollow
+  // anchor, matching what was actually visually hollow at drop time.
+  const anchorSlotByInstanceConnection = useMemo(() => {
+    const perInstance = new Map<number, number[]>();
+    for (const c of connections) {
+      if (c.id == null) continue;
+      for (const instanceId of [c.from_instance_id, c.to_instance_id]) {
+        const list = perInstance.get(instanceId);
+        if (list) list.push(c.id);
+        else perInstance.set(instanceId, [c.id]);
+      }
+    }
+    const result = new Map<string, number>();
+    for (const [instanceId, ids] of perInstance) {
+      const sorted = [...ids].sort((a, b) => a - b);
+      sorted.forEach((connectionId, index) => result.set(`${instanceId}:${connectionId}`, index));
+    }
+    return result;
+  }, [connections]);
+
+  function anchorSlotFor(instanceId: number, connectionId: number, anchorCount: number): number {
+    const raw = anchorSlotByInstanceConnection.get(`${instanceId}:${connectionId}`) ?? 0;
+    return Math.min(raw, anchorCount - 1);
   }
 
   // Duplicate-edge bowing (#209): group connections by their unordered
@@ -714,20 +770,42 @@ export function PipeNetworkDialog() {
     if (pos) setPointerPos(pos);
   }
 
+  /** #253: completing a connection now requires landing within
+   * `ANCHOR_DROP_RADIUS_PX` of one of the target instance's actual *hollow*
+   * anchor positions - not just anywhere inside its bounding box - so the
+   * drop target is the same anchor a user would see accept the connection
+   * (`ConnectionEdge` then draws to that exact spot, via the same
+   * `anchorSlotByInstanceConnection` ordering once the connection exists). A
+   * drop that doesn't land on any hollow anchor briefly flashes a reject
+   * marker instead of silently doing nothing, whether that's because the
+   * target has no free port left (`instanceHasFreePort`) or the drop just
+   * wasn't precise enough. */
   function handleStageMouseUp() {
     if (!connecting) {
       setPointerPos(null);
       return;
     }
     const drop = stageRef.current?.getPointerPosition() ?? pointerPos ?? connecting;
-    const target = positionedInstances.find((i) => {
-      if (i.id == null || i.id === connecting.fromInstanceId) return false;
-      if (!instanceHasFreePort(i)) return false;
-      const pos = effectivePosition(i);
-      return Math.abs(drop.x - pos.x) <= NODE_WIDTH / 2 && Math.abs(drop.y - pos.y) <= NODE_HEIGHT / 2;
-    });
-    if (target?.id != null) {
-      createConnectionMutation.mutate({ from_instance_id: connecting.fromInstanceId, to_instance_id: target.id });
+    let matchedInstanceId: number | null = null;
+    for (const instance of positionedInstances) {
+      if (instance.id == null || instance.id === connecting.fromInstanceId || !instanceHasFreePort(instance)) continue;
+      const pos = effectivePosition(instance);
+      const anchorCount = anchorCountForInstance(instance);
+      const connectionCount = connectionCountByInstance.get(instance.id) ?? 0;
+      for (let i = connectionCount; i < anchorCount; i++) {
+        const anchor = anchorPosition(pos, i, anchorCount);
+        if (Math.hypot(drop.x - anchor.x, drop.y - anchor.y) <= ANCHOR_DROP_RADIUS_PX) {
+          matchedInstanceId = instance.id;
+          break;
+        }
+      }
+      if (matchedInstanceId != null) break;
+    }
+    if (matchedInstanceId != null) {
+      createConnectionMutation.mutate({ from_instance_id: connecting.fromInstanceId, to_instance_id: matchedInstanceId });
+    } else {
+      setRejectFlash(drop);
+      window.setTimeout(() => setRejectFlash(null), REJECT_FLASH_MS);
     }
     setConnecting(null);
     setPointerPos(null);
@@ -858,11 +936,20 @@ export function PipeNetworkDialog() {
                       const toPart = toInstance.part_id != null ? partsById.get(toInstance.part_id) : undefined;
                       const bothSized = fromPart?.connector_size_mm != null && toPart?.connector_size_mm != null;
                       const mismatch = bothSized && fromPart?.connector_size_mm !== toPart?.connector_size_mm;
+                      // #253: draw to/from this connection's own specific
+                      // anchor slot on each end, not a node-center-derived
+                      // border crossing.
+                      const fromAnchorCount = anchorCountForInstance(fromInstance);
+                      const toAnchorCount = anchorCountForInstance(toInstance);
+                      const fromAnchorSlot = anchorSlotFor(connection.from_instance_id, connection.id, fromAnchorCount);
+                      const toAnchorSlot = anchorSlotFor(connection.to_instance_id, connection.id, toAnchorCount);
+                      const start = anchorPosition(effectivePosition(fromInstance), fromAnchorSlot, fromAnchorCount);
+                      const end = anchorPosition(effectivePosition(toInstance), toAnchorSlot, toAnchorCount);
                       return (
                         <ConnectionEdge
                           key={connection.id}
-                          fromPos={effectivePosition(fromInstance)}
-                          toPos={effectivePosition(toInstance)}
+                          start={start}
+                          end={end}
                           duplicateIndex={connectionDuplicateIndex.get(connection.id) ?? 0}
                           mismatchLabel={mismatch ? `${fromPart?.connector_size_mm} -> ${toPart?.connector_size_mm}mm` : null}
                           isSelected={selectedConnectionId === connection.id}
@@ -875,6 +962,9 @@ export function PipeNetworkDialog() {
                     })}
                     {connecting && pointerPos && (
                       <Line points={[connecting.x, connecting.y, pointerPos.x, pointerPos.y]} stroke={NODE_STROKE} strokeWidth={1.5} dash={[4, 3]} listening={false} />
+                    )}
+                    {rejectFlash && (
+                      <Circle x={rejectFlash.x} y={rejectFlash.y} radius={10} stroke={REJECT_FLASH_COLOR} strokeWidth={2} listening={false} />
                     )}
                     {positionedInstances.map((instance) => {
                       if (instance.id == null || instance.part_id == null) return null;
