@@ -165,8 +165,15 @@ export const PlantingPanel = forwardRef<PlantingPanelHandle, PlantingPanelProps>
                   type="number"
                   min={1}
                   step={1}
+                  // #263: the default needs to show as a real, editable
+                  // value (not just grey placeholder text) so the native
+                  // number input's spinner steps from it directly - a
+                  // placeholder alone isn't a value the spinner increments
+                  // from, it steps from empty/0 instead. Kept as a harmless
+                  // fallback for the rare case where no default exists at
+                  // all (defaultSpacing == null), same as before.
                   placeholder={defaultSpacing != null ? String(defaultSpacing) : undefined}
-                  value={draft.spacing_cm ?? ""}
+                  value={draft.spacing_cm ?? defaultSpacing ?? ""}
                   onChange={(e) => setDraft((prev) => ({ ...prev, spacing_cm: e.target.value === "" ? null : Number(e.target.value) }))}
                   onBlur={() => draft.spacing_cm !== planting.spacing_cm && commit({ spacing_cm: draft.spacing_cm })}
                 />
