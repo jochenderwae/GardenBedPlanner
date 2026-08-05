@@ -1884,6 +1884,8 @@ export interface components {
             id?: number | null;
             /** Name */
             name: string;
+            /** Garden Id */
+            garden_id?: number | null;
             /**
              * Color
              * @default #78716c
@@ -1901,6 +1903,8 @@ export interface components {
         DecorationCreate: {
             /** Name */
             name: string;
+            /** Garden Id */
+            garden_id?: number | null;
             /**
              * Color
              * @default #78716c
@@ -1918,6 +1922,8 @@ export interface components {
         DecorationUpdate: {
             /** Name */
             name?: string | null;
+            /** Garden Id */
+            garden_id?: number | null;
             /** Color */
             color?: string | null;
             /** Notes */

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, create_model
 from sqlmodel import Session, select
 
-from app.api.deps import commit_or_409
+from app.api.deps import commit_or_409, get_active_garden
 from app.core.db import get_session
 from app.models.decoration import Decoration as DecorationTable
 from app.models.geometry import Geometry, parse_geometry
@@ -68,7 +68,15 @@ def _get_or_404(session: Session, decoration_id: int) -> DecorationTable:
 
 @router.get("", response_model=list[Decoration])
 def list_decorations(session: Session = Depends(get_session)) -> list[Decoration]:  # type: ignore[valid-type]
-    rows = list(session.exec(select(DecorationTable)).all())
+    # #266: scoped to whichever garden is currently active - unfiltered only
+    # when no Garden exists at all yet (get_active_garden returns None),
+    # same as list_beds (app/api/routes/beds.py) and every other
+    # garden-owned list route since #258.
+    query = select(DecorationTable)
+    active_garden = get_active_garden(session)
+    if active_garden is not None:
+        query = query.where(DecorationTable.garden_id == active_garden.id)
+    rows = list(session.exec(query).all())
     return [_to_api_decoration(row) for row in rows]
 
 
@@ -81,7 +89,16 @@ def get_decoration(decoration_id: int, session: Session = Depends(get_session)) 
 def create_decoration(
     decoration: _DecorationCreate, session: Session = Depends(get_session)  # type: ignore[valid-type]
 ) -> Decoration:  # type: ignore[valid-type]
-    row = DecorationTable(**decoration.model_dump())
+    data = decoration.model_dump()
+    # #266: resolve garden_id server-side against whichever garden is
+    # currently active, but only when the client didn't supply one
+    # explicitly (model_fields_set, not just "is it None") - same pattern as
+    # create_bed (app/api/routes/beds.py).
+    if "garden_id" not in decoration.model_fields_set:
+        active_garden = get_active_garden(session)
+        if active_garden is not None:
+            data["garden_id"] = active_garden.id
+    row = DecorationTable(**data)
     session.add(row)
     commit_or_409(session)
     session.refresh(row)
