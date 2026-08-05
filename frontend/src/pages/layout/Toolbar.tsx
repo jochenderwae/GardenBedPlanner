@@ -63,15 +63,21 @@ interface ToolbarProps {
    * choice - #144's own follow-up bug report). Was a single `AddBedForm`
    * slot before #242 split the Objects tab into three creation buttons. */
   objectsToolbar: ReactNode;
-  /** The "Pipe network" trigger button + its dialog (`PipeNetworkDialog`,
-   * built and passed in by `Layout.tsx`), same lifted-up-render-prop
-   * pattern as `objectsToolbar` above (#209). */
-  pipeNetworkTrigger: ReactNode;
   /** The Equipment tab's "Quick add" trigger + popover (`QuickAddEquipment`,
    * #242) - one-click create-and-place-in-garden for garden-bound equipment
-   * (rain barrel, pathway, etc.), alongside `pipeNetworkTrigger`. Same
-   * lifted-up-render-prop pattern. */
+   * (rain barrel, pathway, etc.). Same lifted-up-render-prop pattern as
+   * `objectsToolbar` above. */
   equipmentQuickAdd: ReactNode;
+  /** #250: the irrigation part (or unplaced legacy instance) currently
+   * armed for click-to-place on the canvas (`IrrigationLayer.tsx`'s
+   * `ArmedIrrigationTarget`, arming itself happens from
+   * `IrrigationPartsPanel.tsx`'s side panel, not this toolbar) - `null`
+   * label text means nothing's armed. Mirrors `armedPlant`/
+   * `onClearArmedPlant`'s identical Plants-tab indicator+clear pattern,
+   * superseding the old `pipeNetworkTrigger` dialog-opening button this
+   * replaced (`PipeNetworkDialog.tsx` is retired as of #250). */
+  armedIrrigationLabel: string | null;
+  onClearArmedIrrigation: () => void;
   armedPlant: Plant | null;
   onClearArmedPlant: () => void;
   /** The "Pick a plant" trigger button + its popover, as one self-contained
@@ -104,9 +110,10 @@ interface ToolbarProps {
  * Equipment tab switcher, zoom readout + "Fit view".
  *
  * Row 2 - whichever tools are specific to the active mode/tab (Add bed/Add
- * compost bin/Add decoration on the Objects tab; pipe network + Quick add on
- * the Equipment tab; pick-a-plant + Point/Row/Area mode on the Plants tab;
- * the date scrubber on the View tab). Always rendered (with a fixed
+ * compost bin/Add decoration on the Objects tab; Quick add + armed-part
+ * indicator on the Equipment tab, #250; pick-a-plant + Point/Row/Area mode on
+ * the Plants tab; the date scrubber on the View tab). Always rendered (with a
+ * fixed
  * min-height even when it has no tools for the current tab) so switching
  * tabs never causes row 1 to jump up/down.
  *
@@ -123,8 +130,9 @@ export function Toolbar({
   zoomPercent,
   onFitView,
   objectsToolbar,
-  pipeNetworkTrigger,
   equipmentQuickAdd,
+  armedIrrigationLabel,
+  onClearArmedIrrigation,
   armedPlant,
   onClearArmedPlant,
   plantPicker,
@@ -172,8 +180,18 @@ export function Toolbar({
         {mode === "mine" && tab === "planters" && objectsToolbar}
         {mode === "mine" && tab === "equipment" && (
           <>
-            {pipeNetworkTrigger}
             {equipmentQuickAdd}
+            {armedIrrigationLabel && (
+              <>
+                <span className="text-xs text-muted-foreground">
+                  Placing <span className="font-medium text-foreground">{armedIrrigationLabel}</span> - click a bed or open garden
+                  space.
+                </span>
+                <Button size="sm" variant="ghost" onClick={onClearArmedIrrigation}>
+                  Clear
+                </Button>
+              </>
+            )}
           </>
         )}
         {mode === "mine" && tab === "plants" && (

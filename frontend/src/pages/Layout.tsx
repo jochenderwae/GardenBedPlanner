@@ -19,18 +19,25 @@ Konva.dragButtons = [0];
 import {
   checkPlacement,
   checkRotation,
+  createIrrigationConnection,
+  createIrrigationPartInstance,
   createPlanting,
   getGarden,
   listBedEquipment,
   listBeds,
   listDecorations,
   listEquipmentTypes,
+  listIrrigationConnections,
+  listIrrigationPartInstances,
+  listIrrigationParts,
+  listIrrigationPartTypes,
   listPlantings,
   listPlants,
   putGarden,
   updateBed,
   updateBedEquipment,
   updateDecoration,
+  updateIrrigationPartInstance,
   updatePlanting,
   type Bed,
   type BedEquipment,
@@ -43,6 +50,8 @@ import {
   type Garden,
   type GardenPut,
   type Geometry,
+  type IrrigationConnection,
+  type IrrigationPartInstance,
   type PlacementCheck,
   type PlacementType,
   type Plant,
@@ -68,8 +77,9 @@ import { GardenSnapshotLayer } from "./layout/GardenSnapshotView";
 import { EquipmentLayer } from "./layout/EquipmentLayer";
 import { DEFAULT_EQUIPMENT_SIZE_CM, EquipmentPanel } from "./layout/EquipmentPanel";
 import { GrowthHabitLegend } from "./layout/GrowthHabitLegend";
+import { armedIrrigationTargetLabel, IrrigationLayer, type ArmedIrrigationTarget, type IrrigationLayerHandle } from "./layout/IrrigationLayer";
+import { IrrigationPartsPanel } from "./layout/IrrigationPartsPanel";
 import { OnboardingPrompt } from "./layout/OnboardingPrompt";
-import { PipeNetworkDialog } from "./layout/PipeNetworkDialog";
 import { QuickAddEquipment } from "./layout/QuickAddEquipment";
 import { SoilRotationDialog } from "./layout/SoilRotationDialog";
 import { PlantPlacementLayer, type PlacementMode, type PlantPlacementLayerHandle } from "./layout/PlantPlacementLayer";
@@ -385,6 +395,18 @@ export function Layout() {
   const plantingPanelRef = useRef<PlantingPanelHandle>(null);
   const bulkPlantingPanelRef = useRef<BulkPlantingPanelHandle>(null);
   const plantPlacementRef = useRef<PlantPlacementLayerHandle>(null);
+  // #250: the merged real-canvas irrigation editor - "arm" a part (or an
+  // unplaced legacy instance, see `ArmedIrrigationTarget`'s own doc) from
+  // `IrrigationPartsPanel`'s side panel, then click the canvas to place it,
+  // same arm-then-click model as `armedPlant` above. Selection is a
+  // separate concern (click an already-placed instance/connection to select
+  // it, matching `selectedPlantingId`'s split from `armedPlant`), owned here
+  // rather than inside `IrrigationLayer.tsx` itself so `IrrigationPartsPanel`
+  // can show/act on the same selection.
+  const [armedIrrigationTarget, setArmedIrrigationTarget] = useState<ArmedIrrigationTarget | null>(null);
+  const [selectedIrrigationInstanceId, setSelectedIrrigationInstanceId] = useState<number | null>(null);
+  const [selectedIrrigationConnectionId, setSelectedIrrigationConnectionId] = useState<number | null>(null);
+  const irrigationLayerRef = useRef<IrrigationLayerHandle>(null);
   const [viewport, setViewport] = useState<Viewport>(DEFAULT_VIEWPORT);
   // The canvas Stage tracks whichever wrapper div is currently mounted
   // ("mine" mode or "example" mode - only one renders at a time, see the
@@ -499,6 +521,28 @@ export function Layout() {
     queryFn: listDecorations,
     enabled: mode === "mine",
   });
+  // #250: the merged irrigation editor's own data - same Edit-tab-only
+  // gating as equipment/decorations above (the View tab's read-only
+  // snapshot doesn't render the pipe network either).
+  const irrigationPartsQuery = useQuery({ queryKey: ["irrigation-parts"], queryFn: listIrrigationParts, enabled: mode === "mine" });
+  const irrigationPartInstancesQuery = useQuery({
+    queryKey: ["irrigation-part-instances"],
+    queryFn: () => listIrrigationPartInstances(),
+    enabled: mode === "mine",
+  });
+  const irrigationConnectionsQuery = useQuery({
+    queryKey: ["irrigation-connections"],
+    queryFn: () => listIrrigationConnections(),
+    enabled: mode === "mine",
+  });
+  // #252: catalog lookup for real per-type port counts.
+  const irrigationPartTypesQuery = useQuery({ queryKey: ["irrigation-part-types"], queryFn: () => listIrrigationPartTypes(), enabled: mode === "mine" });
+  const irrigationParts = irrigationPartsQuery.data ?? [];
+  const irrigationPartInstances = irrigationPartInstancesQuery.data ?? [];
+  const irrigationConnections = irrigationConnectionsQuery.data ?? [];
+  const irrigationPartTypes = irrigationPartTypesQuery.data ?? [];
+  const selectedIrrigationInstance = irrigationPartInstances.find((i) => i.id === selectedIrrigationInstanceId) ?? null;
+  const selectedIrrigationConnection = irrigationConnections.find((c) => c.id === selectedIrrigationConnectionId) ?? null;
   const plantsQuery = useQuery({
     queryKey: ["plants"],
     queryFn: () => listPlants(500),
@@ -612,6 +656,36 @@ export function Layout() {
     },
   });
 
+  // #250: the merged irrigation editor's own three geometry-mutation sites -
+  // create a new instance (click-to-place with a `"create"`-armed part),
+  // move/re-place an existing one (drag, or click-to-place with a
+  // `"position"`-armed unplaced legacy instance - #250's own migration
+  // path), and connect two instances (anchor-drag). Not added to the
+  // undo/redo history stack's four existing tracked sites (bed/garden/
+  // planting/equipment/decoration) - out of scope for this ticket, a
+  // reasonable follow-up rather than blocking the merge on it.
+  const irrigationInstanceCreateMutation = useMutation({
+    mutationFn: (payload: { part_id: number; bed_id: number | null; garden_id: number | null; geometry: Geometry }) =>
+      createIrrigationPartInstance(payload),
+    onSuccess: (created) => {
+      queryClient.setQueryData<IrrigationPartInstance[]>(["irrigation-part-instances"], (old) => (old ? [...old, created] : [created]));
+    },
+  });
+  const irrigationInstanceUpdateMutation = useMutation({
+    mutationFn: ({ id, patch }: { id: number; patch: Parameters<typeof updateIrrigationPartInstance>[1] }) => updateIrrigationPartInstance(id, patch),
+    onSuccess: (updated) => {
+      queryClient.setQueryData<IrrigationPartInstance[]>(["irrigation-part-instances"], (old) =>
+        old ? old.map((i) => (i.id === updated.id ? updated : i)) : old,
+      );
+    },
+  });
+  const irrigationConnectionCreateMutation = useMutation({
+    mutationFn: (payload: { from_instance_id: number; to_instance_id: number }) => createIrrigationConnection({ ...payload, notes: "" }),
+    onSuccess: (created) => {
+      queryClient.setQueryData<IrrigationConnection[]>(["irrigation-connections"], (old) => (old ? [...old, created] : [created]));
+    },
+  });
+
   const beds = data ?? [];
   const garden = gardenQuery.data ?? null;
   // Garden's own bounding box, in world/cm space - passed to every BedNode so
@@ -674,11 +748,49 @@ export function Layout() {
     // state for free the next time this tab is switched back to.
     setSelectedPlantingId(null);
     setSelectedPlantingIds(new Set());
+    setSelectedIrrigationInstanceId(null);
+    setSelectedIrrigationConnectionId(null);
   }
 
   function handlePlantPlace(bedId: number, geometry: Geometry, placementType: PlacementType) {
     if (!armedPlant) return;
     plantingCreateMutation.mutate({ bed_id: bedId, plant_slug: armedPlant.slug, placement_type: placementType, geometry });
+  }
+
+  /** #250: completes a click-to-place gesture on the merged irrigation
+   * layer - `target` is whatever was armed at click time (see
+   * `ArmedIrrigationTarget`'s own doc for the create-vs-position split).
+   * Positioning an existing (previously-unplaced) instance is a one-shot
+   * action - clears the armed state afterward, since re-clicking with the
+   * same stale `target.instance` reference again would just move that same
+   * instance a second time rather than placing a fresh one (unlike
+   * `"create"`, which deliberately stays armed so several instances of the
+   * same part can be placed in a row, matching `armedPlant`'s own
+   * behavior). */
+  function handleIrrigationPlace(
+    target: ArmedIrrigationTarget,
+    patch: { bed_id: number | null; garden_id: number | null; geometry: Geometry },
+  ) {
+    if (target.mode === "create") {
+      if (target.part.id == null) return;
+      irrigationInstanceCreateMutation.mutate({ part_id: target.part.id, bed_id: patch.bed_id, garden_id: patch.garden_id, geometry: patch.geometry });
+    } else {
+      if (target.instance.id == null) return;
+      irrigationInstanceUpdateMutation.mutate({
+        id: target.instance.id,
+        patch: { bed_id: patch.bed_id, garden_id: patch.garden_id, geometry: patch.geometry },
+      });
+      setArmedIrrigationTarget(null);
+    }
+  }
+
+  function handleIrrigationMove(instance: IrrigationPartInstance, geometry: Geometry) {
+    if (instance.id == null) return;
+    irrigationInstanceUpdateMutation.mutate({ id: instance.id, patch: { geometry } });
+  }
+
+  function handleIrrigationConnect(fromInstanceId: number, toInstanceId: number) {
+    irrigationConnectionCreateMutation.mutate({ from_instance_id: fromInstanceId, to_instance_id: toInstanceId });
   }
 
   // #174: while a candidate plant is armed, speculatively check every bed
@@ -806,6 +918,13 @@ export function Layout() {
     } else if (tab === "plants") {
       const pos = stage.getRelativePointerPosition();
       if (pos) plantPlacementRef.current?.handleStageMouseDown(pos, e.evt.shiftKey);
+    } else if (tab === "equipment") {
+      // #250: only reached when the click landed on bare canvas, not on any
+      // bed's own hit-rect (`IrrigationLayer.tsx` handles that in-bed case
+      // itself, directly) - the garden_id placement target, section 5 of
+      // this ticket's own research doc.
+      const pos = stage.getRelativePointerPosition();
+      if (pos) irrigationLayerRef.current?.handleStageMouseDown(pos);
     }
   }
 
@@ -826,6 +945,7 @@ export function Layout() {
     if (!pos) return;
     if (bedMarquee) setBedMarquee((prev) => (prev ? { ...prev, current: pos } : prev));
     plantPlacementRef.current?.handleStageMouseMove(pos, e.evt.ctrlKey);
+    irrigationLayerRef.current?.handleStageMouseMove(pos);
   }
 
   /** Same rationale as `handleStageMouseMove` for the Stage's own mouseup -
@@ -854,6 +974,7 @@ export function Layout() {
       }
     }
     if (pos) plantPlacementRef.current?.handleStageMouseUp(pos);
+    if (pos) irrigationLayerRef.current?.handleStageMouseUp(pos);
   }
 
   /** "Fit to garden": frame the garden boundary + every bed at the largest
@@ -1328,6 +1449,11 @@ export function Layout() {
         } else if (tab === "plants") {
           setSelectedPlantingId(null);
           setSelectedPlantingIds(new Set());
+        } else if (tab === "equipment" && armedIrrigationTarget) {
+          setArmedIrrigationTarget(null);
+        } else if (tab === "equipment") {
+          setSelectedIrrigationInstanceId(null);
+          setSelectedIrrigationConnectionId(null);
         }
         return;
       }
@@ -1368,7 +1494,18 @@ export function Layout() {
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [mode, tab, armedPlant, selectedId, selectedDecorationId, selectedPlantingId, selectedPlantingIds, historyUndo, historyRedo]);
+  }, [
+    mode,
+    tab,
+    armedPlant,
+    selectedId,
+    selectedDecorationId,
+    selectedPlantingId,
+    selectedPlantingIds,
+    armedIrrigationTarget,
+    historyUndo,
+    historyRedo,
+  ]);
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-2 overflow-hidden p-3">
@@ -1412,10 +1549,11 @@ export function Layout() {
             <SoilRotationDialog beds={beds} />
           </>
         }
-        pipeNetworkTrigger={<PipeNetworkDialog />}
         equipmentQuickAdd={
           <QuickAddEquipment equipmentTypes={equipmentTypes} disabled={!garden} onCreated={handleQuickAddEquipmentCreated} />
         }
+        armedIrrigationLabel={armedIrrigationTarget ? armedIrrigationTargetLabel(armedIrrigationTarget) : null}
+        onClearArmedIrrigation={() => setArmedIrrigationTarget(null)}
         armedPlant={armedPlant}
         onClearArmedPlant={() => setArmedPlant(null)}
         plantPicker={
@@ -1466,6 +1604,15 @@ export function Layout() {
                 : "Pick a plant above, then draw where it goes: click for a single plant, drag for a row or area."}{" "}
               Click a placed plant to edit or remove it, drag it to move it. With no plant picked, shift-click or drag
               a selection box over multiple plants to select them together for a bulk move or delete.
+            </p>
+          )}
+          {tab === "equipment" && (
+            <p className="text-xs text-muted-foreground">
+              {armedIrrigationTarget
+                ? `Click inside a bed or on open garden space to place ${armedIrrigationTargetLabel(armedIrrigationTarget)}.`
+                : "Pick \"Place\" on a part in the irrigation panel, then click the canvas to place it."}{" "}
+              Click a placed part to select it, drag it to move it, or drag from one of its hollow connector dots to
+              another part's hollow dot to connect them.
             </p>
           )}
         </>
@@ -1576,6 +1723,27 @@ export function Layout() {
                 />
               )}
               {tab === "equipment" && <EquipmentLayer beds={beds} garden={garden} equipment={equipmentList} />}
+              {tab === "equipment" && (
+                <IrrigationLayer
+                  ref={irrigationLayerRef}
+                  beds={beds}
+                  garden={garden}
+                  parts={irrigationParts}
+                  partTypes={irrigationPartTypes}
+                  instances={irrigationPartInstances}
+                  connections={irrigationConnections}
+                  active
+                  armedTarget={armedIrrigationTarget}
+                  viewport={viewport}
+                  selectedInstanceId={selectedIrrigationInstanceId}
+                  selectedConnectionId={selectedIrrigationConnectionId}
+                  onSelectInstance={setSelectedIrrigationInstanceId}
+                  onSelectConnection={setSelectedIrrigationConnectionId}
+                  onPlace={handleIrrigationPlace}
+                  onMoveInstance={handleIrrigationMove}
+                  onConnect={handleIrrigationConnect}
+                />
+              )}
               {tab === "plants" && (
                 <PlantPlacementLayer
                   ref={plantPlacementRef}
@@ -1646,7 +1814,7 @@ export function Layout() {
             </div>
           )}
           {tab === "equipment" && (
-            <div className="h-full overflow-y-auto">
+            <div className="flex h-full flex-col gap-3 overflow-y-auto">
               <EquipmentPanel
                 beds={beds}
                 garden={garden}
@@ -1655,6 +1823,28 @@ export function Layout() {
                 onPlace={handleEquipmentPlace}
                 onPlaceInGarden={handleEquipmentPlaceInGarden}
                 onReturnToInventory={handleEquipmentReturnToInventory}
+              />
+              {/* #250: the merged irrigation editor's own catalog/placement
+                  side panel - a second, independent Card in the same
+                  reserved Equipment-tab slot (see this ticket's own research
+                  doc, section 1), not a replacement for EquipmentPanel above
+                  (different data models - BedEquipment vs.
+                  IrrigationPart/IrrigationPartInstance - that happen to
+                  share a tab). */}
+              <IrrigationPartsPanel
+                parts={irrigationParts}
+                partTypes={irrigationPartTypes}
+                instances={irrigationPartInstances}
+                connections={irrigationConnections}
+                armedTarget={armedIrrigationTarget}
+                onArm={setArmedIrrigationTarget}
+                onClearArmed={() => setArmedIrrigationTarget(null)}
+                selectedInstance={selectedIrrigationInstance}
+                selectedConnection={selectedIrrigationConnection}
+                onCloseSelection={() => {
+                  setSelectedIrrigationInstanceId(null);
+                  setSelectedIrrigationConnectionId(null);
+                }}
               />
             </div>
           )}
