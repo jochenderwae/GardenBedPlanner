@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { Clock, RulerDimensionLine } from "lucide-react";
+import { Clock } from "lucide-react";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useSnackbar } from "@/components/Snackbar";
@@ -23,6 +23,7 @@ import { ACTION_TYPE_LABELS, isSnoozed } from "@/pages/agenda/taskAgenda";
 import { SnoozeDialog } from "@/pages/agenda/SnoozeDialog";
 import { HarvestLogDialog } from "@/pages/harvest/HarvestLogDialog";
 import { harvestDisabledReason, resolveHarvestPlanting } from "@/pages/harvest/harvestPlanting";
+import { TechnicalDrawingCanvas } from "@/pages/layout/TechnicalDrawingCanvas";
 import { todayIsoDate } from "@/pages/layout/plantingLifecycle";
 
 function formatSnoozedUntil(iso: string): string {
@@ -313,14 +314,17 @@ export function TaskDetail() {
             {action.bed_id != null && (
               <div>
                 <dt className="text-xs font-medium text-muted-foreground">Bed</dt>
-                <dd className="flex items-center gap-2">
-                  {bedQuery.data?.name ?? `Bed #${action.bed_id}`}
-                  <Link
-                    to={`/layout/beds/${action.bed_id}/technical-drawing`}
-                    className={buttonVariants({ variant: "outline", size: "xs" })}
-                  >
-                    <RulerDimensionLine /> Technical drawing
-                  </Link>
+                <dd className="flex flex-col gap-2">
+                  <span>{bedQuery.data?.name ?? `Bed #${action.bed_id}`}</span>
+                  {/* #246: the technical drawing renders directly here now,
+                      not behind a link out to the standalone page - same
+                      `TechnicalDrawingCanvas` this page and the standalone
+                      `/layout/beds/:bedId/technical-drawing` route both use,
+                      just sized to fit inline in this card. Read-only
+                      annotation, not the drag/drop canvas editor, so this is
+                      the same component on mobile too (no separate mobile
+                      rendering needed - see the component's own doc). */}
+                  <TechnicalDrawingCanvas bedId={action.bed_id} />
                 </dd>
               </div>
             )}
