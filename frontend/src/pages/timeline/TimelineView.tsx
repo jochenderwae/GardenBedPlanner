@@ -39,13 +39,24 @@ type Granularity = "month" | "week";
 const LABEL_COL_PX = 176;
 const MONTH_COL_MIN_PX = 64;
 const WEEK_COL_MIN_PX = 28;
-/** Every row's own fixed height regardless of how many distinct period
- * types it stacks as sub-lanes - a Gantt row that grows per-row would make
- * the grid's own column alignment (computed once, reused by the header and
- * every row - see `gridTemplateColumns` below) harder to reason about for
- * comparatively little benefit at this app's scale (a handful of period
- * types per plant, never dozens). */
+/** Every row's default/minimum height - a bed swimlane row (never stacks
+ * period-type lanes, only task diamonds) always renders at exactly this
+ * height. A crop row renders at this height too as long as it has 2 or
+ * fewer period-type lanes to stack (see `BAR_HEIGHT_PX`); only a crop row
+ * that genuinely needs more than 2 lanes grows taller than this. Growing an
+ * individual row's own height doesn't affect column alignment between rows
+ * - `gridTemplateColumns` (see below) only ever governs *column* widths,
+ * shared across the header and every row via one column-template string;
+ * it says nothing about row height, so rows can differ in height and still
+ * line up column-for-column. */
 const ROW_HEIGHT_PX = 40;
+/** Every period bar's own fixed height, regardless of how many lanes its
+ * row stacks - half of `ROW_HEIGHT_PX`, so the default row height
+ * comfortably fits 2 stacked bars without shrinking either one. A row
+ * needing more than 2 lanes grows its own height (`ROW_HEIGHT_PX` becomes a
+ * floor, not a ceiling - see `renderCropRow`) instead of the bars shrinking
+ * further. */
+const BAR_HEIGHT_PX = ROW_HEIGHT_PX / 2;
 const MAX_LANES = 4;
 
 const MONTH_NAMES_SHORT = [
@@ -84,7 +95,6 @@ function PeriodBar({
   startCol,
   endCol,
   laneIndex,
-  laneCount,
   colorClass,
   label,
   onClick,
@@ -92,12 +102,10 @@ function PeriodBar({
   startCol: number;
   endCol: number;
   laneIndex: number;
-  laneCount: number;
   colorClass: string;
   label: string;
   onClick: () => void;
 }) {
-  const laneHeight = ROW_HEIGHT_PX / Math.max(1, laneCount);
   return (
     <button
       type="button"
@@ -108,8 +116,8 @@ function PeriodBar({
       style={{
         gridColumn: `${startCol + 1} / ${endCol + 2}`,
         gridRow: 1,
-        top: laneIndex * laneHeight + 2,
-        height: Math.max(4, laneHeight - 4),
+        top: laneIndex * BAR_HEIGHT_PX + 2,
+        height: Math.max(4, BAR_HEIGHT_PX - 4),
         left: 0,
         right: 0,
       }}
@@ -338,7 +346,6 @@ export function TimelineView() {
             startCol={startCol}
             endCol={endCol}
             laneIndex={laneIndex}
-            laneCount={laneTypes.length}
             colorClass={periodTypeChartClass(period.period_type)}
             label={label}
             onClick={() =>
@@ -373,8 +380,13 @@ export function TimelineView() {
         ? `${row.plant.common_name} — ${row.bed.name} (${plantingCount} plantings)`
         : row.plant.common_name;
 
+    // #249: the row itself only grows taller than the default when it
+    // actually needs more than 2 stacked period-type lanes - otherwise it's
+    // identical to the fixed default every row used before this change.
+    const rowHeightPx = Math.max(ROW_HEIGHT_PX, laneTypes.length * BAR_HEIGHT_PX);
+
     return (
-      <div key={`${bedId}-${row.plant.slug}`} className="relative grid" style={{ gridTemplateColumns: columns, height: ROW_HEIGHT_PX }}>
+      <div key={`${bedId}-${row.plant.slug}`} className="relative grid" style={{ gridTemplateColumns: columns, height: rowHeightPx }}>
         <button
           type="button"
           className="sticky left-0 z-10 truncate bg-background pr-2 text-left text-sm font-medium hover:underline"
