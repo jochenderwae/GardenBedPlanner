@@ -52,6 +52,7 @@ import {
   type Geometry,
   type IrrigationConnection,
   type IrrigationPartInstance,
+  type IrrigationPartInstanceUpdate,
   type PlacementCheck,
   type PlacementType,
   type Plant,
@@ -757,6 +758,15 @@ export function Layout() {
     plantingCreateMutation.mutate({ bed_id: bedId, plant_slug: armedPlant.slug, placement_type: placementType, geometry });
   }
 
+  /** Applies (and PATCHes) an irrigation part instance's placement -
+   * factored out so handleIrrigationMove and handleIrrigationPlace's
+   * "position" branch (#280) can share the same mutation path for both the
+   * live drag/place and undo/redo, mirroring applyBedGeometry/
+   * applyEquipmentPatch's identical shape above. */
+  function applyIrrigationPatch(instanceId: number, patch: IrrigationPartInstanceUpdate) {
+    irrigationInstanceUpdateMutation.mutate({ id: instanceId, patch });
+  }
+
   /** #250: completes a click-to-place gesture on the merged irrigation
    * layer - `target` is whatever was armed at click time (see
    * `ArmedIrrigationTarget`'s own doc for the create-vs-position split).
@@ -766,7 +776,12 @@ export function Layout() {
    * instance a second time rather than placing a fresh one (unlike
    * `"create"`, which deliberately stays armed so several instances of the
    * same part can be placed in a row, matching `armedPlant`'s own
-   * behavior). */
+   * behavior). The "create" branch (a brand-new instance) stays untracked
+   * by undo/redo, matching handlePlantPlace's own precedent; the
+   * "position" branch (#280) is the direct analog of
+   * handleEquipmentPlace - placing an already-existing (if previously
+   * unplaced) row - so its previous state (always null/null/null for a
+   * legacy unplaced instance) is captured and pushed. */
   function handleIrrigationPlace(
     target: ArmedIrrigationTarget,
     patch: { bed_id: number | null; garden_id: number | null; geometry: Geometry },
@@ -776,9 +791,17 @@ export function Layout() {
       irrigationInstanceCreateMutation.mutate({ part_id: target.part.id, bed_id: patch.bed_id, garden_id: patch.garden_id, geometry: patch.geometry });
     } else {
       if (target.instance.id == null) return;
-      irrigationInstanceUpdateMutation.mutate({
-        id: target.instance.id,
-        patch: { bed_id: patch.bed_id, garden_id: patch.garden_id, geometry: patch.geometry },
+      const instanceId = target.instance.id;
+      const previousPatch: IrrigationPartInstanceUpdate = {
+        bed_id: target.instance.bed_id,
+        garden_id: target.instance.garden_id,
+        geometry: target.instance.geometry,
+      };
+      const nextPatch: IrrigationPartInstanceUpdate = { bed_id: patch.bed_id, garden_id: patch.garden_id, geometry: patch.geometry };
+      applyIrrigationPatch(instanceId, nextPatch);
+      history.push({
+        undo: () => applyIrrigationPatch(instanceId, previousPatch),
+        redo: () => applyIrrigationPatch(instanceId, nextPatch),
       });
       setArmedIrrigationTarget(null);
     }
@@ -786,7 +809,13 @@ export function Layout() {
 
   function handleIrrigationMove(instance: IrrigationPartInstance, geometry: Geometry) {
     if (instance.id == null) return;
-    irrigationInstanceUpdateMutation.mutate({ id: instance.id, patch: { geometry } });
+    const instanceId = instance.id;
+    const previousGeometry = instance.geometry;
+    applyIrrigationPatch(instanceId, { geometry });
+    history.push({
+      undo: () => applyIrrigationPatch(instanceId, { geometry: previousGeometry }),
+      redo: () => applyIrrigationPatch(instanceId, { geometry }),
+    });
   }
 
   function handleIrrigationConnect(fromInstanceId: number, toInstanceId: number) {
