@@ -53,7 +53,12 @@ test.describe("Plant-detail Growing information display (#121)", () => {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Growing Info Plant" })).toBeVisible();
 
-      const section = page.locator("section", { has: page.getByRole("heading", { name: "Growing information" }) });
+      // #237 round 2 promoted this section out of the satellite/"Show more
+      // details" list, restyled as a plain quiet block with no <h2> of its
+      // own (it reads as an extension of Description now) - scoping by a
+      // "Growing information" heading no longer works, `page` directly is
+      // safe since nothing else on this page renders this exact content.
+      const section = page;
       await expect(section.getByText("This is the AI-synthesized summary combining both books.")).toBeVisible();
       // Raw texts not shown directly - only the consolidated summary, by
       // default, per the ticket's own requirement.
@@ -102,7 +107,12 @@ test.describe("Plant-detail Growing information display (#121)", () => {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Growing Info Raw Only Plant" })).toBeVisible();
 
-      const section = page.locator("section", { has: page.getByRole("heading", { name: "Growing information" }) });
+      // #237 round 2 promoted this section out of the satellite/"Show more
+      // details" list, restyled as a plain quiet block with no <h2> of its
+      // own (it reads as an extension of Description now) - scoping by a
+      // "Growing information" heading no longer works, `page` directly is
+      // safe since nothing else on this page renders this exact content.
+      const section = page;
       await expect(section.getByText("Only a raw excerpt exists so far")).toBeVisible();
       await expect(section.getByText("This text is an AI summary.")).not.toBeVisible();
 
@@ -128,7 +138,12 @@ test.describe("Plant-detail Growing information display (#121)", () => {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Growing Info Solo Consolidated Plant" })).toBeVisible();
 
-      const section = page.locator("section", { has: page.getByRole("heading", { name: "Growing information" }) });
+      // #237 round 2 promoted this section out of the satellite/"Show more
+      // details" list, restyled as a plain quiet block with no <h2> of its
+      // own (it reads as an extension of Description now) - scoping by a
+      // "Growing information" heading no longer works, `page` directly is
+      // safe since nothing else on this page renders this exact content.
+      const section = page;
       await expect(section.getByText("A consolidated summary with nothing else to cite.")).toBeVisible();
       await expect(section.getByRole("button", { name: "sources" })).toHaveCount(0);
     } finally {
@@ -143,7 +158,11 @@ test.describe("Plant-detail Growing information display (#121)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Growing Info None Plant" })).toBeVisible();
-      await expect(page.getByRole("heading", { name: "Growing information" })).toHaveCount(0);
+      // GrowingInfoSection returns null entirely when there's nothing to
+      // show (no heading of its own to check for absence post-#237 - see
+      // this file's other tests) - its own distinctive copy is the
+      // reliable absence signal instead.
+      await expect(page.getByText("This text is an AI summary.")).toHaveCount(0);
     } finally {
       await request.delete(`/api/plants/${slug}`).catch(() => {});
     }

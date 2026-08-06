@@ -96,6 +96,10 @@ test.describe("Plant detail page FieldHint tooltip coverage (#125)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: commonName })).toBeVisible();
+      // #237 round 2 moved the secondary-tier scalar fields and every
+      // satellite section behind this disclosure - most of the 50+ hints
+      // this test counts live there now.
+      await page.getByRole("button", { name: "Show more details" }).click();
 
       // Scoped to <main> (AppShell's own content region) rather than the
       // whole page, so this doesn't accidentally pick up an unrelated

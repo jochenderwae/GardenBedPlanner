@@ -4,6 +4,10 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
  * Real-browser coverage for #123 ("Pest interactions should be displayed
  * as columns") - the implementer's own outcome comment explicitly leaves
  * the Enter-to-add interaction for the tester role to confirm visually.
+ *
+ * #237 update (found while re-running this spec): Pest interactions is one
+ * of the six satellite sections #237's redesign moved behind the "Show
+ * more details" disclosure - each test below expands it first.
  */
 
 async function createPlant(request: APIRequestContext, slug: string, commonName: string): Promise<void> {
@@ -34,6 +38,7 @@ test.describe("Plant-detail pest interactions columns (#123)", () => {
 
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Pest Interactions Plant" })).toBeVisible();
+      await page.getByRole("button", { name: "Show more details" }).click();
 
       const table = page.locator("table", { has: page.getByRole("columnheader", { name: "Attracts" }) });
       await expect(table.getByRole("columnheader", { name: "Attracts" })).toBeVisible();
@@ -96,6 +101,7 @@ test.describe("Plant-detail pest interactions columns (#123)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Pest Interactions Multi Plant" })).toBeVisible();
+      await page.getByRole("button", { name: "Show more details" }).click();
 
       const table = page.locator("table", { has: page.getByRole("columnheader", { name: "Attracts" }) });
       const inputs = table.getByPlaceholder("e.g. aphids");
