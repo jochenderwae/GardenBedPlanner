@@ -5,9 +5,17 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
  * field with unit in label") - per the implementer's own outcome comment,
  * this was already fixed by a same-day hotfix commit, verified only at
  * build/lint/vitest level (no interactive check of the actual rendered
- * field). Confirms the number input on the plant-detail page really does
+ * field). Confirms the number field on the plant-detail page really does
  * carry the unit in its label and round-trips a real value through a real
  * PATCH.
+ *
+ * #237 update (found while re-running this spec, not previously covered by
+ * #213's own "3 specs updated" list): this field is now a click-to-edit
+ * `InlineEditableField` (`type: "number"`, primary tier - always visible) -
+ * collapsed, it's a `<button aria-label="Edit Water needs (mm/week)">`
+ * showing the current value as plain text; clicking it swaps to a real
+ * `<input type="number" aria-label="Water needs (mm/week)">` that commits
+ * on blur/Enter.
  */
 
 async function createPlant(
@@ -33,6 +41,10 @@ test.describe("Plant-detail water needs numeric field (#139)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Water Needs Plant" })).toBeVisible();
+
+      const trigger = page.getByRole("button", { name: "Edit Water needs (mm/week)" });
+      await expect(trigger).toContainText("25.4");
+      await trigger.click();
 
       const waterNeedsInput = page.getByRole("spinbutton", { name: "Water needs (mm/week)" });
       await expect(waterNeedsInput).toBeVisible();
@@ -61,6 +73,10 @@ test.describe("Plant-detail water needs numeric field (#139)", () => {
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Water Needs Empty Plant" })).toBeVisible();
+
+      const trigger = page.getByRole("button", { name: "Edit Water needs (mm/week)" });
+      await expect(trigger).toBeVisible();
+      await trigger.click();
 
       const waterNeedsInput = page.getByRole("spinbutton", { name: "Water needs (mm/week)" });
       await expect(waterNeedsInput).toHaveValue("");

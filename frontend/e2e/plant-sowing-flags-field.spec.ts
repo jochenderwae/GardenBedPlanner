@@ -13,7 +13,12 @@ import { test, expect, type APIRequestContext } from "@playwright/test";
  * #213/#237 update: these three fields are "secondary" tier in #237's
  * Option A layout (technical/niche, not everyday-relevant), so they now
  * render collapsed behind the "Show more details" disclosure rather than
- * always visible - each test below expands it first.
+ * always visible - each test below expands it first. A further #237 layer
+ * (found while re-running this spec, not covered by #213's own "3 specs
+ * updated" list) - each tri-state field is *also* its own click-to-edit
+ * `InlineEditableField`: collapsed, a `<button aria-label="Edit <label>">`
+ * showing the Yes/No/Unknown display text; clicking it swaps to a real
+ * `<select aria-label="<label>">` that commits immediately on change.
  */
 
 async function createPlant(
@@ -28,6 +33,11 @@ async function createPlant(
   expect(res.ok(), `failed to create plant: ${res.status()} ${await res.text()}`).toBeTruthy();
 }
 
+async function editSelect(page: import("@playwright/test").Page, label: string) {
+  await page.getByRole("button", { name: `Edit ${label}` }).click();
+  return page.getByRole("combobox", { name: label });
+}
+
 test.describe("Plant-detail sowing tri-state fields (#197)", () => {
   test("a plant with real values shows the correct state for each field", async ({ page, request }) => {
     const slug = `e2e-sowing-flags-plant-${Date.now()}`;
@@ -38,9 +48,11 @@ test.describe("Plant-detail sowing tri-state fields (#197)", () => {
       await expect(page.getByRole("heading", { name: "E2E Sowing Flags Plant" })).toBeVisible();
       await page.getByRole("button", { name: "Show more details" }).click();
 
-      await expect(page.getByLabel("Sow indoors")).toHaveValue("true");
-      await expect(page.getByLabel("Sow direct")).toHaveValue("false");
-      await expect(page.getByLabel("Needs thinning")).toHaveValue("true");
+      await expect(page.getByRole("button", { name: "Edit Sow indoors" })).toContainText("Yes");
+      await expect(page.getByRole("button", { name: "Edit Sow direct" })).toContainText("No");
+      await expect(page.getByRole("button", { name: "Edit Needs thinning" })).toContainText("Yes");
+
+      await expect(await editSelect(page, "Sow indoors")).toHaveValue("true");
     } finally {
       await request.delete(`/api/plants/${slug}`).catch(() => {});
     }
@@ -55,11 +67,13 @@ test.describe("Plant-detail sowing tri-state fields (#197)", () => {
       await expect(page.getByRole("heading", { name: "E2E Sowing Flags Unset Plant" })).toBeVisible();
       await page.getByRole("button", { name: "Show more details" }).click();
 
-      // Konva-free, this is a plain HTML <select> - value "" maps to the
-      // "Unknown" option per FieldInput.tsx's own tristate branch.
-      await expect(page.getByLabel("Sow indoors")).toHaveValue("");
-      await expect(page.getByLabel("Sow direct")).toHaveValue("");
-      await expect(page.getByLabel("Needs thinning")).toHaveValue("");
+      // Collapsed display text for an unset tristate reads the field's own
+      // placeholder ("—"), not "No" - the whole point of #177's tri-state
+      // convention.
+      for (const label of ["Sow indoors", "Sow direct", "Needs thinning"]) {
+        await expect(page.getByRole("button", { name: `Edit ${label}` })).not.toContainText(/^(Yes|No)$/);
+        await expect(await editSelect(page, label)).toHaveValue("");
+      }
     } finally {
       await request.delete(`/api/plants/${slug}`).catch(() => {});
     }
@@ -74,19 +88,22 @@ test.describe("Plant-detail sowing tri-state fields (#197)", () => {
       await expect(page.getByRole("heading", { name: "E2E Sowing Flags Edit Plant" })).toBeVisible();
       await page.getByRole("button", { name: "Show more details" }).click();
 
-      const sowIndoors = page.getByLabel("Sow indoors");
+      const sowIndoors = await editSelect(page, "Sow indoors");
       await sowIndoors.selectOption("true");
       await expect
         .poll(async () => (await (await request.get(`/api/plants/${slug}`)).json()).sow_indoors, {
           message: "setting Sow indoors to Yes never persisted",
         })
         .toBe(true);
+      // A select's change commits and collapses back immediately.
+      await expect(page.getByRole("button", { name: "Edit Sow indoors" })).toContainText("Yes");
 
       // Explicitly setting to "No" persists a real `false`, not just
       // clearing back to null - the important distinction #177's data
       // convention draws (unset means "not extracted", false here means a
       // deliberate user correction).
-      await sowIndoors.selectOption("false");
+      const sowIndoorsAgain = await editSelect(page, "Sow indoors");
+      await sowIndoorsAgain.selectOption("false");
       await expect
         .poll(async () => (await (await request.get(`/api/plants/${slug}`)).json()).sow_indoors, {
           message: "setting Sow indoors to No never persisted as a real false",
@@ -94,7 +111,8 @@ test.describe("Plant-detail sowing tri-state fields (#197)", () => {
         .toBe(false);
 
       // And back to Unknown clears it to null.
-      await sowIndoors.selectOption("");
+      const sowIndoorsOnceMore = await editSelect(page, "Sow indoors");
+      await sowIndoorsOnceMore.selectOption("");
       await expect
         .poll(async () => (await (await request.get(`/api/plants/${slug}`)).json()).sow_indoors, {
           message: "setting Sow indoors back to Unknown never cleared it to null",
