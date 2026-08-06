@@ -99,9 +99,14 @@ test.describe("Equipment page (#33)", () => {
         id: number;
         equipment_type: string;
         bed_id: number | null;
+        owned: boolean;
       }[];
       const item = items.find((i) => i.equipment_type === equipmentType)!;
       expect(item.bed_id, "a freshly-created item must start unplaced (bed_id null)").toBeNull();
+      // #272 regression: Equipment.tsx's create payload must include the
+      // now-required `owned` field (added by #255) - true by default for
+      // this "I have this item in hand" inventory form.
+      expect(item.owned).toBe(true);
 
       // --- place it on the bed via the picker ---
       await inventorySection.getByRole("combobox").selectOption(String(bed.id));

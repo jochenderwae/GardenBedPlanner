@@ -42,10 +42,19 @@ test.describe("Equipment: create unplaced, place, unplace (#34)", () => {
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
       await page.getByRole("tab", { name: "Equipment" }).click();
-      await expect(page.getByRole("heading", { name: "Equipment" })).toBeVisible();
+      // exact: true - a non-exact match now also resolves the irrigation
+      // editor merge's (#250) own "Irrigation zones..." heading whose
+      // accessible name happens to contain "equipment" too, since both
+      // panels now share this tab.
+      await expect(page.getByRole("heading", { name: "Equipment", exact: true })).toBeVisible();
 
-      const inventorySection = page.locator("text=Inventory (unassigned)").locator("..");
-      const placedSection = page.locator("text=Placed").locator("..");
+      // Role-scoped (not the old `text=Placed` substring locator) - that
+      // engine's case-insensitive substring match also hits "Nothing
+      // **placed** yet." (the section's own empty-state copy), an ambiguity
+      // that got newly load-bearing once #250's irrigation merge added more
+      // content to this same panel around it.
+      const inventorySection = page.getByRole("heading", { name: "Inventory (unassigned)", exact: true }).locator("..");
+      const placedSection = page.getByRole("heading", { name: "Placed", exact: true }).locator("..");
 
       // --- Step 1: create it - no bed required, lands in Inventory ---
       await page.getByPlaceholder(/trellis, drip line, stake/).fill(equipmentType);
@@ -58,10 +67,15 @@ test.describe("Equipment: create unplaced, place, unplace (#34)", () => {
         id: number;
         equipment_type: string;
         bed_id: number | null;
+        owned: boolean;
       }[];
       const created = allItems.find((i) => i.equipment_type === equipmentType);
       expect(created, "equipment item never got created").toBeTruthy();
       expect(created!.bed_id, "a freshly-created item must start unplaced (bed_id null)").toBeNull();
+      // #272 regression: EquipmentPanel.tsx's create payload must include
+      // the now-required `owned` field (added by #255) - true by default for
+      // this "I have this item in hand" inventory form.
+      expect(created!.owned).toBe(true);
 
       // --- Step 2: place it on the bed ---
       await inventorySection.getByRole("combobox").selectOption(String(bed.id));

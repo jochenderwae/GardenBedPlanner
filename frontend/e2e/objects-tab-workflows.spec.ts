@@ -154,6 +154,7 @@ test.describe("Objects tab workflows (#242)", () => {
       },
     });
     expect(typeRes.ok(), `failed to create equipment type: ${typeRes.status()} ${await typeRes.text()}`).toBeTruthy();
+    const equipType = (await typeRes.json()) as { id: number };
 
     try {
       await gotoLayout(page);
@@ -169,18 +170,30 @@ test.describe("Objects tab workflows (#242)", () => {
               equipment_type: string;
               garden_id: number | null;
               bed_id: number | null;
+              owned: boolean;
             }[];
             return items.find((i) => i.equipment_type === "E2E Rain Barrel") ?? null;
           },
           { message: "quick-add never created the equipment item" },
         )
-        .toMatchObject({ garden_id: expect.any(Number), bed_id: null });
+        // #272 regression: QuickAddEquipment.tsx's create payload must
+        // include the now-required `owned` field (added by #255) - true by
+        // default, same "I have this item in hand" semantics as the other
+        // two create sites.
+        .toMatchObject({ garden_id: expect.any(Number), bed_id: null, owned: true });
     } finally {
       const items = (await (await request.get("/api/bed-equipment")).json()) as { id: number; equipment_type: string }[];
       for (const item of items.filter((i) => i.equipment_type === "E2E Rain Barrel")) {
         await request.delete(`/api/bed-equipment/${item.id}`).catch(() => {});
       }
-      await request.delete(`/api/equipment-types/${typeSlug}`).catch(() => {});
+      // The DELETE /api/equipment-types/{id} route takes a real integer id,
+      // not a slug (`Playwright's request.delete` doesn't throw on a
+      // non-2xx response, so a slug here would silently 422 and never
+      // actually clean up, leaking rows into garden_test across every run -
+      // confirmed this was happening: repeated runs accumulated multiple
+      // "E2E Rain Barrel" EquipmentType rows, breaking the Quick-add popover's
+      // own single-button assumption below).
+      await request.delete(`/api/equipment-types/${equipType.id}`).catch(() => {});
     }
   });
 });
