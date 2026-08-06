@@ -201,6 +201,46 @@ def test_harvest_logs_scope_transitively_via_planting_and_bed(client: TestClient
     assert logs_while_b_active == {log_b["id"]}
 
 
+def test_decorations_scope_to_the_active_garden(client: TestClient) -> None:
+    """#266: Decoration gained garden_id after the fact (unlike Bed/GardenPlan,
+    scoped from the start by #238) - confirms GET /api/decorations follows the
+    same active-garden filtering as every other garden-owned list route, and
+    that POST resolves garden_id server-side against whichever garden is
+    active at creation time, exactly like create_bed."""
+    garden_a = _make_garden(client, "Garden A", activate=True)
+    decoration_a = client.post(
+        "/api/decorations", json={"name": "Stone bench", "border_geometry": rectangle(width=40, height=100)}
+    ).json()
+    assert decoration_a["garden_id"] == garden_a["id"]
+
+    garden_b = _make_garden(client, "Garden B")
+    client.post(f"/api/gardens/{garden_b['id']}/activate")
+    decoration_b = client.post(
+        "/api/decorations", json={"name": "Bird bath", "border_geometry": rectangle(width=30, height=30)}
+    ).json()
+    assert decoration_b["garden_id"] == garden_b["id"]
+
+    decorations_while_b_active = {d["id"] for d in client.get("/api/decorations").json()}
+    assert decoration_b["id"] in decorations_while_b_active
+    assert decoration_a["id"] not in decorations_while_b_active
+
+    client.post(f"/api/gardens/{garden_a['id']}/activate")
+    decorations_while_a_active = {d["id"] for d in client.get("/api/decorations").json()}
+    assert decoration_a["id"] in decorations_while_a_active
+    assert decoration_b["id"] not in decorations_while_a_active
+
+    # Explicit garden_id in the request body overrides active-garden resolution.
+    decoration_explicit = client.post(
+        "/api/decorations",
+        json={
+            "name": "Explicit-garden gnome",
+            "border_geometry": rectangle(width=10, height=10),
+            "garden_id": garden_b["id"],
+        },
+    ).json()
+    assert decoration_explicit["garden_id"] == garden_b["id"]
+
+
 def test_list_endpoints_stay_unfiltered_when_no_garden_exists_at_all(
     client: TestClient, db_session
 ) -> None:
