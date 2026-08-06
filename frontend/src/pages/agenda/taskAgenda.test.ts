@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Action } from "@/api/client";
-import { groupActionsByDueDate, sortByUrgency, sortedDueDates, taskDueDateKey } from "./taskAgenda";
+import { groupActionsByDueDate, isSnoozed, sortByUrgency, sortedDueDates, taskDueDateKey } from "./taskAgenda";
 
 function makeAction(overrides: Partial<Action>): Action {
   return {
@@ -79,6 +79,24 @@ describe("sortByUrgency", () => {
 
   it("returns an empty array for no actions", () => {
     expect(sortByUrgency([])).toEqual([]);
+  });
+});
+
+describe("isSnoozed", () => {
+  it("is false when snoozed_until is null", () => {
+    expect(isSnoozed(makeAction({ snoozed_until: null }), "2026-08-01")).toBe(false);
+  });
+
+  it("is true when snoozed_until is today", () => {
+    expect(isSnoozed(makeAction({ snoozed_until: "2026-08-01" }), "2026-08-01")).toBe(true);
+  });
+
+  it("is true when snoozed_until is in the future", () => {
+    expect(isSnoozed(makeAction({ snoozed_until: "2026-08-15" }), "2026-08-01")).toBe(true);
+  });
+
+  it("is false once snoozed_until is in the past - auto-clears with no manual step", () => {
+    expect(isSnoozed(makeAction({ snoozed_until: "2026-07-31" }), "2026-08-01")).toBe(false);
   });
 });
 
