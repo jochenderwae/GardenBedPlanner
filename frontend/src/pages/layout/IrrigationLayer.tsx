@@ -48,10 +48,25 @@ const ANCHOR_RADIUS_PX = 3.5;
 // #253: how close a connection-drag drop needs to land to a drawn anchor
 // circle to count as hitting it.
 const ANCHOR_DROP_RADIUS_PX = 12;
+// #279: re-tuned against real multi-bed usage (several instances placed
+// across beds and open garden space, including a duplicate connection
+// between the same pair) - the original values, carried over unchanged from
+// the old fixed 560x480 schematic dialog, read poorly once anchors could
+// land on any of a node's 4 sides instead of always facing each other
+// dialog-style: a short/aligned pair's curve came out reading as a near-
+// straight line cutting directly through both node bodies (MIN too small to
+// force a visible bow), while a longer pair's control points overshot into
+// a disproportionately tall arc (MAX too generous relative to typical
+// bed-to-bed spacing). Raising MIN and lowering MAX narrows that range so
+// every connection - not just favorably-spaced ones - reads as a clean,
+// moderate curve. DUPLICATE_OFFSET_STEP_PX raised alongside them so a
+// genuine same-anchor-slot duplicate (two connections sharing both ends'
+// anchor directions) still separates into two clearly distinct lines rather
+// than nearly overlapping under the new, less-generous control range.
 const BEZIER_CONTROL_FRACTION = 0.4;
-const BEZIER_CONTROL_MIN_PX = 20;
-const BEZIER_CONTROL_MAX_PX = 90;
-const DUPLICATE_OFFSET_STEP_PX = 8;
+const BEZIER_CONTROL_MIN_PX = 28;
+const BEZIER_CONTROL_MAX_PX = 65;
+const DUPLICATE_OFFSET_STEP_PX = 14;
 const REJECT_FLASH_MS = 400;
 const REJECT_FLASH_COLOR = "#dc2626";
 const NODE_STROKE = "#0891b2";
