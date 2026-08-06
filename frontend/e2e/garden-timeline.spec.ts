@@ -214,7 +214,7 @@ test.describe("Garden editor timeline (#180)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
       await page.getByRole("tab", { name: "Plants" }).click();
 
       const box = await canvasBox(page);
@@ -258,7 +258,7 @@ test.describe("Garden editor timeline (#180)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       // Open the bed panel via a plain click on the bed's interior.
       const box = await canvasBox(page);

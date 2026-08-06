@@ -104,7 +104,7 @@ test.describe("Onboarding 'seed the example garden?' prompt (#109)", () => {
     // known world position and confirm BedPanel's real <input> shows the
     // mocked name, which only happens if the refetched bed data actually
     // reached the canvas/selection state.
-    await page.getByRole("tab", { name: "Beds" }).click();
+    await page.getByRole("tab", { name: "Objects" }).click();
     const box = await page.locator("canvas").first().boundingBox();
     if (!box) throw new Error("canvas not visible");
     await page.mouse.click(box.x + 90, box.y + 90); // world (90,90), inside the mock bed's 40,40..140,140 box

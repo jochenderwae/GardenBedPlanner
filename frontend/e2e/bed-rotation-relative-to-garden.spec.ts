@@ -57,7 +57,7 @@ async function openBedPanel(page: Page, bedName: string): Promise<void> {
   await page.goto("/layout");
   await page.locator("canvas").first().waitFor();
   await dismissOnboardingIfPresent(page);
-  await page.getByRole("tab", { name: "Beds" }).click();
+  await page.getByRole("tab", { name: "Objects" }).click();
   const box = await page.locator("canvas").first().boundingBox();
   if (!box) throw new Error("canvas not visible");
   // The bed sits at world (400,400)-(500,500) - click its center. Rotation

@@ -53,7 +53,7 @@ test.describe("Toolbar (#90)", () => {
 
       // Mode toggle actually switches content: "View" hides the Beds/Add
       // bed tooling entirely (read-only example-garden mode).
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
       await expect(page.getByRole("button", { name: "Add bed" })).toBeVisible();
       await page.getByRole("radio", { name: "View" }).click();
       await expect(page.getByRole("tablist")).not.toBeVisible();
@@ -83,7 +83,7 @@ test.describe("Toolbar (#90)", () => {
 
       // Row 2: Beds tab shows "Add bed"; Plants tab shows "Pick a plant"
       // and, once a plant is armed, the placement-mode radiogroup.
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
       await expect(page.getByRole("button", { name: "Add bed" })).toBeVisible();
       await expect(page.getByRole("button", { name: "Pick a plant" })).not.toBeVisible();
 

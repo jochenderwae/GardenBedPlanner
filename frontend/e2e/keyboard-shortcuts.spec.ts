@@ -44,7 +44,7 @@ test.describe("Keyboard shortcuts in the canvas editor (#17)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const box = await canvasBox(page);
       await page.mouse.click(box.x + 240, box.y + 240); // bed center
@@ -94,7 +94,7 @@ test.describe("Keyboard shortcuts in the canvas editor (#17)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const box = await canvasBox(page);
       await page.mouse.click(box.x + 240, box.y + 240); // bed A's center
@@ -209,7 +209,7 @@ test.describe("Keyboard shortcuts in the canvas editor (#17)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const box = await canvasBox(page);
       await page.mouse.click(box.x + 240, box.y + 240);

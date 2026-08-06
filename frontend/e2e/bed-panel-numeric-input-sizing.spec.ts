@@ -39,7 +39,7 @@ test.describe("Bed panel numeric input sizing (#74)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
       const box = await page.locator("canvas").first().boundingBox();
       if (!box) throw new Error("canvas not visible");
       await page.mouse.click(box.x + 90, box.y + 90);

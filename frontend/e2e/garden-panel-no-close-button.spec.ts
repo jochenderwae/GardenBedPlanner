@@ -30,7 +30,7 @@ test.describe("GardenPanel has no close button (#91)", () => {
     await expect(page.getByRole("button", { name: "Close" })).toHaveCount(0);
 
     // Switching tabs still works via the tab switcher itself.
-    await page.getByRole("tab", { name: "Beds" }).click();
+    await page.getByRole("tab", { name: "Objects" }).click();
     await expect(page.getByRole("button", { name: "Add bed" })).toBeVisible();
   });
 });

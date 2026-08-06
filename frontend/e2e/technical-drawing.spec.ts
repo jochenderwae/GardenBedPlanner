@@ -184,7 +184,7 @@ test.describe("Technical drawing overlay (#193)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
       const canvasBox = await page.locator("canvas").first().boundingBox();
       if (!canvasBox) throw new Error("canvas not visible");
       // Click inside the bed's own footprint but clear of either planting

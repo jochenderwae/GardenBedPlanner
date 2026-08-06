@@ -45,7 +45,7 @@ async function createBed(request: APIRequestContext, name: string, geometry: unk
 async function openBedsTab(page: Page): Promise<void> {
   await page.goto("/layout");
   await page.locator("canvas").first().waitFor();
-  await page.getByRole("tab", { name: "Beds" }).click();
+  await page.getByRole("tab", { name: "Objects" }).click();
 }
 
 async function canvasBox(page: Page) {

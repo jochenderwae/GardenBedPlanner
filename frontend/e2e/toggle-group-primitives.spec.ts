@@ -139,7 +139,7 @@ test.describe("Shared toggle-group primitives (#143)", () => {
     await expect(tablist).toBeVisible();
 
     const gardenTab = page.getByRole("tab", { name: "Garden" });
-    const bedsTab = page.getByRole("tab", { name: "Beds" });
+    const bedsTab = page.getByRole("tab", { name: "Objects" });
     const plantsTab = page.getByRole("tab", { name: "Plants" });
 
     // Garden is the default active tab (Layout.tsx's initial state) - only
@@ -173,7 +173,7 @@ test.describe("Shared toggle-group primitives (#143)", () => {
 
     try {
       await gotoLayout(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
       const canvasBox = await page.locator("canvas").first().boundingBox();
       if (!canvasBox) throw new Error("canvas not visible");
       await page.mouse.click(canvasBox.x + 350, canvasBox.y + 350);

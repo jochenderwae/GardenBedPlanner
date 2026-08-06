@@ -206,7 +206,7 @@ async function measureAtScenario(
   await page.goto("/layout"); // fresh navigation - fresh DEFAULT_VIEWPORT
   await page.locator("canvas").first().waitFor();
   await dismissOnboardingIfPresent(page);
-  await page.getByRole("tab", { name: "Beds" }).click();
+  await page.getByRole("tab", { name: "Objects" }).click();
   await page.waitForTimeout(300); // let ResizeObserver-driven canvasSize settle before sampling it
 
   await page.getByRole("button", { name: "Fit view" }).click();

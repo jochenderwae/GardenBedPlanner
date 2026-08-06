@@ -88,7 +88,7 @@ test.describe("Dialog/Popover keyboard accessibility (#144)", () => {
     await page.goto("/layout");
     await page.locator("canvas").first().waitFor();
     await dismissOnboardingIfPresent(page);
-    await page.getByRole("tab", { name: "Beds" }).click();
+    await page.getByRole("tab", { name: "Objects" }).click();
 
     const addBedButton = page.getByRole("button", { name: "Add bed" });
     await addBedButton.click();
@@ -118,7 +118,7 @@ test.describe("Dialog/Popover keyboard accessibility (#144)", () => {
     await page.goto("/layout");
     await page.locator("canvas").first().waitFor();
     await dismissOnboardingIfPresent(page);
-    await page.getByRole("tab", { name: "Beds" }).click();
+    await page.getByRole("tab", { name: "Objects" }).click();
 
     const addBedButton = page.getByRole("button", { name: "Add bed" });
     await addBedButton.click();

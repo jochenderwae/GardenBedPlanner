@@ -36,7 +36,7 @@ async function canvasBox(page: Page) {
 }
 
 test.describe("Dedicated Garden tab, ordering, and cascading lock (#89)", () => {
-  test("lands on the Garden tab by default, with tabs in Garden -> Beds -> Plants -> Equipment order", async ({
+  test("lands on the Garden tab by default, with tabs in Garden -> Objects -> Plants -> Equipment order", async ({
     page,
     request,
   }) => {
@@ -49,11 +49,11 @@ test.describe("Dedicated Garden tab, ordering, and cascading lock (#89)", () => 
 
       const tabs = page.getByRole("tab");
       await expect(tabs).toHaveCount(4);
-      await expect(tabs).toHaveText(["Garden", "Beds", "Plants", "Equipment"]);
+      await expect(tabs).toHaveText(["Garden", "Objects", "Plants", "Equipment"]);
 
-      // Default landing tab is Garden, not Beds.
+      // Default landing tab is Garden, not Objects.
       await expect(page.getByRole("tab", { name: "Garden" })).toHaveAttribute("aria-selected", "true");
-      await expect(page.getByRole("tab", { name: "Beds" })).toHaveAttribute("aria-selected", "false");
+      await expect(page.getByRole("tab", { name: "Objects" })).toHaveAttribute("aria-selected", "false");
 
       // Always reachable regardless of what else is going on - clicking
       // any other tab and back still works.

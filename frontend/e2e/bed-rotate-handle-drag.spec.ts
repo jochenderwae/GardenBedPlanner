@@ -63,7 +63,7 @@ test.describe("Bed Transformer rotate-handle drag (#71)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
       const box = await canvasBox(page);
 
       const handleX = box.x + 140; // bounding-box top-center x (unrotated)
@@ -108,7 +108,7 @@ test.describe("Bed Transformer rotate-handle drag (#71)", () => {
         await page.reload();
         await page.locator("canvas").first().waitFor();
         await dismissOnboardingIfPresent(page);
-        await page.getByRole("tab", { name: "Beds" }).click();
+        await page.getByRole("tab", { name: "Objects" }).click();
       }
     } finally {
       await request.delete(`/api/beds/${bed.id}?cascade=true`).catch(() => {});

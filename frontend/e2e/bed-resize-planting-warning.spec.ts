@@ -57,7 +57,7 @@ test.describe("Bed resize leaves a planting outside its new footprint - warning 
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const box = await canvasBox(page);
       await page.mouse.click(box.x + 250, box.y + 250); // inside the bed, clear of the planting
@@ -107,7 +107,7 @@ test.describe("Bed resize leaves a planting outside its new footprint - warning 
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const box = await canvasBox(page);
       // Select the bed first (Transformer only attaches once selected).
@@ -154,7 +154,7 @@ test.describe("Bed resize leaves a planting outside its new footprint - warning 
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const box = await canvasBox(page);
       await page.mouse.click(box.x + 350, box.y + 250); // inside the bed, clear of the planting

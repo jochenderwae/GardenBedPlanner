@@ -108,7 +108,7 @@ test.describe("Ruler tick visibility while panning over bed content (#115)", () 
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const box = await canvasBox(page);
 
@@ -142,7 +142,7 @@ test.describe("Ruler tick visibility while panning over bed content (#115)", () 
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const box = await canvasBox(page);
       const center = { x: box.x + box.width / 2, y: box.y + box.height / 2 };

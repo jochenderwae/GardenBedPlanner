@@ -59,7 +59,7 @@ test.describe("Undo/redo (#18)", () => {
       await page.goto("/layout");
       await page.locator("canvas").first().waitFor();
       await dismissOnboardingIfPresent(page);
-      await page.getByRole("tab", { name: "Beds" }).click();
+      await page.getByRole("tab", { name: "Objects" }).click();
 
       const undoButton = page.getByRole("button", { name: "Undo" });
       const redoButton = page.getByRole("button", { name: "Redo" });
@@ -233,8 +233,19 @@ test.describe("Undo/redo (#18)", () => {
 
       // --- Equipment place, then undo ---
       await page.getByRole("tab", { name: "Equipment" }).click();
-      await expect(page.getByRole("heading", { name: "Equipment" })).toBeVisible();
-      await page.getByRole("combobox").selectOption(String(bed.id));
+      // exact:true - #250's irrigation-editor merge added IrrigationPartsPanel
+      // alongside EquipmentPanel on this same tab, whose own "Irrigation
+      // zones" heading text happens to also mention "equipment" (a real
+      // substring collision, not present before that merge).
+      await expect(page.getByRole("heading", { name: "Equipment", exact: true })).toBeVisible();
+      // Not a bare `getByRole("combobox")` - #250's irrigation-editor merge
+      // added IrrigationPartsPanel's own "Part type" combobox to this same
+      // tab. The placement select has no computed accessible name of its
+      // own to filter by (its wrapping icon+select layout doesn't produce
+      // one) - `.first()` is reliable instead, since EquipmentPanel's
+      // Inventory section (this select lives there) always renders before
+      // IrrigationPartsPanel's own controls in DOM order.
+      await page.getByRole("combobox").first().selectOption(String(bed.id));
 
       await expect
         .poll(async () => (await (await request.get(`/api/bed-equipment/${equipment.id}`)).json()).bed_id, {
