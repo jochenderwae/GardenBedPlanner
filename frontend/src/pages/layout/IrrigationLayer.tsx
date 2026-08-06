@@ -57,6 +57,13 @@ const REJECT_FLASH_COLOR = "#dc2626";
 const NODE_STROKE = "#0891b2";
 const NODE_NEEDS_PURCHASE_STROKE = "#dc2626";
 const MISMATCH_LABEL_COLOR = "#d97706";
+// #278: a genuine physical pipe-length readout (see
+// irrigationConnectionGeometry.ts's own `ConnectionGeometry.length` doc) -
+// only surfaced once a connection is actually selected, matching this
+// layer's existing "on-demand label display" convention (`IrrigationNode`'s
+// own name/type label above), rather than cluttering every drawn connection
+// with a permanent number.
+const LENGTH_LABEL_COLOR = "#0891b2";
 // #271's own docstring: "individual placements use a small rectangle
 // centered on the point" - a real physical fitting's own footprint is
 // genuinely centimeter-scale, so this is a plausible-enough placeholder
@@ -291,6 +298,10 @@ function ConnectionEdge({
   const { start, cp1, cp2, end } = geometry;
   const points = [start.x, start.y, cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y];
   const label = cubicBezierPoint(start, cp1, cp2, end, 0.5);
+  // #278: rounded to the nearest cm and prefixed "~" - `geometry.length`
+  // is a sampled bezier-arc-length approximation (24 segments, see
+  // `cubicBezierLength`'s own doc), not a lab-precise measurement.
+  const lengthLabel = isSelected ? `~${Math.round(geometry.length)} cm` : null;
 
   return (
     <>
@@ -309,6 +320,18 @@ function ConnectionEdge({
       />
       {mismatchLabel && (
         <Text x={label.x - 30} y={label.y - 6} width={60} align="center" text={mismatchLabel} fontSize={9} fill={MISMATCH_LABEL_COLOR} listening={false} />
+      )}
+      {lengthLabel && (
+        <Text
+          x={label.x - 30}
+          y={label.y + (mismatchLabel ? 6 : -6)}
+          width={60}
+          align="center"
+          text={lengthLabel}
+          fontSize={9}
+          fill={LENGTH_LABEL_COLOR}
+          listening={false}
+        />
       )}
     </>
   );
