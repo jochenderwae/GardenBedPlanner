@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Plant, PolygonGeometry, RectangleGeometry } from "@/api/client";
 import {
+  ANGLE_SNAP_STEP_DEG,
   boundingRect,
   clampPointToBounds,
   clampRectPositionToBounds,
@@ -29,6 +30,7 @@ import {
   rotationRelativeToGarden,
   rowGeometryFromDrag,
   rowMarkerPositions,
+  snapPointToAngle,
   snapToGrid,
   translateGeometry,
 } from "./geometry";
@@ -113,6 +115,67 @@ describe("rowGeometryFromDrag", () => {
     const geometry = rowGeometryFromDrag({ x: 0, y: 0 }, { x: 0, y: 100 }, 20);
     expect(geometry?.rotation).toBeCloseTo(90);
     expect(geometry?.width).toBeCloseTo(100);
+  });
+});
+
+describe("snapPointToAngle", () => {
+  it("snaps a near-horizontal drag to exactly horizontal (0deg)", () => {
+    // Raw angle ~14.93deg (small y drift on a mostly-horizontal drag).
+    const snapped = snapPointToAngle({ x: 0, y: 0 }, { x: 150, y: 40 });
+    expect(snapped.y).toBeCloseTo(0);
+    expect(snapped.x).toBeCloseTo(150);
+  });
+
+  it("snaps a near-vertical drag to exactly vertical (90deg)", () => {
+    const snapped = snapPointToAngle({ x: 0, y: 0 }, { x: 10, y: 150 });
+    expect(snapped.x).toBeCloseTo(0);
+    expect(snapped.y).toBeCloseTo(150);
+  });
+
+  it("snaps a roughly-45deg drag to exactly 45deg", () => {
+    const snapped = snapPointToAngle({ x: 0, y: 0 }, { x: 110, y: 100 });
+    const angle = (Math.atan2(snapped.y - 0, snapped.x - 0) * 180) / Math.PI;
+    expect(angle).toBeCloseTo(45);
+  });
+
+  it("preserves the drag's own projected length along the snapped ray, not its raw hypot length", () => {
+    // Raw drag: dx=150, dy=40.44 -> hypot ~155.24, raw angle ~15.13deg,
+    // which rounds to the 0deg ray. Projected length along 0deg is just dx=150.
+    const start = { x: 0, y: 0 };
+    const end = { x: 150, y: 40.44 };
+    const rawLength = Math.hypot(end.x - start.x, end.y - start.y);
+    const snapped = snapPointToAngle(start, end);
+    const snappedLength = Math.hypot(snapped.x - start.x, snapped.y - start.y);
+    expect(snappedLength).toBeCloseTo(150);
+    expect(snappedLength).not.toBeCloseTo(rawLength, 0);
+  });
+
+  it("snaps a negative-direction drag (up-left) to the nearest 8-way ray (180deg)", () => {
+    const snapped = snapPointToAngle({ x: 100, y: 100 }, { x: -40, y: 92 });
+    expect(snapped.y).toBeCloseTo(100);
+    expect(snapped.x).toBeLessThan(100);
+  });
+
+  it("snaps a down-left roughly-diagonal drag to 225deg (both axes negative)", () => {
+    const snapped = snapPointToAngle({ x: 100, y: 100 }, { x: 10, y: 5 });
+    const angle = normalizeDegrees((Math.atan2(snapped.y - 100, snapped.x - 100) * 180) / Math.PI);
+    expect(angle).toBeCloseTo(225);
+  });
+
+  it("returns the endpoint unchanged for a zero-length drag (start === end)", () => {
+    const start = { x: 20, y: 30 };
+    expect(snapPointToAngle(start, { x: 20, y: 30 })).toEqual({ x: 20, y: 30 });
+  });
+
+  it("respects a custom step size", () => {
+    // 30deg step: a drag at ~40deg should snap to 30deg, not the default 45deg grid.
+    const snapped = snapPointToAngle({ x: 0, y: 0 }, { x: 100, y: 84 }, 30);
+    const angle = (Math.atan2(snapped.y, snapped.x) * 180) / Math.PI;
+    expect(angle).toBeCloseTo(30);
+  });
+
+  it("uses ANGLE_SNAP_STEP_DEG (45) as its default step", () => {
+    expect(ANGLE_SNAP_STEP_DEG).toBe(45);
   });
 });
 
