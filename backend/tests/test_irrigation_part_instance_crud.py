@@ -209,6 +209,45 @@ def test_irrigation_part_instance_bed_space_placement_round_trip(client: TestCli
     assert get_response.json()["geometry"] == geometry
 
 
+def test_patch_irrigation_part_instance_geometry_round_trip(client: TestClient) -> None:
+    """#281 regression: PATCHing geometry alone (the drag/placement path
+    from the canvas) must not 500 - update.model_dump(exclude_unset=True)
+    already recursively dumps nested models, so the handler must not try to
+    call .model_dump() on the already-dumped dict a second time."""
+    part = _make_part(client, "Drip nozzle", "nozzle")
+    bed_id = _make_bed(client)
+    initial_geometry = rectangle(x=5, y=5, width=2, height=2)
+    instance = client.post(
+        "/api/irrigation-part-instances",
+        json={"part_id": part["id"], "bed_id": bed_id, "geometry": initial_geometry},
+    ).json()
+
+    moved_geometry = rectangle(x=10, y=15, width=2, height=2)
+    update_response = client.patch(
+        f"/api/irrigation-part-instances/{instance['id']}", json={"geometry": moved_geometry}
+    )
+    assert update_response.status_code == 200, update_response.text
+    assert update_response.json()["geometry"] == moved_geometry
+
+    get_response = client.get(f"/api/irrigation-part-instances/{instance['id']}")
+    assert get_response.json()["geometry"] == moved_geometry
+
+
+def test_patch_irrigation_part_instance_geometry_to_null(client: TestClient) -> None:
+    """Setting geometry back to null via PATCH (unplacing) must also not 500."""
+    part = _make_part(client, "Drip nozzle", "nozzle")
+    bed_id = _make_bed(client)
+    geometry = rectangle(x=5, y=5, width=2, height=2)
+    instance = client.post(
+        "/api/irrigation-part-instances",
+        json={"part_id": part["id"], "bed_id": bed_id, "geometry": geometry},
+    ).json()
+
+    update_response = client.patch(f"/api/irrigation-part-instances/{instance['id']}", json={"geometry": None})
+    assert update_response.status_code == 200, update_response.text
+    assert update_response.json()["geometry"] is None
+
+
 def test_irrigation_part_instance_can_be_garden_bound_instead_of_bed_bound(client: TestClient) -> None:
     part = _make_part(client, "Valve", "valve")
     garden_id = _make_garden(client)

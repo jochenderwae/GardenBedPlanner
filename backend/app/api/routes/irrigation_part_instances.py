@@ -120,13 +120,12 @@ def update_irrigation_part_instance(
     session: Session = Depends(get_session),
 ) -> IrrigationPartInstance:  # type: ignore[valid-type]
     instance = _get_or_404(session, instance_id)
-    data = update.model_dump(exclude_unset=True)
+    data = update.model_dump(exclude_unset=True, exclude={"geometry"})
     new_bed_id = data.get("bed_id", instance.bed_id)
     new_garden_id = data.get("garden_id", instance.garden_id)
     _check_bed_garden_mutually_exclusive(new_bed_id, new_garden_id)
-    if "geometry" in data:
-        geometry = data["geometry"]
-        data["geometry"] = geometry.model_dump() if geometry is not None else None
+    if "geometry" in update.model_fields_set:
+        data["geometry"] = update.geometry.model_dump() if update.geometry is not None else None
     for field, value in data.items():
         setattr(instance, field, value)
     session.add(instance)
