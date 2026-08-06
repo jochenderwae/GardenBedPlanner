@@ -55,6 +55,9 @@ test.describe("Plant-detail periods show month names, not numbers (#152)", () =>
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Periods Plant" })).toBeVisible();
+      // #237 round 2 moved Periods (like every other satellite section)
+      // behind the "Show more details" disclosure.
+      await page.getByRole("button", { name: "Show more details" }).click();
 
       await expect(page.getByText("sowing: March–May")).toBeVisible();
       await expect(page.getByText("harvesting: June")).toBeVisible();
@@ -80,13 +83,19 @@ test.describe("Plant-detail periods show month names, not numbers (#152)", () =>
     try {
       await page.goto(`/plants/${slug}`);
       await expect(page.getByRole("heading", { name: "E2E Periods Add Plant" })).toBeVisible();
+      // #237 round 2 moved Periods (like every other satellite section)
+      // behind the "Show more details" disclosure.
+      await page.getByRole("button", { name: "Show more details" }).click();
 
+      // #152's own later rework replaced the start/end month number
+      // spinners with two more <Select> dropdowns (no explicit aria-label
+      // on any of the three - period type/start month/end month, in that
+      // DOM order) - not a separate `numberInputs` locator anymore.
       const periodsSection = page.locator("section").filter({ has: page.getByRole("heading", { name: /^Periods/ }) });
-      await periodsSection.getByRole("combobox").selectOption(periodTypes[0].code);
-
-      const numberInputs = periodsSection.locator('input[type="number"][min="1"][max="12"]');
-      await numberInputs.nth(0).fill("4");
-      await numberInputs.nth(1).fill("7");
+      const selects = periodsSection.getByRole("combobox");
+      await selects.nth(0).selectOption(periodTypes[0].code);
+      await selects.nth(1).selectOption("4"); // April
+      await selects.nth(2).selectOption("7"); // July
       await periodsSection.getByRole("button", { name: "Add" }).click();
 
       await expect(page.getByText(`${periodTypes[0].code}: April–July`)).toBeVisible();

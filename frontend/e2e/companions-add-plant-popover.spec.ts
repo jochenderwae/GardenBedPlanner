@@ -20,6 +20,9 @@ async function createPlant(request: APIRequestContext, slug: string, commonName:
 
 async function gotoPlant(page: Page, slug: string): Promise<void> {
   await page.goto(`/plants/${slug}`);
+  // #237 round 2 moved Companions (like every other satellite section)
+  // behind the "Show more details" disclosure.
+  await page.getByRole("button", { name: "Show more details" }).click();
   await expect(page.getByRole("heading", { name: "Companions" })).toBeVisible();
 }
 
