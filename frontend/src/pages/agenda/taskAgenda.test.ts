@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Action } from "@/api/client";
-import { groupActionsByDueDate, sortedDueDates, taskDueDateKey } from "./taskAgenda";
+import { groupActionsByDueDate, sortByUrgency, sortedDueDates, taskDueDateKey } from "./taskAgenda";
 
 function makeAction(overrides: Partial<Action>): Action {
   return {
@@ -46,6 +46,39 @@ describe("groupActionsByDueDate", () => {
     const unscheduled = makeAction({ id: 2, due_date_end: null });
     const byDate = groupActionsByDueDate([scheduled, unscheduled]);
     expect([...byDate.values()].flat().map((a) => a.id)).toEqual([1]);
+  });
+});
+
+describe("sortByUrgency", () => {
+  it("sorts by due_date_end ascending (closest deadline first)", () => {
+    const a = makeAction({ id: 1, due_date_end: "2026-09-01" });
+    const b = makeAction({ id: 2, due_date_end: "2026-07-01" });
+    const c = makeAction({ id: 3, due_date_end: "2026-08-01" });
+    expect(sortByUrgency([a, b, c]).map((x) => x.id)).toEqual([2, 3, 1]);
+  });
+
+  it("sorts an action with no due_date_end last, not first", () => {
+    const scheduled = makeAction({ id: 1, due_date_end: "2026-07-01" });
+    const unscheduled = makeAction({ id: 2, due_date_end: null });
+    expect(sortByUrgency([unscheduled, scheduled]).map((x) => x.id)).toEqual([1, 2]);
+  });
+
+  it("breaks ties on the same due_date_end by action_type alphabetically", () => {
+    const sow = makeAction({ id: 1, action_type: "sow", due_date_end: "2026-07-31" });
+    const harvest = makeAction({ id: 2, action_type: "harvest", due_date_end: "2026-07-31" });
+    expect(sortByUrgency([sow, harvest]).map((x) => x.id)).toEqual([2, 1]);
+  });
+
+  it("does not mutate the input array", () => {
+    const a = makeAction({ id: 1, due_date_end: "2026-09-01" });
+    const b = makeAction({ id: 2, due_date_end: "2026-07-01" });
+    const original = [a, b];
+    sortByUrgency(original);
+    expect(original).toEqual([a, b]);
+  });
+
+  it("returns an empty array for no actions", () => {
+    expect(sortByUrgency([])).toEqual([]);
   });
 });
 
