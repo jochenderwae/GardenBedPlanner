@@ -58,10 +58,12 @@ test.describe("Growth habit shape legend (#172)", () => {
     await expect(page.locator("#growth-habit-legend-list")).toBeVisible();
   });
 
-  test("not shown on the Garden/Beds/Equipment edit tabs - only Plants", async ({ page }) => {
+  test("not shown on the Garden/Objects/Equipment edit tabs - only Plants", async ({ page }) => {
     await gotoLayout(page);
 
-    for (const tabName of ["Garden", "Beds", "Equipment"]) {
+    // "Beds" was renamed "Objects" by #242 (Objects tab: bed/compost-bin/
+    // decoration creation buttons) - same tab, new label.
+    for (const tabName of ["Garden", "Objects", "Equipment"]) {
       await page.getByRole("tab", { name: tabName }).click();
       await expect(page.getByRole("button", { name: "Plant shapes" }), `legend shown on the ${tabName} tab`).toHaveCount(0);
     }
