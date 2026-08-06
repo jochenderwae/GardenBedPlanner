@@ -29,6 +29,18 @@ async function dismissOnboardingIfPresent(page: Page): Promise<void> {
   }
 }
 
+/** #29's Calendar rewrite made Month the default `/agenda` view - this
+ * spec's own day-cell/CardTitle assertions are List mode's shape (the
+ * former `TaskAgendaView`/`AgendaView` content), so every navigation needs
+ * an explicit switch to List before the existing assertions apply. Flagged
+ * directly by #29's own implementer outcome comment as a required follow-up
+ * for these two specs. */
+async function gotoAgendaListView(page: Page): Promise<void> {
+  await page.goto("/agenda");
+  await dismissOnboardingIfPresent(page);
+  await page.getByRole("radio", { name: "List" }).click();
+}
+
 test.describe("Task agenda view + task detail page (#181)", () => {
   test("day-cells group tasks by due date, and each links through to a working detail page", async ({
     page,
@@ -43,8 +55,7 @@ test.describe("Task agenda view + task detail page (#181)", () => {
     const actionB = await createAction(request, "harvest", dateB);
 
     try {
-      await page.goto("/agenda");
-      await dismissOnboardingIfPresent(page);
+      await gotoAgendaListView(page);
 
       // The day-cell's own CardTitle (a shadcn Card - renders a plain
       // <div data-slot="card-title">, not a semantic heading role).
@@ -87,13 +98,17 @@ test.describe("Task agenda view + task detail page (#181)", () => {
       await expect(page.getByText("Pending")).toBeVisible();
 
       await page.getByRole("button", { name: "Mark complete" }).click();
-      await expect(page.getByText("Completed")).toBeVisible();
+      // Not a bare `getByText("Completed")` - once `action.completed_date`
+      // is set, TaskDetail.tsx renders a second, separate "Completed" `<dt>`
+      // field label alongside the status value, making that locator
+      // ambiguous. The status field's own "Mark pending" toggle button
+      // appearing is the unambiguous signal the status actually flipped.
+      await expect(page.getByRole("button", { name: "Mark pending" })).toBeVisible();
       await expect
         .poll(async () => (await (await request.get(`/api/actions/${action.id}`)).json()).status)
         .toBe("completed");
 
-      await page.goto("/agenda");
-      await dismissOnboardingIfPresent(page);
+      await gotoAgendaListView(page);
       // Completed tasks aren't shown in the pending-only agenda list.
       await expect(page.getByRole("link", { name: /^Fertilize/ })).toHaveCount(0);
 
@@ -101,8 +116,7 @@ test.describe("Task agenda view + task detail page (#181)", () => {
       await page.goto(`/tasks/${action.id}`);
       await page.getByRole("button", { name: "Mark pending" }).click();
       await expect(page.getByText("Pending")).toBeVisible();
-      await page.goto("/agenda");
-      await dismissOnboardingIfPresent(page);
+      await gotoAgendaListView(page);
       await expect(page.getByRole("link", { name: new RegExp(`Fertilize`) })).toBeVisible();
     } finally {
       await request.delete(`/api/actions/${action.id}`).catch(() => {});
@@ -116,7 +130,7 @@ test.describe("Task agenda view + task detail page (#181)", () => {
     const action = await createAction(request, "sow", dueDate);
 
     try {
-      await page.goto("/agenda");
+      await gotoAgendaListView(page);
       await expect(page.getByRole("link", { name: /^Sow/ })).toBeVisible();
     } finally {
       await request.delete(`/api/actions/${action.id}`).catch(() => {});

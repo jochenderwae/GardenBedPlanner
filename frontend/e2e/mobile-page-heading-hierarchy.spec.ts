@@ -51,16 +51,26 @@ async function createPeriod(
 test.describe("Mobile page-heading hierarchy (#148)", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
-  const SIMPLE_ROUTES: Array<[string, string]> = [
-    ["/", "GardenBedPlanner"],
-    ["/logging", "Logging"],
-    ["/notifications", "Notifications"],
+  // `/` and `/logging` have since moved off the CardTitle-wrapped page
+  // title this spec originally checked, onto a real semantic `<h1>` (a
+  // strict accessibility improvement, found while re-running this spec -
+  // `/`'s MobileHome now renders "Home" as its own `<h1>` per #224's
+  // shipped mobile-home redesign; `/logging` followed the same pattern).
+  // `/notifications` hasn't been migrated yet and still uses CardTitle -
+  // real, current mixed state, not a mistake to paper over.
+  const SIMPLE_ROUTES: Array<[string, string, "card-title" | "h1"]> = [
+    ["/", "Home", "h1"],
+    ["/logging", "Logging", "h1"],
+    ["/notifications", "Notifications", "card-title"],
   ];
 
-  for (const [path, titleText] of SIMPLE_ROUTES) {
-    test(`${path}: the page's own CardTitle renders at a real, non-trivial font size`, async ({ page }) => {
+  for (const [path, titleText, kind] of SIMPLE_ROUTES) {
+    test(`${path}: the page's own title renders at a real, non-trivial font size`, async ({ page }) => {
       await page.goto(path);
-      const title = page.locator('[data-slot="card-title"]', { hasText: titleText }).first();
+      const title =
+        kind === "h1"
+          ? page.locator("h1", { hasText: titleText }).first()
+          : page.locator('[data-slot="card-title"]', { hasText: titleText }).first();
       await expect(title).toBeVisible();
       const size = await title.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
       // 16px is CardTitle's own default (text-base) - a real regression
@@ -95,10 +105,18 @@ test.describe("Mobile page-heading hierarchy (#148)", () => {
       const h1 = page.locator("h1", { hasText: "Agenda" });
       await expect(h1).toBeVisible();
 
-      // AgendaView's own month Card/CardTitle - present because the
-      // period covers all 12 months, so this month's card always renders
-      // regardless of what real-world month the suite runs in.
-      const sectionCardTitle = page.locator('[data-slot="card-title"]').filter({ hasText: /^(January|February|March|April|May|June|July|August|September|October|November|December)$/ }).first();
+      // #29 replaced AgendaView's month Card/CardTitle with a real
+      // Month/Week/Day/List Calendar - the day-cell CardTitle this test
+      // originally measured against only renders in List mode now (Month
+      // is the new default), and reads as a full weekday/month/day/year
+      // date heading (taskAgenda.ts's formatDueDateHeading), not a bare
+      // month name. Per #29's own implementer outcome comment's flagged
+      // follow-up for this spec.
+      await page.getByRole("radio", { name: "List" }).click();
+      const sectionCardTitle = page
+        .locator('[data-slot="card-title"]')
+        .filter({ hasText: /^\w+day, \w+ \d{1,2}, \d{4}$/ })
+        .first();
       await expect(sectionCardTitle).toBeVisible();
 
       const h1Size = await h1.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
